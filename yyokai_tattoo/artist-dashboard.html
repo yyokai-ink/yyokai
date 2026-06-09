@@ -1061,29 +1061,29 @@ audio{
 
 <section class="focus-grid">
   <div class="panel">
-    <h2 data-i18n="workflowTitle">Start your workflow</h2>
+    <h2 data-i18n="workflowTitle">Почніть роботу</h2>
     <p data-i18n="workflowText">Почни з потрібного інструмента. Чистий інтерфейс без перевантаження.</p>
 
     <div class="panel-actions">
-      <button class="workflow-btn" onclick="go('stencil.html')">Stencil</button>
+      <button class="workflow-btn" onclick="go('stencil.html')">Трафарет</button>
       <button class="workflow-btn" onclick="go('bookings2.html')" data-i18n="bookingsBtn">Записи</button>
-      <button class="workflow-btn" onclick="go('generation.html')">Generate</button>
+      <button class="workflow-btn" onclick="go('generation.html')">Генерація</button>
     </div>
   </div>
 
   <div class="panel">
-    <h2 data-i18n="studioTitle">Studio mode</h2>
+    <h2 data-i18n="studioTitle">Студійний режим</h2>
     <p data-i18n="studioText">Твій простір. Музика, колір, атмосфера, фон і профіль — все персоналізується.</p>
   </div>
 </section>
 </main>
 
 <nav class="dock">
-  <button class="active" onclick="go('artist-dashboard.html')"><i>⌂</i><span>Home</span></button>
-  <button onclick="go('stencil.html')"><i>🧿</i><span>Stencil</span></button>
-  <button onclick="go('generation.html')"><i>✦</i><span>Generate</span></button>
+  <button class="active" onclick="go('artist-dashboard.html')"><i>⌂</i><span>Дім</span></button>
+  <button onclick="go('stencil.html')"><i>🧿</i><span>Трафарет</span></button>
+  <button onclick="go('generation.html')"><i>✦</i><span>Генерація</span></button>
   <button onclick="go('bookings2.html')"><i>🗓</i><span data-i18n="dockBookings">Записи</span></button>
-  <button onclick="openBalanceModal()"><i>¥</i><span>Balance</span></button>
+  <button onclick="openBalanceModal()"><i>¥</i><span>Баланс</span></button>
 </nav>
 
 <section class="pay-modal" id="planModal">
@@ -1098,7 +1098,7 @@ audio{
         <div class="plan-price">$0</div>
         <div class="plan-name">Free</div>
         <ul>
-          <li data-i18n="free1">3 генерації стенсила</li>
+          <li data-i18n="free1">3 генерації трафарету</li>
           <li data-i18n="free2">3 генерації ескізу</li>
           <li data-i18n="free3">3 A4 розділення</li>
           <li data-i18n="free4">Записи клієнтів без ліміту</li>
@@ -1107,9 +1107,9 @@ audio{
 
       <button type="button" class="plan-card" data-plan="starter" onclick="selectPlan('starter')">
         <div class="plan-price">$10</div>
-        <div class="plan-name" data-i18n="starterName">Starter / місяць</div>
+        <div class="plan-name" data-i18n="starterName">Початковий / місяць</div>
         <ul>
-          <li data-i18n="starter1">250 генерацій стенсила</li>
+          <li data-i18n="starter1">250 генерацій трафарету</li>
           <li data-i18n="starter2">250 генерацій ескізу</li>
           <li data-i18n="starter3">50 A4 розділень</li>
           <li data-i18n="starter4">Записи клієнтів без ліміту</li>
@@ -1118,9 +1118,9 @@ audio{
 
       <button type="button" class="plan-card" data-plan="pro" onclick="selectPlan('pro')">
         <div class="plan-price">$20</div>
-        <div class="plan-name" data-i18n="proName">Pro / місяць</div>
+        <div class="plan-name" data-i18n="proName">Професійний / місяць</div>
         <ul>
-          <li data-i18n="pro1">500 генерацій стенсила</li>
+          <li data-i18n="pro1">500 генерацій трафарету</li>
           <li data-i18n="pro2">500 генерацій ескізу</li>
           <li data-i18n="pro3">100 A4 розділень</li>
           <li data-i18n="pro4">Записи клієнтів без ліміту</li>
@@ -1129,12 +1129,12 @@ audio{
 
       <button type="button" class="plan-card" data-plan="yokai" onclick="selectPlan('yokai')">
         <div class="plan-price">$30</div>
-        <div class="plan-name" data-i18n="yokaiName">YYOKAI Full / місяць</div>
+        <div class="plan-name" data-i18n="yokaiName">YYOKAI Повний / місяць</div>
         <ul>
           <li data-i18n="yokai1">Повний доступ</li>
-          <li data-i18n="yokai2">Безлімітний workflow</li>
-          <li data-i18n="yokai3">Premium tools</li>
-          <li data-i18n="yokai4">Custom studio mode</li>
+          <li data-i18n="yokai2">Безлімітне створення</li>
+          <li data-i18n="yokai3">Преміум Інструменти</li>
+          <li data-i18n="yokai4">Кастомний режим студії </li>
         </ul>
       </button>
     </div>
@@ -1153,25 +1153,25 @@ audio{
     <div class="balance-grid">
       <button type="button" class="balance-card" onclick="createBalancePayment(10)">
         <div class="balance-price">$10</div>
-        <div class="balance-name">Quick start</div>
+        <div class="balance-name">Швидкий старт</div>
         <p data-i18n="balance10">Легкий старт для перевірки інструментів.</p>
       </button>
 
       <button type="button" class="balance-card" onclick="createBalancePayment(20)">
         <div class="balance-price">$20</div>
-        <div class="balance-name">Artist pack</div>
+        <div class="balance-name">Набір для художників</div>
         <p data-i18n="balance20">Для активної роботи з клієнтами.</p>
       </button>
 
       <button type="button" class="balance-card" onclick="createBalancePayment(30)">
         <div class="balance-price">$30</div>
-        <div class="balance-name">Studio pack</div>
+        <div class="balance-name">Студійний набір</div>
         <p data-i18n="balance30">Більше свободи для щоденного workflow.</p>
       </button>
 
       <button type="button" class="balance-card" onclick="createBalancePayment(50)">
         <div class="balance-price">$50</div>
-        <div class="balance-name">Premium reserve</div>
+        <div class="balance-name">Преміум доступ</div>
         <p data-i18n="balance50">Запас для інтенсивної роботи студії.</p>
       </button>
     </div>
@@ -1260,7 +1260,7 @@ const tracks=[
 
 const t={
 uk:{
-navStencil:"AI Stencil",
+navStencil:"AI Трафарет",
 navGenerate:"AI генерація",
 navBookings:"Записи",
 navSplit:"A4 друк",
@@ -1274,23 +1274,23 @@ heroText:"Твоя преміальна система для тату-майс�
 statBalance:"Баланс",
 statPlan:"План",
 statPlanPrice:"Вартість",
-workflowTitle:"Start your workflow",
+workflowTitle:"Розпочни свою роботу",
 workflowText:"Почни з потрібного інструмента. Чистий інтерфейс без перевантаження.",
 bookingsBtn:"Записи",
-studioTitle:"Studio mode",
+studioTitle:"Студійний режим",
 studioText:"Твій простір. Музика, колір, атмосфера, фон і профіль — все персоналізується.",
 dockBookings:"Записи",
 choosePlan:"Оберіть план",
 topUpBalance:"Поповнити баланс",
 confirmPlan:"Підтвердити план",
-starterName:"Starter / місяць",
-proName:"Pro / місяць",
-yokaiName:"YYOKAI Full / місяць",
+starterName:"Початковий / місяць",
+proName:"Професійний / місяць",
+yokaiName:"YYOKAI Повний / місяць",
 free1:"3 генерації стенсила",
 free2:"3 генерації ескізу",
 free3:"3 A4 розділення",
 free4:"Записи клієнтів без ліміту",
-starter1:"250 генерацій стенсила",
+starter1:"250 генерацій трафарету",
 starter2:"250 генерацій ескізу",
 starter3:"50 A4 розділень",
 starter4:"Записи клієнтів без ліміту",
