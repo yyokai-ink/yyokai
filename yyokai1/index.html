@@ -3,81 +3,135 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YYOKAI — Dark Abstract Tattoo</title>
+<title>YYOKAI — Japanese Tattoo</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:#050505;color:#fff;font-family:Arial,Helvetica,sans-serif;overflow-x:hidden}
+body{background:#f7f5f0;color:#080808;font-family:Arial,Helvetica,sans-serif;overflow-x:hidden}
 a{text-decoration:none;color:inherit}
 img,video{display:block;max-width:100%}
-:root{--red:#ff1717;--card:#101010;--line:#242424;--gray:#8a8a8a}
+
+:root{
+  --red:#d81818;
+  --bg:#f7f5f0;
+  --white:#fff;
+  --black:#080808;
+  --gray:#6f6f6f;
+  --line:#dedbd4;
+}
+
 .container{max-width:1180px;margin:auto}
 section{padding:95px 22px}
 .label{color:var(--red);font-size:12px;letter-spacing:.28em;text-transform:uppercase;margin-bottom:22px}
-h1{font-size:clamp(72px,18vw,220px);line-height:.78;letter-spacing:-.08em}
+h1{font-size:clamp(76px,18vw,220px);line-height:.78;letter-spacing:-.08em;text-align:center}
 h2{font-size:clamp(42px,8vw,110px);line-height:.9;letter-spacing:-.06em;margin-bottom:34px}
 h3{font-size:28px}
 p{color:var(--gray);font-size:18px;line-height:1.55}
 
-.nav{position:fixed;top:0;left:0;width:100%;z-index:100;background:rgba(5,5,5,.75);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);padding:18px 22px}
-.nav-inner{max-width:1180px;margin:auto;display:flex;align-items:center;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:14px}
-.logo img{height:40px}
-.logo span{font-size:13px;letter-spacing:.34em}
-.menu{display:flex;gap:22px;font-size:12px;text-transform:uppercase;color:#aaa}
-.burger{display:none;background:none;border:0;color:white;font-size:30px}
-.mobile{position:fixed;inset:0;background:#050505;z-index:99;display:none;align-items:center;justify-content:center;flex-direction:column;gap:28px;font-size:30px;text-transform:uppercase}
+.nav{
+  position:fixed;top:0;left:0;width:100%;z-index:100;
+  background:rgba(247,245,240,.86);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);padding:18px 22px
+}
+.nav-inner{max-width:1180px;margin:auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
+.logo img{height:42px}
+.brand{text-align:center;font-size:15px;letter-spacing:.45em;font-weight:700}
+.menu{display:flex;gap:22px;justify-content:flex-end;font-size:12px;text-transform:uppercase;color:#555}
+.menu a:hover{color:var(--red)}
 
-.hero{min-height:100vh;position:relative;display:flex;align-items:flex-end;padding:140px 22px 80px}
-.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.32}
-.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,#050505 8%,transparent 70%)}
-.hero .container{position:relative;z-index:2;width:100%}
-.hero p{max-width:560px;margin-top:24px}
-.button,.floating{display:inline-flex;background:var(--red);color:white;border:0;border-radius:999px;padding:16px 24px;margin-top:28px;font-weight:700;cursor:pointer}
-.floating{position:fixed;right:22px;bottom:22px;z-index:90;margin:0;font-size:13px}
+.burger{display:none;width:34px;height:26px;background:none;border:0;position:relative;cursor:pointer}
+.burger span{position:absolute;left:0;width:34px;height:2px;background:var(--black);transition:.35s ease}
+.burger span:nth-child(1){top:2px}
+.burger span:nth-child(2){top:12px}
+.burger span:nth-child(3){top:22px}
+.burger.active span:nth-child(1){top:12px;transform:rotate(45deg)}
+.burger.active span:nth-child(2){opacity:0}
+.burger.active span:nth-child(3){top:12px;transform:rotate(-45deg)}
+
+.mobile{
+  position:fixed;inset:0;background:#f7f5f0;z-index:90;
+  display:none;align-items:center;justify-content:center;flex-direction:column;
+  gap:28px;font-size:30px;text-transform:uppercase
+}
+.mobile.open{display:flex}
+
+.hero{min-height:100vh;position:relative;display:flex;align-items:center;padding:140px 22px 80px;background:#f7f5f0}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.18}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,#f7f5f0 5%,rgba(247,245,240,.4))}
+.hero .container{position:relative;z-index:2;width:100%;text-align:center}
+.hero p{max-width:560px;margin:24px auto 0}
+
+.button{
+  display:inline-flex;background:var(--red);color:white;border:0;border-radius:999px;
+  padding:16px 26px;margin-top:28px;font-weight:700;cursor:pointer;text-transform:uppercase
+}
+.button.white{background:#fff;color:#080808;border:1px solid var(--line)}
 
 .two-col,.guest-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .image-box img{height:620px;width:100%;object-fit:cover;border-radius:26px;filter:grayscale(1)}
-.text-box,.card,.guest-card,.contact-card,form{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:28px}
+.text-box,.card,.guest-card,.contact-card,form{
+  background:#fff;border:1px solid var(--line);border-radius:26px;padding:28px
+}
 
 .accordion,.faq-list{display:grid;gap:14px}
-.accordion-item,.faq-item{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px}
-.accordion-head,.faq-item button{width:100%;background:none;border:0;color:white;display:flex;justify-content:space-between;font-size:22px;cursor:pointer;text-align:left}
+.accordion-item,.faq-item{background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px}
+.accordion-head,.faq-item button{
+  width:100%;background:none;border:0;color:#080808;
+  display:flex;justify-content:space-between;font-size:22px;cursor:pointer;text-align:left
+}
 .accordion-body,.faq-item p{display:none;margin-top:18px}
 .accordion-item.open .accordion-body{display:block}
 
 .portfolio-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-.work-card{height:430px;border-radius:26px;overflow:hidden;position:relative;cursor:pointer;background:#111}
+.work-card{height:430px;border-radius:26px;overflow:hidden;position:relative;cursor:pointer;background:#fff}
 .work-card img{width:100%;height:100%;object-fit:cover}
-.work-card:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85),transparent 60%)}
-.work-card div{position:absolute;left:22px;right:22px;bottom:22px;z-index:2;display:flex;justify-content:space-between;align-items:end}
+.work-card:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65),transparent 60%)}
+.work-card div{position:absolute;left:22px;right:22px;bottom:22px;z-index:2;display:flex;justify-content:space-between;align-items:end;color:white}
 .work-card p,.design-card p,.guest-card span{color:var(--red)}
 
 .design-row{display:flex;gap:18px;overflow-x:auto;padding-bottom:14px}
-.design-card{min-width:360px;background:var(--card);border:1px solid var(--line);border-radius:26px;overflow:hidden}
+.design-card{min-width:360px;background:#fff;border:1px solid var(--line);border-radius:26px;overflow:hidden}
 .design-card img{height:420px;width:100%;object-fit:cover;cursor:pointer}
 .design-card div{padding:22px}
 
 .guest-list{display:grid;gap:18px}
-.guest-card img{height:250px;width:100%;object-fit:cover;border-radius:20px;margin-top:20px;filter:grayscale(.3)}
-.map-box iframe{width:100%;height:100%;min-height:560px;border:0;border-radius:26px;filter:grayscale(1) invert(1) contrast(1.1) brightness(.75)}
+.guest-card img{height:250px;width:100%;object-fit:cover;border-radius:20px;margin-top:20px}
+.map-box iframe{
+  width:100%;height:100%;min-height:560px;border:0;border-radius:26px;
+  touch-action:pan-x pan-y;filter:none;background:white
+}
 
-input,textarea,select{width:100%;background:#060606;color:white;border:1px solid #333;border-radius:16px;padding:17px;margin-bottom:14px;font:inherit}
+input,textarea,select{
+  width:100%;background:#fff;color:#080808;border:1px solid var(--line);
+  border-radius:16px;padding:17px;margin-bottom:14px;font:inherit
+}
 textarea{min-height:140px}
 input[type=file]{border-style:dashed;color:#777}
 
-footer{padding:45px 22px;border-top:1px solid var(--line);color:#777}
-.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:200;display:none;align-items:center;justify-content:center}
+footer{padding:45px 22px;border-top:1px solid var(--line);color:#777;text-align:center}
+
+.lightbox,.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;
+  display:none;align-items:center;justify-content:center;padding:20px
+}
 .lightbox img{max-width:92%;max-height:86%;border-radius:18px}
-.lightbox button{position:absolute;top:25px;right:30px;background:none;border:0;color:white;font-size:46px;cursor:pointer}
+.close{
+  position:absolute;top:25px;right:30px;background:none;border:0;color:white;font-size:46px;cursor:pointer
+}
+.modal-box{
+  width:min(760px,100%);max-height:90vh;overflow:auto;background:#f7f5f0;
+  border-radius:28px;padding:28px;border:1px solid var(--line);position:relative
+}
+.modal-box .close-modal{position:absolute;right:22px;top:16px;background:none;border:0;font-size:34px;cursor:pointer;color:#080808}
 
 @media(max-width:850px){
-.menu{display:none}.burger{display:block}
+.menu{display:none}
+.burger{display:block;justify-self:end}
+.nav-inner{grid-template-columns:1fr auto 1fr}
 .two-col,.guest-grid{grid-template-columns:1fr}
 .portfolio-grid{grid-template-columns:1fr 1fr;gap:12px}
 .work-card{height:280px}
-.floating{left:20px;right:20px;justify-content:center}
 }
 @media(max-width:520px){
 .portfolio-grid{grid-template-columns:1fr}
@@ -90,42 +144,36 @@ footer{padding:45px 22px;border-top:1px solid var(--line);color:#777}
 
 <nav class="nav">
   <div class="nav-inner">
-    <a href="#home" class="logo">
-      <img src="logo.png" alt="YYOKAI logo">
-      <span>YYOKAI</span>
-    </a>
+    <a href="#home" class="logo"><img src="logo.png" alt="YYOKAI logo"></a>
+    <div class="brand">YYOKAI</div>
     <div class="menu">
       <a href="#about">About</a>
-      <a href="#booking-process">How to book</a>
       <a href="#portfolio">Portfolio</a>
       <a href="#designs">Designs</a>
       <a href="#guest-spots">Guest spots</a>
       <a href="#faq">FAQ</a>
-      <a href="#booking">Booking</a>
+      <a href="#" class="open-booking">Booking</a>
     </div>
-    <button class="burger" id="burger">☰</button>
+    <button class="burger" id="burger"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
 <div class="mobile" id="mobileMenu">
   <a href="#about">About</a>
-  <a href="#booking-process">How to book</a>
   <a href="#portfolio">Portfolio</a>
   <a href="#designs">Designs</a>
   <a href="#guest-spots">Guest spots</a>
   <a href="#faq">FAQ</a>
-  <a href="#booking">Booking</a>
+  <a href="#" class="open-booking">Booking</a>
 </div>
-
-<a href="#booking" class="floating">BOOK APPOINTMENT</a>
 
 <header class="hero" id="home">
   <video src="hero.mp4" autoplay muted loop playsinline></video>
   <div class="container">
-    <p class="label">Dark abstract tattoo</p>
+    <p class="label">Japanese tattoo</p>
     <h1>YYOKAI</h1>
-    <p>Custom blackwork projects designed around anatomy, movement and personal identity.</p>
-    <a href="#booking" class="button">START PROJECT</a>
+    <p>Авторські японські тату-проєкти з індивідуальною композицією, анатомією та сильним візуальним характером.</p>
+    <button class="button open-booking">Book appointment</button>
   </div>
 </header>
 
@@ -133,41 +181,11 @@ footer{padding:45px 22px;border-top:1px solid var(--line);color:#777}
 
 <section id="about">
   <div class="container two-col">
-    <div class="image-box">
-      <img src="images/about.jpg" alt="About YYOKAI">
-    </div>
+    <div class="image-box"><img src="images/about.jpg" alt=""></div>
     <div class="text-box">
       <p class="label">About</p>
       <h2>No copies. Only custom.</h2>
-      <p>I’m Valerii, a tattoo artist working under the name YYOKAI. I specialize in dark abstraction, custom blackwork and large-scale tattoo projects.</p>
-      <br>
-      <p>Every piece is created individually to fit the body, flow with anatomy and create a strong visual impact.</p>
-    </div>
-  </div>
-</section>
-
-<section id="booking-process">
-  <div class="container">
-    <p class="label">How to book</p>
-    <h2>Process</h2>
-
-    <div class="accordion">
-      <div class="accordion-item open">
-        <button class="accordion-head"><span>01. Consultation</span><b>+</b></button>
-        <div class="accordion-body"><p>Send your idea, placement, approximate size and references.</p></div>
-      </div>
-      <div class="accordion-item">
-        <button class="accordion-head"><span>02. Design</span><b>+</b></button>
-        <div class="accordion-body"><p>I create a custom concept for your body. The final design is not copied.</p></div>
-      </div>
-      <div class="accordion-item">
-        <button class="accordion-head"><span>03. Deposit</span><b>+</b></button>
-        <div class="accordion-body"><p>A deposit confirms your date and is deducted from the final tattoo price.</p></div>
-      </div>
-      <div class="accordion-item">
-        <button class="accordion-head"><span>04. Session</span><b>+</b></button>
-        <div class="accordion-body"><p>The project is tattooed during one or multiple sessions.</p></div>
-      </div>
+      <p>YYOKAI — це авторський напрям японського тату. Кожен проєкт створюється індивідуально під тіло, рух і характер людини.</p>
     </div>
   </div>
 </section>
@@ -178,36 +196,13 @@ footer{padding:45px 22px;border-top:1px solid var(--line);color:#777}
     <h2>Projects</h2>
 
     <div class="portfolio-grid">
-      <article class="work-card" data-img="images/work1.jpg">
-        <img src="images/work1.jpg" alt="">
-        <div><h3>Full sleeve</h3><p>from €2500</p></div>
-      </article>
-
-      <article class="work-card" data-img="images/work2.jpg">
-        <img src="images/work2.jpg" alt="">
-        <div><h3>Back piece</h3><p>from €3500</p></div>
-      </article>
-
-      <article class="work-card" data-img="images/work3.jpg">
-        <img src="images/work3.jpg" alt="">
-        <div><h3>Chest</h3><p>from €1800</p></div>
-      </article>
-
-      <article class="work-card" data-img="images/work4.jpg">
-        <img src="images/work4.jpg" alt="">
-        <div><h3>Arm</h3><p>from €700</p></div>
-      </article>
-
-      <article class="work-card" data-img="images/work5.jpg">
-        <img src="images/work5.jpg" alt="">
-        <div><h3>Leg</h3><p>from €1200</p></div>
-      </article>
-
-      <article class="work-card" data-img="images/work6.jpg">
-        <img src="images/work6.jpg" alt="">
-        <div><h3>Custom</h3><p>on request</p></div>
-      </article>
+      <article class="work-card" data-img="images/work1.jpg"><img src="images/work1.jpg"><div><h3>Full sleeve</h3><p>from €2500</p></div></article>
+      <article class="work-card" data-img="images/work2.jpg"><img src="images/work2.jpg"><div><h3>Back piece</h3><p>from €3500</p></div></article>
+      <article class="work-card" data-img="images/work3.jpg"><img src="images/work3.jpg"><div><h3>Chest</h3><p>from €1800</p></div></article>
+      <article class="work-card" data-img="images/work4.jpg"><img src="images/work4.jpg"><div><h3>Arm</h3><p>from €700</p></div></article>
     </div>
+
+    <button class="button open-booking">Book project</button>
   </div>
 </section>
 
@@ -218,18 +213,13 @@ footer{padding:45px 22px;border-top:1px solid var(--line);color:#777}
 
     <div class="design-row">
       <article class="design-card" data-img="images/design1.jpg">
-        <img src="images/design1.jpg" alt="">
-        <div><h3>Hand</h3><p>€800</p><a href="#booking" class="button">Book this</a></div>
+        <img src="images/design1.jpg"><div><h3>Hand</h3><p>€800</p><button class="button open-booking">Book this</button></div>
       </article>
-
       <article class="design-card" data-img="images/design2.jpg">
-        <img src="images/design2.jpg" alt="">
-        <div><h3>Inner arm</h3><p>€1600</p><a href="#booking" class="button">Book this</a></div>
+        <img src="images/design2.jpg"><div><h3>Inner arm</h3><p>€1600</p><button class="button open-booking">Book this</button></div>
       </article>
-
       <article class="design-card" data-img="images/design3.jpg">
-        <img src="images/design3.jpg" alt="">
-        <div><h3>Back</h3><p>€2500</p><a href="#booking" class="button">Book this</a></div>
+        <img src="images/design3.jpg"><div><h3>Back</h3><p>€2500</p><button class="button open-booking">Book this</button></div>
       </article>
     </div>
   </div>
@@ -244,16 +234,16 @@ footer{padding:45px 22px;border-top:1px solid var(--line);color:#777}
       <div class="guest-list">
         <article class="guest-card">
           <h3>Lviv, Ukraine</h3>
-          <p><span>Bookings open</span><br>Custom blackwork / dark abstract projects.</p>
-          <img src="images/lviv.jpg" alt="">
-          <a href="#booking" class="button">Book Lviv</a>
+          <p><span>Bookings open</span><br>Japanese tattoo projects.</p>
+          <img src="images/lviv.jpg">
+          <button class="button open-booking">Book Lviv</button>
         </article>
 
         <article class="guest-card">
           <h3>Bucharest, Romania</h3>
           <p><span>Bookings open</span><br>Limited spots for large projects.</p>
-          <img src="images/bucharest.jpg" alt="">
-          <a href="#booking" class="button">Book Bucharest</a>
+          <img src="images/bucharest.jpg">
+          <button class="button open-booking">Book Bucharest</button>
         </article>
       </div>
 
@@ -270,33 +260,38 @@ footer{padding:45px 22px;border-top:1px solid var(--line);color:#777}
     <h2>Info</h2>
 
     <div class="faq-list">
-      <div class="faq-item">
-        <button>Is a deposit required?<span>+</span></button>
-        <p>Yes. The deposit secures your date and is deducted from the final price.</p>
-      </div>
-
-      <div class="faq-item">
-        <button>Can I reschedule?<span>+</span></button>
-        <p>Yes, but please do it in advance. Late cancellations may lose the deposit.</p>
-      </div>
-
-      <div class="faq-item">
-        <button>Can I bring references?<span>+</span></button>
-        <p>Yes. References help define the mood, but the final tattoo is created custom.</p>
-      </div>
-
-      <div class="faq-item">
-        <button>Can large tattoos be split?<span>+</span></button>
-        <p>Yes. Large projects can be divided into several sessions.</p>
-      </div>
+      <div class="faq-item"><button>Is a deposit required?<span>+</span></button><p>Yes. The deposit secures your date and is deducted from the final price.</p></div>
+      <div class="faq-item"><button>Can I reschedule?<span>+</span></button><p>Yes, but please do it in advance.</p></div>
+      <div class="faq-item"><button>Can I bring references?<span>+</span></button><p>Yes. References help define the mood, but the final tattoo is created custom.</p></div>
     </div>
   </div>
 </section>
 
-<section id="booking">
-  <div class="container">
+<section id="contact">
+  <div class="container contact-card">
+    <p class="label">Contact</p>
+    <h2>YYOKAI</h2>
+    <p>Instagram: @yyokai</p>
+    <p>Email: your@email.com</p>
+    <p>WhatsApp: +000000000</p>
+    <button class="button open-booking">Book appointment</button>
+  </div>
+</section>
+
+</main>
+
+<footer>YYOKAI — Japanese Tattoo</footer>
+
+<div class="lightbox" id="lightbox">
+  <button class="close" id="closeLightbox">×</button>
+  <img id="lightboxImg">
+</div>
+
+<div class="modal" id="bookingModal">
+  <div class="modal-box">
+    <button class="close-modal" id="closeModal">×</button>
     <p class="label">Booking</p>
-    <h2>Start your project</h2>
+    <h2>Start project</h2>
 
     <form id="bookingForm">
       <input name="name" placeholder="Name *" required>
@@ -316,31 +311,9 @@ footer{padding:45px 22px;border-top:1px solid var(--line);color:#777}
       <input type="file" name="references" multiple accept="image/*">
       <input type="email" name="email" placeholder="Email *" required>
       <input name="phone" placeholder="WhatsApp / Phone *" required>
-
       <button class="button" type="submit">Submit project</button>
     </form>
   </div>
-</section>
-
-<section id="contact">
-  <div class="container contact-card">
-    <p class="label">Contact</p>
-    <h2>YYOKAI</h2>
-    <p>Instagram: @yyokai</p>
-    <p>Email: your@email.com</p>
-    <p>WhatsApp: +000000000</p>
-  </div>
-</section>
-
-</main>
-
-<footer>
-  <div class="container">YYOKAI — Valerii Koroliov</div>
-</footer>
-
-<div class="lightbox" id="lightbox">
-  <button id="closeLightbox">×</button>
-  <img id="lightboxImg" alt="">
 </div>
 
 <script>
@@ -348,16 +321,14 @@ const burger=document.getElementById("burger");
 const mobile=document.getElementById("mobileMenu");
 
 burger.onclick=()=>{
-  mobile.style.display=mobile.style.display==="flex"?"none":"flex";
+  burger.classList.toggle("active");
+  mobile.classList.toggle("open");
 };
 
 document.querySelectorAll(".mobile a").forEach(a=>{
-  a.onclick=()=>mobile.style.display="none";
-});
-
-document.querySelectorAll(".accordion-head").forEach(btn=>{
-  btn.onclick=()=>{
-    btn.parentElement.classList.toggle("open");
+  a.onclick=()=>{
+    burger.classList.remove("active");
+    mobile.classList.remove("open");
   };
 });
 
@@ -372,25 +343,33 @@ const lightbox=document.getElementById("lightbox");
 const lightboxImg=document.getElementById("lightboxImg");
 
 document.querySelectorAll("[data-img]").forEach(card=>{
-  card.onclick=()=>{
+  card.onclick=e=>{
+    if(e.target.classList.contains("button")) return;
     lightbox.style.display="flex";
     lightboxImg.src=card.dataset.img;
   };
 });
 
-document.getElementById("closeLightbox").onclick=()=>{
-  lightbox.style.display="none";
-};
+document.getElementById("closeLightbox").onclick=()=>lightbox.style.display="none";
+lightbox.onclick=e=>{if(e.target===lightbox) lightbox.style.display="none"};
 
-lightbox.onclick=e=>{
-  if(e.target===lightbox) lightbox.style.display="none";
-};
+const modal=document.getElementById("bookingModal");
+document.querySelectorAll(".open-booking").forEach(btn=>{
+  btn.onclick=e=>{
+    e.preventDefault();
+    modal.style.display="flex";
+    burger.classList.remove("active");
+    mobile.classList.remove("open");
+  };
+});
+
+document.getElementById("closeModal").onclick=()=>modal.style.display="none";
+modal.onclick=e=>{if(e.target===modal) modal.style.display="none"};
 
 document.getElementById("bookingForm").addEventListener("submit",async function(e){
   e.preventDefault();
 
   const data=Object.fromEntries(new FormData(this).entries());
-
   const BOT_TOKEN="PASTE_BOT_TOKEN_HERE";
   const CHAT_ID="PASTE_CHAT_ID_HERE";
 
@@ -417,6 +396,7 @@ Phone: ${data.phone}
   }
 
   alert("Your request has been sent.");
+  modal.style.display="none";
   this.reset();
 });
 </script>
