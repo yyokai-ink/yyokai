@@ -1,141 +1,619 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YYOKAI — Japanese Tattoo</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>YYOKAI — Valeriy Korolov</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:#f7f5f0;color:#080808;font-family:Arial,Helvetica,sans-serif;overflow-x:hidden}
+body{background:#050505;color:#f4f4f4;font-family:Arial,Helvetica,sans-serif;overflow-x:hidden}
 a{text-decoration:none;color:inherit}
 img,video{display:block;max-width:100%}
 
 :root{
-  --red:#d81818;
-  --bg:#f7f5f0;
-  --white:#fff;
-  --black:#080808;
-  --gray:#6f6f6f;
-  --line:#dedbd4;
+  --red:#ff1717;
+  --dark:#050505;
+  --nav:#171c20;
+  --card:#141414;
+  --card2:#202020;
+  --line:#2a2a2a;
+  --muted:#7c7c7c;
 }
 
 .container{max-width:1180px;margin:auto}
-section{padding:95px 22px}
-.label{color:var(--red);font-size:12px;letter-spacing:.28em;text-transform:uppercase;margin-bottom:22px}
-h1{font-size:clamp(76px,18vw,220px);line-height:.78;letter-spacing:-.08em;text-align:center}
-h2{font-size:clamp(42px,8vw,110px);line-height:.9;letter-spacing:-.06em;margin-bottom:34px}
-h3{font-size:28px}
-p{color:var(--gray);font-size:18px;line-height:1.55}
+section{padding:100px 28px}
+
+.label{
+  display:inline-flex;
+  background:var(--red);
+  color:#fff;
+  border-radius:999px;
+  padding:13px 24px;
+  font-size:12px;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  margin-bottom:28px;
+}
+
+h1{font-size:clamp(58px,15vw,190px);line-height:.82;letter-spacing:-.08em;font-weight:400}
+h2{font-size:clamp(42px,9vw,115px);line-height:.9;letter-spacing:-.06em;margin-bottom:36px;font-weight:400}
+h3{font-size:clamp(26px,4vw,42px);letter-spacing:-.04em}
+p{color:var(--muted);font-size:18px;line-height:1.55}
 
 .nav{
-  position:fixed;top:0;left:0;width:100%;z-index:100;
-  background:rgba(247,245,240,.86);backdrop-filter:blur(18px);
-  border-bottom:1px solid var(--line);padding:18px 22px
+  position:fixed;
+  top:0;left:0;width:100%;
+  z-index:100;
+  padding:22px 28px;
+  background:var(--nav);
+  border-bottom:1px solid #222a30;
 }
-.nav-inner{max-width:1180px;margin:auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
-.logo img{height:42px}
-.brand{text-align:center;font-size:15px;letter-spacing:.45em;font-weight:700}
-.menu{display:flex;gap:22px;justify-content:flex-end;font-size:12px;text-transform:uppercase;color:#555}
-.menu a:hover{color:var(--red)}
 
-.burger{display:none;width:34px;height:26px;background:none;border:0;position:relative;cursor:pointer}
-.burger span{position:absolute;left:0;width:34px;height:2px;background:var(--black);transition:.35s ease}
-.burger span:nth-child(1){top:2px}
-.burger span:nth-child(2){top:12px}
-.burger span:nth-child(3){top:22px}
-.burger.active span:nth-child(1){top:12px;transform:rotate(45deg)}
+.nav-inner{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:20px;
+}
+
+.burger{
+  width:42px;height:28px;
+  background:none;border:0;
+  cursor:pointer;
+  position:relative;
+}
+
+.burger span{
+  position:absolute;
+  left:0;
+  width:42px;
+  height:2px;
+  background:#fff;
+  transition:.35s ease;
+}
+
+.burger span:nth-child(1){top:3px}
+.burger span:nth-child(2){top:13px}
+.burger span:nth-child(3){top:23px}
+.burger.active span:nth-child(1){top:13px;transform:rotate(45deg)}
 .burger.active span:nth-child(2){opacity:0}
-.burger.active span:nth-child(3){top:12px;transform:rotate(-45deg)}
+.burger.active span:nth-child(3){top:13px;transform:rotate(-45deg)}
 
-.mobile{
-  position:fixed;inset:0;background:#f7f5f0;z-index:90;
-  display:none;align-items:center;justify-content:center;flex-direction:column;
-  gap:28px;font-size:30px;text-transform:uppercase
-}
-.mobile.open{display:flex}
-
-.hero{min-height:100vh;position:relative;display:flex;align-items:center;padding:140px 22px 80px;background:#f7f5f0}
-.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.18}
-.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,#f7f5f0 5%,rgba(247,245,240,.4))}
-.hero .container{position:relative;z-index:2;width:100%;text-align:center}
-.hero p{max-width:560px;margin:24px auto 0}
-
-.button{
-  display:inline-flex;background:var(--red);color:white;border:0;border-radius:999px;
-  padding:16px 26px;margin-top:28px;font-weight:700;cursor:pointer;text-transform:uppercase
-}
-.button.white{background:#fff;color:#080808;border:1px solid var(--line)}
-
-.two-col,.guest-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.image-box img{height:620px;width:100%;object-fit:cover;border-radius:26px;filter:grayscale(1)}
-.text-box,.card,.guest-card,.contact-card,form{
-  background:#fff;border:1px solid var(--line);border-radius:26px;padding:28px
+.nav-logo{
+  text-align:center;
+  color:#fff;
+  font-size:15px;
+  letter-spacing:.42em;
+  font-weight:700;
 }
 
-.accordion,.faq-list{display:grid;gap:14px}
-.accordion-item,.faq-item{background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px}
-.accordion-head,.faq-item button{
-  width:100%;background:none;border:0;color:#080808;
-  display:flex;justify-content:space-between;font-size:22px;cursor:pointer;text-align:left
+.nav-actions{display:flex;justify-content:flex-end}
+
+.book-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:14px;
+  padding:14px 16px 14px 22px;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.13);
+  color:#fff;
+  font-size:12px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:.25s ease;
 }
-.accordion-body,.faq-item p{display:none;margin-top:18px}
-.accordion-item.open .accordion-body{display:block}
 
-.portfolio-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-.work-card{height:430px;border-radius:26px;overflow:hidden;position:relative;cursor:pointer;background:#fff}
-.work-card img{width:100%;height:100%;object-fit:cover}
-.work-card:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65),transparent 60%)}
-.work-card div{position:absolute;left:22px;right:22px;bottom:22px;z-index:2;display:flex;justify-content:space-between;align-items:end;color:white}
-.work-card p,.design-card p,.guest-card span{color:var(--red)}
+.book-btn:hover{background:rgba(255,255,255,.14)}
 
-.design-row{display:flex;gap:18px;overflow-x:auto;padding-bottom:14px}
-.design-card{min-width:360px;background:#fff;border:1px solid var(--line);border-radius:26px;overflow:hidden}
-.design-card img{height:420px;width:100%;object-fit:cover;cursor:pointer}
-.design-card div{padding:22px}
+.pulse-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--red);
+  box-shadow:0 0 0 rgba(255,23,23,.6);
+  animation:pulse 1.6s infinite ease-in-out;
+  flex:none;
+}
 
-.guest-list{display:grid;gap:18px}
-.guest-card img{height:250px;width:100%;object-fit:cover;border-radius:20px;margin-top:20px}
-.map-box iframe{
-  width:100%;height:100%;min-height:560px;border:0;border-radius:26px;
-  touch-action:pan-x pan-y;filter:none;background:white
+@keyframes pulse{
+  0%{opacity:.25;transform:scale(.75);box-shadow:0 0 0 0 rgba(255,23,23,.45)}
+  50%{opacity:1;transform:scale(1);box-shadow:0 0 18px 4px rgba(255,23,23,.35)}
+  100%{opacity:.25;transform:scale(.75);box-shadow:0 0 0 0 rgba(255,23,23,0)}
+}
+
+.arrow{
+  width:44px;height:44px;
+  border-radius:50%;
+  background:var(--red);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  flex:none;
+}
+
+.mobile-menu{
+  position:fixed;
+  inset:0;
+  background:#050505;
+  z-index:90;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:28px;
+  font-size:32px;
+  text-transform:uppercase;
+}
+
+.mobile-menu.open{display:flex}
+.mobile-menu a{color:#fff}
+
+.hero{
+  min-height:100vh;
+  position:relative;
+  display:flex;
+  align-items:flex-end;
+  padding:140px 28px 90px;
+  overflow:hidden;
+}
+
+.hero-bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:.65;
+}
+
+.hero:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(to top,#050505 4%,rgba(0,0,0,.2) 45%,rgba(0,0,0,.36)),
+    radial-gradient(circle at 70% 50%,rgba(255,23,23,.15),transparent 35%);
+}
+
+.hero-content{
+  position:relative;
+  z-index:2;
+  width:100%;
+}
+
+.hero-logo{
+  width:min(300px,60vw);
+  margin:0 auto 260px;
+  filter:brightness(0) invert(1);
+  opacity:.95;
+}
+
+.hero-title p{
+  margin-top:22px;
+  max-width:850px;
+  color:#aaa;
+  text-transform:uppercase;
+  letter-spacing:.18em;
+  font-size:14px;
+}
+
+.about-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+}
+
+.about-img{
+  background:#eee;
+  border-radius:34px;
+  overflow:hidden;
+}
+
+.about-img img{
+  width:100%;
+  height:650px;
+  object-fit:cover;
+  filter:grayscale(1);
+}
+
+.about-text{
+  background:#d8d8d8;
+  color:#111;
+  border-radius:34px;
+  padding:44px;
+  display:flex;
+  align-items:center;
+}
+
+.about-text p{
+  color:#777;
+  font-size:28px;
+  line-height:1.45;
+}
+
+.accordion{display:grid;gap:18px}
+
+.acc{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:30px;
+  padding:28px;
+  overflow:hidden;
+}
+
+.acc-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  cursor:pointer;
+}
+
+.acc-left{
+  display:flex;
+  align-items:center;
+  gap:22px;
+}
+
+.big-dot{
+  width:46px;height:46px;
+  border-radius:50%;
+  background:var(--red);
+  flex:none;
+}
+
+.acc-title{
+  font-size:24px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+.chev{color:#777;font-size:26px;transition:.3s}
+.acc.open .chev{transform:rotate(180deg)}
+
+.acc-body{
+  display:none;
+  padding-top:30px;
+  max-width:960px;
+}
+
+.acc.open .acc-body{display:block}
+
+.acc-body p{
+  margin-bottom:26px;
+  font-size:22px;
+  color:#737373;
+}
+
+.mini-book{
+  margin-top:20px;
+}
+
+.portfolio-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:24px;
+}
+
+.work{
+  position:relative;
+  height:470px;
+  border-radius:28px;
+  overflow:hidden;
+  background:#111;
+  cursor:pointer;
+}
+
+.work img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:.45s;
+}
+
+.work:hover img{transform:scale(1.04)}
+
+.work:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.82),transparent 58%);
+}
+
+.work-info{
+  position:absolute;
+  z-index:2;
+  left:24px;right:24px;bottom:24px;
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+}
+
+.work-info small{color:#aaa;font-size:16px}
+.price{color:#ddd;font-size:18px}
+
+.portfolio-card{
+  background:var(--card);
+  border-radius:28px;
+  min-height:470px;
+  padding:46px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+
+.portfolio-card h3{
+  color:var(--red);
+  font-size:54px;
+  line-height:1.05;
+  font-weight:400;
+}
+
+.round-controls{display:flex;gap:18px}
+
+.round{
+  width:62px;height:62px;
+  border-radius:50%;
+  background:#252525;
+  color:#777;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+}
+
+.round.white{background:#fff;color:#111}
+
+.design-section{background:#202020}
+
+.design-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:32px;
+}
+
+.design-row{
+  display:flex;
+  gap:24px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  padding-bottom:16px;
+}
+
+.design-card{
+  min-width:min(620px,86vw);
+  background:var(--card);
+  border-radius:28px;
+  overflow:hidden;
+  scroll-snap-align:start;
+}
+
+.design-card img{
+  width:100%;
+  height:560px;
+  object-fit:cover;
+  cursor:pointer;
+}
+
+.design-info{
+  padding:26px;
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.design-info h3{
+  font-weight:400;
+  text-transform:uppercase;
+}
+
+.design-info p{margin-top:12px}
+.design-info .price{color:var(--red);font-size:30px}
+
+.events-list{display:grid;gap:24px}
+
+.event{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:30px;
+}
+
+.event h3{
+  text-transform:uppercase;
+  font-size:42px;
+}
+
+.event .date{
+  color:var(--red);
+  margin:16px 0 4px;
+  font-size:20px;
+}
+
+.event img{
+  width:100%;
+  height:320px;
+  object-fit:cover;
+  border-radius:24px;
+  margin-top:22px;
+}
+
+.event .book-btn{
+  margin-top:-66px;
+  margin-left:auto;
+  margin-right:auto;
+  position:relative;
+  z-index:2;
+  width:max-content;
+  background:rgba(40,35,28,.85);
+  backdrop-filter:blur(8px);
+}
+
+.faq-list{display:grid;gap:16px}
+
+.faq-item{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:28px;
+}
+
+.faq-q{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  cursor:pointer;
+  font-size:28px;
+  text-transform:uppercase;
+  color:#aaa;
+}
+
+.faq-a{
+  display:none;
+  color:#777;
+  margin-top:22px;
+  font-size:20px;
+  line-height:1.55;
+}
+
+.faq-item.open .faq-a{display:block}
+
+.contact-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+}
+
+.contact-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:34px;
+}
+
+.contact-card h3{
+  font-size:44px;
+  margin-bottom:28px;
+}
+
+.map iframe{
+  width:100%;
+  min-height:470px;
+  border:0;
+  border-radius:28px;
+  filter:grayscale(1) invert(1) contrast(1.05) brightness(.8);
+}
+
+footer{
+  padding:60px 28px;
+  border-top:1px solid var(--line);
+  color:#555;
+  text-align:center;
+  letter-spacing:.2em;
+}
+
+.modal,.lightbox{
+  position:fixed;
+  inset:0;
+  z-index:200;
+  background:rgba(0,0,0,.72);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.modal.open,.lightbox.open{display:flex}
+
+.modal-box{
+  width:min(760px,100%);
+  max-height:90vh;
+  overflow:auto;
+  background:#111;
+  border:1px solid #333;
+  border-radius:32px;
+  padding:34px;
+  position:relative;
+}
+
+.modal-box h2{font-size:54px}
+
+.close{
+  position:absolute;
+  top:18px;
+  right:22px;
+  background:none;
+  border:0;
+  color:#fff;
+  font-size:38px;
+  cursor:pointer;
 }
 
 input,textarea,select{
-  width:100%;background:#fff;color:#080808;border:1px solid var(--line);
-  border-radius:16px;padding:17px;margin-bottom:14px;font:inherit
+  width:100%;
+  background:#070707;
+  color:#fff;
+  border:1px solid #333;
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:14px;
+  font:inherit;
 }
+
 textarea{min-height:140px}
 input[type=file]{border-style:dashed;color:#777}
 
-footer{padding:45px 22px;border-top:1px solid var(--line);color:#777;text-align:center}
+.submit{
+  width:100%;
+  justify-content:center;
+  margin-top:10px;
+}
 
-.lightbox,.modal{
-  position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;
-  display:none;align-items:center;justify-content:center;padding:20px
+.lightbox img{
+  max-width:92%;
+  max-height:86%;
+  border-radius:18px;
 }
-.lightbox img{max-width:92%;max-height:86%;border-radius:18px}
-.close{
-  position:absolute;top:25px;right:30px;background:none;border:0;color:white;font-size:46px;cursor:pointer
-}
-.modal-box{
-  width:min(760px,100%);max-height:90vh;overflow:auto;background:#f7f5f0;
-  border-radius:28px;padding:28px;border:1px solid var(--line);position:relative
-}
-.modal-box .close-modal{position:absolute;right:22px;top:16px;background:none;border:0;font-size:34px;cursor:pointer;color:#080808}
 
 @media(max-width:850px){
-.menu{display:none}
-.burger{display:block;justify-self:end}
-.nav-inner{grid-template-columns:1fr auto 1fr}
-.two-col,.guest-grid{grid-template-columns:1fr}
-.portfolio-grid{grid-template-columns:1fr 1fr;gap:12px}
-.work-card{height:280px}
+  section{padding:78px 26px}
+  .nav{padding:20px 26px}
+  .nav-logo{display:none}
+  .nav-inner{grid-template-columns:1fr auto}
+  .nav-actions .book-btn{
+    padding:12px 12px 12px 18px;
+    font-size:11px;
+    letter-spacing:.12em;
+  }
+  .arrow{width:42px;height:42px}
+  .hero-logo{margin-bottom:260px;width:230px}
+  .about-grid,.contact-grid{grid-template-columns:1fr}
+  .about-img img{height:560px}
+  .about-text p{font-size:24px}
+  .portfolio-grid{grid-template-columns:repeat(2,1fr);gap:18px}
+  .work{height:330px}
+  .portfolio-card{min-height:330px;padding:30px}
+  .portfolio-card h3{font-size:36px}
+  .event h3{font-size:34px}
+  .design-card img{height:450px}
 }
-@media(max-width:520px){
-.portfolio-grid{grid-template-columns:1fr}
-.work-card div{display:block}
+
+@media(max-width:560px){
+  .portfolio-grid{grid-template-columns:repeat(2,1fr);gap:14px}
+  .work{height:285px}
+  .work-info{display:block}
+  .work-info h3{font-size:20px}
+  .price{font-size:15px}
+  .acc-title{font-size:18px}
+  .big-dot{width:38px;height:38px}
+  .acc-body p{font-size:18px}
 }
 </style>
 </head>
@@ -144,159 +622,304 @@ footer{padding:45px 22px;border-top:1px solid var(--line);color:#777;text-align:
 
 <nav class="nav">
   <div class="nav-inner">
-    <a href="#home" class="logo"><img src="logo.png" alt="YYOKAI logo"></a>
-    <div class="brand">YYOKAI</div>
-    <div class="menu">
-      <a href="#about">About</a>
-      <a href="#portfolio">Portfolio</a>
-      <a href="#designs">Designs</a>
-      <a href="#guest-spots">Guest spots</a>
-      <a href="#faq">FAQ</a>
-      <a href="#" class="open-booking">Booking</a>
+    <button class="burger" id="burger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <div class="nav-logo">YYOKAI</div>
+
+    <div class="nav-actions">
+      <button class="book-btn open-booking">
+        <span class="pulse-dot"></span>
+        Book an appointment
+        <span class="arrow">→</span>
+      </button>
     </div>
-    <button class="burger" id="burger"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
-<div class="mobile" id="mobileMenu">
+<div class="mobile-menu" id="mobileMenu">
   <a href="#about">About</a>
+  <a href="#how">How to book</a>
   <a href="#portfolio">Portfolio</a>
   <a href="#designs">Designs</a>
-  <a href="#guest-spots">Guest spots</a>
+  <a href="#events">Events</a>
   <a href="#faq">FAQ</a>
   <a href="#" class="open-booking">Booking</a>
 </div>
 
 <header class="hero" id="home">
-  <video src="hero.mp4" autoplay muted loop playsinline></video>
-  <div class="container">
-    <p class="label">Japanese tattoo</p>
-    <h1>YYOKAI</h1>
-    <p>Авторські японські тату-проєкти з індивідуальною композицією, анатомією та сильним візуальним характером.</p>
-    <button class="button open-booking">Book appointment</button>
+  <video class="hero-bg" autoplay muted loop playsinline>
+    <source src="hero.mp4" type="video/mp4">
+  </video>
+
+  <div class="hero-content container">
+    <img class="hero-logo" src="logo.png" alt="YYOKAI logo">
+
+    <div class="hero-title">
+      <h1>YYOKAI —<br>VALERIY KOROLOV</h1>
+      <p>Japanese tattoo artist creating bespoke projects that reflect each client’s character, aesthetic and inner world</p>
+    </div>
   </div>
 </header>
 
 <main>
 
 <section id="about">
-  <div class="container two-col">
-    <div class="image-box"><img src="images/about.jpg" alt=""></div>
-    <div class="text-box">
-      <p class="label">About</p>
-      <h2>No copies. Only custom.</h2>
-      <p>YYOKAI — це авторський напрям японського тату. Кожен проєкт створюється індивідуально під тіло, рух і характер людини.</p>
+  <div class="container about-grid">
+    <div class="about-img">
+      <img src="images/about.jpg" alt="">
+    </div>
+
+    <div class="about-text">
+      <p>
+        I’m Valeriy, a tattoo artist specializing in Japanese tattoo,
+        custom composition and large-scale body projects.
+        Every piece is designed individually to fit the body and create a unique visual impact.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="container">
+    <span class="label">How to book</span>
+
+    <div class="accordion">
+      <div class="acc open">
+        <div class="acc-head">
+          <div class="acc-left">
+            <span class="big-dot"></span>
+            <div class="acc-title">01. Booking a session</div>
+          </div>
+          <div class="chev">⌄</div>
+        </div>
+        <div class="acc-body">
+          <p>To book a tattoo session, please send a description of your idea, the desired placement, and the approximate size of the tattoo.</p>
+          <p>If you have reference images or examples of work you like, feel free to attach them. This helps me better understand the direction of the project.</p>
+          <p>Each tattoo is discussed individually. Once the concept, date, and pricing are agreed upon, the appointment is confirmed after the deposit has been received.</p>
+          <button class="book-btn mini-book open-booking"><span class="pulse-dot"></span> Book an appointment <span class="arrow">→</span></button>
+        </div>
+      </div>
+
+      <div class="acc">
+        <div class="acc-head">
+          <div class="acc-left">
+            <span class="big-dot"></span>
+            <div class="acc-title">02. Deposit</div>
+          </div>
+          <div class="chev">⌄</div>
+        </div>
+        <div class="acc-body">
+          <p>A deposit is required to secure your appointment.</p>
+          <p>The deposit is deducted from the final tattoo price and reserves your selected date.</p>
+          <p>Without a deposit, the appointment date remains available and may be booked by another client.</p>
+          <button class="book-btn mini-book open-booking"><span class="pulse-dot"></span> Book an appointment <span class="arrow">→</span></button>
+        </div>
+      </div>
+
+      <div class="acc">
+        <div class="acc-head">
+          <div class="acc-left">
+            <span class="big-dot"></span>
+            <div class="acc-title">03. Rescheduling & cancellation</div>
+          </div>
+          <div class="chev">⌄</div>
+        </div>
+        <div class="acc-body">
+          <p>If the appointment is cancelled too late, the deposit may be non-refundable.</p>
+          <p>Appointments may be rescheduled in advance, depending on availability.</p>
+          <button class="book-btn mini-book open-booking"><span class="pulse-dot"></span> Book an appointment <span class="arrow">→</span></button>
+        </div>
+      </div>
+
+      <div class="acc">
+        <div class="acc-head">
+          <div class="acc-left">
+            <span class="big-dot"></span>
+            <div class="acc-title">04. Booking terms & client agreement</div>
+          </div>
+          <div class="chev">⌄</div>
+        </div>
+        <div class="acc-body">
+          <p>By booking an appointment, paying a deposit, or attending a tattoo session, you acknowledge that you have read, understood, and agreed to all terms and policies.</p>
+          <button class="book-btn mini-book open-booking"><span class="pulse-dot"></span> Book an appointment <span class="arrow">→</span></button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <section id="portfolio">
-  <div class="container">
-    <p class="label">Portfolio / Prices</p>
-    <h2>Projects</h2>
+  <div class="container portfolio-grid">
+    <article class="work" data-img="images/work1.jpg">
+      <img src="images/work1.jpg" alt="">
+      <div class="work-info"><div><h3>2 Sessions</h3><small>100 cm</small></div><div class="price">€1800</div></div>
+    </article>
 
-    <div class="portfolio-grid">
-      <article class="work-card" data-img="images/work1.jpg"><img src="images/work1.jpg"><div><h3>Full sleeve</h3><p>from €2500</p></div></article>
-      <article class="work-card" data-img="images/work2.jpg"><img src="images/work2.jpg"><div><h3>Back piece</h3><p>from €3500</p></div></article>
-      <article class="work-card" data-img="images/work3.jpg"><img src="images/work3.jpg"><div><h3>Chest</h3><p>from €1800</p></div></article>
-      <article class="work-card" data-img="images/work4.jpg"><img src="images/work4.jpg"><div><h3>Arm</h3><p>from €700</p></div></article>
-    </div>
+    <article class="work" data-img="images/work2.jpg">
+      <img src="images/work2.jpg" alt="">
+      <div class="work-info"><div><h3>Full Sleeve</h3><small>100 cm</small></div><div class="price">€4200</div></div>
+    </article>
 
-    <button class="button open-booking">Book project</button>
+    <article class="work" data-img="images/work3.jpg">
+      <img src="images/work3.jpg" alt="">
+      <div class="work-info"><div><h3>1 Session</h3><small>15 cm</small></div><div class="price">€1000</div></div>
+    </article>
+
+    <article class="work" data-img="images/work4.jpg">
+      <img src="images/work4.jpg" alt="">
+      <div class="work-info"><div><h3>2 Sessions</h3><small>90 cm</small></div><div class="price">€1800</div></div>
+    </article>
+
+    <article class="work" data-img="images/work5.jpg">
+      <img src="images/work5.jpg" alt="">
+      <div class="work-info"><div><h3>1 Session</h3><small>30 cm</small></div><div class="price">€900</div></div>
+    </article>
+
+    <article class="portfolio-card">
+      <h3>PORTFOLIO<br>/<br>PRICES</h3>
+      <div class="round-controls">
+        <div class="round">←</div>
+        <div class="round white">→</div>
+      </div>
+    </article>
   </div>
 </section>
 
-<section id="designs">
+<section id="designs" class="design-section">
   <div class="container">
-    <p class="label">Available designs</p>
-    <h2>Flash</h2>
+    <div class="design-top">
+      <span class="label">Designs</span>
+      <div class="round-controls">
+        <div class="round">←</div>
+        <div class="round white">→</div>
+      </div>
+    </div>
 
     <div class="design-row">
       <article class="design-card" data-img="images/design1.jpg">
-        <img src="images/design1.jpg"><div><h3>Hand</h3><p>€800</p><button class="button open-booking">Book this</button></div>
+        <img src="images/design1.jpg" alt="">
+        <div class="design-info">
+          <div>
+            <h3>Hand</h3>
+            <p>Other</p>
+            <button class="book-btn mini-book open-booking"><span class="pulse-dot"></span> Book this flash <span class="arrow">→</span></button>
+          </div>
+          <div class="price">€800</div>
+        </div>
       </article>
+
       <article class="design-card" data-img="images/design2.jpg">
-        <img src="images/design2.jpg"><div><h3>Inner arm</h3><p>€1600</p><button class="button open-booking">Book this</button></div>
+        <img src="images/design2.jpg" alt="">
+        <div class="design-info">
+          <div>
+            <h3>Inner arm</h3>
+            <p>Other</p>
+            <button class="book-btn mini-book open-booking"><span class="pulse-dot"></span> Book this flash <span class="arrow">→</span></button>
+          </div>
+          <div class="price">€1600</div>
+        </div>
       </article>
+
       <article class="design-card" data-img="images/design3.jpg">
-        <img src="images/design3.jpg"><div><h3>Back</h3><p>€2500</p><button class="button open-booking">Book this</button></div>
+        <img src="images/design3.jpg" alt="">
+        <div class="design-info">
+          <div>
+            <h3>Back</h3>
+            <p>Back</p>
+            <button class="book-btn mini-book open-booking"><span class="pulse-dot"></span> Book this flash <span class="arrow">→</span></button>
+          </div>
+          <div class="price">€2500</div>
+        </div>
       </article>
     </div>
   </div>
 </section>
 
-<section id="guest-spots">
+<section id="events">
   <div class="container">
-    <p class="label">Guest spots</p>
-    <h2>Lviv / Bucharest</h2>
+    <span class="label">Events</span>
 
-    <div class="guest-grid">
-      <div class="guest-list">
-        <article class="guest-card">
-          <h3>Lviv, Ukraine</h3>
-          <p><span>Bookings open</span><br>Japanese tattoo projects.</p>
-          <img src="images/lviv.jpg">
-          <button class="button open-booking">Book Lviv</button>
-        </article>
+    <div class="events-list">
+      <article class="event">
+        <h3>Lviv, Ukraine</h3>
+        <p class="date">Bookings open</p>
+        <p>Japanese tattoo projects</p>
+        <img src="images/lviv.jpg" alt="">
+        <button class="book-btn open-booking"><span class="pulse-dot"></span> Bookings open <span class="arrow">→</span></button>
+      </article>
 
-        <article class="guest-card">
-          <h3>Bucharest, Romania</h3>
-          <p><span>Bookings open</span><br>Limited spots for large projects.</p>
-          <img src="images/bucharest.jpg">
-          <button class="button open-booking">Book Bucharest</button>
-        </article>
-      </div>
-
-      <div class="map-box">
-        <iframe src="https://www.google.com/maps?q=Lviv%20Ukraine%20Bucharest%20Romania&output=embed" loading="lazy"></iframe>
-      </div>
+      <article class="event">
+        <h3>Bucharest, Romania</h3>
+        <p class="date">Bookings open</p>
+        <p>Limited spots for large projects</p>
+        <img src="images/bucharest.jpg" alt="">
+        <button class="book-btn open-booking"><span class="pulse-dot"></span> Bookings open <span class="arrow">→</span></button>
+      </article>
     </div>
   </div>
 </section>
 
 <section id="faq">
   <div class="container">
-    <p class="label">FAQ</p>
-    <h2>Info</h2>
+    <span class="label">FAQ</span>
 
     <div class="faq-list">
-      <div class="faq-item"><button>Is a deposit required?<span>+</span></button><p>Yes. The deposit secures your date and is deducted from the final price.</p></div>
-      <div class="faq-item"><button>Can I reschedule?<span>+</span></button><p>Yes, but please do it in advance.</p></div>
-      <div class="faq-item"><button>Can I bring references?<span>+</span></button><p>Yes. References help define the mood, but the final tattoo is created custom.</p></div>
+      <div class="faq-item">
+        <div class="faq-q">Booking & appointments <span>→</span></div>
+        <div class="faq-a">You can book a project by sending your idea, placement, size, preferred city and references.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Design & style <span>→</span></div>
+        <div class="faq-a">All projects are custom. References are welcome, but the final composition is created individually.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Preparation & aftercare <span>→</span></div>
+        <div class="faq-a">Before the session, sleep well, eat properly and avoid alcohol. Detailed aftercare instructions are provided after the tattoo.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Client agreement & consent <span>→</span></div>
+        <div class="faq-a">By booking a session, you confirm that you understand and agree with the booking terms.</div>
+      </div>
     </div>
   </div>
 </section>
 
 <section id="contact">
-  <div class="container contact-card">
-    <p class="label">Contact</p>
-    <h2>YYOKAI</h2>
-    <p>Instagram: @yyokai</p>
-    <p>Email: your@email.com</p>
-    <p>WhatsApp: +000000000</p>
-    <button class="button open-booking">Book appointment</button>
+  <div class="container contact-grid">
+    <div class="contact-card">
+      <span class="label">Current location</span>
+      <h3>Lviv, Ukraine / Bucharest, Romania</h3>
+      <p>Email: your@email.com</p>
+      <p>WhatsApp: +000000000</p>
+      <p>Instagram: @yyokai</p>
+      <button class="book-btn mini-book open-booking"><span class="pulse-dot"></span> Book an appointment <span class="arrow">→</span></button>
+    </div>
+
+    <div class="map">
+      <iframe src="https://www.google.com/maps?q=Lviv%20Ukraine&output=embed" loading="lazy"></iframe>
+    </div>
   </div>
 </section>
 
 </main>
 
-<footer>YYOKAI — Japanese Tattoo</footer>
-
-<div class="lightbox" id="lightbox">
-  <button class="close" id="closeLightbox">×</button>
-  <img id="lightboxImg">
-</div>
+<footer>YYOKAI — VALERIY KOROLOV</footer>
 
 <div class="modal" id="bookingModal">
   <div class="modal-box">
-    <button class="close-modal" id="closeModal">×</button>
-    <p class="label">Booking</p>
-    <h2>Start project</h2>
+    <button class="close" id="closeModal">×</button>
+    <span class="label">Booking</span>
+    <h2>Get a consultation</h2>
 
     <form id="bookingForm">
-      <input name="name" placeholder="Name *" required>
+      <input name="name" placeholder="First name *" required>
       <input name="instagram" placeholder="Instagram">
-      <textarea name="idea" placeholder="Tattoo idea *" required></textarea>
+      <textarea name="idea" placeholder="Tattoo idea — style, elements, mood *" required></textarea>
       <input name="placement" placeholder="Placement *" required>
       <input name="size" placeholder="Approximate size *" required>
 
@@ -311,9 +934,19 @@ footer{padding:45px 22px;border-top:1px solid var(--line);color:#777;text-align:
       <input type="file" name="references" multiple accept="image/*">
       <input type="email" name="email" placeholder="Email *" required>
       <input name="phone" placeholder="WhatsApp / Phone *" required>
-      <button class="button" type="submit">Submit project</button>
+
+      <button class="book-btn submit" type="submit">
+        <span class="pulse-dot"></span>
+        Submit project
+        <span class="arrow">→</span>
+      </button>
     </form>
   </div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="close" id="closeLightbox">×</button>
+  <img id="lightboxImg" alt="">
 </div>
 
 <script>
@@ -325,46 +958,52 @@ burger.onclick=()=>{
   mobile.classList.toggle("open");
 };
 
-document.querySelectorAll(".mobile a").forEach(a=>{
-  a.onclick=()=>{
+document.querySelectorAll(".mobile-menu a").forEach(link=>{
+  link.onclick=()=>{
     burger.classList.remove("active");
     mobile.classList.remove("open");
   };
 });
 
-document.querySelectorAll(".faq-item button").forEach(btn=>{
-  btn.onclick=()=>{
-    const p=btn.nextElementSibling;
-    p.style.display=p.style.display==="block"?"none":"block";
+document.querySelectorAll(".acc-head").forEach(head=>{
+  head.onclick=()=>{
+    head.parentElement.classList.toggle("open");
   };
 });
+
+document.querySelectorAll(".faq-q").forEach(q=>{
+  q.onclick=()=>{
+    q.parentElement.classList.toggle("open");
+  };
+});
+
+const modal=document.getElementById("bookingModal");
+
+document.querySelectorAll(".open-booking").forEach(btn=>{
+  btn.onclick=e=>{
+    e.preventDefault();
+    modal.classList.add("open");
+    burger.classList.remove("active");
+    mobile.classList.remove("open");
+  };
+});
+
+document.getElementById("closeModal").onclick=()=>modal.classList.remove("open");
+modal.onclick=e=>{if(e.target===modal)modal.classList.remove("open")};
 
 const lightbox=document.getElementById("lightbox");
 const lightboxImg=document.getElementById("lightboxImg");
 
 document.querySelectorAll("[data-img]").forEach(card=>{
   card.onclick=e=>{
-    if(e.target.classList.contains("button")) return;
-    lightbox.style.display="flex";
+    if(e.target.closest("button")) return;
+    lightbox.classList.add("open");
     lightboxImg.src=card.dataset.img;
   };
 });
 
-document.getElementById("closeLightbox").onclick=()=>lightbox.style.display="none";
-lightbox.onclick=e=>{if(e.target===lightbox) lightbox.style.display="none"};
-
-const modal=document.getElementById("bookingModal");
-document.querySelectorAll(".open-booking").forEach(btn=>{
-  btn.onclick=e=>{
-    e.preventDefault();
-    modal.style.display="flex";
-    burger.classList.remove("active");
-    mobile.classList.remove("open");
-  };
-});
-
-document.getElementById("closeModal").onclick=()=>modal.style.display="none";
-modal.onclick=e=>{if(e.target===modal) modal.style.display="none"};
+document.getElementById("closeLightbox").onclick=()=>lightbox.classList.remove("open");
+lightbox.onclick=e=>{if(e.target===lightbox)lightbox.classList.remove("open")};
 
 document.getElementById("bookingForm").addEventListener("submit",async function(e){
   e.preventDefault();
@@ -396,7 +1035,7 @@ Phone: ${data.phone}
   }
 
   alert("Your request has been sent.");
-  modal.style.display="none";
+  modal.classList.remove("open");
   this.reset();
 });
 </script>
