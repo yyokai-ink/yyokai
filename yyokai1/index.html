@@ -391,6 +391,38 @@ p{
   line-height:.9;
   letter-spacing:-.07em;
 }
+
+  @media(max-width:850px){
+
+  .portfolio-grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+  }
+
+  .work{
+    height:250px;
+    border-radius:22px;
+  }
+
+  .portfolio-card{
+    min-height:250px;
+    padding:24px;
+    border-radius:22px;
+    grid-column:auto;
+  }
+
+  .portfolio-card h3{
+    font-size:40px;
+    line-height:.92;
+  }
+
+  .portfolio-card p{
+    font-size:13px;
+    line-height:1.35;
+  }
+
+}
+  
 .round-controls{display:flex;gap:14px}
 .round{
   width:54px;height:54px;
