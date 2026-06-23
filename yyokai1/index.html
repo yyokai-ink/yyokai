@@ -788,22 +788,24 @@ section{
 /* Главное исправление */
 
 .portfolio-card{
-    grid-column:1/-1;   /* занимает всю ширину */
-    min-height:auto;
-    padding:30px;
-    border-radius:24px;
+    grid-column:auto !important;
+    height:250px;
+    min-height:250px;
+    max-height:250px;
+    padding:18px;
+    border-radius:22px;
 }
 
 .portfolio-card h3{
-    font-size:58px;
+    font-size:28px;
     line-height:.9;
-    margin-bottom:18px;
+    margin-bottom:8px;
 }
 
 .portfolio-card p{
-    max-width:280px;
-    font-size:15px;
-    line-height:1.5;
+    max-width:100%;
+    font-size:11px;
+    line-height:1.25;
     color:#8f8f8f;
 }
 
