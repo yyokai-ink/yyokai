@@ -276,6 +276,28 @@ p{
 }
 .section-head p{max-width:420px}
 
+  @media(max-width:768px){
+
+  .section-head{
+    display:block;
+    margin-bottom:24px;
+  }
+
+  .section-head h2{
+    font-size:clamp(48px,15vw,68px);
+    line-height:.9;
+    margin-bottom:18px;
+  }
+
+  .section-head p{
+    max-width:100%;
+    font-size:16px;
+    line-height:1.45;
+    color:#8f8f8f;
+  }
+
+}
+  
 .accordion{display:grid;gap:14px}
 .acc{
   border-radius:30px;
