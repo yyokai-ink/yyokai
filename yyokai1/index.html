@@ -346,6 +346,7 @@ p{
   grid-template-columns:repeat(2,1fr);
   gap:18px;
 }
+
 .work{
   position:relative;
   height:440px;
@@ -353,6 +354,7 @@ p{
   overflow:hidden;
   cursor:pointer;
 }
+
 .work img{
   width:100%;
   height:100%;
@@ -360,24 +362,39 @@ p{
   transition:.55s ease;
   filter:grayscale(.1) contrast(1.04);
 }
+
 .work:hover img{transform:scale(1.045)}
+
 .work:after{
   content:"";
   position:absolute;
   inset:0;
   background:linear-gradient(to top,rgba(0,0,0,.92),rgba(0,0,0,.16) 58%,rgba(255,255,255,.04));
 }
+
 .work-info{
   position:absolute;
   z-index:2;
-  left:24px;right:24px;bottom:24px;
+  left:24px;
+  right:24px;
+  bottom:24px;
   display:flex;
   justify-content:space-between;
   align-items:end;
   gap:20px;
 }
-.work-info h3{font-size:24px;color:#f5f2ea}
-.work-info small,.price{color:#cfcfcf;font-size:14px}
+
+.work-info h3{
+  font-size:24px;
+  color:#f5f2ea;
+}
+
+.work-info small,
+.price{
+  color:#cfcfcf;
+  font-size:14px;
+}
+
 .portfolio-card{
   border-radius:30px;
   min-height:440px;
@@ -386,13 +403,19 @@ p{
   flex-direction:column;
   justify-content:space-between;
 }
+
 .portfolio-card h3{
   font-size:clamp(38px,6vw,72px);
   line-height:.9;
   letter-spacing:-.07em;
 }
 
-  @media(max-width:850px){
+.portfolio-card p{
+  color:#8f8f8f;
+}
+
+/* MOBILE PORTFOLIO */
+@media(max-width:850px){
 
   .portfolio-grid{
     grid-template-columns:repeat(2,1fr);
@@ -404,25 +427,41 @@ p{
     border-radius:22px;
   }
 
+  .work-info{
+    display:block;
+    left:18px;
+    right:18px;
+    bottom:18px;
+  }
+
+  .work-info h3{
+    font-size:17px;
+  }
+
+  .work-info small,
+  .price{
+    font-size:13px;
+  }
+
   .portfolio-card{
+    grid-column:auto !important;
     min-height:250px;
-    padding:24px;
+    padding:22px;
     border-radius:22px;
-    grid-column:auto;
   }
 
   .portfolio-card h3{
-    font-size:40px;
-    line-height:.92;
+    font-size:38px;
+    line-height:.9;
+    margin-bottom:14px;
   }
 
   .portfolio-card p{
     font-size:13px;
     line-height:1.35;
+    color:#8f8f8f;
   }
-
 }
-  
 .round-controls{display:flex;gap:14px}
 .round{
   width:54px;height:54px;
