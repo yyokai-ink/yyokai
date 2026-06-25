@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>YYOKAI — Interactive AR Visualizer</title>
+<title>YYOKAI — Tattoo Lettering Generator & AR Visualizer</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+<link id="dynamic-fonts" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -23,9 +24,14 @@ button,input,textarea,select{font:inherit}
 :root{
   --bg:#050505;
   --card:#141414;
+  --card2:#1b1b1b;
   --text:#f5f2ea;
   --muted:#8d8d8d;
+  --muted2:#b8b8b8;
   --silver:#d6d2c8;
+  --line:rgba(255,255,255,.12);
+  --glass:rgba(255,255,255,.08);
+  --glass2:rgba(255,255,255,.14);
   --red:#ff2a2a;
   --app-bg:#f5f2ea;
   --app-text:#050505;
@@ -33,6 +39,27 @@ button,input,textarea,select{font:inherit}
 
 .container{max-width:1240px;margin:auto}
 section{padding:110px 26px}
+
+h1{
+  font-size:clamp(56px,13vw,176px);
+  line-height:.82;
+  letter-spacing:-.085em;
+  font-weight:700;
+  color:var(--text);
+}
+h2{
+  font-size:clamp(42px,8vw,104px);
+  line-height:.88;
+  letter-spacing:-.07em;
+  font-weight:400;
+  color:var(--text);
+  margin-bottom:34px;
+}
+p{
+  color:var(--muted);
+  font-size:17px;
+  line-height:1.58;
+}
 
 .label{
   display:inline-flex;
@@ -145,43 +172,86 @@ section{padding:110px 26px}
 }
 
 .mobile-menu{
-  position:fixed;inset:0;
+  position:fixed;
+  inset:0;
   background:rgba(5,5,5,.96);
-  z-index:90;display:none;
-  align-items:center;justify-content:center;
-  flex-direction:column;gap:24px;
+  z-index:90;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:24px;
   font-size:clamp(28px,7vw,70px);
-  text-transform:uppercase;
   letter-spacing:-.06em;
+  text-transform:uppercase;
   backdrop-filter:blur(18px);
 }
 .mobile-menu.open{display:flex}
 .mobile-menu a{color:#f5f2ea}
+.mobile-menu a:hover{color:var(--silver)}
 
-/* HERO WITH BLUR BACKGROUND */
+/* HERO WITH VIDEO */
 .hero{
   min-height:100vh;
   position:relative;
   display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:120px 26px 60px;
+  align-items:flex-end;
+  padding:128px 26px 78px;
   overflow:hidden;
 }
 .hero-bg{
-  position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;opacity:.35;filter:grayscale(1) blur(4px);
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:.54;
+  filter:grayscale(1) contrast(1.1);
 }
 .hero:before{
-  content:"";position:absolute;inset:0;
-  background:radial-gradient(circle at 50% 50%, rgba(5,5,5,0.4) 0%, #050505 90%);
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(to top,#050505 0%,rgba(5,5,5,.96) 10%,rgba(5,5,5,.62) 36%,rgba(5,5,5,.26) 66%,rgba(5,5,5,.76) 100%),
+    radial-gradient(circle at 50% 104%,rgba(255,255,255,.16),transparent 34%);
   z-index:1;
 }
+.hero-content{
+  position:relative;
+  z-index:2;
+  width:100%;
+}
+.hero-logo{
+  width:min(280px,58vw);
+  margin:0 auto clamp(160px,26vh,280px);
+  filter:brightness(0) invert(1) drop-shadow(0 24px 70px rgba(255,255,255,.14));
+  opacity:.96;
+}
+.hero-title{
+  display:grid;
+  gap:22px;
+}
+.hero-title p{
+  max-width:820px;
+  color:#b7b7b7;
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  font-size:13px;
+}
 
-/* VISUALIZER APP CONTAINER (MATCHING SCREENSHOT) */
+/* VISUALIZER APP SECTION */
+.visualizer-section {
+  background: linear-gradient(180deg, #050505, #0f0f0f, #050505);
+}
+.visualizer-container-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  align-items: start;
+}
+
 .visualizer-window {
-  position: relative;
-  z-index: 2;
   background: var(--app-bg);
   color: var(--app-text);
   border-radius: 40px;
@@ -248,7 +318,7 @@ section{padding:110px 26px}
   cursor: move;
   transform-origin: center center;
   mix-blend-mode: multiply;
-  filter: blur(0px);
+  filter: blur(0px) hue-rotate(0deg);
   opacity: 0.9;
 }
 
@@ -406,22 +476,24 @@ section{padding:110px 26px}
 /* GRADIENT STYLE TRANSFER TRACKBAR */
 .gradient-trackbar {
   width: 100%;
-  height: 12px;
-  border-radius: 6px;
-  background: linear-gradient(90deg, #ff2a2a, #b356af, #3fa0c5, #00f0ff);
+  height: 14px;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #000000, #ff2a2a, #b356af, #3fa0c5, #00f0ff);
   position: relative;
-  margin-top: 4px;
+  margin-top: 6px;
   margin-bottom: 24px;
+  touch-action: none;
 }
 .gradient-thumb {
   position: absolute;
-  top: 50%; left: 30%;
-  width: 20px; height: 20px;
+  top: 50%; left: 0%;
+  width: 22px; height: 22px;
   background: #fff;
   border: 2px solid #050505;
   border-radius: 50%;
   transform: translate(-50%, -50%);
   cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
 /* ACTION BUTTON */
@@ -432,7 +504,7 @@ section{padding:110px 26px}
   padding: 18px;
   border-radius: 999px;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 10px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   border: 0; cursor: pointer;
@@ -443,7 +515,15 @@ section{padding:110px 26px}
   background: #1c1c1c;
 }
 
-/* FOOTER */
+.section-head{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:24px;
+  margin-bottom:28px;
+}
+.section-head p{max-width:420px}
+
 footer{
   padding:54px 26px;
   border-top:1px solid rgba(255,255,255,.09);
@@ -451,7 +531,7 @@ footer{
   letter-spacing:.18em;font-size:11px;
 }
 
-/* MODALS (EXACTLY MATCHING MAIN SITE) */
+/* MODALS */
 .modal{
   position:fixed;inset:0;z-index:200;
   background:rgba(0,0,0,.76);
@@ -466,34 +546,51 @@ footer{
   border:1px solid rgba(255,255,255,.1);
   box-shadow:0 34px 90px rgba(0,0,0,.38);
 }
-.modal-box h2{font-size:52px; margin-bottom:34px; letter-spacing:-.07em; font-weight:400;}
+.modal-box h2{font-size:52px}
 .close{
   position:absolute;top:18px;right:22px;
   background:none;border:0;color:#fff;
   font-size:36px;cursor:pointer;
 }
-.modal-form-input {
+input,textarea,select{
   width:100%;background:#070707;color:#fff;
   border:1px solid rgba(255,255,255,.14);
   border-radius:17px;padding:16px;margin-bottom:12px;outline:none;
 }
-.modal-form-input:focus{border-color:rgba(255,255,255,.34);}
-textarea.modal-form-input{min-height:132px}
+input:focus,textarea:focus,select:focus{border-color:rgba(255,255,255,.34);}
+textarea{min-height:132px}
 input[type=file]{border-style:dashed;color:#777}
 .submit{width:100%;margin-top:8px}
 
-@media(max-width:500px){
+/* RESPONSIVE MEDIA QUERIES */
+@media(max-width:850px){
+  section{padding:78px 26px;}
+  .section-head{display:block;margin-bottom:24px;}
+  .section-head h2{font-size:clamp(48px,15vw,68px);line-height:.9;margin-bottom:18px;}
+  .section-head p{max-width:100%;font-size:16px;line-height:1.45;color:#8f8f8f;}
+
+  .nav-logo{display:none;}
+  .nav-inner{grid-template-columns:1fr auto;}
+  .hero-logo{width:220px;}
+}
+
+@media(max-width:560px){
+  .book-btn{font-size:9px;letter-spacing:.12em;}
+  .arrow{width:31px;height:31px;}
+  .hero{padding-bottom:60px;}
   .visualizer-window { padding: 25px 20px; border-radius: 32px; }
   .canvas-container { height: 210px; }
-  .modal-box h2{font-size:38px;}
 }
 </style>
 </head>
+
 <body>
 
 <nav class="nav">
   <div class="nav-inner">
-    <button class="burger" id="burger"><span></span><span></span><span></span></button>
+    <button class="burger" id="burger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
     <div class="nav-logo">YYOKAI</div>
     <div class="nav-actions">
       <button class="book-btn open-booking">
@@ -507,107 +604,135 @@ input[type=file]{border-style:dashed;color:#777}
 
 <div class="mobile-menu" id="mobileMenu">
   <a href="index.html">Home</a>
+  <a href="#visualizer">AR Visualizer</a>
 </div>
 
-<header class="hero">
+<header class="hero" id="home">
   <video class="hero-bg" autoplay muted loop playsinline>
     <source src="video1.mov" type="video/mp4">
   </video>
-
-  <div class="visualizer-window">
-    <div class="visualizer-header">
-      <div>
-        <div class="app-meta">Visualizer</div>
-        <h3>Interactive AR Visualizer</h3>
-        <p>Body Part Overlay</p>
-      </div>
-      <button class="close-app" onclick="window.location.href='index.html'">&times;</button>
+  <div class="hero-content container">
+    <img class="hero-logo" src="logo1.png" alt="YYOKAI logo">
+    <div class="hero-title">
+      <h1>YYOKAI</h1>
+      <p>Japanese tattoo aesthetic / Premium calligraphy and typography tool for custom layout design.</p>
     </div>
-
-    <div class="canvas-container" id="canvas">
-      <div class="controls-3d">
-          <button class="control-3d" onclick="changeScale(0.1)">+</button>
-          <button class="control-3d" onclick="changeScale(-0.1)">-</button>
-          <button class="control-3d" onclick="changeRotation(15)">↻</button>
-          <button class="control-3d" onclick="changeRotation(-15)">↺</button>
-      </div>
-      <img src="https://images.unsplash.com/photo-1590402421685-6184a44738fc?auto=format&fit=crop&w=500&q=80" class="body-background" id="bodyBg" alt="Forearm">
-      <img src="https://i.imgur.com/w9N8SgG.png" class="tattoo-overlay" id="tattoo" alt="Tattoo Sketch">
-    </div>
-
-    <div class="features-title">Unique AR Features</div>
-
-    <div class="body-parts-title">Body Part Selector</div>
-    <div class="body-parts-slider">
-      <div class="part-card active" data-img="https://images.unsplash.com/photo-1590402421685-6184a44738fc?auto=format&fit=crop&w=500&q=80">
-        <img src="https://images.unsplash.com/photo-1590402421685-6184a44738fc?auto=format&fit=crop&w=120&q=80" class="part-thumb">
-        <span>Forearm</span>
-      </div>
-      <div class="part-card" data-img="https://images.unsplash.com/photo-1542596768-5d1d21f1cf98?auto=format&fit=crop&w=500&q=80">
-        <img src="https://images.unsplash.com/photo-1542596768-5d1d21f1cf98?auto=format&fit=crop&w=120&q=80" class="part-thumb">
-        <span>Arm</span>
-      </div>
-      <div class="part-card" data-img="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?auto=format&fit=crop&w=500&q=80">
-        <img src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?auto=format&fit=crop&w=120&q=80" class="part-thumb">
-        <span>Leg</span>
-      </div>
-      <div class="part-card" data-img="https://images.unsplash.com/photo-1605517389112-9214b7e9b897?auto=format&fit=crop&w=500&q=80">
-        <img src="https://images.unsplash.com/photo-1605517389112-9214b7e9b897?auto=format&fit=crop&w=120&q=80" class="part-thumb">
-        <span>Ribs</span>
-      </div>
-      <div class="part-card" data-img="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80">
-        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" class="part-thumb">
-        <span>Back</span>
-      </div>
-    </div>
-
-    <div class="selector-group">
-      <label for="tattooSelect">Tattoo Design</label>
-      <select id="tattooSelect" class="app-select">
-        <option value="https://i.imgur.com/w9N8SgG.png">Default Calligraphy Sketch</option>
-        <option value="https://images.unsplash.com/photo-1560780552-ba54683cb263?auto=format&fit=crop&w=400&q=80">Snake Neo-Traditional</option>
-        <option value="https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?auto=format&fit=crop&w=400&q=80">Gothic Ornamental</option>
-      </select>
-    </div>
-
-    <div class="upload-row">
-      <span>Upload custom tattoo</span>
-      <label class="file-label-inline">
-        <span>↑ Upload all File</span>
-        <input type="file" id="sketchLoader" accept="image/*">
-      </label>
-    </div>
-
-    <div class="control-group">
-      <div class="control-group-header">
-        <span>Overlay Transparency</span>
-        <span id="opacityVal">90%</span>
-      </div>
-      <div class="slider-container">
-        <input type="range" id="opacityRange" class="custom-range" min="10" max="100" value="90">
-      </div>
-    </div>
-
-    <div class="control-group">
-      <div class="control-group-header">
-        <span>Depth Perception</span>
-        <span id="blurVal">50%</span>
-      </div>
-      <div class="slider-container">
-        <input type="range" id="blurRange" class="custom-range" min="0" max="100" value="0">
-      </div>
-    </div>
-
-    <div class="body-parts-title" style="margin-bottom: 4px;">Style Transfer</div>
-    <div class="gradient-trackbar" id="styleTrackbar">
-      <div class="gradient-thumb" id="styleThumb"></div>
-    </div>
-
-    <button class="submit-layout-btn open-booking">
-      Submit Layout & Book
-    </button>
   </div>
 </header>
+
+<main>
+
+<section id="visualizer" class="visualizer-section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="label">AR Placement Visualizer</span>
+        <h2>Try On Your Design.</h2>
+      </div>
+      <p>Upload your artwork or choose a preset, select a body part and see how it fits interactively.</p>
+    </div>
+
+    <div class="visualizer-container-grid">
+      
+      <div class="visualizer-window">
+        <div class="visualizer-header">
+          <div>
+            <div class="app-meta">Visualizer</div>
+            <h3>Interactive AR Visualizer</h3>
+            <p>Body Part Overlay</p>
+          </div>
+          <button class="close-app" onclick="window.location.hash=''">&times;</button>
+        </div>
+
+        <div class="canvas-container" id="canvas">
+          <div class="controls-3d">
+              <button class="control-3d" onclick="changeScale(0.1)">+</button>
+              <button class="control-3d" onclick="changeScale(-0.1)">-</button>
+              <button class="control-3d" onclick="changeRotation(15)">↻</button>
+              <button class="control-3d" onclick="changeRotation(-15)">↺</button>
+          </div>
+          <img src="https://images.unsplash.com/photo-1590402421685-6184a44738fc?auto=format&fit=crop&w=500&q=80" class="body-background" id="bodyBg" alt="Forearm">
+          <img src="https://i.imgur.com/w9N8SgG.png" class="tattoo-overlay" id="tattoo" alt="Tattoo Sketch">
+        </div>
+
+        <div class="features-title">Unique AR Features</div>
+
+        <div class="body-parts-title">Body Part Selector</div>
+        <div class="body-parts-slider">
+          <div class="part-card active" data-img="https://images.unsplash.com/photo-1590402421685-6184a44738fc?auto=format&fit=crop&w=500&q=80">
+            <img src="https://images.unsplash.com/photo-1590402421685-6184a44738fc?auto=format&fit=crop&w=120&q=80" class="part-thumb">
+            <span>Forearm</span>
+          </div>
+          <div class="part-card" data-img="https://images.unsplash.com/photo-1542596768-5d1d21f1cf98?auto=format&fit=crop&w=500&q=80">
+            <img src="https://images.unsplash.com/photo-1542596768-5d1d21f1cf98?auto=format&fit=crop&w=120&q=80" class="part-thumb">
+            <span>Arm</span>
+          </div>
+          <div class="part-card" data-img="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?auto=format&fit=crop&w=500&q=80">
+            <img src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?auto=format&fit=crop&w=120&q=80" class="part-thumb">
+            <span>Leg</span>
+          </div>
+          <div class="part-card" data-img="https://images.unsplash.com/photo-1605517389112-9214b7e9b897?auto=format&fit=crop&w=500&q=80">
+            <img src="https://images.unsplash.com/photo-1605517389112-9214b7e9b897?auto=format&fit=crop&w=120&q=80" class="part-thumb">
+            <span>Ribs</span>
+          </div>
+          <div class="part-card" data-img="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" class="part-thumb">
+            <span>Back</span>
+          </div>
+        </div>
+
+        <div class="selector-group">
+          <label for="tattooSelect">Tattoo Design</label>
+          <select id="tattooSelect" class="app-select">
+            <option value="https://i.imgur.com/w9N8SgG.png">Default Calligraphy Sketch</option>
+            <option value="https://images.unsplash.com/photo-1560780552-ba54683cb263?auto=format&fit=crop&w=400&q=80">Snake Neo-Traditional</option>
+            <option value="https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?auto=format&fit=crop&w=400&q=80">Gothic Ornamental</option>
+          </select>
+        </div>
+
+        <div class="upload-row">
+          <span>Upload custom tattoo</span>
+          <label class="file-label-inline">
+            <span>↑ Upload all File</span>
+            <input type="file" id="sketchLoader" accept="image/*">
+          </label>
+        </div>
+
+        <div class="control-group">
+          <div class="control-group-header">
+            <span>Overlay Transparency</span>
+            <span id="opacityVal">90%</span>
+          </div>
+          <div class="slider-container">
+            <input type="range" id="opacityRange" class="custom-range" min="10" max="100" value="90">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-group-header">
+            <span>Depth Perception</span>
+            <span id="blurVal">0%</span>
+          </div>
+          <div class="slider-container">
+            <input type="range" id="blurRange" class="custom-range" min="0" max="100" value="0">
+          </div>
+        </div>
+
+        <div class="body-parts-title" style="margin-bottom: 4px;">Style Transfer</div>
+        <div class="gradient-trackbar" id="styleTrackbar">
+          <div class="gradient-thumb" id="styleThumb"></div>
+        </div>
+
+        <button class="submit-layout-btn open-booking">
+          Submit Layout & Book
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</main>
 
 <footer>YYOKAI — TATTOO LETTERING TOOL</footer>
 
@@ -618,25 +743,25 @@ input[type=file]{border-style:dashed;color:#777}
     <h2>Get a consultation</h2>
 
     <form id="bookingForm">
-      <input name="name" placeholder="First name *" required class="modal-form-input">
-      <input name="instagram" placeholder="Instagram" class="modal-form-input">
-      <textarea name="idea" placeholder="Tattoo idea — style, elements, mood *" required class="modal-form-input"></textarea>
-      <input name="placement" placeholder="Placement *" required class="modal-form-input">
-      <input name="size" placeholder="Approximate size *" required class="modal-form-input">
+      <input name="name" placeholder="First name *" required>
+      <input name="instagram" placeholder="Instagram">
+      <textarea name="idea" placeholder="Tattoo idea — style, elements, mood *" required></textarea>
+      <input name="placement" placeholder="Placement *" required>
+      <input name="size" placeholder="Approximate size *" required>
 
-      <select name="city" required class="modal-form-input">
+      <select name="city" required>
         <option value="">Preferred city *</option>
         <option>Lviv, Ukraine</option>
         <option>Bucharest, Romania</option>
         <option>Other</option>
       </select>
 
-      <input name="date" placeholder="Preferred date / month" class="modal-form-input">
+      <input name="date" placeholder="Preferred date / month">
       <input type="file" name="references" multiple accept="image/*">
-      <input type="email" name="email" placeholder="Email *" required class="modal-form-input">
-      <input name="phone" placeholder="WhatsApp / Phone *" required class="modal-form-input">
+      <input type="email" name="email" placeholder="Email *" required>
+      <input name="phone" placeholder="WhatsApp / Phone *" required>
 
-      <button class="book-btn submit" type="submit" style="width: 100%; margin-top: 8px; background: var(--red); color: white;">
+      <button class="book-btn submit" type="submit">
         <span class="pulse-dot"></span>
         Submit project
         <span class="arrow">→</span>
@@ -646,15 +771,23 @@ input[type=file]{border-style:dashed;color:#777}
 </div>
 
 <script>
-/* BURGER MENU */
+/* BURGER MENU & NAVIGATION */
 const burger = document.getElementById("burger");
 const mobileMenu = document.getElementById("mobileMenu");
+
 burger.onclick = () => {
   burger.classList.toggle("active");
   mobileMenu.classList.toggle("open");
 };
 
-/* CANVAS MANIPULATION INTERACTIVE LOGIC */
+document.querySelectorAll(".mobile-menu a").forEach(link => {
+  link.onclick = () => {
+    burger.classList.remove("active");
+    mobileMenu.classList.remove("open");
+  };
+});
+
+/* CANVAS DRAG & DROP LOGIC */
 const canvas = document.getElementById("canvas");
 const tattoo = document.getElementById("tattoo");
 
@@ -663,6 +796,7 @@ let currentX = 0, currentY = 0;
 let initialX, initialY;
 let xOffset = 0, yOffset = 0;
 let scale = 1, rotation = 0;
+let currentHue = 0;
 
 canvas.addEventListener("mousedown", dragStart);
 canvas.addEventListener("mousemove", drag);
@@ -726,7 +860,12 @@ function applyTransforms() {
   tattoo.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale}) rotate(${rotation}deg)`;
 }
 
-/* SKETCH UPLOADER AND PRESET SELECTOR */
+function updateFilters() {
+  const pixelBlur = (document.getElementById("blurRange").value / 100) * 5;
+  tattoo.style.filter = `blur(${pixelBlur}px) hue-rotate(${currentHue}deg)`;
+}
+
+/* SKETCH UPLOADER & PRESET SELECTOR */
 const sketchLoader = document.getElementById("sketchLoader");
 const tattooSelect = document.getElementById("tattooSelect");
 
@@ -753,7 +892,7 @@ function resetTattooPosition() {
   applyTransforms();
 }
 
-/* TRANSPARENCY & BLUR CONTROLS */
+/* CONTROLLERS: OPACITY & BLUR */
 const opacityRange = document.getElementById("opacityRange");
 const opacityVal = document.getElementById("opacityVal");
 const blurRange = document.getElementById("blurRange");
@@ -766,31 +905,42 @@ opacityRange.oninput = function() {
 
 blurRange.oninput = function() {
   blurVal.innerText = this.value + "%";
-  // Map 0-100% to 0-5px blur
-  const pixelBlur = (this.value / 100) * 5;
-  tattoo.style.filter = `blur(${pixelBlur}px)`;
+  updateFilters();
 };
 
-/* STYLE TRANSFER INTERACTIVE TRACKBAR */
+/* WORKING STYLE TRANSFER LOGIC */
 const styleTrackbar = document.getElementById("styleTrackbar");
 const styleThumb = document.getElementById("styleThumb");
 let isTrackingStyle = false;
 
-styleThumb.onmousedown = () => isTrackingStyle = true;
-window.onmouseup = () => isTrackingStyle = false;
-window.onmousemove = (e) => {
+const startStyleTrack = () => isTrackingStyle = true;
+const endStyleTrack = () => isTrackingStyle = false;
+
+styleThumb.addEventListener("mousedown", startStyleTrack);
+styleThumb.addEventListener("touchstart", startStyleTrack);
+window.addEventListener("mouseup", endStyleTrack);
+window.addEventListener("touchend", endStyleTrack);
+
+window.addEventListener("mousemove", moveStyleThumb);
+window.addEventListener("touchmove", moveStyleThumb, {passive: false});
+
+function moveStyleThumb(e) {
   if (!isTrackingStyle) return;
+  if(e.type === "touchmove") e.preventDefault();
+  
   const rect = styleTrackbar.getBoundingClientRect();
-  let left = e.clientX - rect.left;
+  const clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
+  
+  let left = clientX - rect.left;
   left = Math.max(0, Math.min(left, rect.width));
   const percentage = (left / rect.width) * 100;
-  styleThumb.style.left = percentage + "%";
   
-  // Style modulation logic (e.g., dynamically updating hue/contrast)
-  tattoo.style.filter = `hue-rotate(${percentage * 3.6}deg) blur(${(blurRange.value / 100) * 5}px)`;
-};
+  styleThumb.style.left = percentage + "%";
+  currentHue = percentage * 3.6; // Мапим 0-100% в 0-360 градусов цветового тона
+  updateFilters();
+}
 
-/* ROUND BODY PARTS SELECTOR CLICK LOGIC */
+/* BODY PART SELECTOR LOGIC */
 const partCards = document.querySelectorAll(".part-card");
 const bodyBg = document.getElementById("bodyBg");
 partCards.forEach(card => {
@@ -801,7 +951,7 @@ partCards.forEach(card => {
   };
 });
 
-/* TELEGRAM BOOKING MODULE */
+/* MODAL & TELEGRAM MODAL FORM MODULE (EXACTLY LIKE FONTS PAGE) */
 const modal = document.getElementById("bookingModal");
 document.querySelectorAll(".open-booking").forEach(btn => {
   btn.onclick = e => {
@@ -842,7 +992,7 @@ Phone: ${data.phone}
     });
   }
 
-  alert("Your request has been successfully sent.");
+  alert("Your request has been sent.");
   modal.classList.remove("open");
   this.reset();
 });
