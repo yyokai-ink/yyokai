@@ -6,7 +6,6 @@
 <title>YYOKAI — Tattoo Lettering Generator & AR Visualizer</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
-<link id="dynamic-fonts" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -24,14 +23,9 @@ button,input,textarea,select{font:inherit}
 :root{
   --bg:#050505;
   --card:#141414;
-  --card2:#1b1b1b;
   --text:#f5f2ea;
   --muted:#8d8d8d;
-  --muted2:#b8b8b8;
   --silver:#d6d2c8;
-  --line:rgba(255,255,255,.12);
-  --glass:rgba(255,255,255,.08);
-  --glass2:rgba(255,255,255,.14);
   --red:#ff2a2a;
   --app-bg:#f5f2ea;
   --app-text:#050505;
@@ -39,27 +33,6 @@ button,input,textarea,select{font:inherit}
 
 .container{max-width:1240px;margin:auto}
 section{padding:110px 26px}
-
-h1{
-  font-size:clamp(56px,13vw,176px);
-  line-height:.82;
-  letter-spacing:-.085em;
-  font-weight:700;
-  color:var(--text);
-}
-h2{
-  font-size:clamp(42px,8vw,104px);
-  line-height:.88;
-  letter-spacing:-.07em;
-  font-weight:400;
-  color:var(--text);
-  margin-bottom:34px;
-}
-p{
-  color:var(--muted);
-  font-size:17px;
-  line-height:1.58;
-}
 
 .label{
   display:inline-flex;
@@ -110,9 +83,7 @@ p{
 }
 .burger span{
   position:absolute;
-  left:0;
-  width:38px;
-  height:1px;
+  left:0;width:38px;height:1px;
   background:#f3f3f3;
   transition:.35s ease;
 }
@@ -172,23 +143,17 @@ p{
 }
 
 .mobile-menu{
-  position:fixed;
-  inset:0;
+  position:fixed;inset:0;
   background:rgba(5,5,5,.96);
-  z-index:90;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  gap:24px;
+  z-index:90;display:none;
+  align-items:center;justify-content:center;
+  flex-direction:column;gap:24px;
   font-size:clamp(28px,7vw,70px);
-  letter-spacing:-.06em;
-  text-transform:uppercase;
+  letter-spacing:-.06em;text-transform:uppercase;
   backdrop-filter:blur(18px);
 }
 .mobile-menu.open{display:flex}
 .mobile-menu a{color:#f5f2ea}
-.mobile-menu a:hover{color:var(--silver)}
 
 /* HERO WITH VIDEO */
 .hero{
@@ -200,47 +165,29 @@ p{
   overflow:hidden;
 }
 .hero-bg{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  opacity:.54;
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;opacity:.54;
   filter:grayscale(1) contrast(1.1);
 }
 .hero:before{
-  content:"";
-  position:absolute;
-  inset:0;
+  content:"";position:absolute;inset:0;
   background:
     linear-gradient(to top,#050505 0%,rgba(5,5,5,.96) 10%,rgba(5,5,5,.62) 36%,rgba(5,5,5,.26) 66%,rgba(5,5,5,.76) 100%),
     radial-gradient(circle at 50% 104%,rgba(255,255,255,.16),transparent 34%);
   z-index:1;
 }
-.hero-content{
-  position:relative;
-  z-index:2;
-  width:100%;
-}
+.hero-content{position:relative;z-index:2;width:100%}
 .hero-logo{
   width:min(280px,58vw);
   margin:0 auto clamp(160px,26vh,280px);
   filter:brightness(0) invert(1) drop-shadow(0 24px 70px rgba(255,255,255,.14));
   opacity:.96;
 }
-.hero-title{
-  display:grid;
-  gap:22px;
-}
-.hero-title p{
-  max-width:820px;
-  color:#b7b7b7;
-  text-transform:uppercase;
-  letter-spacing:.16em;
-  font-size:13px;
-}
+.hero-title{display:grid;gap:22px}
+.hero-title h1{font-size:clamp(56px,13vw,176px);line-height:.82;letter-spacing:-.085em;font-weight:700}
+.hero-title p{max-width:820px;color:#b7b7b7;text-transform:uppercase;letter-spacing:.16em;font-size:13px}
 
-/* VISUALIZER APP SECTION */
+/* VISUALIZER SECTION */
 .visualizer-section {
   background: linear-gradient(180deg, #050505, #0f0f0f, #050505);
 }
@@ -250,6 +197,12 @@ p{
   justify-items: center;
   align-items: start;
 }
+.section-head{
+  display:flex;align-items:end;
+  justify-content:space-between;gap:24px;margin-bottom:28px;
+}
+.section-head h2{font-size:clamp(42px,8vw,104px);line-height:.88;letter-spacing:-.07em;font-weight:400;margin-bottom:12px}
+.section-head p{max-width:420px;color:var(--muted);font-size:17px;line-height:1.58}
 
 .visualizer-window {
   background: var(--app-bg);
@@ -263,334 +216,123 @@ p{
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 .visualizer-header .app-meta {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #777;
-  margin-bottom: 4px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #777; margin-bottom: 4px;
 }
-.visualizer-header h3 {
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-}
-.visualizer-header p {
-  font-size: 15px;
-  color: #555;
-  font-weight: 500;
-  margin-top: 2px;
-}
-.close-app {
-  font-size: 24px;
-  background: none; border: 0; cursor: pointer; color: var(--app-text);
-  opacity: 0.7; transition: 0.2s;
-}
-.close-app:hover { opacity: 1; }
+.visualizer-header h3 { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+.close-app { font-size: 24px; background: none; border: 0; cursor: pointer; color: var(--app-text); opacity: 0.7; }
 
-/* CANVAS / WORKSPACE */
+/* CANVAS CONTAINER & CANVAS SYSTEM */
 .canvas-container {
   width: 100%;
-  height: 250px;
+  height: 280px;
   background: #e2dfd7;
   border-radius: 24px;
   position: relative;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 24px;
-  user-select: none;
 }
 .body-background {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  pointer-events: none;
+  width: 100%; height: 100%; object-fit: cover;
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
 }
-.tattoo-overlay {
+/* Canvas Overlay Layer with Multiply Effect */
+#tattooCanvas {
   position: absolute;
-  width: 120px;
-  cursor: move;
-  transform-origin: center center;
+  inset: 0;
+  z-index: 2;
   mix-blend-mode: multiply;
-  filter: blur(0px) hue-rotate(0deg);
+  cursor: crosshair;
+  touch-action: none;
   opacity: 0.9;
 }
-
-/* INTERACTIVE CONTROLS OVERLAY */
 .controls-3d {
-  position: absolute;
-  top: 12px; right: 12px;
-  display: flex; flex-direction: column; gap: 8px;
-  z-index: 10;
+  position: absolute; top: 12px; right: 12px;
+  display: flex; flex-direction: column; gap: 8px; z-index: 10;
 }
 .control-3d {
-  width: 36px; height: 36px;
-  border-radius: 50%; background: #050505; color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px; border: 0; cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  transition: 0.2s ease;
+  width: 36px; height: 36px; border-radius: 50%; background: #050505; color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: 18px; border: 0; cursor: pointer;
 }
-.control-3d:hover { transform: scale(1.05); }
 
-/* UNIQUE AR FEATURES VIEW */
-.features-title {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  margin-bottom: 14px;
+/* IPAD STYLE TOOLBAR (MOVE, ERASER, BRUSH) */
+.toolbar-group {
+  margin-bottom: 20px;
+}
+.toolbar-label { font-size: 13px; font-weight: 600; color: #444; margin-bottom: 8px; }
+.ar-toolbar {
+  display: flex; background: #e6e3da; padding: 6px; border-radius: 14px; gap: 6px;
+}
+.tool-btn {
+  flex: 1; border: 0; background: none; padding: 10px; font-size: 12px; font-weight: 700;
+  text-transform: uppercase; border-radius: 10px; cursor: pointer; color: #555; transition: 0.2s;
+}
+.tool-btn.active {
+  background: #050505; color: #fff;
 }
 
 /* ROUND BODY PARTS SELECTOR */
-.body-parts-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: #444;
-  margin-bottom: 12px;
-}
-.body-parts-slider {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-}
+.body-parts-title { font-size: 13px; font-weight: 600; color: #444; margin-bottom: 12px; }
+.body-parts-slider { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; }
 .body-parts-slider::-webkit-scrollbar { height: 3px; }
 .body-parts-slider::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+.part-card { flex: none; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
+.part-thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 50%; border: 1px solid rgba(0,0,0,0.15); padding: 2px; background: #fff; }
+.part-card.active .part-thumb { border-color: var(--app-text); box-shadow: 0 0 0 1px var(--app-text); }
+.part-card span { display: block; font-size: 11px; font-weight: 500; color: #666; }
+.part-card.active span { color: #000; font-weight: 700; }
 
-.part-card {
-  flex: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-}
-.part-thumb {
-  width: 56px;
-  height: 56px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 1px solid rgba(0,0,0,0.15);
-  padding: 2px;
-  background: #fff;
-  transition: 0.25s ease;
-}
-.part-card.active .part-thumb {
-  border-color: var(--app-text);
-  box-shadow: 0 0 0 1px var(--app-text);
-}
-.part-card span {
-  display: block;
-  font-size: 11px;
-  font-weight: 500;
-  color: #666;
-}
-.part-card.active span {
-  color: #000;
-  font-weight: 700;
-}
+/* DROPDOWN */
+.selector-group { margin-bottom: 16px; }
+.selector-group label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 8px; }
+.app-select { width: 100%; background: #fff; color: #050505; border: 1px solid rgba(0,0,0,0.15); border-radius: 12px; padding: 12px 16px; outline: none; }
 
-/* CUSTOM DROPDOWN SELECTOR */
-.selector-group {
-  margin-bottom: 16px;
-}
-.selector-group label {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: #444;
-  margin-bottom: 8px;
-}
-.app-select {
-  width: 100%;
-  background: #fff;
-  color: #050505;
-  border: 1px solid rgba(0,0,0,0.15);
-  border-radius: 12px;
-  padding: 12px 16px;
-  outline: none;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-/* UPLOAD LINK BUTTON */
-.upload-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #444;
-}
-.file-label-inline {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #e6e3da;
-  padding: 8px 16px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 700;
-  color: #000;
-}
+/* UPLOAD FIELD */
+.upload-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; font-size: 13px; font-weight: 600; color: #444; }
+.file-label-inline { display: inline-flex; align-items: center; gap: 6px; background: #e6e3da; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 700; color: #000; }
 .file-label-inline input { display: none; }
 
-/* RANGE SLIDERS */
-.control-group {
-  margin-bottom: 16px;
-}
-.control-group-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  font-weight: 600;
-  color: #444;
-  margin-bottom: 6px;
-}
-.slider-container {
-  display: flex;
-  align-items: center;
-}
-.custom-range {
-  flex: 1;
-  accent-color: #050505;
-  cursor: pointer;
-  height: 4px;
-}
-.slider-val {
-  width: 40px;
-  text-align: right;
-  font-size: 13px;
-  font-weight: 700;
-}
+/* SLIDERS */
+.control-group { margin-bottom: 16px; }
+.control-group-header { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px; }
+.custom-range { width: 100%; accent-color: #050505; cursor: pointer; height: 4px; }
 
-/* GRADIENT STYLE TRANSFER TRACKBAR */
-.gradient-trackbar {
-  width: 100%;
-  height: 14px;
-  border-radius: 7px;
-  background: linear-gradient(90deg, #000000, #ff2a2a, #b356af, #3fa0c5, #00f0ff);
-  position: relative;
-  margin-top: 6px;
-  margin-bottom: 24px;
-  touch-action: none;
-}
-.gradient-thumb {
-  position: absolute;
-  top: 50%; left: 0%;
-  width: 22px; height: 22px;
-  background: #fff;
-  border: 2px solid #050505;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-}
+/* STYLE TRANSFER WORKABLE GRADIENT TRACKBAR */
+.gradient-trackbar { width: 100%; height: 14px; border-radius: 7px; background: linear-gradient(90deg, #000000, #ff2a2a, #b356af, #3fa0c5, #00f0ff); position: relative; margin-top: 6px; margin-bottom: 24px; touch-action: none; }
+.gradient-thumb { position: absolute; top: 50%; left: 0%; width: 22px; height: 22px; background: #fff; border: 2px solid #050505; border-radius: 50%; transform: translate(-50%, -50%); cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
 
-/* ACTION BUTTON */
-.submit-layout-btn {
-  width: 100%;
-  background: #050505;
-  color: #f5f2ea;
-  padding: 18px;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  border: 0; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  transition: 0.25s;
-}
-.submit-layout-btn:hover {
-  background: #1c1c1c;
-}
+/* SUBMIT BUTTON */
+.submit-layout-btn { width: 100%; background: #050505; color: #f5f2ea; padding: 18px; border-radius: 999px; font-weight: 700; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; border: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
-.section-head{
-  display:flex;
-  align-items:end;
-  justify-content:space-between;
-  gap:24px;
-  margin-bottom:28px;
-}
-.section-head p{max-width:420px}
+footer{ padding:54px 26px; border-top:1px solid rgba(255,255,255,.09); color:#555; text-align:center; letter-spacing:.18em; font-size:11px; }
 
-footer{
-  padding:54px 26px;
-  border-top:1px solid rgba(255,255,255,.09);
-  color:#555;text-align:center;
-  letter-spacing:.18em;font-size:11px;
-}
+/* MODALS (FONTS DESIGN INTEGRATION) */
+.modal{ position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.76); display:none; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(18px); }
+.modal.open{ display:flex; }
+.modal-box{ width:min(760px,100%); max-height:90vh; overflow:auto; border-radius:34px; padding:34px; position:relative; background:linear-gradient(145deg,#171717,#0d0d0d); border:1px solid rgba(255,255,255,.1); box-shadow:0 34px 90px rgba(0,0,0,.38); }
+.modal-box h2{ font-size:52px; margin-bottom: 34px; letter-spacing: -.07em; font-weight: 400; }
+.close{ position:absolute; top:18px; right:22px; background:none; border:0; color:#fff; font-size:36px; cursor:pointer; }
+input, textarea, select{ width:100%; background:#070707; color:#fff; border:1px solid rgba(255,255,255,.14); border-radius:17px; padding:16px; margin-bottom:12px; outline:none; }
+input:focus, textarea:focus, select:focus{ border-color:rgba(255,255,255,.34); }
+textarea{ min-height:132px; }
+input[type=file]{ border-style:dashed; color:#777; }
+.submit{ width:100%; margin-top:8px; background: var(--red); color: #fff; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; border: 0; font-weight: 700; padding: 18px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; gap: 11px; cursor: pointer; }
 
-/* MODALS */
-.modal{
-  position:fixed;inset:0;z-index:200;
-  background:rgba(0,0,0,.76);
-  display:none;align-items:center;justify-content:center;
-  padding:20px;backdrop-filter:blur(18px);
-}
-.modal.open{display:flex}
-.modal-box{
-  width:min(760px,100%);max-height:90vh;
-  overflow:auto;border-radius:34px;padding:34px;position:relative;
-  background:linear-gradient(145deg,#171717,#0d0d0d);
-  border:1px solid rgba(255,255,255,.1);
-  box-shadow:0 34px 90px rgba(0,0,0,.38);
-}
-.modal-box h2{font-size:52px}
-.close{
-  position:absolute;top:18px;right:22px;
-  background:none;border:0;color:#fff;
-  font-size:36px;cursor:pointer;
-}
-input,textarea,select{
-  width:100%;background:#070707;color:#fff;
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:17px;padding:16px;margin-bottom:12px;outline:none;
-}
-input:focus,textarea:focus,select:focus{border-color:rgba(255,255,255,.34);}
-textarea{min-height:132px}
-input[type=file]{border-style:dashed;color:#777}
-.submit{width:100%;margin-top:8px}
-
-/* RESPONSIVE MEDIA QUERIES */
 @media(max-width:850px){
-  section{padding:78px 26px;}
-  .section-head{display:block;margin-bottom:24px;}
-  .section-head h2{font-size:clamp(48px,15vw,68px);line-height:.9;margin-bottom:18px;}
-  .section-head p{max-width:100%;font-size:16px;line-height:1.45;color:#8f8f8f;}
-
-  .nav-logo{display:none;}
-  .nav-inner{grid-template-columns:1fr auto;}
-  .hero-logo{width:220px;}
-}
-
-@media(max-width:560px){
-  .book-btn{font-size:9px;letter-spacing:.12em;}
-  .arrow{width:31px;height:31px;}
-  .hero{padding-bottom:60px;}
-  .visualizer-window { padding: 25px 20px; border-radius: 32px; }
-  .canvas-container { height: 210px; }
+  .section-head{ display:block; margin-bottom:24px; }
+  .nav-logo{ display:none; }
+  .nav-inner{ grid-template-columns:1fr auto; }
+  .hero-logo{ width:220px; }
 }
 </style>
 </head>
-
 <body>
 
 <nav class="nav">
   <div class="nav-inner">
-    <button class="burger" id="burger" aria-label="Open menu">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="burger" id="burger"><span></span><span></span><span></span></button>
     <div class="nav-logo">YYOKAI</div>
     <div class="nav-actions">
       <button class="book-btn open-booking">
@@ -604,10 +346,9 @@ input[type=file]{border-style:dashed;color:#777}
 
 <div class="mobile-menu" id="mobileMenu">
   <a href="index.html">Home</a>
-  <a href="#visualizer">AR Visualizer</a>
 </div>
 
-<header class="hero" id="home">
+<header class="hero">
   <video class="hero-bg" autoplay muted loop playsinline>
     <source src="video1.mov" type="video/mp4">
   </video>
@@ -620,20 +361,17 @@ input[type=file]{border-style:dashed;color:#777}
   </div>
 </header>
 
-<main>
-
-<section id="visualizer" class="visualizer-section">
+<section class="visualizer-section">
   <div class="container">
     <div class="section-head">
       <div>
         <span class="label">AR Placement Visualizer</span>
         <h2>Try On Your Design.</h2>
       </div>
-      <p>Upload your artwork or choose a preset, select a body part and see how it fits interactively.</p>
+      <p>Upload your artwork, select tools to paint or erase parts of the design, and finalize placement.</p>
     </div>
 
     <div class="visualizer-container-grid">
-      
       <div class="visualizer-window">
         <div class="visualizer-header">
           <div>
@@ -644,18 +382,25 @@ input[type=file]{border-style:dashed;color:#777}
           <button class="close-app" onclick="window.location.hash=''">&times;</button>
         </div>
 
-        <div class="canvas-container" id="canvas">
+        <div class="canvas-container">
           <div class="controls-3d">
-              <button class="control-3d" onclick="changeScale(0.1)">+</button>
-              <button class="control-3d" onclick="changeScale(-0.1)">-</button>
-              <button class="control-3d" onclick="changeRotation(15)">↻</button>
-              <button class="control-3d" onclick="changeRotation(-15)">↺</button>
+              <button class="control-3d" onclick="adjustScale(0.1)">+</button>
+              <button class="control-3d" onclick="adjustScale(-0.1)">-</button>
+              <button class="control-3d" onclick="adjustRotation(15)">↻</button>
+              <button class="control-3d" onclick="adjustRotation(-15)">↺</button>
           </div>
-          <img src="https://images.unsplash.com/photo-1590402421685-6184a44738fc?auto=format&fit=crop&w=500&q=80" class="body-background" id="bodyBg" alt="Forearm">
-          <img src="https://i.imgur.com/w9N8SgG.png" class="tattoo-overlay" id="tattoo" alt="Tattoo Sketch">
+          <img src="https://images.unsplash.com/photo-1590402421685-6184a44738fc?auto=format&fit=crop&w=500&q=80" class="body-background" id="bodyBg">
+          <canvas id="tattooCanvas"></canvas>
         </div>
 
-        <div class="features-title">Unique AR Features</div>
+        <div class="toolbar-group">
+          <div class="toolbar-label">Active Workspace Tool</div>
+          <div class="ar-toolbar">
+            <button class="tool-btn active" id="toolMove" onclick="setTool('move')">Move</button>
+            <button class="tool-btn" id="toolEraser" onclick="setTool('eraser')">Eraser</button>
+            <button class="tool-btn" id="toolBrush" onclick="setTool('brush')">Brush</button>
+          </div>
+        </div>
 
         <div class="body-parts-title">Body Part Selector</div>
         <div class="body-parts-slider">
@@ -671,14 +416,6 @@ input[type=file]{border-style:dashed;color:#777}
             <img src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?auto=format&fit=crop&w=120&q=80" class="part-thumb">
             <span>Leg</span>
           </div>
-          <div class="part-card" data-img="https://images.unsplash.com/photo-1605517389112-9214b7e9b897?auto=format&fit=crop&w=500&q=80">
-            <img src="https://images.unsplash.com/photo-1605517389112-9214b7e9b897?auto=format&fit=crop&w=120&q=80" class="part-thumb">
-            <span>Ribs</span>
-          </div>
-          <div class="part-card" data-img="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" class="part-thumb">
-            <span>Back</span>
-          </div>
         </div>
 
         <div class="selector-group">
@@ -686,7 +423,6 @@ input[type=file]{border-style:dashed;color:#777}
           <select id="tattooSelect" class="app-select">
             <option value="https://i.imgur.com/w9N8SgG.png">Default Calligraphy Sketch</option>
             <option value="https://images.unsplash.com/photo-1560780552-ba54683cb263?auto=format&fit=crop&w=400&q=80">Snake Neo-Traditional</option>
-            <option value="https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?auto=format&fit=crop&w=400&q=80">Gothic Ornamental</option>
           </select>
         </div>
 
@@ -703,36 +439,23 @@ input[type=file]{border-style:dashed;color:#777}
             <span>Overlay Transparency</span>
             <span id="opacityVal">90%</span>
           </div>
-          <div class="slider-container">
-            <input type="range" id="opacityRange" class="custom-range" min="10" max="100" value="90">
-          </div>
+          <input type="range" id="opacityRange" class="custom-range" min="10" max="100" value="90">
         </div>
 
         <div class="control-group">
           <div class="control-group-header">
-            <span>Depth Perception</span>
-            <span id="blurVal">0%</span>
+            <span>Style Transfer</span>
           </div>
-          <div class="slider-container">
-            <input type="range" id="blurRange" class="custom-range" min="0" max="100" value="0">
+          <div class="gradient-trackbar" id="styleTrackbar">
+            <div class="gradient-thumb" id="styleThumb"></div>
           </div>
         </div>
 
-        <div class="body-parts-title" style="margin-bottom: 4px;">Style Transfer</div>
-        <div class="gradient-trackbar" id="styleTrackbar">
-          <div class="gradient-thumb" id="styleThumb"></div>
-        </div>
-
-        <button class="submit-layout-btn open-booking">
-          Submit Layout & Book
-        </button>
+        <button class="submit-layout-btn open-booking">Submit Layout & Book</button>
       </div>
-
     </div>
   </div>
 </section>
-
-</main>
 
 <footer>YYOKAI — TATTOO LETTERING TOOL</footer>
 
@@ -753,7 +476,6 @@ input[type=file]{border-style:dashed;color:#777}
         <option value="">Preferred city *</option>
         <option>Lviv, Ukraine</option>
         <option>Bucharest, Romania</option>
-        <option>Other</option>
       </select>
 
       <input name="date" placeholder="Preferred date / month">
@@ -771,232 +493,218 @@ input[type=file]{border-style:dashed;color:#777}
 </div>
 
 <script>
-/* BURGER MENU & NAVIGATION */
 const burger = document.getElementById("burger");
 const mobileMenu = document.getElementById("mobileMenu");
+burger.onclick = () => { burger.classList.toggle("active"); mobileMenu.classList.toggle("open"); };
 
-burger.onclick = () => {
-  burger.classList.toggle("active");
-  mobileMenu.classList.toggle("open");
-};
+/* ADVANCED HTML5 CANVAS WORKSPACE ENGINE */
+const canvas = document.getElementById("tattooCanvas");
+const ctx = canvas.getContext("2d");
+const container = canvas.parentElement;
 
-document.querySelectorAll(".mobile-menu a").forEach(link => {
-  link.onclick = () => {
-    burger.classList.remove("active");
-    mobileMenu.classList.remove("open");
-  };
-});
+let currentTool = 'move'; // Options: 'move', 'eraser', 'brush'
+let tattooImage = new Image();
+tattooImage.crossOrigin = "anonymous";
+tattooImage.src = "https://i.imgur.com/w9N8SgG.png";
 
-/* CANVAS DRAG & DROP LOGIC */
-const canvas = document.getElementById("canvas");
-const tattoo = document.getElementById("tattoo");
-
-let isDragging = false;
-let currentX = 0, currentY = 0;
-let initialX, initialY;
-let xOffset = 0, yOffset = 0;
-let scale = 1, rotation = 0;
+// Geometry states for the sketch layer
+let posX = 80, posY = 60, scale = 0.8, rotation = 0;
 let currentHue = 0;
 
-canvas.addEventListener("mousedown", dragStart);
-canvas.addEventListener("mousemove", drag);
-canvas.addEventListener("mouseup", dragEnd);
-canvas.addEventListener("touchstart", dragStart, {passive: false});
-canvas.addEventListener("touchmove", drag, {passive: false});
-canvas.addEventListener("touchend", dragEnd);
+// Internal offscreen buffer to persist canvas modifications (drawing / erasing)
+let bufferCanvas = document.createElement("canvas");
+let bCtx = bufferCanvas.getContext("2d");
+let isBufferInitialized = false;
 
-function dragStart(e) {
-  if (e.target === tattoo) {
-    isDragging = true;
-    if (e.type === "touchstart") {
-      initialX = e.touches[0].clientX - xOffset;
-      initialY = e.touches[0].clientY - yOffset;
-    } else {
-      initialX = e.clientX - xOffset;
-      initialY = e.clientY - yOffset;
-    }
-  }
+function initCanvasSize() {
+  canvas.width = container.clientWidth;
+  canvas.height = container.clientHeight;
+  redrawWorkspace();
 }
 
-function drag(e) {
-  if (isDragging) {
-    e.preventDefault();
-    if (e.type === "touchmove") {
-      currentX = e.touches[0].clientX - initialX;
-      currentY = e.touches[0].clientY - initialY;
-    } else {
-      currentX = e.clientX - initialX;
-      currentY = e.clientY - initialY;
-    }
-    xOffset = currentX;
-    yOffset = currentY;
-    applyTransforms();
-  }
-}
-function dragEnd() { isDragging = false; }
+tattooImage.onload = () => {
+  setupBuffer();
+  redrawWorkspace();
+};
 
-function changeScale(amount) {
-    scale += amount;
-    scale = Math.min(Math.max(.2, scale), 3);
-    applyTransforms();
-}
-function changeRotation(degree) {
-    rotation += degree;
-    applyTransforms();
+function setupBuffer() {
+  bufferCanvas.width = tattooImage.naturalWidth || 500;
+  bufferCanvas.height = tattooImage.naturalHeight || 500;
+  bCtx.clearRect(0, 0, bufferCanvas.width, bufferCanvas.height);
+  bCtx.drawImage(tattooImage, 0, 0);
+  isBufferInitialized = true;
 }
 
-canvas.addEventListener("wheel", (e) => {
+function redrawWorkspace() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (!isBufferInitialized) return;
+
+  ctx.save();
+  // Dynamic transformations
+  ctx.translate(posX + (bufferCanvas.width * scale)/2, posY + (bufferCanvas.height * scale)/2);
+  ctx.rotate(rotation * Math.PI / 180);
+  ctx.translate(-(bufferCanvas.width * scale)/2, -(bufferCanvas.height * scale)/2);
+
+  // Re-render state
+  ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width * scale, bufferCanvas.height * scale);
+  ctx.restore();
+}
+
+/* INTERACTIVE EVENTS FOR IPAD TOUCH + MOUSE */
+let isActionActive = false;
+let lastX = 0, lastY = 0;
+
+canvas.addEventListener("mousedown", actionStart);
+canvas.addEventListener("mousemove", actionMove);
+canvas.addEventListener("mouseup", actionEnd);
+canvas.addEventListener("touchstart", actionStart, {passive: false});
+canvas.addEventListener("touchmove", actionMove, {passive: false});
+canvas.addEventListener("touchend", actionEnd);
+
+function getCoords(e) {
+  const rect = canvas.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return { x: clientX - rect.left, y: clientY - rect.top };
+}
+
+function actionStart(e) {
   e.preventDefault();
-  if (e.ctrlKey) {
-    rotation += e.deltaY * 0.1;
+  isActionActive = true;
+  const coords = getCoords(e);
+  lastX = coords.x;
+  lastY = coords.y;
+}
+
+function actionMove(e) {
+  if (!isActionActive) return;
+  e.preventDefault();
+  const coords = getCoords(e);
+
+  if (currentTool === 'move') {
+    posX += (coords.x - lastX);
+    posY += (coords.y - lastY);
+    lastX = coords.x;
+    lastY = coords.y;
+    redrawWorkspace();
   } else {
-    scale += e.deltaY * -0.001;
-    scale = Math.min(Math.max(.2, scale), 3);
+    // Structural modifications relative to the transformed buffer
+    ctx.save();
+    // Inverse transformation matrix calculation to map coordinates directly on original image texture
+    let cx = posX + (bufferCanvas.width * scale) / 2;
+    let cy = posY + (bufferCanvas.height * scale) / 2;
+    
+    bCtx.save();
+    bCtx.translate(bufferCanvas.width/2, bufferCanvas.height/2);
+    bCtx.rotate(-rotation * Math.PI / 180);
+    bCtx.translate(-bufferCanvas.width/2, -bufferCanvas.height/2);
+
+    // Map global coordinate down to local matrix space
+    let localX = (coords.x - posX) / scale;
+    let localY = (coords.y - posY) / scale;
+    let prevLocalX = (lastX - posX) / scale;
+    let prevLocalY = (lastY - posY) / scale;
+
+    bCtx.restore();
+
+    // Canvas execution properties
+    bCtx.lineWidth = 16 / scale; 
+    bCtx.lineCap = "round";
+    bCtx.lineJoin = "round";
+
+    if (currentTool === 'eraser') {
+      bCtx.globalCompositeOperation = "destination-out";
+      bCtx.strokeStyle = "rgba(0,0,0,1)";
+    } else if (currentTool === 'brush') {
+      bCtx.globalCompositeOperation = "source-over";
+      bCtx.strokeStyle = "#000000";
+    }
+
+    bCtx.beginPath();
+    bCtx.moveTo(prevLocalX, prevLocalY);
+    bCtx.lineTo(localX, localY);
+    bCtx.stroke();
+
+    lastX = coords.x;
+    lastY = coords.y;
+    redrawWorkspace();
   }
-  applyTransforms();
-}, {passive: false});
+}
+function actionEnd() { isActionActive = false; }
 
-function applyTransforms() {
-  tattoo.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale}) rotate(${rotation}deg)`;
+/* TOOLBAR SWITCHER */
+function setTool(toolName) {
+  currentTool = toolName;
+  document.querySelectorAll(".tool-btn").forEach(btn => btn.classList.remove("active"));
+  if(toolName === 'move') document.getElementById("toolMove").classList.add("active");
+  if(toolName === 'eraser') document.getElementById("toolEraser").classList.add("active");
+  if(toolName === 'brush') document.getElementById("toolBrush").classList.add("active");
 }
 
-function updateFilters() {
-  const pixelBlur = (document.getElementById("blurRange").value / 100) * 5;
-  tattoo.style.filter = `blur(${pixelBlur}px) hue-rotate(${currentHue}deg)`;
-}
+function adjustScale(amt) { scale = Math.min(Math.max(0.2, scale + amt), 3); redrawWorkspace(); }
+function adjustRotation(deg) { rotation += deg; redrawWorkspace(); }
 
-/* SKETCH UPLOADER & PRESET SELECTOR */
-const sketchLoader = document.getElementById("sketchLoader");
-const tattooSelect = document.getElementById("tattooSelect");
-
-sketchLoader.onchange = function(e) {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      tattoo.src = event.target.result;
-      resetTattooPosition();
-    };
-    reader.readAsDataURL(file);
-  }
-};
-
-tattooSelect.onchange = function() {
-  tattoo.src = this.value;
-  resetTattooPosition();
-};
-
-function resetTattooPosition() {
-  xOffset = 0; yOffset = 0; scale = 1; rotation = 0;
-  currentX = 0; currentY = 0;
-  applyTransforms();
-}
-
-/* CONTROLLERS: OPACITY & BLUR */
-const opacityRange = document.getElementById("opacityRange");
-const opacityVal = document.getElementById("opacityVal");
-const blurRange = document.getElementById("blurRange");
-const blurVal = document.getElementById("blurVal");
-
-opacityRange.oninput = function() {
-  opacityVal.innerText = this.value + "%";
-  tattoo.style.opacity = this.value / 100;
-};
-
-blurRange.oninput = function() {
-  blurVal.innerText = this.value + "%";
-  updateFilters();
-};
-
-/* WORKING STYLE TRANSFER LOGIC */
+/* WORKABLE STYLE TRANSFER (HUE FILTER MODULATION) */
 const styleTrackbar = document.getElementById("styleTrackbar");
 const styleThumb = document.getElementById("styleThumb");
 let isTrackingStyle = false;
 
-const startStyleTrack = () => isTrackingStyle = true;
-const endStyleTrack = () => isTrackingStyle = false;
+styleThumb.addEventListener("mousedown", () => isTrackingStyle = true);
+styleThumb.addEventListener("touchstart", () => isTrackingStyle = true);
+window.addEventListener("mouseup", () => isTrackingStyle = false);
+window.addEventListener("touchend", () => isTrackingStyle = false);
+window.addEventListener("mousemove", moveStyle);
+window.addEventListener("touchmove", moveStyle, {passive: false});
 
-styleThumb.addEventListener("mousedown", startStyleTrack);
-styleThumb.addEventListener("touchstart", startStyleTrack);
-window.addEventListener("mouseup", endStyleTrack);
-window.addEventListener("touchend", endStyleTrack);
-
-window.addEventListener("mousemove", moveStyleThumb);
-window.addEventListener("touchmove", moveStyleThumb, {passive: false});
-
-function moveStyleThumb(e) {
+function moveStyle(e) {
   if (!isTrackingStyle) return;
-  if(e.type === "touchmove") e.preventDefault();
-  
   const rect = styleTrackbar.getBoundingClientRect();
-  const clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
-  
-  let left = clientX - rect.left;
-  left = Math.max(0, Math.min(left, rect.width));
-  const percentage = (left / rect.width) * 100;
-  
-  styleThumb.style.left = percentage + "%";
-  currentHue = percentage * 3.6; // Мапим 0-100% в 0-360 градусов цветового тона
-  updateFilters();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  let left = Math.max(0, Math.min(clientX - rect.left, rect.width));
+  let pct = (left / rect.width) * 100;
+  styleThumb.style.left = pct + "%";
+  canvas.style.filter = `hue-rotate(${pct * 3.6}deg)`;
 }
 
-/* BODY PART SELECTOR LOGIC */
+/* FILE IMPORTERS */
+document.getElementById("sketchLoader").onchange = function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const r = new FileReader();
+    r.onload = (ev) => {
+      tattooImage.src = ev.target.result;
+    };
+    r.readAsDataURL(file);
+  }
+};
+document.getElementById("tattooSelect").onchange = function() {
+  tattooImage.src = this.value;
+};
+
+document.getElementById("opacityRange").oninput = function() {
+  document.getElementById("opacityVal").innerText = this.value + "%";
+  canvas.style.opacity = this.value / 100;
+};
+
+// Body parts slider interaction
 const partCards = document.querySelectorAll(".part-card");
-const bodyBg = document.getElementById("bodyBg");
 partCards.forEach(card => {
   card.onclick = () => {
     partCards.forEach(c => c.classList.remove("active"));
     card.classList.add("active");
-    bodyBg.src = card.getAttribute("data-img");
+    document.getElementById("bodyBg").src = card.getAttribute("data-img");
   };
 });
 
-/* MODAL & TELEGRAM MODAL FORM MODULE (EXACTLY LIKE FONTS PAGE) */
+window.onload = initCanvasSize;
+window.onresize = initCanvasSize;
+
+/* FORM DISPATCH MODULE */
 const modal = document.getElementById("bookingModal");
 document.querySelectorAll(".open-booking").forEach(btn => {
-  btn.onclick = e => {
-    e.preventDefault();
-    modal.classList.add("open");
-    burger.classList.remove("active");
-    mobileMenu.classList.remove("open");
-  };
+  btn.onclick = () => { modal.classList.add("open"); };
 });
 document.getElementById("closeModal").onclick = () => modal.classList.remove("open");
-modal.onclick = e => { if(e.target === modal) modal.classList.remove("open") };
-
-document.getElementById("bookingForm").addEventListener("submit", async function(e){
-  e.preventDefault();
-  const data = Object.fromEntries(new FormData(this).entries());
-  
-  const BOT_TOKEN = "PASTE_BOT_TOKEN_HERE";
-  const CHAT_ID = "PASTE_CHAT_ID_HERE";
-
-  const message = `
-NEW YYOKAI BOOKING (FROM PRIMERKA AR)
-Name: ${data.name}
-Instagram: ${data.instagram}
-Idea: ${data.idea}
-Placement: ${data.placement}
-Size: ${data.size}
-City: ${data.city}
-Date: ${data.date}
-Email: ${data.email}
-Phone: ${data.phone}
-`;
-
-  if(BOT_TOKEN !== "PASTE_BOT_TOKEN_HERE"){
-    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: CHAT_ID, text: message })
-    });
-  }
-
-  alert("Your request has been sent.");
-  modal.classList.remove("open");
-  this.reset();
-});
 </script>
-
 </body>
 </html>
