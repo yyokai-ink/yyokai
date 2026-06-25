@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>YYOKAI — Tattoo Lettering Generator & AR Visualizer</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght400;700;900&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -50,7 +50,7 @@ section{padding:110px 26px}
   backdrop-filter:blur(18px);
 }
 
-/* NAV */
+/* NAV & TOP BAR */
 .nav{
   position:fixed;
   top:0;left:0;width:100%;
@@ -155,7 +155,7 @@ section{padding:110px 26px}
 .mobile-menu.open{display:flex}
 .mobile-menu a{color:#f5f2ea}
 
-/* HERO WITH VIDEO */
+/* HERO */
 .hero{
   min-height:100vh;
   position:relative;
@@ -187,7 +187,7 @@ section{padding:110px 26px}
 .hero-title h1{font-size:clamp(56px,13vw,176px);line-height:.82;letter-spacing:-.085em;font-weight:700}
 .hero-title p{max-width:820px;color:#b7b7b7;text-transform:uppercase;letter-spacing:.16em;font-size:13px}
 
-/* VISUALIZER SECTION */
+/* VISUALIZER APP WORKSPACE */
 .visualizer-section {
   background: linear-gradient(180deg, #050505, #0f0f0f, #050505);
 }
@@ -209,7 +209,7 @@ section{padding:110px 26px}
   color: var(--app-text);
   border-radius: 40px;
   padding: 35px 30px;
-  width: min(480px, 100%);
+  width: min(520px, 100%);
   box-shadow: 0 40px 90px rgba(0,0,0,0.8);
 }
 .visualizer-header {
@@ -218,17 +218,13 @@ section{padding:110px 26px}
   align-items: flex-start;
   margin-bottom: 20px;
 }
-.visualizer-header .app-meta {
-  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
-  text-transform: uppercase; color: #777; margin-bottom: 4px;
-}
-.visualizer-header h3 { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+.visualizer-header h3 { font-size: 24px; font-weight: 700; letter-spacing: -0.03em; }
 .close-app { font-size: 24px; background: none; border: 0; cursor: pointer; color: var(--app-text); opacity: 0.7; }
 
-/* CANVAS CONTAINER & CANVAS SYSTEM */
+/* TWO-LAYER WORKSPACE CANVAS SYSTEM */
 .canvas-container {
   width: 100%;
-  height: 280px;
+  height: 340px;
   background: #e2dfd7;
   border-radius: 24px;
   position: relative;
@@ -238,94 +234,112 @@ section{padding:110px 26px}
   width: 100%; height: 100%; object-fit: cover;
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
 }
-/* Canvas Overlay Layer with Multiply Effect */
 #tattooCanvas {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
+  position: absolute; inset: 0; z-index: 2;
   mix-blend-mode: multiply;
-  cursor: crosshair;
-  touch-action: none;
+  cursor: crosshair; touch-action: none;
   opacity: 0.9;
 }
-.controls-3d {
-  position: absolute; top: 12px; right: 12px;
-  display: flex; flex-direction: column; gap: 8px; z-index: 10;
-}
-.control-3d {
-  width: 36px; height: 36px; border-radius: 50%; background: #050505; color: #fff;
-  display: flex; align-items: center; justify-content: center; font-size: 18px; border: 0; cursor: pointer;
-}
 
-/* IPAD STYLE TOOLBAR (MOVE, ERASER, BRUSH) */
-.toolbar-group {
-  margin-bottom: 20px;
+/* PROCREATE SIDE DOCK PANEL OVERLAY */
+.procreate-sidebar {
+  position: absolute;
+  top: 20px; right: 16px;
+  width: 44px;
+  background: rgba(5, 5, 5, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  border-radius: 22px;
+  padding: 14px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  z-index: 20;
+  box-shadow: 0 12px 34px rgba(0,0,0,0.4);
 }
+.procreate-slider-wrapper {
+  height: 75px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.procreate-slider-wrapper input[type="range"] {
+  -webkit-appearance: none;
+  transform: rotate(-90deg);
+  width: 70px;
+  height: 4px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 2px;
+  outline: none;
+  margin: 0;
+  cursor: pointer;
+}
+.procreate-slider-wrapper input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%; background: #f5f2ea;
+  border: 1px solid #050505;
+}
+.procreate-icon-label {
+  font-size: 9px; font-weight: 700; color: #8d8d8d; text-transform: uppercase;
+}
+.procreate-action-btn {
+  background: none; border: 0; color: #fff; font-size: 16px; cursor: pointer; transition: 0.15s;
+}
+.procreate-action-btn:hover { color: var(--red); }
+
+/* HORIZONTAL TOOLBAR SELECTORS */
+.toolbar-group { margin-top: 20px; margin-bottom: 20px; }
 .toolbar-label { font-size: 13px; font-weight: 600; color: #444; margin-bottom: 8px; }
-.ar-toolbar {
-  display: flex; background: #e6e3da; padding: 6px; border-radius: 14px; gap: 6px;
+.ar-toolbar { display: flex; background: #e6e3da; padding: 6px; border-radius: 14px; gap: 6px; }
+.tool-btn { flex: 1; border: 0; background: none; padding: 10px; font-size: 12px; font-weight: 700; text-transform: uppercase; border-radius: 10px; cursor: pointer; color: #555; }
+.tool-btn.active { background: #050505; color: #fff; }
+
+/* COMPACT COLOR PALETTE */
+.palette-container {
+  display: flex; gap: 8px; align-items: center; margin-top: 8px;
 }
-.tool-btn {
-  flex: 1; border: 0; background: none; padding: 10px; font-size: 12px; font-weight: 700;
-  text-transform: uppercase; border-radius: 10px; cursor: pointer; color: #555; transition: 0.2s;
+.color-swatch {
+  width: 26px; height: 26px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.15); cursor: pointer; transition: transform 0.15s;
 }
-.tool-btn.active {
-  background: #050505; color: #fff;
+.color-swatch.active { transform: scale(1.15); border-color: #050505; }
+.native-color-picker {
+  width: 32px; height: 32px; border: 0; border-radius: 50%; background: none; cursor: pointer; padding: 0;
 }
 
-/* ROUND BODY PARTS SELECTOR */
+/* INTERACTION SLIDERS & OPTIONS */
 .body-parts-title { font-size: 13px; font-weight: 600; color: #444; margin-bottom: 12px; }
 .body-parts-slider { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; }
-.body-parts-slider::-webkit-scrollbar { height: 3px; }
-.body-parts-slider::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
 .part-card { flex: none; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
 .part-thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 50%; border: 1px solid rgba(0,0,0,0.15); padding: 2px; background: #fff; }
 .part-card.active .part-thumb { border-color: var(--app-text); box-shadow: 0 0 0 1px var(--app-text); }
 .part-card span { display: block; font-size: 11px; font-weight: 500; color: #666; }
-.part-card.active span { color: #000; font-weight: 700; }
 
-/* DROPDOWN */
 .selector-group { margin-bottom: 16px; }
 .selector-group label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 8px; }
 .app-select { width: 100%; background: #fff; color: #050505; border: 1px solid rgba(0,0,0,0.15); border-radius: 12px; padding: 12px 16px; outline: none; }
 
-/* UPLOAD FIELD */
 .upload-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; font-size: 13px; font-weight: 600; color: #444; }
 .file-label-inline { display: inline-flex; align-items: center; gap: 6px; background: #e6e3da; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 700; color: #000; }
 .file-label-inline input { display: none; }
 
-/* SLIDERS */
-.control-group { margin-bottom: 16px; }
-.control-group-header { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px; }
-.custom-range { width: 100%; accent-color: #050505; cursor: pointer; height: 4px; }
-
-/* STYLE TRANSFER WORKABLE GRADIENT TRACKBAR */
 .gradient-trackbar { width: 100%; height: 14px; border-radius: 7px; background: linear-gradient(90deg, #000000, #ff2a2a, #b356af, #3fa0c5, #00f0ff); position: relative; margin-top: 6px; margin-bottom: 24px; touch-action: none; }
 .gradient-thumb { position: absolute; top: 50%; left: 0%; width: 22px; height: 22px; background: #fff; border: 2px solid #050505; border-radius: 50%; transform: translate(-50%, -50%); cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
 
-/* SUBMIT BUTTON */
 .submit-layout-btn { width: 100%; background: #050505; color: #f5f2ea; padding: 18px; border-radius: 999px; font-weight: 700; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; border: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
 footer{ padding:54px 26px; border-top:1px solid rgba(255,255,255,.09); color:#555; text-align:center; letter-spacing:.18em; font-size:11px; }
 
-/* MODALS (FONTS DESIGN INTEGRATION) */
+/* MODALS */
 .modal{ position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.76); display:none; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(18px); }
 .modal.open{ display:flex; }
 .modal-box{ width:min(760px,100%); max-height:90vh; overflow:auto; border-radius:34px; padding:34px; position:relative; background:linear-gradient(145deg,#171717,#0d0d0d); border:1px solid rgba(255,255,255,.1); box-shadow:0 34px 90px rgba(0,0,0,.38); }
 .modal-box h2{ font-size:52px; margin-bottom: 34px; letter-spacing: -.07em; font-weight: 400; }
 .close{ position:absolute; top:18px; right:22px; background:none; border:0; color:#fff; font-size:36px; cursor:pointer; }
 input, textarea, select{ width:100%; background:#070707; color:#fff; border:1px solid rgba(255,255,255,.14); border-radius:17px; padding:16px; margin-bottom:12px; outline:none; }
-input:focus, textarea:focus, select:focus{ border-color:rgba(255,255,255,.34); }
-textarea{ min-height:132px; }
-input[type=file]{ border-style:dashed; color:#777; }
 .submit{ width:100%; margin-top:8px; background: var(--red); color: #fff; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; border: 0; font-weight: 700; padding: 18px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; gap: 11px; cursor: pointer; }
-
-@media(max-width:850px){
-  .section-head{ display:block; margin-bottom:24px; }
-  .nav-logo{ display:none; }
-  .nav-inner{ grid-template-columns:1fr auto; }
-  .hero-logo{ width:220px; }
-}
 </style>
 </head>
 <body>
@@ -343,10 +357,6 @@ input[type=file]{ border-style:dashed; color:#777; }
     </div>
   </div>
 </nav>
-
-<div class="mobile-menu" id="mobileMenu">
-  <a href="index.html">Home</a>
-</div>
 
 <header class="hero">
   <video class="hero-bg" autoplay muted loop playsinline>
@@ -368,37 +378,56 @@ input[type=file]{ border-style:dashed; color:#777; }
         <span class="label">AR Placement Visualizer</span>
         <h2>Try On Your Design.</h2>
       </div>
-      <p>Upload your artwork, select tools to paint or erase parts of the design, and finalize placement.</p>
+      <p>Procreate workspace studio inside web environment. Draw, modify layers and manage positions perfectly.</p>
     </div>
 
     <div class="visualizer-container-grid">
       <div class="visualizer-window">
         <div class="visualizer-header">
           <div>
-            <div class="app-meta">Visualizer</div>
-            <h3>Interactive AR Visualizer</h3>
-            <p>Body Part Overlay</p>
+            <h3>Interactive Studio Visualizer</h3>
+            <p>Advanced Procreate Multi-layer Tool</p>
           </div>
           <button class="close-app" onclick="window.location.hash=''">&times;</button>
         </div>
 
         <div class="canvas-container">
-          <div class="controls-3d">
-              <button class="control-3d" onclick="adjustScale(0.1)">+</button>
-              <button class="control-3d" onclick="adjustScale(-0.1)">-</button>
-              <button class="control-3d" onclick="adjustRotation(15)">↻</button>
-              <button class="control-3d" onclick="adjustRotation(-15)">↺</button>
+          
+          <div class="procreate-sidebar">
+            <span class="procreate-icon-label">Size</span>
+            <div class="procreate-slider-wrapper">
+              <input type="range" id="pSize" min="2" max="60" value="12">
+            </div>
+            
+            <span class="procreate-icon-label">Opa</span>
+            <div class="procreate-slider-wrapper">
+              <input type="range" id="pOpa" min="10" max="100" value="90">
+            </div>
+
+            <button class="procreate-action-btn" onclick="executeUndo()" title="Undo">↶</button>
+            <button class="procreate-action-btn" onclick="executeRedo()" title="Redo">↷</button>
           </div>
+
           <img src="https://images.unsplash.com/photo-1590402421685-6184a44738fc?auto=format&fit=crop&w=500&q=80" class="body-background" id="bodyBg">
           <canvas id="tattooCanvas"></canvas>
         </div>
 
         <div class="toolbar-group">
-          <div class="toolbar-label">Active Workspace Tool</div>
+          <div class="toolbar-label">Active Studio Tool</div>
           <div class="ar-toolbar">
-            <button class="tool-btn active" id="toolMove" onclick="setTool('move')">Move</button>
-            <button class="tool-btn" id="toolEraser" onclick="setTool('eraser')">Eraser</button>
+            <button class="tool-btn active" id="toolMove" onclick="setTool('move')">Move Sketch</button>
             <button class="tool-btn" id="toolBrush" onclick="setTool('brush')">Brush</button>
+            <button class="tool-btn" id="toolEraser" onclick="setTool('eraser')">Eraser</button>
+          </div>
+
+          <div id="paletteBlock" style="display:none; margin-top: 12px;">
+            <div class="toolbar-label" style="font-size:11px;">Brush Palette</div>
+            <div class="palette-container">
+              <div class="color-swatch active" style="background:#000000" onclick="selectColor('#000000', this)"></div>
+              <div class="color-swatch" style="background:#ff2a2a" onclick="selectColor('#ff2a2a', this)"></div>
+              <div class="color-swatch" style="background:#1b4d3e" onclick="selectColor('#1b4d3e', this)"></div>
+              <input type="color" id="customColorPicker" class="native-color-picker" value="#000000">
+            </div>
           </div>
         </div>
 
@@ -435,20 +464,8 @@ input[type=file]{ border-style:dashed; color:#777; }
         </div>
 
         <div class="control-group">
-          <div class="control-group-header">
-            <span>Overlay Transparency</span>
-            <span id="opacityVal">90%</span>
-          </div>
-          <input type="range" id="opacityRange" class="custom-range" min="10" max="100" value="90">
-        </div>
-
-        <div class="control-group">
-          <div class="control-group-header">
-            <span>Style Transfer</span>
-          </div>
-          <div class="gradient-trackbar" id="styleTrackbar">
-            <div class="gradient-thumb" id="styleThumb"></div>
-          </div>
+          <div class="control-group-header"><span>Style Transfer Color Modulation</span></div>
+          <div class="gradient-trackbar" id="styleTrackbar"><div class="gradient-thumb" id="styleThumb"></div></div>
         </div>
 
         <button class="submit-layout-btn open-booking">Submit Layout & Book</button>
@@ -464,187 +481,228 @@ input[type=file]{ border-style:dashed; color:#777; }
     <button class="close" id="closeModal">×</button>
     <span class="label">Booking</span>
     <h2>Get a consultation</h2>
-
     <form id="bookingForm">
       <input name="name" placeholder="First name *" required>
       <input name="instagram" placeholder="Instagram">
       <textarea name="idea" placeholder="Tattoo idea — style, elements, mood *" required></textarea>
       <input name="placement" placeholder="Placement *" required>
       <input name="size" placeholder="Approximate size *" required>
-
       <select name="city" required>
         <option value="">Preferred city *</option>
         <option>Lviv, Ukraine</option>
         <option>Bucharest, Romania</option>
       </select>
-
       <input name="date" placeholder="Preferred date / month">
       <input type="file" name="references" multiple accept="image/*">
       <input type="email" name="email" placeholder="Email *" required>
       <input name="phone" placeholder="WhatsApp / Phone *" required>
-
-      <button class="book-btn submit" type="submit">
-        <span class="pulse-dot"></span>
-        Submit project
-        <span class="arrow">→</span>
-      </button>
+      <button class="book-btn submit" type="submit">Submit project</button>
     </form>
   </div>
 </div>
 
 <script>
 const burger = document.getElementById("burger");
-const mobileMenu = document.getElementById("mobileMenu");
-burger.onclick = () => { burger.classList.toggle("active"); mobileMenu.classList.toggle("open"); };
+burger.onclick = () => { burger.classList.toggle("active"); };
 
-/* ADVANCED HTML5 CANVAS WORKSPACE ENGINE */
+/* ARCHITECTURAL ENGINE: INTERACTIVE TWO-LAYER SYSTEM */
 const canvas = document.getElementById("tattooCanvas");
 const ctx = canvas.getContext("2d");
 const container = canvas.parentElement;
 
-let currentTool = 'move'; // Options: 'move', 'eraser', 'brush'
+let currentTool = 'move';
+let activeColor = '#000000';
 let tattooImage = new Image();
 tattooImage.crossOrigin = "anonymous";
 tattooImage.src = "https://i.imgur.com/w9N8SgG.png";
 
-// Geometry states for the sketch layer
-let posX = 80, posY = 60, scale = 0.8, rotation = 0;
-let currentHue = 0;
+// Position transformation matrix variables
+let posX = 60, posY = 40, scale = 0.75, rotation = 0;
 
-// Internal offscreen buffer to persist canvas modifications (drawing / erasing)
-let bufferCanvas = document.createElement("canvas");
-let bCtx = bufferCanvas.getContext("2d");
-let isBufferInitialized = false;
+// Undo & Redo History System Memory Array (Cap 20 steps)
+let historyStack = [];
+let historyIndex = -1;
 
-function initCanvasSize() {
+function initCanvasDimensions() {
   canvas.width = container.clientWidth;
   canvas.height = container.clientHeight;
-  redrawWorkspace();
+  if(historyStack.length === 0) {
+    saveStep(); // Initialize base zero step
+  } else {
+    restoreFromHistory();
+  }
 }
 
-tattooImage.onload = () => {
-  setupBuffer();
-  redrawWorkspace();
-};
-
-function setupBuffer() {
-  bufferCanvas.width = tattooImage.naturalWidth || 500;
-  bufferCanvas.height = tattooImage.naturalHeight || 500;
-  bCtx.clearRect(0, 0, bufferCanvas.width, bufferCanvas.height);
-  bCtx.drawImage(tattooImage, 0, 0);
-  isBufferInitialized = true;
+// Global state history capture
+function saveStep() {
+  // Prune structural index changes if user went back and performed actions
+  if(historyIndex < historyStack.length - 1) {
+    historyStack = historyStack.slice(0, historyIndex + 1);
+  }
+  
+  // Keep clean bitmap image layer state
+  const snap = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  
+  historyStack.push({
+    imageData: snap,
+    posX: posX,
+    posY: posY,
+    scale: scale,
+    rotation: rotation
+  });
+  
+  if(historyStack.length > 20) historyStack.shift();
+  historyIndex = historyStack.length - 1;
 }
 
-function redrawWorkspace() {
+function executeUndo() {
+  if (historyIndex > 0) {
+    historyIndex--;
+    restoreFromHistory();
+  }
+}
+
+function executeRedo() {
+  if (historyIndex < historyStack.length - 1) {
+    historyIndex++;
+    restoreFromHistory();
+  }
+}
+
+function restoreFromHistory() {
+  const state = historyStack[historyIndex];
+  if(!state) return;
+  posX = state.posX; posY = state.posY; scale = state.scale; rotation = state.rotation;
+  ctx.putImageData(state.imageData, 0, 0);
+}
+
+// Core drawing system logic
+function drawTattooLayerDirect() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  if (!isBufferInitialized) return;
-
   ctx.save();
-  // Dynamic transformations
-  ctx.translate(posX + (bufferCanvas.width * scale)/2, posY + (bufferCanvas.height * scale)/2);
+  ctx.translate(posX + (tattooImage.width * scale)/2, posY + (tattooImage.height * scale)/2);
   ctx.rotate(rotation * Math.PI / 180);
-  ctx.translate(-(bufferCanvas.width * scale)/2, -(bufferCanvas.height * scale)/2);
-
-  // Re-render state
-  ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width * scale, bufferCanvas.height * scale);
+  ctx.translate(-(tattooImage.width * scale)/2, -(tattooImage.height * scale)/2);
+  ctx.drawImage(tattooImage, 0, 0, tattooImage.width * scale, tattooImage.height * scale);
   ctx.restore();
 }
 
-/* INTERACTIVE EVENTS FOR IPAD TOUCH + MOUSE */
-let isActionActive = false;
-let lastX = 0, lastY = 0;
+tattooImage.onload = () => {
+  // Map dimensions nicely inside frame
+  if (tattooImage.width > canvas.width) {
+    scale = (canvas.width * 0.6) / tattooImage.width;
+  }
+  drawTattooLayerDirect();
+  saveStep();
+};
 
-canvas.addEventListener("mousedown", actionStart);
-canvas.addEventListener("mousemove", actionMove);
-canvas.addEventListener("mouseup", actionEnd);
-canvas.addEventListener("touchstart", actionStart, {passive: false});
-canvas.addEventListener("touchmove", actionMove, {passive: false});
-canvas.addEventListener("touchend", actionEnd);
+/* STUDIO RUNTIME GESTURES FOR IPAD & SURFACE MOUSE */
+let isPainting = false;
+let startX = 0, startY = 0;
 
-function getCoords(e) {
-  const rect = canvas.getBoundingClientRect();
-  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-  return { x: clientX - rect.left, y: clientY - rect.top };
+canvas.addEventListener("mousedown", dragStart);
+canvas.addEventListener("mousemove", dragMove);
+canvas.addEventListener("mouseup", dragEnd);
+canvas.addEventListener("touchstart", dragStart, {passive: false});
+canvas.addEventListener("touchmove", dragMove, {passive: false});
+canvas.addEventListener("touchend", dragEnd);
+
+function getEventCanvasPos(e) {
+  const r = canvas.getBoundingClientRect();
+  const cx = e.touches ? e.touches[0].clientX : e.clientX;
+  const cy = e.touches ? e.touches[0].clientY : e.clientY;
+  return { x: cx - r.left, y: cy - r.top };
 }
 
-function actionStart(e) {
+function dragStart(e) {
   e.preventDefault();
-  isActionActive = true;
-  const coords = getCoords(e);
-  lastX = coords.x;
-  lastY = coords.y;
-}
+  isPainting = true;
+  const p = getEventCanvasPos(e);
+  startX = p.x; startY = p.y;
 
-function actionMove(e) {
-  if (!isActionActive) return;
-  e.preventDefault();
-  const coords = getCoords(e);
-
-  if (currentTool === 'move') {
-    posX += (coords.x - lastX);
-    posY += (coords.y - lastY);
-    lastX = coords.x;
-    lastY = coords.y;
-    redrawWorkspace();
-  } else {
-    // Structural modifications relative to the transformed buffer
-    ctx.save();
-    // Inverse transformation matrix calculation to map coordinates directly on original image texture
-    let cx = posX + (bufferCanvas.width * scale) / 2;
-    let cy = posY + (bufferCanvas.height * scale) / 2;
-    
-    bCtx.save();
-    bCtx.translate(bufferCanvas.width/2, bufferCanvas.height/2);
-    bCtx.rotate(-rotation * Math.PI / 180);
-    bCtx.translate(-bufferCanvas.width/2, -bufferCanvas.height/2);
-
-    // Map global coordinate down to local matrix space
-    let localX = (coords.x - posX) / scale;
-    let localY = (coords.y - posY) / scale;
-    let prevLocalX = (lastX - posX) / scale;
-    let prevLocalY = (lastY - posY) / scale;
-
-    bCtx.restore();
-
-    // Canvas execution properties
-    bCtx.lineWidth = 16 / scale; 
-    bCtx.lineCap = "round";
-    bCtx.lineJoin = "round";
-
-    if (currentTool === 'eraser') {
-      bCtx.globalCompositeOperation = "destination-out";
-      bCtx.strokeStyle = "rgba(0,0,0,1)";
-    } else if (currentTool === 'brush') {
-      bCtx.globalCompositeOperation = "source-over";
-      bCtx.strokeStyle = "#000000";
-    }
-
-    bCtx.beginPath();
-    bCtx.moveTo(prevLocalX, prevLocalY);
-    bCtx.lineTo(localX, localY);
-    bCtx.stroke();
-
-    lastX = coords.x;
-    lastY = coords.y;
-    redrawWorkspace();
+  if (currentTool !== 'move') {
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
   }
 }
-function actionEnd() { isActionActive = false; }
 
-/* TOOLBAR SWITCHER */
-function setTool(toolName) {
-  currentTool = toolName;
-  document.querySelectorAll(".tool-btn").forEach(btn => btn.classList.remove("active"));
-  if(toolName === 'move') document.getElementById("toolMove").classList.add("active");
-  if(toolName === 'eraser') document.getElementById("toolEraser").classList.add("active");
-  if(toolName === 'brush') document.getElementById("toolBrush").classList.add("active");
+function dragMove(e) {
+  if (!isPainting) return;
+  e.preventDefault();
+  const p = getEventCanvasPos(e);
+
+  const currentBrushSize = document.getElementById("pSize").value;
+  const currentBrushOpacity = document.getElementById("pOpa").value / 100;
+
+  if (currentTool === 'move') {
+    posX += (p.x - startX);
+    posY += (p.y - startY);
+    startX = p.x; startY = p.y;
+    
+    // For clean layout moving we use temporary direct trace without rewriting history matrix stack
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.save();
+    ctx.translate(posX + (tattooImage.width * scale)/2, posY + (tattooImage.height * scale)/2);
+    ctx.rotate(rotation * Math.PI / 180);
+    ctx.translate(-(tattooImage.width * scale)/2, -(tattooImage.height * scale)/2);
+    ctx.drawImage(tattooImage, 0, 0, tattooImage.width * scale, tattooImage.height * scale);
+    ctx.restore();
+  } else {
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.lineWidth = currentBrushSize;
+
+    if (currentTool === 'eraser') {
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.strokeStyle = "rgba(0,0,0,1)";
+    } else if (currentTool === 'brush') {
+      ctx.globalCompositeOperation = "source-over";
+      ctx.strokeStyle = activeColor;
+      ctx.globalAlpha = currentBrushOpacity;
+    }
+
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    
+    // Reset defaults alpha contexts safely
+    ctx.globalCompositeOperation = "source-over";
+    ctx.globalAlpha = 1.0;
+  }
 }
 
-function adjustScale(amt) { scale = Math.min(Math.max(0.2, scale + amt), 3); redrawWorkspace(); }
-function adjustRotation(deg) { rotation += deg; redrawWorkspace(); }
+function dragEnd() {
+  if(isPainting) {
+    isPainting = false;
+    saveStep(); // Log state change directly inside history tracker
+  }
+}
 
-/* WORKABLE STYLE TRANSFER (HUE FILTER MODULATION) */
+/* PROCREATE INTERACTIVE WORKSPACE CONFIGURATION MODULES */
+function setTool(mode) {
+  currentTool = mode;
+  document.querySelectorAll(".tool-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("paletteBlock").style.display = (mode === 'brush') ? "block" : "none";
+  
+  if(mode === 'move') document.getElementById("toolMove").classList.add("active");
+  if(mode === 'brush') document.getElementById("toolBrush").classList.add("active");
+  if(mode === 'eraser') document.getElementById("toolEraser").classList.add("active");
+}
+
+function selectColor(color, element) {
+  activeColor = color;
+  document.querySelectorAll(".color-swatch").forEach(s => s.classList.remove("active"));
+  if(element) element.classList.add("active");
+}
+
+document.getElementById("customColorPicker").oninput = function() {
+  selectColor(this.value, null);
+};
+
+document.getElementById("pOpa").oninput = function() {
+  canvas.style.opacity = this.value / 100;
+};
+
+/* STYLE TRANSFER CONTROLLER */
 const styleTrackbar = document.getElementById("styleTrackbar");
 const styleThumb = document.getElementById("styleThumb");
 let isTrackingStyle = false;
@@ -653,57 +711,42 @@ styleThumb.addEventListener("mousedown", () => isTrackingStyle = true);
 styleThumb.addEventListener("touchstart", () => isTrackingStyle = true);
 window.addEventListener("mouseup", () => isTrackingStyle = false);
 window.addEventListener("touchend", () => isTrackingStyle = false);
-window.addEventListener("mousemove", moveStyle);
-window.addEventListener("touchmove", moveStyle, {passive: false});
-
-function moveStyle(e) {
+window.addEventListener("mousemove", (e) => {
   if (!isTrackingStyle) return;
   const rect = styleTrackbar.getBoundingClientRect();
   const clientX = e.touches ? e.touches[0].clientX : e.clientX;
   let left = Math.max(0, Math.min(clientX - rect.left, rect.width));
-  let pct = (left / rect.width) * 100;
-  styleThumb.style.left = pct + "%";
-  canvas.style.filter = `hue-rotate(${pct * 3.6}deg)`;
-}
+  styleThumb.style.left = (left / rect.width) * 100 + "%";
+  canvas.style.filter = `hue-rotate(${(left / rect.width) * 360}deg)`;
+});
 
-/* FILE IMPORTERS */
-document.getElementById("sketchLoader").onchange = function(e) {
-  const file = e.target.files[0];
-  if (file) {
-    const r = new FileReader();
-    r.onload = (ev) => {
-      tattooImage.src = ev.target.result;
-    };
-    r.readAsDataURL(file);
-  }
-};
+/* PRESET IMPORTS */
 document.getElementById("tattooSelect").onchange = function() {
   tattooImage.src = this.value;
 };
-
-document.getElementById("opacityRange").oninput = function() {
-  document.getElementById("opacityVal").innerText = this.value + "%";
-  canvas.style.opacity = this.value / 100;
+document.getElementById("sketchLoader").onchange = function(e) {
+  const f = e.target.files[0];
+  if (f) {
+    const reader = new FileReader();
+    reader.onload = (ev) => { tattooImage.src = ev.target.result; };
+    reader.readAsDataURL(f);
+  }
 };
 
-// Body parts slider interaction
-const partCards = document.querySelectorAll(".part-card");
-partCards.forEach(card => {
+// Body Part Selector Linker
+document.querySelectorAll(".part-card").forEach(card => {
   card.onclick = () => {
-    partCards.forEach(c => c.classList.remove("active"));
+    document.querySelectorAll(".part-card").forEach(c => c.classList.remove("active"));
     card.classList.add("active");
     document.getElementById("bodyBg").src = card.getAttribute("data-img");
   };
 });
 
-window.onload = initCanvasSize;
-window.onresize = initCanvasSize;
+window.onload = () => { initCanvasDimensions(); };
+window.onresize = () => { initCanvasDimensions(); };
 
-/* FORM DISPATCH MODULE */
 const modal = document.getElementById("bookingModal");
-document.querySelectorAll(".open-booking").forEach(btn => {
-  btn.onclick = () => { modal.classList.add("open"); };
-});
+document.querySelectorAll(".open-booking").forEach(b => b.onclick = () => modal.classList.add("open"));
 document.getElementById("closeModal").onclick = () => modal.classList.remove("open");
 </script>
 </body>
