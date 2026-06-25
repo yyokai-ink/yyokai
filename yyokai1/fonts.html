@@ -1,0 +1,619 @@
+Понял задачу. Из готового лендинга мы убираем всё лишнее (информацию об авторе, цены, отзывы, контакты и формы бронирования) и превращаем его в **чистый, минималистичный веб-сервис — Генератор шрифтов для тату**.
+При этом мы полностью сохраняем твою премиальную тёмную эстетику: стильную шапку («бургер»-меню, логотип, кнопку), фоновое видео на главном экране и сам интерактивный блок работы со шрифтами. Текст по умолчанию изменён на HELLO WORLD.
+Вот готовый, очищенный HTML-код. Можешь полностью скопировать его и заменить им свой файл:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>YYOKAI — Tattoo Lettering Generator</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+<link id="dynamic-fonts" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:#050505;
+  color:#f5f2ea;
+  font-family:'Montserrat', Arial, sans-serif;
+  overflow-x:hidden;
+}
+a{text-decoration:none;color:inherit}
+img,video{display:block;max-width:100%}
+button,input,textarea,select{font:inherit}
+
+:root{
+  --bg:#050505;
+  --card:#141414;
+  --card2:#1b1b1b;
+  --text:#f5f2ea;
+  --muted:#8d8d8d;
+  --muted2:#b8b8b8;
+  --silver:#d6d2c8;
+  --line:rgba(255,255,255,.12);
+  --glass:rgba(255,255,255,.08);
+  --glass2:rgba(255,255,255,.14);
+  --red:#ff2a2a;
+}
+
+.container{max-width:1240px;margin:auto}
+section{padding:110px 26px}
+
+h1{
+  font-size:clamp(56px,13vw,176px);
+  line-height:.82;
+  letter-spacing:-.085em;
+  font-weight:700;
+  color:var(--text);
+}
+h2{
+  font-size:clamp(42px,8vw,104px);
+  line-height:.88;
+  letter-spacing:-.07em;
+  font-weight:400;
+  color:var(--text);
+  margin-bottom:34px;
+}
+p{
+  color:var(--muted);
+  font-size:17px;
+  line-height:1.58;
+}
+
+.label{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 18px;
+  margin-bottom:26px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.14);
+  color:var(--silver);
+  font-size:10px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  backdrop-filter:blur(18px);
+}
+
+/* NAV */
+.nav{
+  position:fixed;
+  top:0;left:0;width:100%;
+  z-index:100;
+  padding:18px 26px;
+  background:rgba(5,5,5,.68);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(24px);
+}
+.nav-inner{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:18px;
+}
+.nav-logo{
+  color:#fff;
+  font-size:13px;
+  letter-spacing:.48em;
+  font-weight:700;
+}
+.nav-actions{display:flex;justify-content:flex-end}
+
+.burger{
+  width:38px;height:26px;
+  background:none;border:0;
+  cursor:pointer;
+  position:relative;
+  z-index: 101;
+}
+.burger span{
+  position:absolute;
+  left:0;
+  width:38px;
+  height:1px;
+  background:#f3f3f3;
+  transition:.35s ease;
+}
+.burger span:nth-child(1){top:3px}
+.burger span:nth-child(2){top:13px}
+.burger span:nth-child(3){top:23px}
+.burger.active span:nth-child(1){top:13px;transform:rotate(45deg)}
+.burger.active span:nth-child(2){opacity:0}
+.burger.active span:nth-child(3){top:13px;transform:rotate(-45deg)}
+
+.book-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:11px;
+  padding:10px 12px 10px 17px;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.16);
+  color:#f5f2ea;
+  font-size:10px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:.25s ease;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 50px rgba(0,0,0,.28);
+  backdrop-filter:blur(16px);
+}
+.book-btn:hover{
+  background:rgba(255,255,255,.14);
+  transform:translateY(-1px);
+}
+.arrow{
+  width:34px;height:34px;
+  border-radius:50%;
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.15);
+  color:#f2f2f2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  flex:none;
+}
+.pulse-dot{
+  width:6px;height:6px;
+  border-radius:50%;
+  background:var(--red);
+  box-shadow:0 0 18px rgba(255,42,42,.55);
+  animation:pulse 1.55s infinite ease-in-out;
+  flex:none;
+}
+@keyframes pulse{
+  0%{opacity:.25;transform:scale(.75);box-shadow:0 0 0 0 rgba(255,42,42,.45)}
+  50%{opacity:1;transform:scale(1);box-shadow:0 0 16px 5px rgba(255,42,42,.32)}
+  100%{opacity:.25;transform:scale(.75);box-shadow:0 0 0 0 rgba(255,42,42,0)}
+}
+
+.mobile-menu{
+  position:fixed;
+  inset:0;
+  background:rgba(5,5,5,.96);
+  z-index:90;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:24px;
+  font-size:clamp(28px,7vw,70px);
+  letter-spacing:-.06em;
+  text-transform:uppercase;
+  backdrop-filter:blur(18px);
+}
+.mobile-menu.open{display:flex}
+.mobile-menu a{color:#f5f2ea}
+.mobile-menu a:hover{color:var(--silver)}
+
+/* HERO WITH VIDEO */
+.hero{
+  min-height:100vh;
+  position:relative;
+  display:flex;
+  align-items:flex-end;
+  padding:128px 26px 78px;
+  overflow:hidden;
+}
+.hero-bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:.54;
+  filter:grayscale(1) contrast(1.1);
+}
+.hero:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(to top,#050505 0%,rgba(5,5,5,.96) 10%,rgba(5,5,5,.62) 36%,rgba(5,5,5,.26) 66%,rgba(5,5,5,.76) 100%),
+    radial-gradient(circle at 50% 104%,rgba(255,255,255,.16),transparent 34%);
+  z-index:1;
+}
+.hero-content{
+  position:relative;
+  z-index:2;
+  width:100%;
+}
+.hero-logo{
+  width:min(280px,58vw);
+  margin:0 auto clamp(160px,26vh,280px);
+  filter:brightness(0) invert(1) drop-shadow(0 24px 70px rgba(255,255,255,.14));
+  opacity:.96;
+}
+.hero-title{
+  display:grid;
+  gap:22px;
+}
+.hero-title p{
+  max-width:820px;
+  color:#b7b7b7;
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  font-size:13px;
+}
+
+/* LETTERING GENERATOR */
+.font-section {
+  background: linear-gradient(180deg, #050505, #0f0f0f, #050505);
+}
+.font-container-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 34px;
+  align-items: start;
+}
+.display-box {
+  background: #f5f2ea;
+  color: #050505;
+  border-radius: 30px;
+  padding: 50px 30px;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(24px, 4vw, 48px);
+  font-weight: 400;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  position: relative;
+  transition: all 0.3s ease;
+  word-break: break-word;
+}
+.display-box.wrap-text {
+  font-size: clamp(18px, 2.5vw, 28px);
+}
+.toast-msg {
+  position: absolute;
+  top: 20px;
+  background: var(--red);
+  color: #fff;
+  font-size: 11px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.font-controls-box {
+  background: linear-gradient(145deg,#171717,#0d0d0d);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 30px;
+  padding: 34px;
+  box-shadow: 0 34px 90px rgba(0,0,0,.38);
+}
+.font-input-field {
+  width: 100%;
+  background: #050505;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 24px;
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.font-input-field:focus {
+  border-color: var(--silver);
+}
+.font-scroll-area {
+  height: 320px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+.font-scroll-area::-webkit-scrollbar { width: 4px; }
+.font-scroll-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 10px; }
+
+.font-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  cursor: pointer;
+  transition: 0.2s ease;
+  border-radius: 8px;
+}
+.font-item-row:hover {
+  background: rgba(255,255,255,0.03);
+}
+.font-item-row.active {
+  color: #050505;
+  background: #f5f2ea;
+}
+.font-item-row.active .font-tag-badge {
+  background: rgba(0,0,0,0.1);
+  color: #050505;
+  border-color: rgba(0,0,0,0.2);
+}
+.font-preview-text {
+  font-size: 18px;
+}
+.font-tag-badge {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 4px 10px;
+  border-radius: 99px;
+  color: var(--muted);
+}
+
+.section-head{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:24px;
+  margin-bottom:28px;
+}
+.section-head p{max-width:420px}
+
+footer{
+  padding:54px 26px;
+  border-top:1px solid rgba(255,255,255,.09);
+  color:#555;text-align:center;
+  letter-spacing:.18em;font-size:11px;
+}
+
+/* RESPONSIVE MEDIA QUERIES */
+@media(max-width:850px){
+  section{padding:78px 26px;}
+  .section-head{display:block;margin-bottom:24px;}
+  .section-head h2{font-size:clamp(48px,15vw,68px);line-height:.9;margin-bottom:18px;}
+  .section-head p{max-width:100%;font-size:16px;line-height:1.45;color:#8f8f8f;}
+
+  .nav-logo{display:none;}
+  .nav-inner{grid-template-columns:1fr auto;}
+  .hero-logo{width:220px;}
+  .font-container-grid{grid-template-columns:1fr;}
+}
+
+@media(max-width:560px){
+  .book-btn{font-size:9px;letter-spacing:.12em;}
+  .arrow{width:31px;height:31px;}
+  .hero{padding-bottom:60px;}
+}
+</style>
+</head>
+
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <button class="burger" id="burger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-logo">YYOKAI</div>
+    <div class="nav-actions">
+      <button class="book-btn" onclick="document.getElementById('lettering').scrollIntoView();">
+        <span class="pulse-dot"></span>
+        Create Custom Text
+        <span class="arrow">→</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#home">Home</a>
+  <a href="#lettering">Lettering Generator</a>
+</div>
+
+<header class="hero" id="home">
+  <video class="hero-bg" autoplay muted loop playsinline>
+    <source src="video1.mov" type="video/mp4">
+  </video>
+  <div class="hero-content container">
+    <img class="hero-logo" src="logo1.PNG" alt="YYOKAI logo">
+    <div class="hero-title">
+      <h1>YYOKAI</h1>
+      <p>Japanese tattoo aesthetic / Premium calligraphy and typography tool for custom layout design.</p>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section id="lettering" class="font-section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="label">Lettering Generator</span>
+        <h2>Choose Your Style.</h2>
+      </div>
+      <p>Type your phrase, find the perfect tattoo custom font and tap to copy text.</p>
+    </div>
+
+    <div class="font-container-grid">
+      <div class="display-box" id="main-display" onclick="copyText()">
+        <span class="toast-msg" id="toast">Copied!</span>
+        <span id="display-text-content">HELLO WORLD</span>
+      </div>
+
+      <div class="font-controls-box">
+        <input type="text" class="font-input-field" id="user-input" placeholder="Type text here..." oninput="syncText()" maxlength="100">
+        
+        <div class="font-scroll-area" id="font-list"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>YYOKAI — TATTOO LETTERING TOOL</footer>
+
+<script>
+const tattooFonts = [
+    {id: 'UnifrakturMaguntia', tag: 'GOTHIC'},
+    {id: 'MedievalSharp', tag: 'GOTHIC'},
+    {id: 'Ponomar', tag: 'GOTHIC'},
+    {id: 'Monomakh', tag: 'GOTHIC'},
+    {id: 'Shafarik', tag: 'GOTHIC'},
+    {id: 'Ballet', tag: 'SCRIPT'},
+    {id: 'Great Vibes', tag: 'SCRIPT'},
+    {id: 'Pinyon Script', tag: 'SCRIPT'},
+    {id: 'Monsieur La Doulaise', tag: 'SCRIPT'},
+    {id: 'Mr De Haviland', tag: 'SCRIPT'},
+    {id: 'Herr Von Muellerhoff', tag: 'SCRIPT'},
+    {id: 'Mrs Saint Delafield', tag: 'SCRIPT'},
+    {id: 'Tangerine', tag: 'SCRIPT'},
+    {id: 'Allison', tag: 'SCRIPT'},
+    {id: 'Sacramento', tag: 'SCRIPT'},
+    {id: 'Allura', tag: 'SCRIPT'},
+    {id: 'Whisper', tag: 'SCRIPT'},
+    {id: 'Parisienne', tag: 'SCRIPT'},
+    {id: 'Playball', tag: 'SCRIPT'},
+    {id: 'Mr Dafoe', tag: 'SCRIPT'},
+    {id: 'Ephesis', tag: 'SCRIPT'},
+    {id: 'Quintessential', tag: 'SCRIPT'},
+    {id: 'Corinthia', tag: 'SCRIPT'},
+    {id: 'Montez', tag: 'SCRIPT'},
+    {id: 'League Script', tag: 'SCRIPT'},
+    {id: 'Meie Script', tag: 'SCRIPT'},
+    {id: 'Lavishly Yours', tag: 'SCRIPT'},
+    {id: 'Stalemate', tag: 'SCRIPT'},
+    {id: 'Imperial Script', tag: 'SCRIPT'},
+    {id: 'Mea Culpa', tag: 'SCRIPT'},
+    {id: 'Mr Bedfort', tag: 'SCRIPT'},
+    {id: 'Miss Fajardose', tag: 'SCRIPT'},
+    {id: 'Fleur De Leah', tag: 'SCRIPT'},
+    {id: 'Updock', tag: 'SCRIPT'},
+    {id: 'Noto Sans TC', tag: 'ASIA'},
+    {id: 'Nanum Myeongjo', tag: 'ASIA'},
+    {id: 'Lobster Two', tag: 'VINTAGE'},
+    {id: 'Jacques Francois Shadow', tag: 'VINTAGE'},
+    {id: 'Emblema One', tag: 'VINTAGE'},
+    {id: 'Ewert', tag: 'VINTAGE'},
+    {id: 'Jacquard 24 Charted', tag: 'VINTAGE'},
+    {id: 'Creepster', tag: 'HORROR'},
+    {id: 'Rampart One', tag: 'DISPLAY'},
+    {id: 'Sonsie One', tag: 'DISPLAY'},
+    {id: 'Joti One', tag: 'DISPLAY'},
+    {id: 'Sankofa Display', tag: 'DISPLAY'},
+    {id: 'Dancing Script', tag: 'HAND'},
+    {id: 'Caveat', tag: 'HAND'},
+    {id: 'Kaushan Script', tag: 'HAND'},
+    {id: 'Homemade Apple', tag: 'HAND'},
+    {id: 'Nothing You Could Do', tag: 'HAND'},
+    {id: 'Amatic SC', tag: 'HAND'},
+    {id: 'Cookie', tag: 'HAND'},
+    {id: 'Caramel', tag: 'HAND'},
+    {id: 'Molle', tag: 'HAND'},
+    {id: 'Playwrite ES', tag: 'HAND'}, 
+    {id: 'Playwrite NZ Guides', tag: 'HAND'},
+    {id: 'Libre Baskerville', tag: 'ROMAN'},
+    {id: 'DM Serif Display', tag: 'ROMAN'},
+    {id: 'Quattrocento', tag: 'ROMAN'},
+    {id: 'Quando', tag: 'ROMAN'},
+    {id: 'Belleza', tag: 'ROMAN'},
+    {id: 'Bona Nova SC', tag: 'ROMAN'},
+    {id: 'Italiana', tag: 'ROMAN'},
+    {id: 'Libre Caslon Display', tag: 'ROMAN'},
+    {id: 'Bodoni Moda SC', tag: 'ROMAN'},
+    {id: 'Elsie Swash Caps', tag: 'ROMAN'},
+    {id: 'Diplomata SC', tag: 'ROMAN'},
+    {id: 'Saira Stencil One', tag: 'TECH'},
+    {id: 'Russo One', tag: 'TECH'},
+    {id: 'Gruppo', tag: 'TECH'},
+    {id: 'Contrail One', tag: 'TECH'},
+    {id: 'Dorsa', tag: 'TECH'},
+    {id: 'Bungee Outline', tag: 'TECH'},
+    {id: 'Josefin Slab', tag: 'MODERN'},
+    {id: 'Press Start 2P', tag: 'PIXEL'},
+    {id: 'Silkscreen', tag: 'PIXEL'},
+    {id: 'Sedgwick Ave Display', tag: 'STREET'},
+    {id: 'Bangers', tag: 'COMIC'}
+];
+
+function loadPreviews(fonts) {
+    const size = 20;
+    for (let i = 0; i < fonts.length; i += size) {
+        const chunk = fonts.slice(i, i + size);
+        const names = chunk.map(f => f.id.replace(/ /g, '+')).join('|');
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = `https://fonts.googleapis.com/css?family=${names}&display=swap`;
+        document.head.appendChild(link);
+    }
+}
+loadPreviews(tattooFonts);
+
+const list = document.getElementById('font-list');
+tattooFonts.forEach((f, index) => {
+    const node = document.createElement('div');
+    node.className = 'font-item-row';
+    if(index === 0) node.classList.add('active');
+    
+    node.innerHTML = `
+      <span class="font-preview-text" style="font-family:'${f.id}'">Style — ${f.id}</span>
+      <span class="font-tag-badge">${f.tag}</span>
+    `;
+    
+    node.onclick = () => {
+        const fontUrl = `https://fonts.googleapis.com/css?family=${f.id.replace(/ /g, '+')}&display=swap`;
+        document.getElementById('dynamic-fonts').href = fontUrl;
+        document.getElementById('main-display').style.fontFamily = `'${f.id}', sans-serif`;
+        
+        document.querySelectorAll('.font-item-row').forEach(n => n.classList.remove('active'));
+        node.classList.add('active');
+    };
+    list.appendChild(node);
+});
+
+function syncText() {
+    const val = document.getElementById('user-input').value;
+    const displayBox = document.getElementById('main-display');
+    const textSpan = document.getElementById('display-text-content');
+    
+    textSpan.innerText = val || "HELLO WORLD";
+    
+    if(val.length > 15) {
+        displayBox.classList.add('wrap-text');
+    } else {
+        displayBox.classList.remove('wrap-text');
+    }
+}
+
+function copyText() {
+    const textSpan = document.getElementById('display-text-content');
+    navigator.clipboard.writeText(textSpan.innerText);
+    
+    const toast = document.getElementById('toast');
+    toast.style.opacity = '1';
+    setTimeout(() => { toast.style.opacity = '0'; }, 1200);
+}
+
+const burger = document.getElementById("burger");
+const mobileMenu = document.getElementById("mobileMenu");
+
+burger.onclick = () => {
+  burger.classList.toggle("active");
+  mobileMenu.classList.toggle("open");
+};
+
+document.querySelectorAll(".mobile-menu a").forEach(link => {
+  link.onclick = () => {
+    burger.classList.remove("active");
+    mobileMenu.classList.remove("open");
+  };
+});
+</script>
+
+</body>
+</html>
+
+```
