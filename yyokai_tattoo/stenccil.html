@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>YYO KAI — Stencil Studio Pro</title>
+  <title>YYO KAI — Tattoo Multi-Studio & Stencil Pro</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -13,69 +13,76 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
-    /* Хедер */
     header {
       position: fixed; top: 0; left: 0; width: 100%; display: flex;
       justify-content: space-between; align-items: center; padding: 14px 20px;
-      z-index: 100; background: rgba(8,8,8,0.92); backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255, 42, 42, 0.15);
+      z-index: 1000; background: rgba(8,8,8,0.92); backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 42, 42, 0.2);
     }
     .audio-header-control {
       display: flex; align-items: center; gap: 8px;
-      background: rgba(20, 20, 20, 0.8); border: 1px solid rgba(255, 42, 42, 0.4);
-      padding: 5px 12px; border-radius: 20px; font-size: 0.75rem;
+      background: rgba(20, 20, 20, 0.9); border: 1px solid rgba(255, 42, 42, 0.4);
+      padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; letter-spacing: 1px;
     }
     .music-btn {
       background: #ff2a2a; color: #fff; border: none; padding: 4px 10px;
       border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 0.75rem;
-      box-shadow: 0 0 8px rgba(255, 42, 42, 0.4);
+      box-shadow: 0 0 8px rgba(255, 42, 42, 0.5);
     }
 
-    /* Анімований Бургер */
     .burger-btn {
-      background: transparent; border: none; width: 30px; height: 20px;
+      background: transparent; border: none; width: 30px; height: 22px;
       display: flex; flex-direction: column; justify-content: space-between;
-      cursor: pointer; z-index: 102;
+      cursor: pointer; z-index: 1002; position: relative;
     }
     .burger-btn span {
       display: block; width: 100%; height: 3px; background-color: #ff2a2a;
-      border-radius: 2px; transition: all 0.3s ease;
+      border-radius: 2px; transition: all 0.3s ease-in-out;
+      box-shadow: 0 0 5px rgba(255, 42, 42, 0.5);
     }
-    .burger-btn.open span:nth-child(1) { transform: translateY(8.5px) rotate(45deg); }
+    .burger-btn.open span:nth-child(1) { transform: translateY(9.5px) rotate(45deg); }
     .burger-btn.open span:nth-child(2) { opacity: 0; }
-    .burger-btn.open span:nth-child(3) { transform: translateY(-8.5px) rotate(-45deg); }
+    .burger-btn.open span:nth-child(3) { transform: translateY(-9.5px) rotate(-45deg); }
 
     .side-menu {
-      position: fixed; top: 0; right: -100%; width: 280px; height: 100%;
-      background-color: #121212; border-left: 1px solid rgba(255, 42, 42, 0.2);
-      box-shadow: -10px 0 30px rgba(0,0,0,0.9); z-index: 101;
+      position: fixed; top: 0; right: -100%; width: 290px; height: 100%;
+      background-color: #121212; border-left: 1px solid rgba(255, 42, 42, 0.3);
+      box-shadow: -10px 0 35px rgba(0,0,0,0.95); z-index: 1001;
       padding: 90px 25px 30px; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex; flex-direction: column; justify-content: space-between;
     }
     .side-menu.active { right: 0; }
     .side-menu ul { list-style: none; }
     .side-menu li { margin-bottom: 22px; }
-    .side-menu a { color: #e0e0e0; text-decoration: none; font-size: 1.05rem; }
+    .side-menu a {
+      color: #e0e0e0; text-decoration: none; font-size: 1.05rem;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .menu-badge { font-size: 0.65rem; background: #ff2a2a; padding: 2px 6px; border-radius: 4px; color: #fff; }
 
-    /* Hero */
     .hero {
-      min-height: 40vh; display: flex; flex-direction: column;
+      min-height: 38vh; display: flex; flex-direction: column;
       justify-content: center; align-items: center; text-align: center;
-      padding: 85px 20px 15px; background: radial-gradient(circle at center, #2e0808 0%, #080808 75%);
+      padding: 85px 20px 15px; background: radial-gradient(circle at center, #350808 0%, #080808 75%);
     }
     .logo-text {
-      font-size: 3.4rem; font-weight: 900; line-height: 0.95; letter-spacing: 2px;
-      color: #ffffff; text-shadow: 0 0 20px rgba(255, 42, 42, 0.4);
+      font-size: 3.6rem; font-weight: 900; line-height: 0.92; letter-spacing: 3px;
+      color: #ffffff; text-shadow: 0 0 25px rgba(255, 42, 42, 0.5);
       opacity: 0; transform: translateY(25px); animation: logoFadeIn 1.2s forwards;
     }
     @keyframes logoFadeIn { to { opacity: 1; transform: translateY(0); } }
     .subtitle { color: #888; font-size: 0.75rem; letter-spacing: 4px; margin-top: 12px; }
 
     .user-card {
-      margin-top: 15px; background: rgba(255,42,42,0.1); border: 1px solid rgba(255,42,42,0.4);
-      padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; color: #ff8888; text-align: center;
+      margin-top: 14px; background: rgba(255,42,42,0.12); border: 1px solid rgba(255,42,42,0.4);
+      padding: 8px 18px; border-radius: 20px; font-size: 0.82rem; color: #ff8888; text-align: center;
     }
 
-    /* Stencil Studio Tool */
+    .timer-box {
+      margin-top: 10px; font-size: 0.8rem; color: #ff6b6b; background: rgba(255, 0, 0, 0.1);
+      padding: 6px 12px; border-radius: 8px; border: 1px dashed #ff2a2a; display: none;
+    }
+
     .stencil-section { max-width: 1200px; margin: 0 auto; padding: 15px; }
     .upload-box {
       border: 2px dashed rgba(255, 42, 42, 0.5); background: #111;
@@ -83,18 +90,20 @@
     }
     .upload-box input { display: none; }
 
-    /* Панель налаштувань */
     .controls {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px; margin: 15px 0; background: #121212; padding: 15px;
+      gap: 12px; margin: 15px 0; background: #121212; padding: 16px;
       border-radius: 12px; border: 1px solid #222; position: sticky; top: 65px; z-index: 90;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.9);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.9);
     }
-    .control-group { display: flex; flex-direction: column; gap: 4px; }
+    .control-group { display: flex; flex-direction: column; gap: 5px; }
     .control-group label { font-size: 0.75rem; color: #aaa; }
     .control-group input[type="range"] { accent-color: #ff2a2a; }
+    .control-group select {
+      background: #1a1a1a; color: #fff; border: 1px solid #333;
+      padding: 6px; border-radius: 6px; font-size: 0.8rem; outline: none;
+    }
 
-    /* Порівняльне вікно */
     .canvas-wrapper {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
       gap: 15px; margin-top: 15px;
@@ -103,20 +112,19 @@
       background: #111; border-radius: 8px; padding: 10px;
       border: 1px solid #222; text-align: center;
     }
-    .canvas-container h4 { margin-bottom: 8px; font-size: 0.8rem; color: #777; }
-    canvas { width: 100%; height: auto; border-radius: 4px; background: #ffffff; }
+    .canvas-container h4 { margin-bottom: 8px; font-size: 0.8rem; color: #777; letter-spacing: 1px; }
+    canvas { width: 100%; height: auto; border-radius: 4px; background: #ffffff; display: block; }
 
     .btn-download {
       display: block; width: 100%; max-width: 320px; margin: 20px auto;
-      padding: 14px; background: #ff2a2a; color: #fff; font-weight: bold;
+      padding: 15px; background: #ff2a2a; color: #fff; font-weight: bold;
       border: none; border-radius: 8px; cursor: pointer; text-align: center;
       box-shadow: 0 4px 18px rgba(255, 42, 42, 0.4);
     }
 
-    /* Модальні вікна */
     .modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 200;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 2000;
       justify-content: center; align-items: center; padding: 20px;
     }
     .modal-content {
@@ -127,12 +135,11 @@
       border: 1px solid #333; padding: 12px; margin: 10px 0; border-radius: 8px;
       cursor: pointer; display: flex; justify-content: space-between; align-items: center;
     }
-    .tariff-card.selected { border-color: #ff2a2a; background: rgba(255,42,42,0.1); }
+    .tariff-card.selected { border-color: #ff2a2a; background: rgba(255,42,42,0.12); }
     .qr-img { width: 150px; height: 150px; margin: 12px auto; display: block; background: white; padding: 4px; }
 
     footer { padding: 35px 20px 15px; text-align: center; font-size: 0.75rem; color: #444; }
     .admin-link { color: rgba(255,255,255,0.05); text-decoration: none; cursor: pointer; }
-    .admin-link:hover { color: rgba(255,42,42,0.4); }
   </style>
 </head>
 <body>
@@ -148,38 +155,49 @@
   </header>
 
   <div class="side-menu" id="sideMenu">
-    <ul>
-      <li><a href="#hero" onclick="toggleMenu()">Головна</a></li>
-      <li><a href="#stencil" onclick="toggleMenu()">Генератор стенсилів</a></li>
-      <li><a href="#" onclick="openPayModal(); toggleMenu();">Тарифи &amp; Оплата</a></li>
-    </ul>
+    <div>
+      <h3 style="color:#ff2a2a; font-size:1.1rem; margin-bottom:20px;">YYO KAI STUDIO</h3>
+      <ul>
+        <li><a href="#hero" onclick="toggleMenu()">🎨 Генератор Стенсилів <span class="menu-badge">PRO</span></a></li>
+        <li><a href="#" onclick="openPayModal(); toggleMenu();">💳 Тарифи &amp; Оплата</a></li>
+      </ul>
+    </div>
+    <div style="font-size:0.75rem; color:#666;">YYO KAI Ecosystem v2.5</div>
   </div>
 
   <section class="hero" id="hero">
     <div class="logo-text">YYO<br />KAI</div>
     <div class="subtitle">PROFESSIONAL STENCIL STUDIO</div>
-    <div class="user-card" id="userBadge">
-      Завантаження профілю Telegram...
-    </div>
+    <div class="user-card" id="userBadge">Авторизація...</div>
+    <div class="timer-box" id="timerBox"></div>
   </section>
 
   <section class="stencil-section" id="stencil">
-    <div class="upload-box" onclick="document.getElementById('fileInput').click()">
-      <p style="font-size: 1rem; font-weight: bold;">Завантажити эскіз або портрет</p>
+    <div class="upload-box" id="uploadBox" onclick="triggerUpload()">
+      <p style="font-size: 1rem; font-weight: bold;">Натисніть щоб обрати фото / ескіз</p>
+      <p style="font-size: 0.75rem; color: #777; margin-top: 4px;">2 безкоштовні стенсили на 24 години</p>
       <input type="file" id="fileInput" accept="image/*" />
     </div>
 
     <div class="controls">
       <div class="control-group">
-        <label for="threshold">Контур (Поріг): <span id="threshVal">110</span></label>
-        <input type="range" id="threshold" min="30" max="200" value="110" />
+        <label for="styleMode">Стиль Татуювання:</label>
+        <select id="styleMode" onchange="if(loadedImg) processStencil()">
+          <option value="portrait">Портрет / Реалізм</option>
+          <option value="linework">Графіка / Линії</option>
+          <option value="micro">Micro-Realism / Дрібні деталі</option>
+        </select>
       </div>
       <div class="control-group">
-        <label for="detail">Портретні деталі: <span id="detailVal">1.4</span></label>
+        <label for="threshold">Чіткість (Поріг): <span id="threshVal">120</span></label>
+        <input type="range" id="threshold" min="30" max="210" value="120" />
+      </div>
+      <div class="control-group">
+        <label for="detail">Контраст деталізації: <span id="detailVal">1.4</span></label>
         <input type="range" id="detail" min="0.5" max="3.0" step="0.1" value="1.4" />
       </div>
       <div class="control-group">
-        <label for="clean">Очищення теней: <span id="cleanVal">2</span></label>
+        <label for="clean">Очищення від шумів: <span id="cleanVal">2</span></label>
         <input type="range" id="clean" min="0" max="5" value="2" />
       </div>
     </div>
@@ -195,13 +213,13 @@
       </div>
     </div>
 
-    <button class="btn-download" id="downloadBtn" style="display: none;" onclick="downloadStencil()">ЗАВАНТАЖИТИ СТЕНСИЛ (PNG)</button>
+    <button class="btn-download" id="downloadBtn" style="display: none;" onclick="downloadStencil()">CКАЧАТИ ТРАНСФЕР (PNG)</button>
   </section>
 
   <div class="modal" id="payModal">
     <div class="modal-content">
-      <h3 style="color:#ff2a2a; margin-bottom:10px;">Поповнення трансферів</h3>
-      <p style="font-size:0.8rem; color:#ccc; margin-bottom:12px;">Оплата прив'язується до вашого Telegram ID:</p>
+      <h3 style="color:#ff2a2a; margin-bottom:10px;">Поповнення ліміту</h3>
+      <p style="font-size:0.8rem; color:#ccc; margin-bottom:12px;">Оплата прив'язується до Telegram ID:</p>
 
       <div class="tariff-card selected" onclick="selectTariff(200, 100, this)">
         <div><b>100 трансферів</b><br/><small style="color:#888;">на 30 днів</small></div>
@@ -219,7 +237,7 @@
       <p style="margin-top:12px; font-size:0.75rem; text-align:center;">Оплата на картку:<br/><b>4149 6090 5981 7330</b></p>
       <img id="qrCode" class="qr-img" src="" alt="QR" />
 
-      <button class="btn-download" style="margin-top:10px; width:100%;" onclick="submitPayment()">Я ОПЛАТИВ (ВІДПРАВИТИ ЗАПИТ)</button>
+      <button class="btn-download" style="margin-top:10px; width:100%;" onclick="submitPayment()">Я ОПЛАТИВ (ВІДПРАВИТИ В TELEGRAM)</button>
       <button onclick="closePayModal()" style="background:none; border:none; color:#777; width:100%; margin-top:8px; cursor:pointer;">Закрити</button>
     </div>
   </div>
@@ -240,24 +258,35 @@
   <audio id="bgMusic" loop src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=deep-space-110258.mp3"></audio>
 
   <script>
-    // 1. Авторизація через Telegram SDK
+    // Telegram SDK
     const tg = window.Telegram ? window.Telegram.WebApp : null;
-    let tgUser = { id: 'guest_' + Math.floor(Math.random()*10000), username: 'Гість' };
-
+    let tgUser = { id: 'user_local', username: 'Guest_Master' };
     if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
       tg.ready();
       tgUser = tg.initDataUnsafe.user;
     }
 
-    // Прив'язка баз даних до Telegram ID
-    const dbKey = 'yyokai_user_' + tgUser.id;
-    let state = JSON.parse(localStorage.getItem(dbKey)) || { rem: 2, expireDate: null };
+    const dbKey = 'yyokai_db_' + tgUser.id;
+    let state = JSON.parse(localStorage.getItem(dbKey)) || {
+      remFree: 2,
+      paidRem: 0,
+      resetTime: null,
+      expireDate: null
+    };
 
     function checkExpiration() {
-      if (state.expireDate && new Date().getTime() > state.expireDate) {
-        state.rem = 0; state.expireDate = null;
-        saveState();
+      const now = new Date().getTime();
+      // Перевірка 24-годинного відновлення безкоштовних спроб
+      if (state.resetTime && now >= state.resetTime) {
+        state.remFree = 2;
+        state.resetTime = null;
       }
+      // Перевірка 30-денної платної підписки
+      if (state.expireDate && now >= state.expireDate) {
+        state.paidRem = 0;
+        state.expireDate = null;
+      }
+      saveState();
     }
 
     function saveState() {
@@ -265,14 +294,51 @@
       updateUI();
     }
 
+    let timerInterval = null;
     function updateUI() {
-      checkExpiration();
-      const name = tgUser.username ? '@' + tgUser.username : (tgUser.first_name || 'Майстер');
-      document.getElementById('userBadge').innerHTML = `${name} | Залишилось: <b style="color:#ff2a2a;">${state.rem}</b> трансферів`;
-    }
-    updateUI();
+      const userName = tgUser.username ? '@' + tgUser.username : (tgUser.first_name || 'Майстер');
+      const totalAvailable = state.paidRem > 0 ? state.paidRem : state.remFree;
+      
+      document.getElementById('userBadge').innerHTML = `${userName} | Доступно: <b style="color:#ff2a2a;">${totalAvailable}</b> трансферів`;
 
-    // 2. Інтерфейс та Музика
+      const timerBox = document.getElementById('timerBox');
+      if (state.paidRem <= 0 && state.remFree <= 0 && state.resetTime) {
+        timerBox.style.display = 'block';
+        startTimer();
+      } else {
+        timerBox.style.display = 'none';
+        if (timerInterval) clearInterval(timerInterval);
+      }
+    }
+
+    function startTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        const now = new Date().getTime();
+        const diff = state.resetTime - now;
+        if (diff <= 0) {
+          clearInterval(timerInterval);
+          checkExpiration();
+          return;
+        }
+        const h = Math.floor(diff / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        document.getElementById('timerBox').innerText = `Ви досягли ліміту за сьогодні. Наступний трансфер через: ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+      }, 1000);
+    }
+
+    function triggerUpload() {
+      checkExpiration();
+      if (state.paidRem <= 0 && state.remFree <= 0) {
+        alert("Ви вичерпали максимум на сьогодні (2 стенсили). Купуйте тариф або зачекайте 24 години!");
+        openPayModal();
+        return;
+      }
+      document.getElementById('fileInput').click();
+    }
+
+    // Музика & Бургер
     function toggleMenu() {
       document.getElementById('burgerBtn').classList.toggle('open');
       document.getElementById('sideMenu').classList.toggle('active');
@@ -289,7 +355,7 @@
       }
     }
 
-    // 3. Stencil Maker Pro Engine (Sobel + High Contrast Median Filter)
+    // Stencil Engine
     const fileInput = document.getElementById('fileInput');
     const origCanvas = document.getElementById('origCanvas');
     const stencilCanvas = document.getElementById('stencilCanvas');
@@ -298,7 +364,6 @@
     let loadedImg = null;
 
     fileInput.addEventListener('change', (e) => {
-      if (state.rem <= 0) { openPayModal(); return; }
       const file = e.target.files[0];
       if (!file) return;
 
@@ -317,7 +382,16 @@
           origCtx.drawImage(loadedImg, 0, 0, w, h);
 
           processStencil();
-          state.rem--;
+
+          // Списання ліміту
+          if (state.paidRem > 0) {
+            state.paidRem--;
+          } else if (state.remFree > 0) {
+            state.remFree--;
+            if (state.remFree === 0 && !state.resetTime) {
+              state.resetTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 години відліку
+            }
+          }
           saveState();
           document.getElementById('downloadBtn').style.display = 'block';
         };
@@ -335,17 +409,17 @@
 
     function processStencil() {
       const w = origCanvas.width, h = origCanvas.height;
-      const srcData = origCtx.getImageData(0, 0, w, h);
-      const src = srcData.data;
-
+      const src = origCtx.getImageData(0, 0, w, h).data;
       const thresh = parseInt(document.getElementById('threshold').value);
       const detail = parseFloat(document.getElementById('detail').value);
       const clean = parseInt(document.getElementById('clean').value);
+      const style = document.getElementById('styleMode').value;
 
       const gray = new Float32Array(w * h);
       for (let i = 0; i < src.length; i += 4) {
         let g = 0.299 * src[i] + 0.587 * src[i + 1] + 0.114 * src[i + 2];
-        g = ((g / 255 - 0.5) * detail + 0.5) * 255;
+        if (style === 'portrait') g = ((g / 255 - 0.5) * detail + 0.5) * 255;
+        else if (style === 'linework') g = g > 128 ? 255 : 0;
         gray[i / 4] = Math.min(255, Math.max(0, g));
       }
 
@@ -359,29 +433,32 @@
           const gy = -gray[idx - w - 1] - 2 * gray[idx - w] - gray[idx - w + 1] + gray[idx + w - 1] + 2 * gray[idx + w] + gray[idx + w + 1];
           let mag = Math.sqrt(gx * gx + gy * gy);
 
-          if (clean > 0 && mag < clean * 12) mag = 0;
+          if (clean > 0 && mag < clean * 10) mag = 0;
 
-          const isLine = mag > (225 - thresh);
-          const val = isLine ? 0 : 255;
+          const val = mag > (220 - thresh) ? 0 : 255;
           const outIdx = idx * 4;
-
-          outData[outIdx] = val;
-          outData[outIdx + 1] = val;
-          outData[outIdx + 2] = val;
+          outData[outIdx] = outData[outIdx + 1] = outData[outIdx + 2] = val;
           outData[outIdx + 3] = 255;
         }
       }
       stencilCtx.putImageData(output, 0, 0);
     }
 
+    // Надійне скачування файлу без помилок у Telegram WebApp
     function downloadStencil() {
-      const link = document.createElement('a');
-      link.download = `yyokai-stencil-${Date.now()}.png`;
-      link.href = stencilCanvas.toDataURL('image/png');
-      link.click();
+      stencilCanvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `yyokai-stencil-${Date.now()}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+      }, 'image/png');
     }
 
-    // 4. Оплата та Адмінка
+    // Оплата & Адмінка
     let selectedSum = 200, selectedCount = 100;
     function selectTariff(sum, count, el) {
       selectedSum = sum; selectedCount = count;
@@ -391,8 +468,7 @@
     }
 
     function updateQR() {
-      const card = "4149609059817330";
-      document.getElementById('qrCode').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Card:${card};Sum:${selectedSum}UAH`;
+      document.getElementById('qrCode').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Card:4149609059817330;Sum:${selectedSum}UAH`;
     }
     updateQR();
 
@@ -400,26 +476,26 @@
     function closePayModal() { document.getElementById('payModal').style.display = 'none'; }
 
     function submitPayment() {
+      const userTag = tgUser.username ? '@' + tgUser.username : tgUser.first_name;
+      const message = `Вітаю! Я оплатив підписку на YYOKAI Stencil.\n\nТариф: ${selectedCount} трансферів (${selectedSum} грн)\nМій ID: ${tgUser.id}\nАкаунт: ${userTag}`;
+
       let reqs = JSON.parse(localStorage.getItem('yyokai_global_requests')) || [];
-      reqs.push({
-        id: Date.now(),
-        tgId: tgUser.id,
-        user: tgUser.username ? '@' + tgUser.username : (tgUser.first_name || 'TG User'),
-        sum: selectedSum,
-        count: selectedCount
-      });
+      reqs.push({ id: Date.now(), tgId: String(tgUser.id), user: userTag, sum: selectedSum, count: selectedCount });
       localStorage.setItem('yyokai_global_requests', JSON.stringify(reqs));
 
-      alert('Дякуємо! Запит надіслано. Підписка активується відразу після перевірки чека.');
+      if (tg && tg.openTelegramLink) {
+        tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(message)}`);
+      } else {
+        window.open(`https://t.me/share/url?url=${encodeURIComponent(message)}`, '_blank');
+      }
       closePayModal();
     }
 
     function openAdmin() {
-      const pass = prompt('Пароль Адміна:');
-      if (pass === 'yyokai1') {
+      if (prompt('Пароль Адміна:') === 'yyokai1') {
         renderAdmin();
         document.getElementById('adminModal').style.display = 'flex';
-      } else if (pass) {
+      } else {
         alert('Невірний пароль!');
       }
     }
@@ -445,20 +521,22 @@
       reqs = reqs.filter(r => r.id !== reqId);
       localStorage.setItem('yyokai_global_requests', JSON.stringify(reqs));
 
-      const targetKey = 'yyokai_user_' + targetTgId;
-      let targetState = JSON.parse(localStorage.getItem(targetKey)) || { rem: 0 };
-      targetState.rem += count;
+      const targetKey = 'yyokai_db_' + targetTgId;
+      let targetState = JSON.parse(localStorage.getItem(targetKey)) || { remFree: 2, paidRem: 0 };
+      targetState.paidRem += count;
       targetState.expireDate = new Date().getTime() + (30 * 24 * 60 * 60 * 1000);
       localStorage.setItem(targetKey, JSON.stringify(targetState));
 
-      if (targetTgId === String(tgUser.id)) {
+      if (String(targetTgId) === String(tgUser.id)) {
         state = targetState;
         updateUI();
       }
 
       renderAdmin();
-      alert(`Успішно додано ${count} трансферів для ID: ${targetTgId}`);
+      alert(`Успішно додано ${count} платиних трансферів для Telegram ID: ${targetTgId}`);
     }
+
+    checkExpiration();
   </script>
 </body>
 </html>
