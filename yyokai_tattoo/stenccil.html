@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>YYO KAI — Killer Stencil Pro &amp; Cloud</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <title>YYO KAI — Killer Stencil Ultimate Engine</title>
   
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
@@ -13,7 +13,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       width: 100%; max-width: 100%; overflow-x: hidden;
-      background-color: #080808; color: #ffffff;
+      background-color: #050505; color: #ffffff;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
@@ -21,8 +21,8 @@
     header {
       position: fixed; top: 0; left: 0; width: 100%; display: flex;
       justify-content: space-between; align-items: center; padding: 14px 20px;
-      z-index: 10000; background: rgba(8,8,8,0.95); backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255, 42, 42, 0.25);
+      z-index: 10000; background: rgba(5,5,5,0.95); backdrop-filter: blur(15px);
+      border-bottom: 1px solid rgba(255, 42, 42, 0.2);
     }
     .audio-header-control {
       display: flex; align-items: center; gap: 8px;
@@ -35,46 +35,42 @@
       box-shadow: 0 0 10px rgba(255, 42, 42, 0.5);
     }
 
-    /* Бургер кнопка */
+    /* Бургер / Хрестик однакового розміру */
     .burger-btn {
       background: transparent; border: none; width: 32px; height: 24px;
       display: flex; flex-direction: column; justify-content: space-between;
-      cursor: pointer; z-index: 10002; position: relative;
+      cursor: pointer; z-index: 100002; position: relative;
     }
     .burger-btn span {
       display: block; width: 100%; height: 3px; background-color: #ff2a2a;
-      border-radius: 2px; transition: all 0.3s ease;
+      border-radius: 2px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 0 0 6px rgba(255, 42, 42, 0.6);
     }
     .burger-btn.open span:nth-child(1) { transform: translateY(10.5px) rotate(45deg); }
-    .burger-btn.open span:nth-child(2) { opacity: 0; }
+    .burger-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
     .burger-btn.open span:nth-child(3) { transform: translateY(-10.5px) rotate(-45deg); }
 
-    /* Висувне меню + Окремий Хрестик закриття */
+    /* Висувне меню */
     .side-menu {
-      position: fixed; top: 0; right: -100%; width: 300px; height: 100%;
-      background-color: #111111; border-left: 1px solid rgba(255, 42, 42, 0.3);
+      position: fixed; top: 0; right: -100%; width: 280px; height: 100%;
+      background-color: #0c0c0c; border-left: 1px solid rgba(255, 42, 42, 0.3);
       box-shadow: -10px 0 40px rgba(0,0,0,0.95); z-index: 100001;
-      padding: 80px 25px 30px; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 90px 25px 30px; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex; flex-direction: column; justify-content: space-between;
     }
     .side-menu.active { right: 0; }
-    .close-menu-x {
-      position: absolute; top: 20px; right: 20px; font-size: 1.8rem;
-      color: #ff2a2a; cursor: pointer; font-weight: bold; line-height: 1;
-    }
     .side-menu ul { list-style: none; }
     .side-menu li { margin-bottom: 22px; }
     .side-menu a { color: #e0e0e0; text-decoration: none; font-size: 1.05rem; display: flex; align-items: center; gap: 10px; }
 
     /* Hero */
     .hero {
-      min-height: 35vh; display: flex; flex-direction: column;
+      min-height: 30vh; display: flex; flex-direction: column;
       justify-content: center; align-items: center; text-align: center;
-      padding: 90px 20px 15px; background: radial-gradient(circle at center, #3a0606 0%, #080808 80%);
+      padding: 85px 20px 15px; background: radial-gradient(circle at center, #2b0404 0%, #050505 85%);
     }
-    .logo-text { font-size: 3.6rem; font-weight: 900; line-height: 0.92; letter-spacing: 3px; color: #ffffff; text-shadow: 0 0 30px rgba(255, 42, 42, 0.6); }
-    .subtitle { color: #888; font-size: 0.75rem; letter-spacing: 4px; margin-top: 10px; }
+    .logo-text { font-size: 3.4rem; font-weight: 900; line-height: 0.92; letter-spacing: 3px; color: #ffffff; text-shadow: 0 0 30px rgba(255, 42, 42, 0.6); }
+    .subtitle { color: #888; font-size: 0.7rem; letter-spacing: 4px; margin-top: 10px; }
 
     .user-card {
       margin-top: 14px; background: rgba(255,42,42,0.12); border: 1px solid rgba(255,42,42,0.4);
@@ -87,17 +83,19 @@
     }
 
     /* Stencil Section */
-    .stencil-section { max-width: 1200px; margin: 0 auto; padding: 15px; }
+    .stencil-section { max-width: 1000px; margin: 0 auto; padding: 15px; }
     .upload-box {
-      border: 2px dashed rgba(255, 42, 42, 0.5); background: #111;
-      border-radius: 12px; padding: 30px 15px; text-align: center; cursor: pointer;
+      border: 2px dashed rgba(255, 42, 42, 0.5); background: #0d0d0d;
+      border-radius: 12px; padding: 25px 15px; text-align: center; cursor: pointer; transition: 0.2s;
     }
+    .upload-box:hover { border-color: #ff2a2a; background: #140808; }
     .upload-box input { display: none; }
 
     .controls {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px; margin: 15px 0; background: #121212; padding: 16px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px; margin: 15px 0; background: #0f0f0f; padding: 16px;
       border-radius: 12px; border: 1px solid #222; position: sticky; top: 65px; z-index: 90;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.8);
     }
     .control-group { display: flex; flex-direction: column; gap: 5px; }
     .control-group label { font-size: 0.75rem; color: #aaa; font-weight: 600; }
@@ -106,38 +104,58 @@
     
     .toggle-group { display: flex; gap: 8px; width: 100%; margin-top: 5px; }
     .toggle-btn {
-      background: #222; color: #ccc; border: 1px solid #444; padding: 8px;
-      border-radius: 6px; font-size: 0.75rem; cursor: pointer; flex: 1; text-align: center;
+      background: #1e1e1e; color: #ccc; border: 1px solid #333; padding: 8px;
+      border-radius: 6px; font-size: 0.75rem; cursor: pointer; flex: 1; text-align: center; transition: 0.2s;
     }
     .toggle-btn.active { background: #ff2a2a; color: #fff; border-color: #ff2a2a; }
 
-    .canvas-wrapper { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 15px; margin-top: 15px; }
-    .canvas-container { background: #111; border-radius: 8px; padding: 10px; border: 1px solid #222; text-align: center; }
-    .canvas-container h4 { margin-bottom: 8px; font-size: 0.8rem; color: #777; }
-    canvas { width: 100%; height: auto; border-radius: 4px; background: #ffffff; display: block; }
+    /* СТЕНСИЛ ЗВЕРХУ, ОРИГІНАЛ ЗНИЗУ */
+    .canvas-wrapper { display: flex; flex-direction: column; gap: 20px; margin-top: 15px; }
+    .canvas-container { background: #0d0d0d; border-radius: 10px; padding: 12px; border: 1px solid #222; text-align: center; }
+    .canvas-container.main-stencil { border: 1px solid rgba(255, 42, 42, 0.4); box-shadow: 0 0 20px rgba(255, 42, 42, 0.15); }
+    .canvas-container h4 { margin-bottom: 8px; font-size: 0.85rem; color: #ff2a2a; letter-spacing: 1px; }
+    .canvas-container.orig-container h4 { color: #666; }
+    canvas { width: 100%; height: auto; border-radius: 6px; background: #ffffff; display: block; }
 
     .btn-download {
       display: block; width: 100%; max-width: 340px; margin: 20px auto;
       padding: 16px; background: #ff2a2a; color: #fff; font-weight: bold;
-      border: none; border-radius: 8px; cursor: pointer; text-align: center;
-      box-shadow: 0 4px 20px rgba(255, 42, 42, 0.4);
+      border: none; border-radius: 10px; cursor: pointer; text-align: center;
+      box-shadow: 0 4px 25px rgba(255, 42, 42, 0.5); font-size: 1rem; letter-spacing: 1px;
     }
 
+    /* Модальні вікна та стильна оплата */
     .modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 200000;
+      background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); z-index: 200000;
       justify-content: center; align-items: center; padding: 20px;
     }
     .modal-content {
-      background: #141414; border: 1px solid #ff2a2a; border-radius: 12px;
-      padding: 22px; max-width: 440px; width: 100%; max-height: 90vh; overflow-y: auto;
+      background: #111111; border: 1px solid #ff2a2a; border-radius: 16px;
+      padding: 24px; max-width: 420px; width: 100%; max-height: 90vh; overflow-y: auto;
     }
     .tariff-card {
-      border: 1px solid #333; padding: 12px; margin: 10px 0; border-radius: 8px;
-      cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+      border: 1px solid #282828; padding: 14px; margin: 10px 0; border-radius: 10px;
+      cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #161616; transition: 0.2s;
     }
-    .tariff-card.selected { border-color: #ff2a2a; background: rgba(255,42,42,0.12); }
-    .qr-img { width: 150px; height: 150px; margin: 12px auto; display: block; background: white; padding: 4px; }
+    .tariff-card.selected { border-color: #ff2a2a; background: rgba(255,42,42,0.15); box-shadow: 0 0 15px rgba(255,42,42,0.2); }
+
+    .card-pay-box {
+      background: #181818; border: 1px dashed rgba(255,42,42,0.5); border-radius: 10px;
+      padding: 14px; margin: 15px 0; text-align: center;
+    }
+    .card-number {
+      font-family: monospace; font-size: 1.1rem; color: #fff; font-weight: bold;
+      letter-spacing: 2px; margin: 8px 0; display: block;
+    }
+    .btn-copy {
+      background: #252525; color: #ff8888; border: 1px solid #444; padding: 6px 12px;
+      border-radius: 6px; font-size: 0.75rem; cursor: pointer; margin-bottom: 8px;
+    }
+    .btn-mono {
+      background: #e50914; color: #fff; text-decoration: none; display: block;
+      padding: 12px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; margin-top: 10px;
+    }
 
     footer { padding: 35px 20px 15px; text-align: center; font-size: 0.75rem; color: #444; }
     .admin-link { color: rgba(255,255,255,0.08); text-decoration: none; cursor: pointer; }
@@ -156,54 +174,53 @@
   </header>
 
   <div class="side-menu" id="sideMenu">
-    <div class="close-menu-x" onclick="toggleMenu()">✕</div>
     <div>
       <h3 style="color:#ff2a2a; font-size:1.1rem; margin-bottom:20px;">YYO KAI STUDIO</h3>
       <ul>
-        <li><a href="#hero" onclick="toggleMenu()">🎨 Stencil Engine 3.1 Pro</a></li>
+        <li><a href="#hero" onclick="toggleMenu()">🎨 Stencil Machine 3.2</a></li>
         <li><a href="#" onclick="openPayModal(); toggleMenu();">💳 Тарифи &amp; Оплата</a></li>
       </ul>
     </div>
-    <div style="font-size:0.75rem; color:#666;">YYO KAI Firebase Edition</div>
+    <div style="font-size:0.75rem; color:#666;">YYO KAI Ecosystem 2026</div>
   </div>
 
   <section class="hero" id="hero">
     <div class="logo-text">YYO<br />KAI</div>
-    <div class="subtitle">ULTRA REALISM STENCIL STUDIO</div>
-    <div class="user-card" id="userBadge">Завантаження з хмари...</div>
+    <div class="subtitle">ULTRA DETAIL STENCIL ENGINE</div>
+    <div class="user-card" id="userBadge">Завантаження...</div>
     <div class="timer-box" id="timerBox"></div>
   </section>
 
   <section class="stencil-section" id="stencil">
     <div class="upload-box" id="uploadBox" onclick="triggerUpload()">
-      <p style="font-size: 1.05rem; font-weight: bold;">Обрати фото / складний ескіз</p>
+      <p style="font-size: 1.05rem; font-weight: bold;">Завантажити ескіз / складностей портрет</p>
       <p style="font-size: 0.75rem; color: #777; margin-top: 4px;">2 безкоштовні трансфери на 24 години</p>
       <input type="file" id="fileInput" accept="image/*" />
     </div>
 
     <div class="controls">
       <div class="control-group">
-        <label for="styleMode">Режим обробки:</label>
+        <label for="styleMode">Режим деталей:</label>
         <select id="styleMode" onchange="if(loadedImg) processStencil()">
-          <option value="ultra-realism">Ultra-Realism (Обличчя, Тіні, Роги)</option>
-          <option value="micro">Micro-Realism (Дрібні деталі)</option>
-          <option value="linework">Графика / Текст / Чіткий контур</option>
+          <option value="micro-realism">Micro-Realism Pro (Роги, Тіні, Волосся)</option>
+          <option value="portrait">Портрет &amp; М'які півтони</option>
+          <option value="linework">Чіткий Linework / Графіка</option>
         </select>
       </div>
 
       <div class="control-group">
-        <label for="threshold">Поріг контуру: <span id="threshVal">120</span></label>
-        <input type="range" id="threshold" min="10" max="230" value="120" />
+        <label for="threshold">Поріг деталей: <span id="threshVal">135</span></label>
+        <input type="range" id="threshold" min="10" max="230" value="135" />
       </div>
 
       <div class="control-group">
-        <label for="detail">Контраст тіней: <span id="detailVal">1.8</span></label>
-        <input type="range" id="detail" min="0.5" max="4.0" step="0.1" value="1.8" />
+        <label for="detail">Контраст тіней: <span id="detailVal">2.2</span></label>
+        <input type="range" id="detail" min="0.5" max="4.5" step="0.1" value="2.2" />
       </div>
 
       <div class="control-group">
-        <label for="clean">Очищення від плям: <span id="cleanVal">2</span></label>
-        <input type="range" id="clean" min="0" max="8" value="2" />
+        <label for="clean">Очищення шуму: <span id="cleanVal">1</span></label>
+        <input type="range" id="clean" min="0" max="6" value="1" />
       </div>
 
       <div class="control-group" style="grid-column: 1 / -1;">
@@ -215,38 +232,45 @@
     </div>
 
     <div class="canvas-wrapper">
-      <div class="canvas-container">
-        <h4>ОРИГІНАЛ</h4>
-        <canvas id="origCanvas"></canvas>
-      </div>
-      <div class="canvas-container">
+      <div class="canvas-container main-stencil">
         <h4>ГОТОВИЙ ТРАНСФЕР (HD)</h4>
         <canvas id="stencilCanvas"></canvas>
       </div>
-    </div>
 
-    <button class="btn-download" id="downloadBtn" style="display: none;" onclick="downloadStencil()">СКАЧАТИ СТЕНСИЛ (PNG)</button>
+      <button class="btn-download" id="downloadBtn" style="display: none;" onclick="downloadStencil()">ЗБЕРЕГТИ СТЕНСИЛ (PNG)</button>
+
+      <div class="canvas-container orig-container">
+        <h4>ОРИГІНАЛ</h4>
+        <canvas id="origCanvas"></canvas>
+      </div>
+    </div>
   </section>
 
   <div class="modal" id="payModal">
     <div class="modal-content">
-      <h3 style="color:#ff2a2a; margin-bottom:10px;">Поповнення трансферів</h3>
-      <p style="font-size:0.8rem; color:#ccc; margin-bottom:12px;">Оплата прив'язується до Telegram ID:</p>
+      <h3 style="color:#ff2a2a; margin-bottom:6px; text-align:center;">Поповнення трансферів</h3>
+      <p style="font-size:0.78rem; color:#888; text-align:center; margin-bottom:14px;">Обери тариф для миттєвої активації:</p>
 
       <div class="tariff-card selected" onclick="selectTariff(200, 100, this)">
-        <div><b>100 трансферів</b><br/><small style="color:#888;">на 30 днів</small></div>
-        <div style="color:#ff2a2a; font-weight:bold;">200 грн</div>
+        <div><b>100 трансферів</b><br/><small style="color:#777;">на 30 днів</small></div>
+        <div style="color:#ff2a2a; font-weight:bold; font-size:1.1rem;">200 грн</div>
       </div>
+
       <div class="tariff-card" onclick="selectTariff(400, 200, this)">
-        <div><b>200 трансферів</b><br/><small style="color:#888;">на 30 днів</small></div>
-        <div style="color:#ff2a2a; font-weight:bold;">400 грн</div>
+        <div><b>200 трансферів</b><br/><small style="color:#777;">на 30 днів</small></div>
+        <div style="color:#ff2a2a; font-weight:bold; font-size:1.1rem;">400 грн</div>
       </div>
 
-      <p style="margin-top:12px; font-size:0.75rem; text-align:center;">Оплата на картку:<br/><b>4149 6090 5981 7330</b></p>
-      <img id="qrCode" class="qr-img" src="" alt="QR" />
+      <div class="card-pay-box">
+        <span style="font-size:0.75rem; color:#aaa;">Картка для оплати:</span>
+        <span class="card-number" id="cardNum">4149 6090 5981 7330</span>
+        <button class="btn-copy" onclick="copyCard()">📋 Скопіювати номер картки</button>
 
-      <button class="btn-download" style="margin-top:10px; width:100%;" onclick="submitPayment()">Я ОПЛАТИВ (ВІДПРАВИТИ ЗАЯВКУ)</button>
-      <button onclick="closePayModal()" style="background:none; border:none; color:#777; width:100%; margin-top:8px; cursor:pointer;">Закрити</button>
+        <a href="https://send.monobank.ua/" target="_blank" class="btn-mono">🚀 Оплатити через Monobank</a>
+      </div>
+
+      <button class="btn-download" style="margin-top:10px; width:100%;" onclick="submitPayment()">Я ОПЛАТИВ (ВІДПРАВИТИ В БАЗУ)</button>
+      <button onclick="closePayModal()" style="background:none; border:none; color:#666; width:100%; margin-top:10px; cursor:pointer;">Закрити</button>
     </div>
   </div>
 
@@ -264,9 +288,7 @@
   </footer>
 
   <script>
-    // -------------------------------------------------------------
-    // 1. КОНФІГУРАЦІЯ FIREBASE (Заміни на свої ключі z Firebase Console)
-    // -------------------------------------------------------------
+    // 1. Firebase Конфігурація
     const firebaseConfig = {
       apiKey: "AIzaSyYOUR_API_KEY_HERE",
       authDomain: "yyokai-stencil.firebaseapp.com",
@@ -279,8 +301,8 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // ТВІЙ TELEGRAM ID АДМІНА (Для безліміту)
-    const ADMIN_TG_ID = "123456789"; // <-- Впиши сюди свій Telegram ID з @userinfobot
+    // ТВІЙ TELEGRAM ID АДМІНА (Безліміт)
+    const ADMIN_TG_ID = "123456789"; 
 
     // Telegram SDK
     const tg = window.Telegram ? window.Telegram.WebApp : null;
@@ -307,7 +329,7 @@
     });
 
     function checkExpiration() {
-      if (isUserAdmin) return; // Для адміна відключаємо перевірку лімітів
+      if (isUserAdmin) return;
       const now = new Date().getTime();
       let updated = false;
 
@@ -360,65 +382,49 @@
         const h = Math.floor(diff / (1000 * 60 * 60));
         const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const s = Math.floor((diff % (1000 * 60)) / 1000);
-        document.getElementById('timerBox').innerText = `Ліміт на сьогодні вичерпано. Наступний трансфер через: ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        document.getElementById('timerBox').innerText = `Ліміт на сьогодні вичерпано. Відновлення через: ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
       }, 1000);
     }
 
     function triggerUpload() {
       if (!isUserAdmin && userState.paidRem <= 0 && userState.remFree <= 0) {
-        alert("Ви вичерпали ліміт (2 стенсили на 24 години). Оплатіть підписку або зачекайте відновлення!");
+        alert("Ви використали 2 безкоштовні трансфери. Оплатіть доступ або зачекайте відновлення!");
         openPayModal();
         return;
       }
       document.getElementById('fileInput').click();
     }
 
-    // -------------------------------------------------------------
-    // 2. ФІКС МЕНЮ ТА МУЗИКИ
-    // -------------------------------------------------------------
+    // 2. Бургер / Хрестик + Аудіо
     function toggleMenu() {
       document.getElementById('burgerBtn').classList.toggle('open');
       document.getElementById('sideMenu').classList.toggle('active');
     }
 
-    let audioCtx = null;
-    let isPlaying = false;
-    let osc1, osc2, gainNode;
-
+    let audioCtx = null, isPlaying = false, osc1, osc2, gainNode;
     function toggleAudio() {
       const btn = document.getElementById('musicToggle');
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
       if (!isPlaying) {
         if (audioCtx.state === 'suspended') audioCtx.resume();
-        osc1 = audioCtx.createOscillator();
-        osc2 = audioCtx.createOscillator();
-        gainNode = audioCtx.createGain();
-
+        osc1 = audioCtx.createOscillator(); osc2 = audioCtx.createOscillator(); gainNode = audioCtx.createGain();
         osc1.type = 'sine'; osc1.frequency.setValueAtTime(110, audioCtx.currentTime);
         osc2.type = 'triangle'; osc2.frequency.setValueAtTime(55, audioCtx.currentTime);
-
         gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime);
-        osc1.connect(gainNode); osc2.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-
+        osc1.connect(gainNode); osc2.connect(gainNode); gainNode.connect(audioCtx.destination);
         osc1.start(); osc2.start();
-        isPlaying = true;
-        btn.innerText = 'УВІМК';
+        isPlaying = true; btn.innerText = 'УВІМК';
       } else {
         if (gainNode) gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.1);
         setTimeout(() => {
-          if (osc1) osc1.stop();
-          if (osc2) osc2.stop();
-          isPlaying = false;
-          btn.innerText = 'ВИМК';
+          if (osc1) osc1.stop(); if (osc2) osc2.stop();
+          isPlaying = false; btn.innerText = 'ВИМК';
         }, 150);
       }
     }
 
-    // -------------------------------------------------------------
-    // 3. KILLER STENCIL ENGINE 3.1 PRO (Складні портрети та роги)
-    // -------------------------------------------------------------
+    // 3. STENCIL MACHINE 3.2 (МАКСИМАЛЬНА ДЕТАЛІЗАЦІЯ ДЛЯ МІКРО-РЕАЛІЗМУ)
     const fileInput = document.getElementById('fileInput');
     const origCanvas = document.getElementById('origCanvas');
     const stencilCanvas = document.getElementById('stencilCanvas');
@@ -435,7 +441,7 @@
       reader.onload = (event) => {
         loadedImg = new Image();
         loadedImg.onload = () => {
-          const maxDim = 1800; // Підвищена якість HD
+          const maxDim = 2000; // Ultra HD для мікродеталей
           let w = loadedImg.width, h = loadedImg.height;
           if (w > maxDim || h > maxDim) {
             if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
@@ -487,7 +493,6 @@
       if (loadedImg) processStencil();
     }
 
-    // Двопрохідний собель-алгоритм обробки мікро-реалізму
     function processStencil() {
       const w = origCanvas.width, h = origCanvas.height;
       const src = origCtx.getImageData(0, 0, w, h).data;
@@ -502,10 +507,10 @@
       for (let i = 0; i < src.length; i += 4) {
         let g = 0.299 * src[i] + 0.587 * src[i + 1] + 0.114 * src[i + 2];
         
-        if (style === 'ultra-realism') {
-          // Гамма-корекція для виділення деталей у півтонах портретів
+        if (style === 'micro-realism') {
+          // Багаторівнева адаптивна гамма для рогів та очей
           g = Math.pow(g / 255, 1 / detail) * 255;
-        } else if (style === 'micro') {
+        } else if (style === 'portrait') {
           g = ((g / 255 - 0.5) * detail + 0.5) * 255;
         } else if (style === 'linework') {
           g = g > (255 - thresh) ? 255 : 0;
@@ -522,14 +527,14 @@
           let sourceX = isMirrored ? (w - 1 - x) : x;
           const idx = y * w + sourceX;
 
-          // Матриця Sobel для контрасту та тонких ліній обличчя
+          // Двопрохідний оператор Sobel
           const gx = -gray[idx - w - 1] + gray[idx - w + 1] - 2 * gray[idx - 1] + 2 * gray[idx + 1] - gray[idx + w - 1] + gray[idx + w + 1];
           const gy = -gray[idx - w - 1] - 2 * gray[idx - w] - gray[idx - w + 1] + gray[idx + w - 1] + 2 * gray[idx + w] + gray[idx + w + 1];
           let mag = Math.sqrt(gx * gx + gy * gy);
 
-          if (clean > 0 && mag < clean * 8) mag = 0;
+          if (clean > 0 && mag < clean * 7) mag = 0;
 
-          let isLine = mag > (230 - thresh);
+          let isLine = mag > (235 - thresh);
           if (isInverted) isLine = !isLine;
 
           const val = isLine ? 0 : 255;
@@ -542,34 +547,30 @@
       stencilCtx.putImageData(output, 0, 0);
     }
 
+    // Завантаження через будь-який браузер / Instagram WebApp без залоків
     function downloadStencil() {
-      stencilCanvas.toBlob((blob) => {
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `yyokai-stencil-${Date.now()}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setTimeout(() => URL.revokeObjectURL(url), 100);
-      }, 'image/png');
+      const dataUrl = stencilCanvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `yyokai-stencil-${Date.now()}.png`;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
-    // -------------------------------------------------------------
-    // 4. ФАЙРБАЗА ТА ОПЛАТА В 1 КЛІК
-    // -------------------------------------------------------------
+    // 4. Логічна Оплата & Скопіювати Картку
     let selectedSum = 200, selectedCount = 100;
     function selectTariff(sum, count, el) {
       selectedSum = sum; selectedCount = count;
       document.querySelectorAll('.tariff-card').forEach(c => c.classList.remove('selected'));
       el.classList.add('selected');
-      updateQR();
     }
 
-    function updateQR() {
-      document.getElementById('qrCode').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Card:4149609059817330;Sum:${selectedSum}UAH`;
+    function copyCard() {
+      const cardNum = document.getElementById('cardNum').innerText.replace(/\s/g, '');
+      navigator.clipboard.writeText(cardNum);
+      alert('Номер картки скопійовано в буфер обміну!');
     }
-    updateQR();
 
     function openPayModal() { document.getElementById('payModal').style.display = 'flex'; }
     function closePayModal() { document.getElementById('payModal').style.display = 'none'; }
@@ -577,7 +578,6 @@
     function submitPayment() {
       const userTag = tgUser.username ? '@' + tgUser.username : (tgUser.first_name || 'Майстер');
       
-      // Запис заявки у Firebase
       const newReqRef = db.ref('payment_requests').push();
       newReqRef.set({
         tgId: String(tgUser.id),
@@ -587,10 +587,11 @@
         timestamp: firebase.database.ServerValue.TIMESTAMP
       });
 
-      alert('Заявку відправлено в базу даних! Після перевірки оплати ваш тариф буде активовано автоматично.');
+      alert('Заявку успішно відправлено адміну! Очікуйте підтвердження.');
       closePayModal();
     }
 
+    // Хмарна Адмінка
     function openAdmin() {
       if (prompt('Пароль Адміна:') === 'yyokai1') {
         renderAdmin();
@@ -605,7 +606,7 @@
       db.ref('payment_requests').on('value', (snapshot) => {
         const reqs = snapshot.val();
         if (!reqs) {
-          container.innerHTML = '<p style="color:#777; font-size:0.85rem;">Нових заявок немає.</p>';
+          container.innerHTML = '<p style="color:#777; font-size:0.85rem; text-align:center;">Нових заявок немає.</p>';
           return;
         }
 
@@ -613,10 +614,10 @@
         Object.keys(reqs).forEach(key => {
           const r = reqs[key];
           html += `
-            <div style="border:1px solid #333; padding:10px; margin-bottom:10px; border-radius:6px; font-size:0.85rem;">
+            <div style="border:1px solid #333; padding:12px; margin-bottom:10px; border-radius:8px; font-size:0.85rem; background:#161616;">
               <p><b>Клієнт:</b> ${r.user} (ID: ${r.tgId})</p>
               <p><b>Тариф:</b> ${r.count} трансферів (${r.sum} грн)</p>
-              <button onclick="approvePayInCloud('${key}', '${r.tgId}', ${r.count})" style="background:#ff2a2a; color:#fff; border:none; padding:8px 14px; border-radius:4px; margin-top:6px; cursor:pointer; font-weight:bold;">✅ Надати доступ в 1 клік</button>
+              <button onclick="approvePayInCloud('${key}', '${r.tgId}', ${r.count})" style="background:#ff2a2a; color:#fff; border:none; padding:8px 14px; border-radius:6px; margin-top:8px; cursor:pointer; font-weight:bold; width:100%;">✅ Активувати доступ в 1 клік</button>
             </div>
           `;
         });
@@ -624,20 +625,16 @@
       });
     }
 
-    // Активуємо доступ людині в Firebase за 1 клік
     function approvePayInCloud(reqKey, targetTgId, count) {
       const expireTime = new Date().getTime() + (30 * 24 * 60 * 60 * 1000);
       
-      // 1. Додаємо трансфери в профіль клієнта
       db.ref('users/' + targetTgId).update({
         paidRem: count,
         expireDate: expireTime
       });
 
-      // 2. Видаляємо заявку
       db.ref('payment_requests/' + reqKey).remove();
-
-      alert(`Успішно надано зелене світло для Telegram ID: ${targetTgId}!`);
+      alert(`Зелене світло надано для Telegram ID: ${targetTgId}!`);
     }
 
     checkExpiration();
