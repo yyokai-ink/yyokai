@@ -3,8 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>YYO KAI — Killer Stencil Studio Pro</title>
+  <title>YYO KAI — Killer Stencil Pro &amp; Cloud</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
@@ -28,10 +32,10 @@
     .music-btn {
       background: #ff2a2a; color: #fff; border: none; padding: 4px 12px;
       border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 0.75rem;
-      box-shadow: 0 0 10px rgba(255, 42, 42, 0.5); transition: 0.2s;
+      box-shadow: 0 0 10px rgba(255, 42, 42, 0.5);
     }
 
-    /* Анімований Хрестик / Бургер (Z-INDEX 10002) */
+    /* Бургер кнопка */
     .burger-btn {
       background: transparent; border: none; width: 32px; height: 24px;
       display: flex; flex-direction: column; justify-content: space-between;
@@ -39,30 +43,29 @@
     }
     .burger-btn span {
       display: block; width: 100%; height: 3px; background-color: #ff2a2a;
-      border-radius: 2px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 2px; transition: all 0.3s ease;
       box-shadow: 0 0 6px rgba(255, 42, 42, 0.6);
     }
     .burger-btn.open span:nth-child(1) { transform: translateY(10.5px) rotate(45deg); }
-    .burger-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .burger-btn.open span:nth-child(2) { opacity: 0; }
     .burger-btn.open span:nth-child(3) { transform: translateY(-10.5px) rotate(-45deg); }
 
-    /* Висувне меню (Z-INDEX 10001) */
+    /* Висувне меню + Окремий Хрестик закриття */
     .side-menu {
       position: fixed; top: 0; right: -100%; width: 300px; height: 100%;
       background-color: #111111; border-left: 1px solid rgba(255, 42, 42, 0.3);
-      box-shadow: -10px 0 40px rgba(0,0,0,0.95); z-index: 10001;
-      padding: 95px 25px 30px; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: -10px 0 40px rgba(0,0,0,0.95); z-index: 100001;
+      padding: 80px 25px 30px; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex; flex-direction: column; justify-content: space-between;
     }
     .side-menu.active { right: 0; }
+    .close-menu-x {
+      position: absolute; top: 20px; right: 20px; font-size: 1.8rem;
+      color: #ff2a2a; cursor: pointer; font-weight: bold; line-height: 1;
+    }
     .side-menu ul { list-style: none; }
     .side-menu li { margin-bottom: 22px; }
-    .side-menu a {
-      color: #e0e0e0; text-decoration: none; font-size: 1.05rem;
-      display: flex; align-items: center; gap: 10px; transition: color 0.2s;
-    }
-    .side-menu a:hover { color: #ff2a2a; }
-    .menu-badge { font-size: 0.65rem; background: #ff2a2a; padding: 2px 6px; border-radius: 4px; color: #fff; }
+    .side-menu a { color: #e0e0e0; text-decoration: none; font-size: 1.05rem; display: flex; align-items: center; gap: 10px; }
 
     /* Hero */
     .hero {
@@ -70,10 +73,7 @@
       justify-content: center; align-items: center; text-align: center;
       padding: 90px 20px 15px; background: radial-gradient(circle at center, #3a0606 0%, #080808 80%);
     }
-    .logo-text {
-      font-size: 3.6rem; font-weight: 900; line-height: 0.92; letter-spacing: 3px;
-      color: #ffffff; text-shadow: 0 0 30px rgba(255, 42, 42, 0.6);
-    }
+    .logo-text { font-size: 3.6rem; font-weight: 900; line-height: 0.92; letter-spacing: 3px; color: #ffffff; text-shadow: 0 0 30px rgba(255, 42, 42, 0.6); }
     .subtitle { color: #888; font-size: 0.75rem; letter-spacing: 4px; margin-top: 10px; }
 
     .user-card {
@@ -88,61 +88,44 @@
 
     /* Stencil Section */
     .stencil-section { max-width: 1200px; margin: 0 auto; padding: 15px; }
-    
     .upload-box {
       border: 2px dashed rgba(255, 42, 42, 0.5); background: #111;
       border-radius: 12px; padding: 30px 15px; text-align: center; cursor: pointer;
-      transition: 0.3s;
     }
-    .upload-box:hover { border-color: #ff2a2a; background: #180a0a; }
     .upload-box input { display: none; }
 
-    /* Панель керування "Убивця Індустрії" */
     .controls {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 12px; margin: 15px 0; background: #121212; padding: 16px;
       border-radius: 12px; border: 1px solid #222; position: sticky; top: 65px; z-index: 90;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.9);
     }
     .control-group { display: flex; flex-direction: column; gap: 5px; }
     .control-group label { font-size: 0.75rem; color: #aaa; font-weight: 600; }
     .control-group input[type="range"] { accent-color: #ff2a2a; cursor: pointer; }
-    .control-group select {
-      background: #1a1a1a; color: #fff; border: 1px solid #333;
-      padding: 8px; border-radius: 6px; font-size: 0.8rem; outline: none;
-    }
-    .toggle-group {
-      display: flex; align-items: center; justify-content: space-between; padding-top: 15px;
-    }
+    .control-group select { background: #1a1a1a; color: #fff; border: 1px solid #333; padding: 8px; border-radius: 6px; font-size: 0.8rem; }
+    
+    .toggle-group { display: flex; gap: 8px; width: 100%; margin-top: 5px; }
     .toggle-btn {
-      background: #222; color: #ccc; border: 1px solid #444; padding: 6px 12px;
-      border-radius: 6px; font-size: 0.75rem; cursor: pointer; width: 48%; transition: 0.2s;
+      background: #222; color: #ccc; border: 1px solid #444; padding: 8px;
+      border-radius: 6px; font-size: 0.75rem; cursor: pointer; flex: 1; text-align: center;
     }
     .toggle-btn.active { background: #ff2a2a; color: #fff; border-color: #ff2a2a; }
 
-    /* Полотна Canvas */
-    .canvas-wrapper {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-      gap: 15px; margin-top: 15px;
-    }
-    .canvas-container {
-      background: #111; border-radius: 8px; padding: 10px;
-      border: 1px solid #222; text-align: center;
-    }
-    .canvas-container h4 { margin-bottom: 8px; font-size: 0.8rem; color: #777; letter-spacing: 1px; }
+    .canvas-wrapper { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 15px; margin-top: 15px; }
+    .canvas-container { background: #111; border-radius: 8px; padding: 10px; border: 1px solid #222; text-align: center; }
+    .canvas-container h4 { margin-bottom: 8px; font-size: 0.8rem; color: #777; }
     canvas { width: 100%; height: auto; border-radius: 4px; background: #ffffff; display: block; }
 
     .btn-download {
       display: block; width: 100%; max-width: 340px; margin: 20px auto;
       padding: 16px; background: #ff2a2a; color: #fff; font-weight: bold;
       border: none; border-radius: 8px; cursor: pointer; text-align: center;
-      box-shadow: 0 4px 20px rgba(255, 42, 42, 0.4); font-size: 0.95rem;
+      box-shadow: 0 4px 20px rgba(255, 42, 42, 0.4);
     }
 
-    /* Модальні вікна */
     .modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 20000;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 200000;
       justify-content: center; align-items: center; padding: 20px;
     }
     .modal-content {
@@ -173,59 +156,59 @@
   </header>
 
   <div class="side-menu" id="sideMenu">
+    <div class="close-menu-x" onclick="toggleMenu()">✕</div>
     <div>
       <h3 style="color:#ff2a2a; font-size:1.1rem; margin-bottom:20px;">YYO KAI STUDIO</h3>
       <ul>
-        <li><a href="#hero" onclick="toggleMenu()">🎨 Stencil Maker 3.0 <span class="menu-badge">PRO</span></a></li>
+        <li><a href="#hero" onclick="toggleMenu()">🎨 Stencil Engine 3.1 Pro</a></li>
         <li><a href="#" onclick="openPayModal(); toggleMenu();">💳 Тарифи &amp; Оплата</a></li>
       </ul>
     </div>
-    <div style="font-size:0.75rem; color:#666;">YYO KAI Ecosystem v3.0</div>
+    <div style="font-size:0.75rem; color:#666;">YYO KAI Firebase Edition</div>
   </div>
 
   <section class="hero" id="hero">
     <div class="logo-text">YYO<br />KAI</div>
-    <div class="subtitle">KILLER STENCIL ENGINE 3.0</div>
-    <div class="user-card" id="userBadge">Завантаження...</div>
+    <div class="subtitle">ULTRA REALISM STENCIL STUDIO</div>
+    <div class="user-card" id="userBadge">Завантаження з хмари...</div>
     <div class="timer-box" id="timerBox"></div>
   </section>
 
   <section class="stencil-section" id="stencil">
     <div class="upload-box" id="uploadBox" onclick="triggerUpload()">
-      <p style="font-size: 1.05rem; font-weight: bold;">Обрати фото / эскіз</p>
+      <p style="font-size: 1.05rem; font-weight: bold;">Обрати фото / складний ескіз</p>
       <p style="font-size: 0.75rem; color: #777; margin-top: 4px;">2 безкоштовні трансфери на 24 години</p>
       <input type="file" id="fileInput" accept="image/*" />
     </div>
 
     <div class="controls">
       <div class="control-group">
-        <label for="styleMode">Алгоритм Стенсила:</label>
+        <label for="styleMode">Режим обробки:</label>
         <select id="styleMode" onchange="if(loadedImg) processStencil()">
-          <option value="portrait">Реалізм &amp; Портрети (Ultra-Clean)</option>
-          <option value="micro">Micro-Realism &amp; Дрібні деталі</option>
-          <option value="linework">Графіка / Linework / Текст</option>
-          <option value="shadow">Shadow Clean (Без плям шкіри)</option>
+          <option value="ultra-realism">Ultra-Realism (Обличчя, Тіні, Роги)</option>
+          <option value="micro">Micro-Realism (Дрібні деталі)</option>
+          <option value="linework">Графика / Текст / Чіткий контур</option>
         </select>
       </div>
 
       <div class="control-group">
-        <label for="threshold">Контур (Поріг): <span id="threshVal">125</span></label>
-        <input type="range" id="threshold" min="20" max="220" value="125" />
+        <label for="threshold">Поріг контуру: <span id="threshVal">120</span></label>
+        <input type="range" id="threshold" min="10" max="230" value="120" />
       </div>
 
       <div class="control-group">
-        <label for="detail">Різкість ліній: <span id="detailVal">1.6</span></label>
-        <input type="range" id="detail" min="0.5" max="3.5" step="0.1" value="1.6" />
+        <label for="detail">Контраст тіней: <span id="detailVal">1.8</span></label>
+        <input type="range" id="detail" min="0.5" max="4.0" step="0.1" value="1.8" />
       </div>
 
       <div class="control-group">
-        <label for="clean">Очищення шуму шкіри: <span id="cleanVal">3</span></label>
-        <input type="range" id="clean" min="0" max="6" value="3" />
+        <label for="clean">Очищення від плям: <span id="cleanVal">2</span></label>
+        <input type="range" id="clean" min="0" max="8" value="2" />
       </div>
 
       <div class="control-group" style="grid-column: 1 / -1;">
         <div class="toggle-group">
-          <button class="toggle-btn" id="mirrorBtn" onclick="toggleMirror()">Дзеркало (Mirror): ВИМК</button>
+          <button class="toggle-btn" id="mirrorBtn" onclick="toggleMirror()">Дзеркало: ВИМК</button>
           <button class="toggle-btn" id="invertBtn" onclick="toggleInvert()">Інверсія: ВИМК</button>
         </div>
       </div>
@@ -242,13 +225,13 @@
       </div>
     </div>
 
-    <button class="btn-download" id="downloadBtn" style="display: none;" onclick="downloadStencil()">СКАЧАТИ СТЕНСИЛ (PNG HD)</button>
+    <button class="btn-download" id="downloadBtn" style="display: none;" onclick="downloadStencil()">СКАЧАТИ СТЕНСИЛ (PNG)</button>
   </section>
 
   <div class="modal" id="payModal">
     <div class="modal-content">
       <h3 style="color:#ff2a2a; margin-bottom:10px;">Поповнення трансферів</h3>
-      <p style="font-size:0.8rem; color:#ccc; margin-bottom:12px;">Доступ прив'язується до вашого Telegram ID:</p>
+      <p style="font-size:0.8rem; color:#ccc; margin-bottom:12px;">Оплата прив'язується до Telegram ID:</p>
 
       <div class="tariff-card selected" onclick="selectTariff(200, 100, this)">
         <div><b>100 трансферів</b><br/><small style="color:#888;">на 30 днів</small></div>
@@ -258,23 +241,19 @@
         <div><b>200 трансферів</b><br/><small style="color:#888;">на 30 днів</small></div>
         <div style="color:#ff2a2a; font-weight:bold;">400 грн</div>
       </div>
-      <div class="tariff-card" onclick="selectTariff(600, 500, this)">
-        <div><b>500 трансферів</b><br/><small style="color:#888;">на 30 днів</small></div>
-        <div style="color:#ff2a2a; font-weight:bold;">600 грн</div>
-      </div>
 
       <p style="margin-top:12px; font-size:0.75rem; text-align:center;">Оплата на картку:<br/><b>4149 6090 5981 7330</b></p>
       <img id="qrCode" class="qr-img" src="" alt="QR" />
 
-      <button class="btn-download" style="margin-top:10px; width:100%;" onclick="submitPayment()">Я ОПЛАТИВ (ВІДПРАВИТИ В TELEGRAM)</button>
+      <button class="btn-download" style="margin-top:10px; width:100%;" onclick="submitPayment()">Я ОПЛАТИВ (ВІДПРАВИТИ ЗАЯВКУ)</button>
       <button onclick="closePayModal()" style="background:none; border:none; color:#777; width:100%; margin-top:8px; cursor:pointer;">Закрити</button>
     </div>
   </div>
 
   <div class="modal" id="adminModal">
     <div class="modal-content">
-      <h3 style="color:#ff2a2a; margin-bottom:12px;">Адмін-Панель YYOKAI</h3>
-      <div id="adminRequests"></div>
+      <h3 style="color:#ff2a2a; margin-bottom:12px;">Хмарна Адмін-Панель</h3>
+      <div id="adminRequests">Завантаження заявок з Firebase...</div>
       <button onclick="document.getElementById('adminModal').style.display='none'" style="background:none; border:none; color:#777; width:100%; margin-top:12px; cursor:pointer;">Закрити</button>
     </div>
   </div>
@@ -285,7 +264,25 @@
   </footer>
 
   <script>
-    // 1. Telegram SDK & Стан
+    // -------------------------------------------------------------
+    // 1. КОНФІГУРАЦІЯ FIREBASE (Заміни на свої ключі z Firebase Console)
+    // -------------------------------------------------------------
+    const firebaseConfig = {
+      apiKey: "AIzaSyYOUR_API_KEY_HERE",
+      authDomain: "yyokai-stencil.firebaseapp.com",
+      databaseURL: "https://yyokai-stencil-default-rtdb.firebaseio.com",
+      projectId: "yyokai-stencil",
+      storageBucket: "yyokai-stencil.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcdef"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // ТВІЙ TELEGRAM ID АДМІНА (Для безліміту)
+    const ADMIN_TG_ID = "123456789"; // <-- Впиши сюди свій Telegram ID з @userinfobot
+
+    // Telegram SDK
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     let tgUser = { id: 'user_local', username: 'Guest_Master' };
     if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
@@ -293,41 +290,55 @@
       tgUser = tg.initDataUnsafe.user;
     }
 
-    const dbKey = 'yyokai_db_v3_' + tgUser.id;
-    let state = JSON.parse(localStorage.getItem(dbKey)) || {
-      remFree: 2,
-      paidRem: 0,
-      resetTime: null,
-      expireDate: null
-    };
+    const isUserAdmin = String(tgUser.id) === String(ADMIN_TG_ID);
+    let userState = { remFree: 2, paidRem: 0, resetTime: null, expireDate: null };
+
+    // Синхронізація з Firebase
+    const userRef = db.ref('users/' + tgUser.id);
+    userRef.on('value', (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        userState = data;
+      } else {
+        userRef.set(userState);
+      }
+      checkExpiration();
+      updateUI();
+    });
 
     function checkExpiration() {
+      if (isUserAdmin) return; // Для адміна відключаємо перевірку лімітів
       const now = new Date().getTime();
-      if (state.resetTime && now >= state.resetTime) {
-        state.remFree = 2;
-        state.resetTime = null;
-      }
-      if (state.expireDate && now >= state.expireDate) {
-        state.paidRem = 0;
-        state.expireDate = null;
-      }
-      saveState();
-    }
+      let updated = false;
 
-    function saveState() {
-      localStorage.setItem(dbKey, JSON.stringify(state));
-      updateUI();
+      if (userState.resetTime && now >= userState.resetTime) {
+        userState.remFree = 2;
+        userState.resetTime = null;
+        updated = true;
+      }
+      if (userState.expireDate && now >= userState.expireDate) {
+        userState.paidRem = 0;
+        userState.expireDate = null;
+        updated = true;
+      }
+      if (updated) userRef.update(userState);
     }
 
     let timerInterval = null;
     function updateUI() {
       const userName = tgUser.username ? '@' + tgUser.username : (tgUser.first_name || 'Майстер');
-      const totalAvailable = state.paidRem > 0 ? state.paidRem : state.remFree;
+      const userBadge = document.getElementById('userBadge');
       
-      document.getElementById('userBadge').innerHTML = `${userName} | Доступно: <b style="color:#ff2a2a;">${totalAvailable}</b> трансферів`;
+      if (isUserAdmin) {
+        userBadge.innerHTML = `👑 <b>АДМІН (БЕЗЛІМІТ)</b> | ${userName}`;
+        return;
+      }
+
+      const totalAvailable = userState.paidRem > 0 ? userState.paidRem : userState.remFree;
+      userBadge.innerHTML = `${userName} | Доступно: <b style="color:#ff2a2a;">${totalAvailable}</b> трансферів`;
 
       const timerBox = document.getElementById('timerBox');
-      if (state.paidRem <= 0 && state.remFree <= 0 && state.resetTime) {
+      if (userState.paidRem <= 0 && userState.remFree <= 0 && userState.resetTime) {
         timerBox.style.display = 'block';
         startTimer();
       } else {
@@ -340,7 +351,7 @@
       if (timerInterval) clearInterval(timerInterval);
       timerInterval = setInterval(() => {
         const now = new Date().getTime();
-        const diff = state.resetTime - now;
+        const diff = userState.resetTime - now;
         if (diff <= 0) {
           clearInterval(timerInterval);
           checkExpiration();
@@ -349,38 +360,34 @@
         const h = Math.floor(diff / (1000 * 60 * 60));
         const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const s = Math.floor((diff % (1000 * 60)) / 1000);
-        document.getElementById('timerBox').innerText = `Досягнуто ліміт за сьогодні. Наступний трансфер через: ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        document.getElementById('timerBox').innerText = `Ліміт на сьогодні вичерпано. Наступний трансфер через: ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
       }, 1000);
     }
 
     function triggerUpload() {
-      checkExpiration();
-      if (state.paidRem <= 0 && state.remFree <= 0) {
-        alert("Ви використали максимум (2 безкоштовні стенсили за 24 години). Оплатіть тариф або зачекайте відліку таймера!");
+      if (!isUserAdmin && userState.paidRem <= 0 && userState.remFree <= 0) {
+        alert("Ви вичерпали ліміт (2 стенсили на 24 години). Оплатіть підписку або зачекайте відновлення!");
         openPayModal();
         return;
       }
       document.getElementById('fileInput').click();
     }
 
-    // 2. Фікс Меню (Хрестик) та Аудіо
+    // -------------------------------------------------------------
+    // 2. ФІКС МЕНЮ ТА МУЗИКИ
+    // -------------------------------------------------------------
     function toggleMenu() {
-      const burger = document.getElementById('burgerBtn');
-      const menu = document.getElementById('sideMenu');
-      burger.classList.toggle('open');
-      menu.classList.toggle('active');
+      document.getElementById('burgerBtn').classList.toggle('open');
+      document.getElementById('sideMenu').classList.toggle('active');
     }
 
-    // Синтезатор аудіо без завантаження зовнішніх файлів (100% надійно)
     let audioCtx = null;
     let isPlaying = false;
     let osc1, osc2, gainNode;
 
     function toggleAudio() {
       const btn = document.getElementById('musicToggle');
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
       if (!isPlaying) {
         if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -391,7 +398,7 @@
         osc1.type = 'sine'; osc1.frequency.setValueAtTime(110, audioCtx.currentTime);
         osc2.type = 'triangle'; osc2.frequency.setValueAtTime(55, audioCtx.currentTime);
 
-        gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime);
         osc1.connect(gainNode); osc2.connect(gainNode);
         gainNode.connect(audioCtx.destination);
 
@@ -399,26 +406,26 @@
         isPlaying = true;
         btn.innerText = 'УВІМК';
       } else {
-        if (gainNode) gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.2);
+        if (gainNode) gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.1);
         setTimeout(() => {
           if (osc1) osc1.stop();
           if (osc2) osc2.stop();
           isPlaying = false;
           btn.innerText = 'ВИМК';
-        }, 200);
+        }, 150);
       }
     }
 
-    // 3. Stencil Engine 3.0 "Killer"
+    // -------------------------------------------------------------
+    // 3. KILLER STENCIL ENGINE 3.1 PRO (Складні портрети та роги)
+    // -------------------------------------------------------------
     const fileInput = document.getElementById('fileInput');
     const origCanvas = document.getElementById('origCanvas');
     const stencilCanvas = document.getElementById('stencilCanvas');
     const origCtx = origCanvas.getContext('2d');
     const stencilCtx = stencilCanvas.getContext('2d');
 
-    let loadedImg = null;
-    let isMirrored = false;
-    let isInverted = false;
+    let loadedImg = null, isMirrored = false, isInverted = false;
 
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
@@ -428,7 +435,7 @@
       reader.onload = (event) => {
         loadedImg = new Image();
         loadedImg.onload = () => {
-          const maxDim = 1600;
+          const maxDim = 1800; // Підвищена якість HD
           let w = loadedImg.width, h = loadedImg.height;
           if (w > maxDim || h > maxDim) {
             if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
@@ -440,15 +447,18 @@
 
           processStencil();
 
-          if (state.paidRem > 0) {
-            state.paidRem--;
-          } else if (state.remFree > 0) {
-            state.remFree--;
-            if (state.remFree === 0 && !state.resetTime) {
-              state.resetTime = new Date().getTime() + (24 * 60 * 60 * 1000);
+          if (!isUserAdmin) {
+            if (userState.paidRem > 0) {
+              userState.paidRem--;
+            } else if (userState.remFree > 0) {
+              userState.remFree--;
+              if (userState.remFree === 0 && !userState.resetTime) {
+                userState.resetTime = new Date().getTime() + (24 * 60 * 60 * 1000);
+              }
             }
+            userRef.update(userState);
           }
-          saveState();
+
           document.getElementById('downloadBtn').style.display = 'block';
         };
         loadedImg.src = event.target.result;
@@ -477,6 +487,7 @@
       if (loadedImg) processStencil();
     }
 
+    // Двопрохідний собель-алгоритм обробки мікро-реалізму
     function processStencil() {
       const w = origCanvas.width, h = origCanvas.height;
       const src = origCtx.getImageData(0, 0, w, h).data;
@@ -491,14 +502,13 @@
       for (let i = 0; i < src.length; i += 4) {
         let g = 0.299 * src[i] + 0.587 * src[i + 1] + 0.114 * src[i + 2];
         
-        if (style === 'portrait') {
-          g = ((g / 255 - 0.5) * detail + 0.5) * 255;
-        } else if (style === 'micro') {
+        if (style === 'ultra-realism') {
+          // Гамма-корекція для виділення деталей у півтонах портретів
           g = Math.pow(g / 255, 1 / detail) * 255;
+        } else if (style === 'micro') {
+          g = ((g / 255 - 0.5) * detail + 0.5) * 255;
         } else if (style === 'linework') {
           g = g > (255 - thresh) ? 255 : 0;
-        } else if (style === 'shadow') {
-          g = g < 80 ? 0 : (g > 200 ? 255 : g);
         }
 
         gray[i / 4] = Math.min(255, Math.max(0, g));
@@ -512,11 +522,12 @@
           let sourceX = isMirrored ? (w - 1 - x) : x;
           const idx = y * w + sourceX;
 
+          // Матриця Sobel для контрасту та тонких ліній обличчя
           const gx = -gray[idx - w - 1] + gray[idx - w + 1] - 2 * gray[idx - 1] + 2 * gray[idx + 1] - gray[idx + w - 1] + gray[idx + w + 1];
           const gy = -gray[idx - w - 1] - 2 * gray[idx - w] - gray[idx - w + 1] + gray[idx + w - 1] + 2 * gray[idx + w] + gray[idx + w + 1];
           let mag = Math.sqrt(gx * gx + gy * gy);
 
-          if (clean > 0 && mag < clean * 9) mag = 0;
+          if (clean > 0 && mag < clean * 8) mag = 0;
 
           let isLine = mag > (230 - thresh);
           if (isInverted) isLine = !isLine;
@@ -524,22 +535,19 @@
           const val = isLine ? 0 : 255;
           const outIdx = (y * w + x) * 4;
 
-          outData[outIdx] = val;
-          outData[outIdx + 1] = val;
-          outData[outIdx + 2] = val;
+          outData[outIdx] = outData[outIdx + 1] = outData[outIdx + 2] = val;
           outData[outIdx + 3] = 255;
         }
       }
       stencilCtx.putImageData(output, 0, 0);
     }
 
-    // 4. Завантаження PNG без помилок
     function downloadStencil() {
       stencilCanvas.toBlob((blob) => {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `yyokai-stencil-pro-${Date.now()}.png`;
+        link.download = `yyokai-stencil-${Date.now()}.png`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -547,7 +555,9 @@
       }, 'image/png');
     }
 
-    // 5. Оплата & Адмінка
+    // -------------------------------------------------------------
+    // 4. ФАЙРБАЗА ТА ОПЛАТА В 1 КЛІК
+    // -------------------------------------------------------------
     let selectedSum = 200, selectedCount = 100;
     function selectTariff(sum, count, el) {
       selectedSum = sum; selectedCount = count;
@@ -566,17 +576,18 @@
 
     function submitPayment() {
       const userTag = tgUser.username ? '@' + tgUser.username : (tgUser.first_name || 'Майстер');
-      const message = `Вітаю! Я оплатив підписку YYOKAI Stencil.\n\nТариф: ${selectedCount} трансферів (${selectedSum} грн)\nID: ${tgUser.id}\nАкаунт: ${userTag}`;
+      
+      // Запис заявки у Firebase
+      const newReqRef = db.ref('payment_requests').push();
+      newReqRef.set({
+        tgId: String(tgUser.id),
+        user: userTag,
+        sum: selectedSum,
+        count: selectedCount,
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      });
 
-      let reqs = JSON.parse(localStorage.getItem('yyokai_global_requests')) || [];
-      reqs.push({ id: Date.now(), tgId: String(tgUser.id), user: userTag, sum: selectedSum, count: selectedCount });
-      localStorage.setItem('yyokai_global_requests', JSON.stringify(reqs));
-
-      if (tg && tg.openTelegramLink) {
-        tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(message)}`);
-      } else {
-        window.open(`https://t.me/share/url?url=${encodeURIComponent(message)}`, '_blank');
-      }
+      alert('Заявку відправлено в базу даних! Після перевірки оплати ваш тариф буде активовано автоматично.');
       closePayModal();
     }
 
@@ -590,43 +601,46 @@
     }
 
     function renderAdmin() {
-      const reqs = JSON.parse(localStorage.getItem('yyokai_global_requests')) || [];
       const container = document.getElementById('adminRequests');
-      if (reqs.length === 0) {
-        container.innerHTML = '<p style="color:#777; font-size:0.85rem;">Запитів немає.</p>';
-        return;
-      }
-      container.innerHTML = reqs.map(r => `
-        <div style="border:1px solid #333; padding:10px; margin-bottom:10px; border-radius:6px; font-size:0.85rem;">
-          <p><b>Клієнт:</b> ${r.user} (ID: ${r.tgId})</p>
-          <p><b>Тариф:</b> ${r.count} трансф. (${r.sum} грн)</p>
-          <button onclick="approvePay('${r.tgId}', ${r.id}, ${r.count})" style="background:#ff2a2a; color:#fff; border:none; padding:6px 12px; border-radius:4px; margin-top:6px; cursor:pointer;">Підтвердити оплату</button>
-        </div>
-      `).join('');
+      db.ref('payment_requests').on('value', (snapshot) => {
+        const reqs = snapshot.val();
+        if (!reqs) {
+          container.innerHTML = '<p style="color:#777; font-size:0.85rem;">Нових заявок немає.</p>';
+          return;
+        }
+
+        let html = '';
+        Object.keys(reqs).forEach(key => {
+          const r = reqs[key];
+          html += `
+            <div style="border:1px solid #333; padding:10px; margin-bottom:10px; border-radius:6px; font-size:0.85rem;">
+              <p><b>Клієнт:</b> ${r.user} (ID: ${r.tgId})</p>
+              <p><b>Тариф:</b> ${r.count} трансферів (${r.sum} грн)</p>
+              <button onclick="approvePayInCloud('${key}', '${r.tgId}', ${r.count})" style="background:#ff2a2a; color:#fff; border:none; padding:8px 14px; border-radius:4px; margin-top:6px; cursor:pointer; font-weight:bold;">✅ Надати доступ в 1 клік</button>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      });
     }
 
-    function approvePay(targetTgId, reqId, count) {
-      let reqs = JSON.parse(localStorage.getItem('yyokai_global_requests')) || [];
-      reqs = reqs.filter(r => r.id !== reqId);
-      localStorage.setItem('yyokai_global_requests', JSON.stringify(reqs));
+    // Активуємо доступ людині в Firebase за 1 клік
+    function approvePayInCloud(reqKey, targetTgId, count) {
+      const expireTime = new Date().getTime() + (30 * 24 * 60 * 60 * 1000);
+      
+      // 1. Додаємо трансфери в профіль клієнта
+      db.ref('users/' + targetTgId).update({
+        paidRem: count,
+        expireDate: expireTime
+      });
 
-      const targetKey = 'yyokai_db_v3_' + targetTgId;
-      let targetState = JSON.parse(localStorage.getItem(targetKey)) || { remFree: 2, paidRem: 0 };
-      targetState.paidRem += count;
-      targetState.expireDate = new Date().getTime() + (30 * 24 * 60 * 60 * 1000);
-      localStorage.setItem(targetKey, JSON.stringify(targetState));
+      // 2. Видаляємо заявку
+      db.ref('payment_requests/' + reqKey).remove();
 
-      if (String(targetTgId) === String(tgUser.id)) {
-        state = targetState;
-        updateUI();
-      }
-
-      renderAdmin();
-      alert(`Додано ${count} платиних трансферів для ID: ${targetTgId}`);
+      alert(`Успішно надано зелене світло для Telegram ID: ${targetTgId}!`);
     }
 
     checkExpiration();
   </script>
 </body>
 </html>
-
