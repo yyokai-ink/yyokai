@@ -4,75 +4,176 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>YYOKAI | INK ARCHITECT</title>
+    
+    <!-- Google Fonts & Lenis Smooth Scroll -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+
     <style>
-        :root { --red: #ff0000; --bg: #000; --white: #ffffff; --card-bg: #151515; }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; outline: none; -webkit-tap-highlight-color: transparent; }
+        :root { 
+            --red: #ff2a2a; 
+            --red-glow: rgba(255, 42, 42, 0.4);
+            --bg: #030303; 
+            --white: #ffffff; 
+            --card-bg: rgba(20, 20, 22, 0.65);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-accent: 'Unbounded', sans-serif;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-font-smoothing: antialiased; 
+            outline: none; 
+            -webkit-tap-highlight-color: transparent; 
+        }
         
-        html { scroll-behavior: smooth; background: #000; }
-        body { background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        html, body { 
+            background: var(--bg); 
+            color: var(--white); 
+            font-family: var(--font-main); 
+            overflow-x: hidden; 
+            width: 100%;
+        }
+
+        /* --- BACKGROUND GLOW EFFECT --- */
+        .ambient-glow {
+            position: fixed;
+            top: 25%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 0, 50, 0.12) 0%, rgba(0,0,0,0) 70%);
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(80px);
+        }
 
         /* --- ЛОУДЕР --- */
         #loader { 
             position: fixed; inset: 0; background: #000; z-index: 9999; 
-            display: flex; justify-content: center; align-items: center; 
-            transition: transform 1s cubic-bezier(0.85, 0, 0.15, 1); 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            transition: transform 0.9s cubic-bezier(0.85, 0, 0.15, 1); 
         }
-        .loader-num { font-family: 'Unbounded', sans-serif; font-size: 25vw; color: #fff; line-height: 1; }
-        .noise { position: fixed; inset: 0; z-index: 999; opacity: 0.05; pointer-events: none; background: url(https://vercel.app); }
+        .loader-num { 
+            font-family: var(--font-accent); 
+            font-size: 18vw; 
+            font-weight: 900;
+            background: linear-gradient(180deg, #fff 30%, rgba(255,255,255,0.2) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1; 
+            letter-spacing: -0.05em;
+        }
+        .noise { 
+            position: fixed; inset: 0; z-index: 998; opacity: 0.035; 
+            pointer-events: none; 
+            background: url('https://raw.githubusercontent.com/pixelass/noise-background/master/noise.png'); 
+        }
 
-        /* --- МЕНЮ --- */
+        /* --- МЕНЮ (Apple Glass Style) --- */
         .menu-btn {
-            position: fixed; top: 30px; right: 25px; z-index: 2000;
-            width: 28px; height: 14px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;
+            position: fixed; top: 25px; right: 25px; z-index: 2000;
+            width: 50px; height: 50px; 
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px;
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .menu-btn span { display: block; width: 100%; height: 1px; background: #fff; transition: 0.4s; }
-        .menu-btn.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
-        .menu-btn.active span:nth-child(2) { opacity: 0; }
-        .menu-btn.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+        .menu-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+        .menu-btn span { display: block; width: 18px; height: 1.5px; background: #fff; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .menu-btn.active span:nth-child(1) { transform: translateY(3.25px) rotate(45deg); }
+        .menu-btn.active span:nth-child(2) { transform: translateY(-3.25px) rotate(-45deg); }
 
         .nav-overlay {
-            position: fixed; inset: 0; background: #000; z-index: 1999;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            z-index: 1999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transform: translateY(-100%); transition: 0.6s cubic-bezier(0.85, 0, 0.15, 1);
+            opacity: 0; pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .nav-overlay.active { transform: translateY(0); }
+        .nav-overlay.active { opacity: 1; pointer-events: all; }
         .nav-overlay a {
-            font-family: 'Unbounded', sans-serif; font-size: 22px; color: #fff; text-decoration: none;
-            margin: 15px 0; text-transform: uppercase; letter-spacing: 2px;
+            font-family: var(--font-accent); font-size: 24px; color: rgba(255,255,255,0.6); 
+            text-decoration: none; margin: 12px 0; text-transform: uppercase; letter-spacing: 2px;
+            transition: all 0.3s ease; position: relative;
         }
+        .nav-overlay a:hover { color: #fff; transform: scale(1.1); text-shadow: 0 0 15px rgba(255,255,255,0.5); }
 
-        /* --- HERO --- */
-        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; }
+        /* --- HERO (Піднято вище, оптимізований розмір) --- */
+        .hero { 
+            height: 85vh; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            position: relative; 
+            z-index: 2;
+            padding-top: 40px;
+        }
         .hero-title {
-            font-family: 'Unbounded', sans-serif; font-size: 24vw; line-height: 0.9;
-            text-transform: uppercase; text-align: center; letter-spacing: -0.05em;
-            display: flex; flex-direction: column; visibility: hidden;
+            font-family: var(--font-accent); 
+            font-size: 16vw; 
+            line-height: 0.85;
+            text-transform: uppercase; 
+            text-align: center; 
+            letter-spacing: -0.06em;
+            display: flex; 
+            flex-direction: column; 
+            visibility: hidden; 
+            font-weight: 900;
+            background: linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.3) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         .hero-title.visible { visibility: visible; }
         .hero-title span {
             display: inline-block; opacity: 0;
-            transform: scaleY(4) translateY(200px);
-            filter: blur(20px); transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(80px) scale(0.95);
+            filter: blur(20px); transition: all 1.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .hero-title.active span { opacity: 1; transform: scaleY(1) translateY(0); filter: blur(0); }
-        .hero-title span:nth-child(2) { transition-delay: 0.15s; margin-top: 15px; }
+        .hero-title.active span { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        .hero-title span:nth-child(2) { transition-delay: 0.15s; }
 
-        .hero-tagline { margin-top: 35px; font-size: 10px; letter-spacing: 8px; color: #444; text-transform: uppercase; opacity: 0; transform: translateY(15px); transition: all 1s ease 1s; }
+        .hero-tagline { 
+            margin-top: 24px; font-size: 11px; letter-spacing: 10px; color: rgba(255,255,255,0.4); 
+            text-transform: uppercase; opacity: 0; transform: translateY(20px); 
+            transition: all 1s ease 0.8s; font-weight: 600;
+        }
         .hero-title.active + .hero-tagline { opacity: 1; transform: translateY(0); }
 
-        .scroll-indicator { margin-top: 30px; opacity: 0; visibility: hidden; transition: opacity 2s ease; cursor: pointer; z-index: 10; }
-        .scroll-indicator.show { opacity: 0.6; visibility: visible; animation: arrowFloat 2s infinite ease-in-out; }
-        @keyframes arrowFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(12px); } }
+        .scroll-indicator { 
+            position: absolute; bottom: 25px;
+            opacity: 0; visibility: hidden; transition: opacity 1.5s ease; cursor: pointer; z-index: 10; 
+            background: rgba(255,255,255,0.05); padding: 12px; border-radius: 50%; border: 1px solid var(--border-color);
+        }
+        .scroll-indicator.show { opacity: 0.8; visibility: visible; animation: arrowFloat 2s infinite ease-in-out; }
+        @keyframes arrowFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
 
-        /* --- GRID (1080 ШИРИНА, 600 ВИСОТА) --- */
+        /* --- GRID (1080 ШИРИНА, APPLE CARD DESIGN) --- */
         .grid { 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             width: 100%; 
-            gap: 4px; /* Відступ між кнопками */
-            background: #000; 
-            padding-bottom: 80px;
+            gap: 20px; 
+            padding: 0 20px 120px 20px;
+            position: relative;
+            z-index: 2;
         }
         
         .grid-item { 
@@ -81,67 +182,214 @@
             display: flex; 
             flex-direction: column; 
             justify-content: flex-end; 
-            padding: 40px; 
+            padding: 48px; 
             text-decoration: none; 
             color: #fff; 
-            background-color: #111;
+            background-color: var(--card-bg);
+            border-radius: 32px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
             
-            /* Налаштування розміру */
             width: 100%;
             max-width: 1080px; 
-            height: 600px; /* Фіксована висота */
-            
+            height: 600px; 
             margin: 0 auto;
+            
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, box-shadow 0.5s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
         }
 
-        /* Адаптація для маленьких екранів: якщо екран вузький, зменшуємо висоту пропорційно */
+        .grid-item:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 40px rgba(255, 255, 255, 0.05);
+        }
+
         @media (max-width: 1080px) {
             .grid-item {
                 height: auto;
                 aspect-ratio: 1080 / 600;
+                padding: 30px;
+                border-radius: 24px;
             }
         }
 
+        /* Затемнення і градієнти */
         .grid-item::before { 
             content: ""; 
             position: absolute; 
             inset: 0; 
-            background: linear-gradient(to bottom, transparent 20%, rgba(0,0,0,0.85) 100%); 
+            background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,0.85) 100%); 
             z-index: 1; 
+            transition: opacity 0.5s ease;
         }
 
-        /* ФОТО */
-        .img-1 { background: url('001.jpg') center/cover no-repeat; }
-        .img-2 { background: url('002.jpg') center/cover no-repeat; }
-        .img-4 { background: url('003.jpg') center/cover no-repeat; }
-        .img-3 { background: url('004.jpg') center/cover no-repeat; }
-        .img-price { background: url('005.jpg') center/cover no-repeat; }
-        .img-sketches { background: url('006.jpg') center/cover no-repeat; }
-        .img-care { background: url('007.jpg') center/cover no-repeat; }
-        .img-stencil { background: url('007.jpg') center/cover no-repeat; }
+        /* Hover Flash Light */
+        .grid-item::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.06), transparent 40%);
+            z-index: 2;
+            pointer-events: none;
+        }
 
-        .grid-item h2 { font-family: 'Unbounded', sans-serif; font-size: 28px; text-transform: uppercase; z-index: 2; position: relative; }
-        .grid-item span.label { font-size: 10px; letter-spacing: 4px; margin-bottom: 8px; opacity: 0.5; z-index: 2; position: relative; }
+        /* Шар фону для зум-ефекту */
+        .img-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-        /* --- ПРАЙС --- */
-        .price-container { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.5s ease-in-out; z-index: 2; position: relative; overflow: hidden; }
+        .grid-item:hover .img-bg {
+            transform: scale(1.04);
+        }
+
+        /* ФОТО ТА ЗБЕРЕЖЕНІ КЛАСИ */
+        .img-1 .img-bg { background-image: url('001.jpg'); }
+        .img-2 .img-bg { background-image: url('002.jpg'); }
+        .img-4 .img-bg { background-image: url('003.jpg'); }
+        .img-3 .img-bg { background-image: url('004.jpg'); }
+        .img-price .img-bg { background-image: url('005.jpg'); }
+        .img-sketches .img-bg { background-image: url('006.jpg'); }
+        .img-care .img-bg { background-image: url('007.jpg'); }
+        .img-stencil .img-bg { background-image: url('007.jpg'); }
+
+        .grid-item h2 { 
+            font-family: var(--font-accent); 
+            font-size: 36px; 
+            font-weight: 700;
+            text-transform: uppercase; 
+            z-index: 3; 
+            position: relative; 
+            letter-spacing: -0.02em;
+            transform: translateZ(30px);
+            transition: transform 0.5s ease;
+        }
+
+        .grid-item span.label { 
+            font-size: 11px; 
+            letter-spacing: 5px; 
+            margin-bottom: 12px; 
+            color: var(--red);
+            font-weight: 700;
+            z-index: 3; 
+            position: relative; 
+            text-transform: uppercase;
+            transform: translateZ(20px);
+        }
+
+        /* --- ПРАЙС АКОРДЕОН --- */
+        .grid-item.img-price { cursor: pointer; }
+        .price-container { 
+            display: grid; 
+            grid-template-rows: 0fr; 
+            transition: grid-template-rows 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
+            z-index: 3; 
+            position: relative; 
+            overflow: hidden; 
+            width: 100%;
+        }
         .grid-item.open-price .price-container { grid-template-rows: 1fr; }
-        .price-inner { min-height: 0; padding-top: 20px; }
-        .price-row { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; text-transform: uppercase; }
-        .price-row span:last-child { color: var(--red); font-weight: 900; }
+        .price-inner { min-height: 0; padding-top: 24px; }
+        .price-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 16px 0; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+            font-size: 14px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+        }
+        .price-row span:last-child { 
+            color: #fff; 
+            font-weight: 900; 
+            background: var(--red);
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 12px;
+            box-shadow: 0 0 15px var(--red-glow);
+        }
 
-        footer { padding: 100px 40px; background: #000; font-size: 9px; letter-spacing: 2px; color: #333; line-height: 2.5; border-top: 1px solid #111; text-align: center; }
-        .footer-year { font-family: 'Unbounded', sans-serif; font-size: 12px; color: var(--red); margin-top: 25px; }
+        /* --- FOOTER --- */
+        footer { 
+            padding: 80px 20px 140px 20px; 
+            background: #000; 
+            font-size: 10px; 
+            letter-spacing: 3px; 
+            color: rgba(255,255,255,0.3); 
+            line-height: 2; 
+            border-top: 1px solid var(--border-color); 
+            text-align: center; 
+            position: relative;
+            z-index: 2;
+        }
+        .footer-year { 
+            font-family: var(--font-accent); 
+            font-size: 13px; 
+            color: var(--red); 
+            margin-top: 20px; 
+            font-weight: 700;
+        }
 
-        .cta-fixed { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--red); color: #fff; padding: 22px 60px; border-radius: 100px; text-decoration: none; font-family: 'Unbounded', sans-serif; font-size: 11px; font-weight: 900; z-index: 1000; box-shadow: 0 10px 40px rgba(255,0,0,0.4); white-space: nowrap; }
+        /* --- CTA КНОПКА APPLE PRO STYLE --- */
+        .cta-fixed { 
+            position: fixed; 
+            bottom: 30px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff; 
+            padding: 18px 48px; 
+            border-radius: 100px; 
+            text-decoration: none; 
+            font-family: var(--font-accent); 
+            font-size: 12px; 
+            font-weight: 700; 
+            letter-spacing: 2px;
+            z-index: 1000; 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(255,255,255,0.1); 
+            white-space: nowrap; 
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cta-fixed::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            background: var(--red);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--red);
+        }
+
+        .cta-fixed:hover {
+            background: var(--red);
+            border-color: var(--red);
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 15px 30px var(--red-glow);
+        }
+        .cta-fixed:hover::before { background: #fff; box-shadow: 0 0 10px #fff; }
     </style>
 </head>
 <body>
 
+    <div class="ambient-glow"></div>
     <div id="loader"><div class="loader-num" id="load-val">0</div></div>
     <div class="noise"></div>
 
-    <div class="menu-btn" id="menuBtn" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+    <div class="menu-btn" id="menuBtn" onclick="toggleMenu()">
+        <span></span><span></span>
+    </div>
 
     <nav class="nav-overlay" id="nav">
         <a href="#" onclick="toggleMenu()">Home</a>
@@ -160,34 +408,39 @@
         <section class="hero">
             <h1 class="hero-title" id="main-logo"><span>YYO</span><span>KAI</span></h1>
             <div class="hero-tagline">INK ARCHITECT // LVIV</div>
-            <div class="scroll-indicator" id="arrow-icon" onclick="document.getElementById('instagram').scrollIntoView({behavior: 'smooth'})">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+            <div class="scroll-indicator" id="arrow-icon" onclick="lenis.scrollTo('#instagram')">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
             </div>
         </section>
 
         <section class="grid">
             <a href="https://instagram.com" id="instagram" class="grid-item img-1">
+                <div class="img-bg"></div>
                 <span class="label">01 // INSTA</span>
                 <h2>Instagram</h2>
             </a>
 
             <a href="https://t.me/yyokai_ink_bot" id="telegram" class="grid-item img-2">
+                <div class="img-bg"></div>
                 <span class="label">02 // TG</span>
                 <h2>Telegram Bot</h2>
             </a>
 
             <a href="lettering.html" id="lettering" class="grid-item img-4">
+                <div class="img-bg"></div>
                 <span class="label">03 // ART</span>
                 <h2>Обери власний надпис</h2>
             </a>
 
             <a href="portfolio.html" id="portfolio" class="grid-item img-3">
-                <span class="label">03 // ART</span>
+                <div class="img-bg"></div>
+                <span class="label">04 // PORTFOLIO</span>
                 <h2>Портфоліо</h2>
             </a>
 
             <div id="price" class="grid-item img-price" onclick="this.classList.toggle('open-price')">
-                <span class="label">04 // SYSTEM</span>
+                <div class="img-bg"></div>
+                <span class="label">05 // SYSTEM</span>
                 <h2>Ціна за Послугу</h2>
                 <div class="price-container">
                     <div class="price-inner">
@@ -199,17 +452,20 @@
             </div>
 
             <a href="esciz.html" id="sketches" class="grid-item img-sketches">
-                <span class="label">05 // FLASH</span>
+                <div class="img-bg"></div>
+                <span class="label">06 // FLASH</span>
                 <h2>Вільні Ескізи</h2>
             </a>
 
             <a href="zagoenya.html" id="aftercare" class="grid-item img-care">
-                <span class="label">06 // CARE</span>
+                <div class="img-bg"></div>
+                <span class="label">07 // CARE</span>
                 <h2>Картка Загоєння</h2>
             </a>
 
-            <a href="stenccil.html" id="aftercare" class="grid-item img-care">
-                <span class="label">07 // STENCIL</span>
+            <a href="stenccil.html" id="stencil" class="grid-item img-stencil">
+                <div class="img-bg"></div>
+                <span class="label">08 // STENCIL</span>
                 <h2>Трансфер</h2>
             </a>
         </section>
@@ -221,11 +477,26 @@
     </main>
 
     <script>
+        // Ініціалізація Lenis Smooth Scroll (Плавний скрол)
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smoothWheel: true
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // Навігація
         function toggleMenu() {
             document.getElementById('nav').classList.toggle('active');
             document.getElementById('menuBtn').classList.toggle('active');
         }
 
+        // Завантажувач
         window.addEventListener('load', function() {
             let count = 0;
             const loadVal = document.getElementById('load-val');
@@ -234,7 +505,7 @@
             const arrow = document.getElementById('arrow-icon');
 
             const counterInterval = setInterval(() => {
-                count += Math.floor(Math.random() * 5) + 2;
+                count += Math.floor(Math.random() * 8) + 2;
                 if (count >= 100) {
                     count = 100;
                     clearInterval(counterInterval);
@@ -245,12 +516,35 @@
                             logo.classList.add('active');
                             setTimeout(() => {
                                 arrow.classList.add('show');
-                            }, 2000);
+                            }, 1000);
                         }, 200);
                     }, 300);
                 }
                 loadVal.innerHTML = count;
-            }, 40);
+            }, 30);
+        });
+
+        // Інтерактивний 3D Паралакс та Підсвітка Карток
+        document.querySelectorAll('.grid-item').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            });
         });
     </script>
 </body>
