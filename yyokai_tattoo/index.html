@@ -7,7 +7,8 @@
 <meta name="description" content="Японський графічний та fine-line тату-стиль. Студія YYOKAI, Львів.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;900&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- тільки ті ваги шрифтів, які реально використовуються — менше даних, швидше завантаження -->
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;900&family=Inter:wght@400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
   :root{
     --black:#060605;
@@ -18,29 +19,32 @@
     --red-deep:#7a1c14;
     --line:rgba(244,241,234,0.09);
     --ease:cubic-bezier(0.16,1,0.3,1);
+    /* єдиний відступ зліва/справа для УСЬОГО сайту — один параметр, скрізь однаково */
+    --gutter:clamp(20px,6vw,64px);
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;outline:none;-webkit-tap-highlight-color:transparent;}
-  html{scroll-behavior:smooth;background:var(--black);}
-  body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;overflow-x:hidden;line-height:1.5;}
+  html{background:var(--black);scroll-behavior:smooth;overscroll-behavior-x:none;}
+  body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;overflow-x:hidden;line-height:1.5;
+    overscroll-behavior-x:none;touch-action:pan-y;-webkit-overflow-scrolling:touch;width:100%;max-width:100vw;}
   a{color:inherit;}
+  img,video,iframe{max-width:100%;display:block;}
   ::selection{background:var(--red);color:var(--black);}
   :focus-visible{outline:2px solid var(--red);outline-offset:3px;}
 
-  .display{font-family:'Unbounded',sans-serif;}
   .mono{font-family:'JetBrains Mono',monospace;}
 
   .noise{position:fixed;inset:0;z-index:998;opacity:.045;pointer-events:none;mix-blend-mode:overlay;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");}
 
-  /* ---------- LOADER ---------- */
-  #loader{position:fixed;inset:0;background:var(--black);z-index:9999;display:flex;flex-direction:column;gap:18px;justify-content:center;align-items:center;transition:transform 1s var(--ease);}
+  /* ---------- LOADER (коротший — сайт відчувається швидшим) ---------- */
+  #loader{position:fixed;inset:0;background:var(--black);z-index:9999;display:flex;flex-direction:column;gap:16px;justify-content:center;align-items:center;transition:transform .7s var(--ease);will-change:transform;}
   #loader.done{transform:translateY(-100%);}
-  .loader-mark{font-size:15px;color:var(--red);opacity:.85;}
+  .loader-mark{font-size:14px;color:var(--red);opacity:.85;}
   .loader-num{font-family:'Unbounded',sans-serif;font-weight:600;font-size:14vw;line-height:1;color:var(--white);}
   @media(min-width:800px){.loader-num{font-size:6rem;}}
 
   /* ---------- NAV ---------- */
-  .menu-btn{position:fixed;top:26px;right:24px;z-index:2000;width:26px;height:14px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;}
+  .menu-btn{position:fixed;top:26px;right:24px;z-index:2000;width:26px;height:14px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;will-change:transform;}
   .menu-btn span{display:block;width:100%;height:1px;background:var(--white);transition:transform .35s var(--ease),opacity .35s;}
   .menu-btn.active span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
   .menu-btn.active span:nth-child(2){opacity:0;}
@@ -48,97 +52,133 @@
 
   .brand-mark{position:fixed;top:24px;left:24px;z-index:2000;font-family:'Unbounded',sans-serif;font-size:13px;letter-spacing:.04em;text-decoration:none;color:var(--white);}
 
-  .nav-overlay{position:fixed;inset:0;background:var(--black);z-index:1999;display:flex;flex-direction:column;justify-content:center;padding:0 8vw;transform:translateY(-102%);transition:transform .6s var(--ease);}
+  .nav-overlay{position:fixed;inset:0;background:var(--black);z-index:1999;display:flex;flex-direction:column;justify-content:center;padding:0 var(--gutter);transform:translateY(-102%);transition:transform .55s var(--ease);will-change:transform;}
   .nav-overlay.active{transform:translateY(0);}
-  .nav-overlay a{display:block;font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.6rem,6vw,2.8rem);color:var(--white);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--line);transition:color .25s;}
-  .nav-overlay a:hover{color:var(--red);}
-  .nav-foot{margin-top:34px;font-size:12px;color:var(--white-dim);}
+  .nav-overlay a{display:block;font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.5rem,6vw,2.6rem);color:var(--white-dim);text-decoration:none;padding:9px 0;border-bottom:1px solid var(--line);transition:color .3s var(--ease),padding-left .3s var(--ease),text-shadow .3s var(--ease);}
+  .nav-overlay a:hover,.nav-overlay a:focus-visible{color:var(--white);padding-left:14px;text-shadow:0 0 22px rgba(244,241,234,0.45);}
+  .nav-foot{margin-top:30px;font-size:12px;color:var(--white-dim);}
 
   /* ---------- HERO ---------- */
-  .hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;padding:120px 6vw 60px;text-align:center;}
+  .hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;padding:120px var(--gutter) 60px;text-align:center;overflow:hidden;}
+
+  /* ============================================================
+     👉 ФОН ЛОГОТИПА — сюди встав відео або гіфку.
+     Якщо ВІДЕО (рекомендовано): постав файл hero.mp4 поруч з index.html
+       і заміни 'hero.mp4' у двох тегах <source> нижче в HTML.
+       Два відео-теги працюють у парі і перелаштовуються (crossfade),
+       тому перехід з кінця в початок виглядає плавною склейкою,
+       а не різким рестартом.
+     Якщо ГІФКА: додай замість відео простий <div class="hero-bg-fallback">
+       зі стилем background-image:url('hero.gif') — гіфки самі по собі
+       зациклюються, але без плавної склейки (це обмеження формату gif).
+     Прозорість (20–30%) і розмиття (~10%, тобто легке) вже виставлені
+     нижче — значення --hero-opacity і --hero-blur.
+     ============================================================ */
+  :root{ --hero-opacity:.25; --hero-blur:5px; }
+  .hero-bg-wrap{position:absolute;inset:-40px;z-index:0;overflow:hidden;opacity:0;transition:opacity 1.2s var(--ease) .1s;}
+  .hero.active .hero-bg-wrap{opacity:var(--hero-opacity);}
+  .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(var(--hero-blur));opacity:0;transition:opacity 1s linear;}
+  .hero-video.is-active{opacity:1;}
+  .hero-bg-tint{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(6,6,5,.25) 0%,rgba(6,6,5,.95) 80%);}
+  .hero>*{position:relative;z-index:1;}
   .hero-kanji{font-size:15px;color:var(--red);margin-bottom:22px;opacity:0;transition:opacity 1s var(--ease) .2s;}
   .hero.active .hero-kanji{opacity:1;}
   .hero-title{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(3.2rem,17vw,9rem);line-height:.92;letter-spacing:-0.02em;white-space:nowrap;color:var(--white);
-    opacity:0;transform:translateY(40px);filter:blur(14px);transition:opacity 1s var(--ease) .1s,transform 1s var(--ease) .1s,filter 1s var(--ease) .1s;}
-  .hero.active .hero-title{opacity:1;transform:translateY(0);filter:blur(0);}
-  .hero-tagline{margin-top:26px;font-size:clamp(13px,2.6vw,16px);color:var(--white-dim);max-width:32ch;opacity:0;transform:translateY(12px);transition:opacity .9s var(--ease) .5s,transform .9s var(--ease) .5s;}
+    opacity:0;transform:translateY(30px);transition:opacity .8s var(--ease) .1s,transform .8s var(--ease) .1s;will-change:opacity,transform;}
+  .hero.active .hero-title{opacity:1;transform:translateY(0);}
+  .hero-tagline{margin-top:26px;font-size:clamp(13px,2.6vw,16px);color:var(--white-dim);max-width:32ch;opacity:0;transform:translateY(10px);transition:opacity .8s var(--ease) .4s,transform .8s var(--ease) .4s;}
   .hero.active .hero-tagline{opacity:1;transform:translateY(0);}
 
-  .scroll-cue{margin-top:46px;opacity:0;transition:opacity 1.2s ease .9s;cursor:pointer;}
+  .scroll-cue{margin-top:46px;opacity:0;transition:opacity 1s ease .7s;cursor:pointer;}
   .hero.active .scroll-cue{opacity:.5;}
   .scroll-cue svg{animation:drift 2.2s ease-in-out infinite;}
   @keyframes drift{0%,100%{transform:translateY(0);}50%{transform:translateY(8px);}}
 
   /* ---------- MANIFESTO ---------- */
-  .manifesto{padding:80px 8vw 90px;max-width:640px;margin:0 auto;border-top:1px solid var(--line);}
+  .manifesto{padding:80px var(--gutter) 70px;max-width:640px;margin:0 auto;border-top:1px solid var(--line);}
   .manifesto p{font-size:clamp(1.1rem,3vw,1.5rem);line-height:1.55;font-weight:400;}
   .manifesto p + p{margin-top:18px;color:var(--white-dim);font-size:clamp(.95rem,2.4vw,1.05rem);}
 
-  /* ---------- SECTION LABEL ---------- */
-  .section-head{padding:0 8vw;max-width:1240px;margin:0 auto;display:flex;align-items:baseline;justify-content:space-between;gap:16px;}
-  .section-head h3{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.3rem,3.4vw,1.9rem);}
-  .section-head span{font-size:11px;color:var(--white-dim);white-space:nowrap;}
+  /* ---------- RATES ---------- */
+  .rates{padding:0 var(--gutter) 90px;max-width:1240px;margin:0 auto;}
+  .rates-card{background:var(--panel);border:1px solid var(--line);cursor:pointer;padding:26px clamp(20px,4vw,40px);transition:background .3s;}
+  .rates-card:hover{background:#131311;}
+  .rates-top{display:flex;justify-content:space-between;align-items:center;gap:16px;}
+  .rates-top h3{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.3rem,3.4vw,1.9rem);}
+  .rates-note{color:var(--white-dim);font-size:.9rem;margin-top:8px;max-width:46ch;}
+  .rates-chevron{width:16px;height:16px;flex-shrink:0;transition:transform .4s var(--ease);}
+  .rates-card.open .rates-chevron{transform:rotate(180deg);}
+  .rates-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--ease);}
+  .rates-card.open .rates-body{grid-template-rows:1fr;}
+  .rates-body-inner{overflow:hidden;}
+  .rate-row{display:flex;justify-content:space-between;align-items:baseline;padding:13px 0;border-top:1px solid var(--line);}
+  .rate-row:first-child{margin-top:18px;}
+  .rate-name{font-size:clamp(.95rem,2.4vw,1.05rem);}
+  .rate-desc{display:block;font-size:.8rem;color:var(--white-dim);margin-top:2px;max-width:34ch;}
+  .rate-price{font-family:'Unbounded',sans-serif;font-weight:600;color:var(--red);font-size:clamp(1rem,2.6vw,1.15rem);white-space:nowrap;}
 
-  /* ---------- BENTO ---------- */
-  .bento-wrap{max-width:1240px;margin:34px auto 0;padding:0 8vw 100px;}
-  .bento{display:grid;grid-template-columns:1.15fr 1fr;gap:2px;}
-  .tile{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:28px;text-decoration:none;color:var(--white);background:#131311;background-size:cover;background-position:center;}
+  /* ---------- TILE (portfolio / flash) ---------- */
+  .tile{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:28px;text-decoration:none;color:var(--white);background:#131311;background-size:cover;background-position:center;background-repeat:no-repeat;transition:filter .35s;width:100%;box-sizing:border-box;}
   .tile::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,transparent 35%,rgba(0,0,0,.88) 100%);}
+  .tile:hover{filter:brightness(1.08);}
   .tile-body{position:relative;z-index:2;}
   .tile-tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);display:block;margin-bottom:8px;}
   .tile h4{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.15rem,2.6vw,1.6rem);}
-  .tile img.icon{width:18px;height:18px;position:absolute;top:20px;right:20px;z-index:2;opacity:.7;}
-  .tile-portfolio{grid-column:1;grid-row:1/3;aspect-ratio:auto;min-height:520px;background-image:url('004.jpg');}
-  .tile-insta{grid-column:2;grid-row:1;aspect-ratio:16/11;background-image:url('001.jpg');}
-  .tile-tg{grid-column:2;grid-row:2;aspect-ratio:16/11;background-image:url('002.jpg');}
-  .tile-lettering{grid-column:1/3;aspect-ratio:21/7;background-image:url('003.jpg');}
-  .tile:hover .tile-bg-scale{transform:scale(1.04);}
-  .tile{transition:filter .4s;}
-  .tile:hover{filter:brightness(1.08);}
 
-  @media(max-width:820px){
-    .bento{grid-template-columns:1fr;}
-    .tile-portfolio,.tile-insta,.tile-tg,.tile-lettering{grid-column:1;grid-row:auto;aspect-ratio:4/3;min-height:0;}
-  }
+  .work-wrap{max-width:1240px;margin:0 auto;padding:0 var(--gutter) 4px;overflow:hidden;}
+  .work-wrap + .work-wrap{padding-top:0;margin-top:2px;}
+  .work-wrap .tile{height:300px;}
+  #portfolio{background-image:url('004.jpg');}
+  #sketches{background-image:url('006.jpg');}
 
-  /* ---------- RATES LEDGER ---------- */
-  .rates{background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:90px 8vw;}
-  .rates-inner{max-width:760px;margin:0 auto;}
-  .rates-inner h3{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.4rem,3.6vw,2.1rem);margin-bottom:8px;}
-  .rates-note{color:var(--white-dim);font-size:.95rem;max-width:46ch;margin-bottom:40px;}
-  .rate-row{display:flex;justify-content:space-between;align-items:baseline;padding:22px 0;border-bottom:1px solid var(--line);}
-  .rate-row:first-of-type{border-top:1px solid var(--line);}
-  .rate-name{font-size:clamp(1rem,2.6vw,1.2rem);}
-  .rate-desc{display:block;font-size:.85rem;color:var(--white-dim);margin-top:4px;max-width:34ch;}
-  .rate-price{font-family:'Unbounded',sans-serif;font-weight:600;color:var(--red);font-size:clamp(1.05rem,2.8vw,1.3rem);white-space:nowrap;}
+  /* ---------- FUNCTIONS — усі картки строго одна під одною ---------- */
+  .tools{background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:90px var(--gutter);margin-top:60px;}
+  .tools-wrap{max-width:760px;margin:0 auto;}
+  .tools-head{margin-bottom:34px;}
+  .tools-head span.mono{font-size:11px;color:var(--red);}
+  .tools-head h3{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.5rem,3.8vw,2.1rem);margin-top:8px;}
+  .tools-head p{color:var(--white-dim);font-size:.95rem;margin-top:10px;}
+  .tools-grid{display:grid;grid-template-columns:1fr;gap:2px;}
+  .tool-card{position:relative;display:flex;flex-direction:column;background:#131311;border:1px solid var(--red-deep);padding:30px 26px 28px;text-decoration:none;color:var(--white);transition:background .3s,border-color .3s;}
+  .tool-card:hover{background:#181412;border-color:var(--red);}
+  .tool-badge{display:inline-block;align-self:flex-start;font-size:10px;letter-spacing:.03em;color:var(--red);border:1px solid var(--red-deep);border-radius:100px;padding:5px 12px;margin-bottom:20px;}
+  .tool-icon{width:26px;height:26px;margin-bottom:16px;opacity:.9;}
+  .tool-card h4{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.05rem,2.4vw,1.25rem);margin-bottom:10px;}
+  .tool-card p{font-size:.87rem;color:var(--white-dim);max-width:42ch;line-height:1.5;}
+  .tool-cta{display:inline-block;margin-top:18px;font-size:.83rem;color:var(--white);border-bottom:1px solid var(--line);padding-bottom:2px;align-self:flex-start;transition:border-color .3s;}
+  .tool-card:hover .tool-cta{border-color:var(--white);}
 
-  /* ---------- FLASH STRIP ---------- */
-  .flash{position:relative;height:340px;overflow:hidden;text-decoration:none;display:flex;align-items:flex-end;padding:34px 8vw;background:#131311url('006.jpg') center/cover;}
-  .flash::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85),rgba(0,0,0,.15));}
-  .flash-body{position:relative;z-index:2;}
-  .flash-body span{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);display:block;margin-bottom:8px;}
-  .flash-body h4{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.3rem,3.4vw,2rem);color:var(--white);}
-
-  /* ---------- CARE / STENCIL ---------- */
-  .duo{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
-  .duo .tile{aspect-ratio:1/1;}
-  .duo .tile-care{background-image:url('007.jpg');}
-  .duo .tile-stencil{background-image:url('007.jpg');}
-  @media(max-width:600px){.duo{grid-template-columns:1fr;}.duo .tile{aspect-ratio:4/3;}}
+  /* ---------- MAP — більша, з можливістю зуму ---------- */
+  .map-section{padding:90px var(--gutter) 100px;max-width:1240px;margin:0 auto;}
+  .map-head{margin-bottom:26px;}
+  .map-head h3{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.3rem,3.4vw,1.9rem);}
+  .map-head p{color:var(--white-dim);font-size:.85rem;margin-top:6px;}
+  .map-frame{position:relative;overflow:hidden;border:1px solid var(--line);background:var(--panel);height:clamp(420px,80vw,720px);}
+  @media(min-width:900px){.map-frame{height:560px;}}
+  .map-frame iframe{width:100%;height:100%;border:0;display:block;
+    /* дуотон: чорно-біло-червона мапа без API-ключа; зум колесом/пінчем працює нативно */
+    filter:grayscale(1) invert(92%) contrast(88%) brightness(95%);}
+  .map-tint{position:absolute;inset:0;background:var(--red);mix-blend-mode:color-burn;opacity:.16;pointer-events:none;}
+  .map-vignette{position:absolute;inset:0;box-shadow:inset 0 0 90px rgba(0,0,0,.55);pointer-events:none;}
+  .map-chip{position:absolute;left:16px;bottom:16px;z-index:3;background:var(--black);border:1px solid var(--red-deep);padding:14px 18px;max-width:82%;pointer-events:none;}
+  .map-chip .pin{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .map-chip .pin svg{width:14px;height:14px;flex-shrink:0;}
+  .map-chip .pin span{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);letter-spacing:.03em;}
+  .map-chip address{font-style:normal;font-size:.85rem;color:var(--white);line-height:1.45;}
 
   /* ---------- FOOTER ---------- */
-  footer{padding:90px 8vw 160px;text-align:center;}
+  footer{padding:90px var(--gutter) 160px;text-align:center;}
   footer .fline{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--white-dim);line-height:2;}
   footer .fyear{font-family:'Unbounded',sans-serif;font-size:12px;color:var(--red);margin-top:22px;}
 
   /* ---------- CTA ---------- */
-  .cta-fixed{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--red);color:var(--black);padding:16px 36px;border-radius:100px;text-decoration:none;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:600;z-index:1500;box-shadow:0 10px 30px rgba(230,57,44,.35);white-space:nowrap;transition:transform .25s var(--ease);}
+  .cta-fixed{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--red);color:var(--black);padding:16px 36px;border-radius:100px;text-decoration:none;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:600;z-index:1500;box-shadow:0 10px 30px rgba(230,57,44,.35);white-space:nowrap;transition:transform .25s var(--ease);will-change:transform;}
   .cta-fixed:hover{transform:translateX(-50%) translateY(-2px);}
 
   @media(prefers-reduced-motion:reduce){
     *{animation:none!important;transition:none!important;}
     #loader{display:none;}
-    .hero-title,.hero-kanji,.hero-tagline{opacity:1!important;transform:none!important;filter:none!important;}
+    .hero-title,.hero-kanji,.hero-tagline,.hero-bg-wrap{opacity:1!important;transform:none!important;}
   }
 </style>
 </head>
@@ -155,13 +195,11 @@
 
 <nav class="nav-overlay" id="nav">
   <a href="#top" onclick="toggleMenu()">Головна</a>
-  <a href="#instagram" onclick="toggleMenu()">Instagram</a>
-  <a href="#telegram" onclick="toggleMenu()">Telegram-бот</a>
   <a href="portfolio.html">Портфоліо</a>
   <a href="#price" onclick="toggleMenu()">Ціни</a>
   <a href="#sketches" onclick="toggleMenu()">Вільні ескізи</a>
-  <a href="#aftercare" onclick="toggleMenu()">Загоєння</a>
-  <a href="#stencil" onclick="toggleMenu()">Трансфер / стенсіль</a>
+  <a href="#tools" onclick="toggleMenu()">Функції</a>
+  <a href="#map" onclick="toggleMenu()">Контакти</a>
   <div class="nav-foot mono">yyokai.tattoo — Львів</div>
 </nav>
 
@@ -170,10 +208,20 @@
 <main id="top">
 
   <section class="hero" id="mainHero">
+    <div class="hero-bg-wrap">
+      <!-- 👉 два відео-теги для плавної склейки циклу (див. коментар у CSS вище) -->
+      <video class="hero-video is-active" id="heroVideoA" muted playsinline preload="auto" autoplay>
+        <source src="hero.mp4" type="video/mp4">
+      </video>
+      <video class="hero-video" id="heroVideoB" muted playsinline preload="auto">
+        <source src="hero.mp4" type="video/mp4">
+      </video>
+      <div class="hero-bg-tint"></div>
+    </div>
     <div class="hero-kanji mono">墨 — ink</div>
     <h1 class="hero-title">YYOKAI</h1>
     <p class="hero-tagline">Японський графічний та fine-line тату-стиль. Львів.</p>
-    <div class="scroll-cue" onclick="document.getElementById('instagram').scrollIntoView({behavior:'smooth'})">
+    <div class="scroll-cue" onclick="document.querySelector('.manifesto').scrollIntoView({behavior:'smooth'})">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.4"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
     </div>
   </section>
@@ -183,62 +231,100 @@
     <p>Кожна робота будується навколо персонажа: они, кіцуне, юрей — переосмислені у власній графічній мові.</p>
   </section>
 
-  <div class="section-head">
-    <h3>Канали та роботи</h3>
-    <span class="mono">04 destinations</span>
-  </div>
-  <div class="bento-wrap">
-    <div class="bento">
-      <a href="portfolio.html" class="tile tile-portfolio" id="portfolio">
-        <div class="tile-body"><span class="tile-tag mono">lookbook</span><h4>Портфоліо робіт</h4></div>
-      </a>
-      <a href="https://instagram.com/yyokai.tattoo" target="_blank" rel="noopener" class="tile tile-insta" id="instagram">
-        <div class="tile-body"><span class="tile-tag mono">@yyokai.tattoo</span><h4>Instagram</h4></div>
-      </a>
-      <a href="https://t.me/yyokai_ink_bot" target="_blank" rel="noopener" class="tile tile-tg" id="telegram">
-        <div class="tile-body"><span class="tile-tag mono">запис / питання</span><h4>Telegram-бот</h4></div>
-      </a>
-      <a href="lettering.html" class="tile tile-lettering" id="lettering">
-        <div class="tile-body"><span class="tile-tag mono">конструктор</span><h4>Обрати власний надпис</h4></div>
-      </a>
-    </div>
-  </div>
-
   <section class="rates" id="price">
-    <div class="rates-inner">
-      <h3>Ціна за послугу</h3>
-      <p class="rates-note">Вартість залежить від розміру, деталізації та часу сеансу — орієнтовні пороги нижче.</p>
-      <div class="rate-row">
-        <div><span class="rate-name">Мінімальна</span><span class="rate-desc">невеликі роботи, ескізи, доповнення</span></div>
-        <div class="rate-price">2000 грн</div>
+    <div class="rates-card" id="ratesCard" onclick="toggleRates()" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleRates();}">
+      <div class="rates-top">
+        <div>
+          <h3>Ціна за послугу</h3>
+          <p class="rates-note">Натисніть, щоб побачити пороги вартості.</p>
+        </div>
+        <svg class="rates-chevron" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.6"><path d="M6 9l6 6 6-6"/></svg>
       </div>
-      <div class="rate-row">
-        <div><span class="rate-name">Середня</span><span class="rate-desc">деталізовані роботи середнього розміру</span></div>
-        <div class="rate-price">4500 грн+</div>
-      </div>
-      <div class="rate-row">
-        <div><span class="rate-name">Цілий день</span><span class="rate-desc">великі композиції, повний сеанс</span></div>
-        <div class="rate-price">5500 грн+</div>
+      <div class="rates-body">
+        <div class="rates-body-inner">
+          <div class="rate-row">
+            <div><span class="rate-name">Мінімальна</span><span class="rate-desc">невеликі роботи, ескізи, доповнення</span></div>
+            <div class="rate-price">2000 грн</div>
+          </div>
+          <div class="rate-row">
+            <div><span class="rate-name">Середня</span><span class="rate-desc">деталізовані роботи середнього розміру</span></div>
+            <div class="rate-price">4500 грн+</div>
+          </div>
+          <div class="rate-row">
+            <div><span class="rate-name">Цілий день</span><span class="rate-desc">великі композиції, повний сеанс</span></div>
+            <div class="rate-price">5500 грн+</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <div class="section-head" style="margin-top:80px;">
-    <h3>Вільні ескізи</h3>
-    <span class="mono">flash</span>
+  <div class="work-wrap">
+    <a href="portfolio.html" class="tile" id="portfolio">
+      <div class="tile-body"><span class="tile-tag mono">lookbook</span><h4>Портфоліо робіт</h4></div>
+    </a>
   </div>
-  <a href="esciz.html" class="flash" id="sketches" style="margin-top:24px;">
-    <div class="flash-body"><span class="mono">готові до запису</span><h4>Переглянути flash-ескізи</h4></div>
+
+  <a href="esciz.html" class="flash" id="sketches">
+    <div class="flash-body"><span class="mono">готові до запису</span><h4>Вільні ескізи</h4></div>
   </a>
 
-  <div class="duo" style="margin-top:60px;">
-    <a href="zagoenya.html" class="tile tile-care" id="aftercare">
-      <div class="tile-body"><span class="tile-tag mono">care</span><h4>Картка загоєння</h4></div>
-    </a>
-    <a href="stenccil.html" class="tile tile-stencil" id="stencil">
-      <div class="tile-body"><span class="tile-tag mono">transfer</span><h4>Трансфер / стенсіль</h4></div>
-    </a>
-  </div>
+  <section class="tools" id="tools">
+    <div class="tools-wrap">
+      <div class="tools-head">
+        <span class="mono">функції сайту</span>
+        <h3>Інструменти, які економлять час</h3>
+        <p>Три розробки: дві — щоб клієнту було легше обрати ідею, одна — щоб іншим майстрам було легше готувати роботу.</p>
+      </div>
+      <div class="tools-grid">
+        <a href="lettering.html" class="tool-card" id="lettering">
+          <span class="tool-badge mono">для клієнтів</span>
+          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.4"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M13.5 6.5l3 3"/></svg>
+          <h4>Обрати власний надпис</h4>
+          <p>Конструктор, де можна зібрати свій напис у японській графіці й одразу побачити результат.</p>
+          <span class="tool-cta">Спробувати конструктор →</span>
+        </a>
+        <a href="stenccil.html" class="tool-card" id="stencil">
+          <span class="tool-badge mono">для майстрів</span>
+          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.4"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+          <h4>Створити стенсіль</h4>
+          <p>Онлайн-інструмент, що перетворює фото на чистий контур для перенесення — без Photoshop.</p>
+          <span class="tool-cta">Перейти до інструменту →</span>
+        </a>
+        <a href="zagoenya.html" class="tool-card" id="aftercare">
+          <span class="tool-badge mono">для клієнтів</span>
+          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.4"><path d="M12 21s-7-4.6-9.3-9.1C1.2 8.5 2.8 5 6.2 5c2 0 3.2 1 3.8 2 .6-1 1.8-2 3.8-2 3.4 0 5 3.5 3.5 6.9C19 16.4 12 21 12 21z"/></svg>
+          <h4>Картка загоєння</h4>
+          <p>Покрокова інструкція, як доглядати за свіжим тату у перші дні та тижні.</p>
+          <span class="tool-cta">Відкрити картку →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="map-section" id="map">
+    <div class="map-head">
+      <h3>Де знайти</h3>
+      <p>Можна наближати та віддаляти — колесом миші або жестом.</p>
+    </div>
+    <div class="map-frame">
+      <iframe
+        title="Карта: Львів, вул. Степана Бандери 47а"
+        src="https://www.google.com/maps?q=Львів,+вулиця+Степана+Бандери+47а&output=embed"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen></iframe>
+      <div class="map-tint"></div>
+      <div class="map-vignette"></div>
+      <div class="map-chip">
+        <div class="pin">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#e6392c" stroke-width="2"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg>
+          <span>студія timeline</span>
+        </div>
+        <address>Львів, вул. Степана Бандери 47а</address>
+      </div>
+    </div>
+  </section>
 
   <footer>
     <div class="fline">yyokai system protocol<br>заснована у львові<br>data sync: active</div>
@@ -252,6 +338,41 @@
     document.getElementById('nav').classList.toggle('active');
     document.getElementById('menuBtn').classList.toggle('active');
   }
+
+  function toggleRates(){
+    var card = document.getElementById('ratesCard');
+    var open = card.classList.toggle('open');
+    card.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  /* ---- плавна склейка циклу відео-фону (без різкого рестарту) ---- */
+  (function(){
+    var a = document.getElementById('heroVideoA');
+    var b = document.getElementById('heroVideoB');
+    if(!a || !b) return;
+    var active = a, standby = b, crossfading = false;
+
+    function crossfade(){
+      if(crossfading) return;
+      crossfading = true;
+      try{ standby.currentTime = 0; standby.play().catch(function(){}); }catch(e){}
+      standby.classList.add('is-active');
+      active.classList.remove('is-active');
+      setTimeout(function(){
+        try{ active.pause(); }catch(e){}
+        var tmp = active; active = standby; standby = tmp;
+        crossfading = false;
+      }, 1000);
+    }
+    function bind(v){
+      v.addEventListener('timeupdate', function(){
+        if(v === active && v.duration && (v.duration - v.currentTime) <= 1){
+          crossfade();
+        }
+      });
+    }
+    bind(a); bind(b);
+  })();
 
   window.addEventListener('load', function(){
     var count = 0;
@@ -267,17 +388,17 @@
     }
 
     var timer = setInterval(function(){
-      count += Math.floor(Math.random()*6)+3;
+      count += Math.floor(Math.random()*10)+6;
       if (count >= 100){
         count = 100;
         clearInterval(timer);
         setTimeout(function(){
           loader.classList.add('done');
           hero.classList.add('active');
-        }, 250);
+        }, 180);
       }
       loadVal.textContent = count;
-    }, 45);
+    }, 28);
   });
 </script>
 
