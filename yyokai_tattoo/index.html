@@ -7,6 +7,7 @@
 <meta name="description" content="Японський графічний та fine-line тату-стиль. Студія YYOKAI, Львів.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- тільки ті ваги шрифтів, які реально використовуються — менше даних, швидше завантаження -->
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;900&family=Inter:wght@400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -18,9 +19,8 @@
     --red-deep:#a13324;
     --line:rgba(244,241,234,0.09);
     --ease:cubic-bezier(0.16,1,0.3,1);
+    /* єдиний відступ зліва/справа для УСЬОГО сайту — один параметр, скрізь однаково */
     --gutter:clamp(20px,6vw,64px);
-    --hero-opacity:.25;
-    --hero-blur:5px;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;outline:none;-webkit-tap-highlight-color:transparent;}
   html{background:var(--black);scroll-behavior:smooth;overscroll-behavior-x:none;}
@@ -36,7 +36,7 @@
   .noise{position:fixed;inset:0;z-index:998;opacity:.045;pointer-events:none;mix-blend-mode:overlay;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");}
 
-  /* ---------- LOADER ---------- */
+  /* ---------- LOADER (коротший — сайт відчувається швидшим) ---------- */
   #loader{position:fixed;inset:0;background:var(--black);z-index:9999;display:flex;flex-direction:column;gap:16px;justify-content:center;align-items:center;transition:transform .7s var(--ease);will-change:transform;}
   #loader.done{transform:translateY(-100%);}
   .loader-mark{font-size:14px;color:var(--red);opacity:.85;}
@@ -61,9 +61,28 @@
   /* ---------- HERO ---------- */
   .hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;padding:120px var(--gutter) 60px;text-align:center;overflow:hidden;}
 
+  /* ============================================================
+     👉 ФОН ЛОГОТИПА — зараз підключений файл videopodlogo2.mov
+     ⚠️ ВАЖЛИВО про GitHub: GitHub Pages віддає .mov файли з типом
+     "video/quicktime", а не "video/mp4" — і через це Chrome/Android
+     нерідко відмовляються його програвати, навіть якщо всередині
+     звичайний H.264 (як у попередньому файлі, що ми перевіряли).
+     НАЙПРОСТІШЕ РІШЕННЯ: перейменуй сам файл з .mov на .mp4
+     (просто змінити розширення, перекодовувати не треба, якщо
+     кодек усередині вже H.264) — тоді GitHub Pages віддасть його
+     як "video/mp4" і він гарантовано запрацює у всіх браузерах.
+     Якщо перейменуєш — заміни 'videopodlogo2.mov' на 'videopodlogo2.mp4'
+     у двох тегах <source> нижче.
+     Два відео-теги працюють у парі і перелаштовуються (crossfade),
+     тому перехід з кінця в початок виглядає плавною склейкою,
+     а не різким рестартом.
+     Прозорість (20–30%) і розмиття (~10%, тобто легке) вже виставлені
+     нижче — значення --hero-opacity і --hero-blur.
+     ============================================================ */
+  :root{ --hero-opacity:.25; --hero-blur:5px; }
   .hero-bg-wrap{position:absolute;inset:-40px;z-index:0;overflow:hidden;opacity:0;transition:opacity 1.2s var(--ease) .1s;}
   .hero.active .hero-bg-wrap{opacity:var(--hero-opacity);}
-  .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(var(--hero-blur));opacity:0;transition:opacity 1s linear;}
+  .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;filter:blur(var(--hero-blur));opacity:0;transition:opacity 1s linear;}
   .hero-video.is-active{opacity:1;}
   .hero-bg-tint{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(6,6,5,.25) 0%,rgba(6,6,5,.95) 80%);}
   .hero>*{position:relative;z-index:1;}
@@ -103,7 +122,7 @@
   .rate-desc{display:block;font-size:.8rem;color:var(--white-dim);margin-top:2px;max-width:34ch;}
   .rate-price{font-family:'Unbounded',sans-serif;font-weight:600;color:var(--red);font-size:clamp(1rem,2.6vw,1.15rem);white-space:nowrap;}
 
-  /* ---------- TILE ---------- */
+  /* ---------- TILE (portfolio / flash) ---------- */
   .tile{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:28px;text-decoration:none;color:var(--white);background:#131311;background-size:cover;background-position:center;background-repeat:no-repeat;transition:filter .35s;width:100%;box-sizing:border-box;}
   .tile::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,transparent 35%,rgba(0,0,0,.88) 100%);}
   .tile:hover{filter:brightness(1.08);}
@@ -117,7 +136,7 @@
   #portfolio{background-image:url('004.jpg');}
   #sketches{background-image:url('006.jpg');}
 
-  /* ---------- FUNCTIONS ---------- */
+  /* ---------- FUNCTIONS — усі картки строго одна під одною ---------- */
   .tools{background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:90px var(--gutter);margin-top:60px;}
   .tools-wrap{max-width:760px;margin:0 auto;}
   .tools-head{margin-bottom:34px;}
@@ -134,14 +153,16 @@
   .tool-cta{display:inline-block;margin-top:18px;font-size:.83rem;color:var(--white);border-bottom:1px solid var(--line);padding-bottom:2px;align-self:flex-start;transition:border-color .3s;}
   .tool-card:hover .tool-cta{border-color:var(--white);}
 
-  /* ---------- MAP ---------- */
+  /* ---------- MAP — більша, з можливістю зуму ---------- */
   .map-section{padding:90px var(--gutter) 100px;max-width:1240px;margin:0 auto;}
   .map-head{margin-bottom:26px;}
   .map-head h3{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.3rem,3.4vw,1.9rem);}
   .map-head p{color:var(--white-dim);font-size:.85rem;margin-top:6px;}
   .map-frame{position:relative;overflow:hidden;border:1px solid var(--line);background:var(--panel);height:clamp(420px,80vw,720px);}
   @media(min-width:900px){.map-frame{height:560px;}}
-  .map-frame iframe{width:100%;height:100%;border:0;display:block;filter:grayscale(1) invert(90%) contrast(78%) brightness(120%);}
+  .map-frame iframe{width:100%;height:100%;border:0;display:block;
+    /* дуотон: світліша чорно-біло-червона мапа без API-ключа; зум колесом/пінчем працює нативно */
+    filter:grayscale(1) invert(90%) contrast(78%) brightness(120%);}
   .map-tint{position:absolute;inset:0;background:var(--red);mix-blend-mode:color-burn;opacity:.08;pointer-events:none;}
   .map-vignette{position:absolute;inset:0;box-shadow:inset 0 0 60px rgba(0,0,0,.3);pointer-events:none;}
   .map-chip{position:absolute;left:16px;bottom:16px;z-index:3;background:var(--black);border:1px solid var(--red-deep);padding:14px 18px;max-width:82%;pointer-events:none;}
@@ -193,11 +214,12 @@
 
   <section class="hero" id="mainHero">
     <div class="hero-bg-wrap">
-      <video class="hero-video is-active" id="heroVideoA" muted playsinline autoplay preload="auto">
-        <source src="videopodlogo2.mp4" type="video/mp4">
+      <!-- 👉 два відео-теги для плавної склейки циклу (див. коментар у CSS вище) -->
+      <video class="hero-video is-active" id="heroVideoA" muted playsinline preload="auto" autoplay>
+        <source src="videopodlogo2.mov" type="video/mp4">
       </video>
       <video class="hero-video" id="heroVideoB" muted playsinline preload="none">
-        <source src="videopodlogo2.mp4" type="video/mp4">
+        <source src="videopodlogo2.mov" type="video/mp4">
       </video>
       <div class="hero-bg-tint"></div>
     </div>
@@ -330,20 +352,11 @@
     card.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
 
-  /* ---- плавна склейка циклу відео-фону ---- */
+  /* ---- плавна склейка циклу відео-фону (без різкого рестарту) ---- */
   (function(){
     var a = document.getElementById('heroVideoA');
     var b = document.getElementById('heroVideoB');
     if(!a || !b) return;
-
-    // Принудительно запускаем воспроизведение
-    var playPromise = a.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(function(error) {
-        console.warn("Автовоспроизведение было заблокировано браузером:", error);
-      });
-    }
-
     var active = a, standby = b, crossfading = false, preloaded = false;
 
     function crossfade(){
@@ -362,6 +375,7 @@
     function bind(v){
       v.addEventListener('timeupdate', function(){
         if(v !== active || !v.duration) return;
+        /* починаємо підвантажувати другий файл трохи заздалегідь, а не одразу обидва при відкритті сторінки */
         if(!preloaded && v.currentTime >= v.duration * 0.5){
           preloaded = true;
           standby.setAttribute('preload','auto');
@@ -378,7 +392,12 @@
     bind(a); bind(b);
   })();
 
-  window.addEventListener('load', function(){
+  /* Раніше цей блок чекав на window 'load' — а це подія, яка спрацьовує
+     тільки коли ВСІ ресурси, включно з відео, повністю довантажаться.
+     Через це лоадер міг зависати, якщо відео велике або мережа повільна.
+     Тепер лоадер показує сторінку одразу після розбору HTML,
+     а відео вантажиться і програється незалежно, у фоні. */
+  (function(){
     var count = 0;
     var loadVal = document.getElementById('load-val');
     var loader = document.getElementById('loader');
@@ -403,7 +422,7 @@
       }
       loadVal.textContent = count;
     }, 28);
-  });
+  })();
 </script>
 
 </body>
