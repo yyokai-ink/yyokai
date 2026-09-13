@@ -62,7 +62,7 @@
   .hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;padding:120px var(--gutter) 60px;text-align:center;overflow:hidden;}
 
   /* ============================================================
-     👉 ФОН ЛОГОТИПА — підключений файл videopodlogo1.MP4 (ім'я має
+     👉 ФОН ЛОГОТИПА — підключений файл videopodlogo2.mov (ім'я має
      збігатися з точністю до великих/малих літер з тим, що лежить у репозиторії).
      Два відео-теги працюють у парі і перелаштовуються (crossfade),
      тому перехід з кінця в початок виглядає плавною склейкою,
@@ -70,7 +70,7 @@
      Прозорість (20–30%) і розмиття (~10%, тобто легке) вже виставлені
      нижче — значення --hero-opacity і --hero-blur.
      ============================================================ */
-  :root{ --hero-opacity:.25; --hero-blur:5px; }
+  :root{ --hero-opacity:.7; --hero-blur:2px; }
   .hero-bg-wrap{position:absolute;inset:-40px;z-index:0;overflow:hidden;opacity:0;transition:opacity 1.2s var(--ease) .1s;}
   .hero.active .hero-bg-wrap{opacity:var(--hero-opacity);}
   .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;filter:blur(var(--hero-blur));opacity:0;transition:opacity 1s linear;}
@@ -207,10 +207,10 @@
     <div class="hero-bg-wrap">
       <!-- 👉 два відео-теги для плавної склейки циклу (див. коментар у CSS вище) -->
       <video class="hero-video is-active" id="heroVideoA" muted playsinline preload="auto" autoplay>
-        <source src="videopodlogo1.MP4" type="video/mp4">
+        <source src="videopodlogo2.mov" type="video/mp4">
       </video>
       <video class="hero-video" id="heroVideoB" muted playsinline preload="none">
-        <source src="videopodlogo1.MP4" type="video/mp4">
+        <source src="videopodlogo2.mov" type="video/mp4">
       </video>
       <div class="hero-bg-tint"></div>
     </div>
@@ -240,7 +240,7 @@
         <div class="rates-body-inner">
           <div class="rate-row">
             <div><span class="rate-name">Мінімальна</span><span class="rate-desc">невеликі роботи, ескізи, доповнення</span></div>
-            <div class="rate-price">2000 грн</div>
+            <div class="rate-price">1500 грн</div>
           </div>
           <div class="rate-row">
             <div><span class="rate-name">Середня</span><span class="rate-desc">деталізовані роботи середнього розміру</span></div>
