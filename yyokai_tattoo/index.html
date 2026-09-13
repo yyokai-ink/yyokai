@@ -418,6 +418,24 @@
         setTimeout(function(){
           loader.classList.add('done');
           hero.classList.add('active');
+          /* явно намагаємось запустити відео — на випадок якщо autoplay
+             заблоковано системою (наприклад Low Power Mode на iOS) */
+          var v = document.getElementById('heroVideoA');
+          if(v){
+            var p = v.play();
+            if(p && p.catch){
+              p.catch(function(){
+                console.warn('Автозапуск відео заблоковано системою — запуститься після першого дотику.');
+                function forcePlay(){
+                  v.play().catch(function(){});
+                  document.removeEventListener('touchstart', forcePlay);
+                  document.removeEventListener('click', forcePlay);
+                }
+                document.addEventListener('touchstart', forcePlay, {once:true});
+                document.addEventListener('click', forcePlay, {once:true});
+              });
+            }
+          }
         }, 180);
       }
       loadVal.textContent = count;
