@@ -15,8 +15,8 @@
     --panel:#0e0e0d;
     --white:#f4f1ea;
     --white-dim:rgba(244,241,234,0.55);
-    --red:#e6392c;
-    --red-deep:#7a1c14;
+    --red:#ff6a55;
+    --red-deep:#a13324;
     --line:rgba(244,241,234,0.09);
     --ease:cubic-bezier(0.16,1,0.3,1);
     /* єдиний відступ зліва/справа для УСЬОГО сайту — один параметр, скрізь однаково */
@@ -62,15 +62,12 @@
   .hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;padding:120px var(--gutter) 60px;text-align:center;overflow:hidden;}
 
   /* ============================================================
-     👉 ФОН ЛОГОТИПА — сюди встав відео або гіфку.
-     Якщо ВІДЕО (рекомендовано): постав файл hero.mp4 поруч з index.html
-       і заміни 'hero.mp4' у двох тегах <source> нижче в HTML.
-       Два відео-теги працюють у парі і перелаштовуються (crossfade),
-       тому перехід з кінця в початок виглядає плавною склейкою,
-       а не різким рестартом.
-     Якщо ГІФКА: додай замість відео простий <div class="hero-bg-fallback">
-       зі стилем background-image:url('hero.gif') — гіфки самі по собі
-       зациклюються, але без плавної склейки (це обмеження формату gif).
+     👉 ФОН ЛОГОТИПА — відео вже підключене: файл videopodlogo1.MP4
+     Просто поклади videopodlogo1.MP4 поруч з index.html (та сама папка) —
+     назва вже прописана у двох тегах <source> нижче в HTML, міняти нічого не треба.
+     Два відео-теги працюють у парі і перелаштовуються (crossfade),
+     тому перехід з кінця в початок виглядає плавною склейкою,
+     а не різким рестартом.
      Прозорість (20–30%) і розмиття (~10%, тобто легке) вже виставлені
      нижче — значення --hero-opacity і --hero-blur.
      ============================================================ */
@@ -211,10 +208,10 @@
     <div class="hero-bg-wrap">
       <!-- 👉 два відео-теги для плавної склейки циклу (див. коментар у CSS вище) -->
       <video class="hero-video is-active" id="heroVideoA" muted playsinline preload="auto" autoplay>
-        <source src="videopodlogo1.MP4" type="video/MP4">
+        <source src="videopodlogo1.MP4" type="video/mp4">
       </video>
       <video class="hero-video" id="heroVideoB" muted playsinline preload="auto">
-        <source src="videopodlogo1.MP4" type="video/MP4">
+        <source src="videopodlogo1.MP4" type="video/mp4">
       </video>
       <div class="hero-bg-tint"></div>
     </div>
@@ -244,7 +241,7 @@
         <div class="rates-body-inner">
           <div class="rate-row">
             <div><span class="rate-name">Мінімальна</span><span class="rate-desc">невеликі роботи, ескізи, доповнення</span></div>
-            <div class="rate-price">1500 грн</div>
+            <div class="rate-price">2000 грн</div>
           </div>
           <div class="rate-row">
             <div><span class="rate-name">Середня</span><span class="rate-desc">деталізовані роботи середнього розміру</span></div>
@@ -265,9 +262,11 @@
     </a>
   </div>
 
-  <a href="esciz.html" class="flash" id="sketches">
-    <div class="flash-body"><span class="mono">готові до запису</span><h4>Вільні ескізи</h4></div>
-  </a>
+  <div class="work-wrap">
+    <a href="esciz.html" class="tile" id="sketches">
+      <div class="tile-body"><span class="tile-tag mono">готові до запису</span><h4>Вільні ескізи</h4></div>
+    </a>
+  </div>
 
   <section class="tools" id="tools">
     <div class="tools-wrap">
@@ -284,19 +283,19 @@
           <p>Конструктор, де можна зібрати свій напис у японській графіці й одразу побачити результат.</p>
           <span class="tool-cta">Спробувати конструктор →</span>
         </a>
-        <a href="stenccil.html" class="tool-card" id="stencil">
-          <span class="tool-badge mono">для майстрів</span>
-          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.4"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
-          <h4>Створити стенсіль</h4>
-          <p>Онлайн-інструмент, що перетворює фото на чистий контур для перенесення — без Photoshop.</p>
-          <span class="tool-cta">Перейти до інструменту →</span>
-        </a>
         <a href="zagoenya.html" class="tool-card" id="aftercare">
           <span class="tool-badge mono">для клієнтів</span>
           <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.4"><path d="M12 21s-7-4.6-9.3-9.1C1.2 8.5 2.8 5 6.2 5c2 0 3.2 1 3.8 2 .6-1 1.8-2 3.8-2 3.4 0 5 3.5 3.5 6.9C19 16.4 12 21 12 21z"/></svg>
           <h4>Картка загоєння</h4>
           <p>Покрокова інструкція, як доглядати за свіжим тату у перші дні та тижні.</p>
           <span class="tool-cta">Відкрити картку →</span>
+        </a>
+        <a href="stenccil.html" class="tool-card" id="stencil">
+          <span class="tool-badge mono">для майстрів</span>
+          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.4"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+          <h4>Створити стенсіль</h4>
+          <p>Онлайн-інструмент, що перетворює фото на чистий контур для перенесення — без Photoshop.</p>
+          <span class="tool-cta">Перейти до інструменту →</span>
         </a>
       </div>
     </div>
