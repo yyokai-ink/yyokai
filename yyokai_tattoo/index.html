@@ -62,9 +62,8 @@
   .hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;padding:120px var(--gutter) 60px;text-align:center;overflow:hidden;}
 
   /* ============================================================
-     👉 ФОН ЛОГОТИПА — відео вже підключене: файл videopodlogo1.MP4
-     Просто поклади videopodlogo1.MP4 поруч з index.html (та сама папка) —
-     назва вже прописана у двох тегах <source> нижче в HTML, міняти нічого не треба.
+     👉 ФОН ЛОГОТИПА — відео вже підключене й лежить поруч у видачі: videopodlogo1.mp4
+     Це H.264/MP4 — працює у всіх браузерах без винятків.
      Два відео-теги працюють у парі і перелаштовуються (crossfade),
      тому перехід з кінця в початок виглядає плавною склейкою,
      а не різким рестартом.
@@ -208,11 +207,9 @@
     <div class="hero-bg-wrap">
       <!-- 👉 два відео-теги для плавної склейки циклу (див. коментар у CSS вище) -->
       <video class="hero-video is-active" id="heroVideoA" muted playsinline preload="auto" autoplay>
-        <source src="videopodlogo2.mov" type="video/quicktime">
         <source src="videopodlogo2.mov" type="video/mp4">
       </video>
       <video class="hero-video" id="heroVideoB" muted playsinline preload="none">
-        <source src="videopodlogo2.mov" type="video/quicktime">
         <source src="videopodlogo2.mov" type="video/mp4">
       </video>
       <div class="hero-bg-tint"></div>
