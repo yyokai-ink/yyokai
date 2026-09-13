@@ -62,17 +62,8 @@
   .hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;padding:120px var(--gutter) 60px;text-align:center;overflow:hidden;}
 
   /* ============================================================
-     👉 ФОН ЛОГОТИПА — зараз підключений файл videopodlogo2.mov
-     ⚠️ ВАЖЛИВО про GitHub: GitHub Pages віддає .mov файли з типом
-     "video/quicktime", а не "video/mp4" — і через це Chrome/Android
-     нерідко відмовляються його програвати, навіть якщо всередині
-     звичайний H.264 (як у попередньому файлі, що ми перевіряли).
-     НАЙПРОСТІШЕ РІШЕННЯ: перейменуй сам файл з .mov на .mp4
-     (просто змінити розширення, перекодовувати не треба, якщо
-     кодек усередині вже H.264) — тоді GitHub Pages віддасть його
-     як "video/mp4" і він гарантовано запрацює у всіх браузерах.
-     Якщо перейменуєш — заміни 'videopodlogo2.mov' на 'videopodlogo2.mp4'
-     у двох тегах <source> нижче.
+     👉 ФОН ЛОГОТИПА — підключений файл videopodlogo1.MP4 (ім'я має
+     збігатися з точністю до великих/малих літер з тим, що лежить у репозиторії).
      Два відео-теги працюють у парі і перелаштовуються (crossfade),
      тому перехід з кінця в початок виглядає плавною склейкою,
      а не різким рестартом.
@@ -216,10 +207,10 @@
     <div class="hero-bg-wrap">
       <!-- 👉 два відео-теги для плавної склейки циклу (див. коментар у CSS вище) -->
       <video class="hero-video is-active" id="heroVideoA" muted playsinline preload="auto" autoplay>
-        <source src="videopodlogo2.mov" type="video/mp4">
+        <source src="videopodlogo1.MP4" type="video/mp4">
       </video>
       <video class="hero-video" id="heroVideoB" muted playsinline preload="none">
-        <source src="videopodlogo2.mov" type="video/mp4">
+        <source src="videopodlogo1.MP4" type="video/mp4">
       </video>
       <div class="hero-bg-tint"></div>
     </div>
