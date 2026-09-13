@@ -153,10 +153,10 @@
   .map-frame{position:relative;overflow:hidden;border:1px solid var(--line);background:var(--panel);height:clamp(420px,80vw,720px);}
   @media(min-width:900px){.map-frame{height:560px;}}
   .map-frame iframe{width:100%;height:100%;border:0;display:block;
-    /* дуотон: чорно-біло-червона мапа без API-ключа; зум колесом/пінчем працює нативно */
-    filter:grayscale(1) invert(92%) contrast(88%) brightness(95%);}
-  .map-tint{position:absolute;inset:0;background:var(--red);mix-blend-mode:color-burn;opacity:.16;pointer-events:none;}
-  .map-vignette{position:absolute;inset:0;box-shadow:inset 0 0 90px rgba(0,0,0,.55);pointer-events:none;}
+    /* дуотон: світліша чорно-біло-червона мапа без API-ключа; зум колесом/пінчем працює нативно */
+    filter:grayscale(1) invert(90%) contrast(78%) brightness(120%);}
+  .map-tint{position:absolute;inset:0;background:var(--red);mix-blend-mode:color-burn;opacity:.08;pointer-events:none;}
+  .map-vignette{position:absolute;inset:0;box-shadow:inset 0 0 60px rgba(0,0,0,.3);pointer-events:none;}
   .map-chip{position:absolute;left:16px;bottom:16px;z-index:3;background:var(--black);border:1px solid var(--red-deep);padding:14px 18px;max-width:82%;pointer-events:none;}
   .map-chip .pin{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
   .map-chip .pin svg{width:14px;height:14px;flex-shrink:0;}
@@ -210,7 +210,7 @@
       <video class="hero-video is-active" id="heroVideoA" muted playsinline preload="auto" autoplay>
         <source src="videopodlogo1.MP4" type="video/mp4">
       </video>
-      <video class="hero-video" id="heroVideoB" muted playsinline preload="auto">
+      <video class="hero-video" id="heroVideoB" muted playsinline preload="none">
         <source src="videopodlogo1.MP4" type="video/mp4">
       </video>
       <div class="hero-bg-tint"></div>
@@ -241,7 +241,7 @@
         <div class="rates-body-inner">
           <div class="rate-row">
             <div><span class="rate-name">Мінімальна</span><span class="rate-desc">невеликі роботи, ескізи, доповнення</span></div>
-            <div class="rate-price">1500 грн</div>
+            <div class="rate-price">2000 грн</div>
           </div>
           <div class="rate-row">
             <div><span class="rate-name">Середня</span><span class="rate-desc">деталізовані роботи середнього розміру</span></div>
@@ -349,7 +349,7 @@
     var a = document.getElementById('heroVideoA');
     var b = document.getElementById('heroVideoB');
     if(!a || !b) return;
-    var active = a, standby = b, crossfading = false;
+    var active = a, standby = b, crossfading = false, preloaded = false;
 
     function crossfade(){
       if(crossfading) return;
@@ -360,14 +360,25 @@
       setTimeout(function(){
         try{ active.pause(); }catch(e){}
         var tmp = active; active = standby; standby = tmp;
+        preloaded = false;
         crossfading = false;
       }, 1000);
     }
     function bind(v){
       v.addEventListener('timeupdate', function(){
-        if(v === active && v.duration && (v.duration - v.currentTime) <= 1){
+        if(v !== active || !v.duration) return;
+        /* починаємо підвантажувати другий файл трохи заздалегідь, а не одразу обидва при відкритті сторінки */
+        if(!preloaded && v.currentTime >= v.duration * 0.5){
+          preloaded = true;
+          standby.setAttribute('preload','auto');
+          standby.load();
+        }
+        if((v.duration - v.currentTime) <= 1){
           crossfade();
         }
+      });
+      v.addEventListener('error', function(){
+        console.warn('Не вдалося завантажити відео-фон hero:', v.currentSrc || v.querySelector('source').src);
       });
     }
     bind(a); bind(b);
