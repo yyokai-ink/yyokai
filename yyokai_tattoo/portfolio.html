@@ -30,16 +30,6 @@
   :focus-visible{outline:2px solid var(--red);outline-offset:3px;}
   .mono{font-family:'JetBrains Mono',monospace;}
 
-  /* ============================================================
-     👉 ФОН СТОРІНКИ — те саме відео, що й на головній.
-     Впиши точну назву файлу (з великими/малими літерами
-     як у репозиторії) у два теги <source> нижче в HTML.
-     ============================================================ */
-  .bg-video-wrap{position:fixed;inset:0;z-index:0;overflow:hidden;opacity:.25;}
-  .bg-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(3px);opacity:0;transition:opacity 1s linear;}
-  .bg-video.is-active{opacity:1;}
-  .bg-tint{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(6,6,5,.2) 0%,rgba(6,6,5,.92) 85%);}
-
   /* ---------- TOP BAR ---------- */
   .menu-btn{position:fixed;top:26px;right:24px;z-index:2000;width:26px;height:14px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;}
   .menu-btn span{display:block;width:100%;height:1px;background:var(--white);transition:transform .35s var(--ease),opacity .35s;}
@@ -97,16 +87,6 @@
 </head>
 <body>
 
-<div class="bg-video-wrap">
-  <video class="bg-video is-active" id="bgVideoA" muted playsinline preload="auto" autoplay>
-    <source src="videopodlogo2.mov" type="video/mp4">
-  </video>
-  <video class="bg-video" id="bgVideoB" muted playsinline preload="none">
-    <source src="videopodlogo2.mov" type="video/mp4">
-  </video>
-  <div class="bg-tint"></div>
-</div>
-
 <a href="index.html" class="brand-mark">YYOKAI</a>
 
 <!-- 👉 звук: файл track.mp3 (той, що вже лежить у репозиторії) -->
@@ -156,36 +136,6 @@
     var head = document.getElementById('pageHead');
     if(reduce){ head.classList.add('active'); return; }
     requestAnimationFrame(function(){ setTimeout(function(){ head.classList.add('active'); }, 60); });
-  })();
-
-  /* ---- плавна склейка циклу фонового відео ---- */
-  (function(){
-    var a = document.getElementById('bgVideoA');
-    var b = document.getElementById('bgVideoB');
-    if(!a || !b) return;
-    var active = a, standby = b, crossfading = false, preloaded = false;
-    function crossfade(){
-      if(crossfading) return;
-      crossfading = true;
-      try{ standby.currentTime = 0; standby.play().catch(function(){}); }catch(e){}
-      standby.classList.add('is-active');
-      active.classList.remove('is-active');
-      setTimeout(function(){
-        try{ active.pause(); }catch(e){}
-        var tmp = active; active = standby; standby = tmp;
-        preloaded = false; crossfading = false;
-      }, 1000);
-    }
-    function bind(v){
-      v.addEventListener('timeupdate', function(){
-        if(v !== active || !v.duration) return;
-        if(!preloaded && v.currentTime >= v.duration * 0.5){
-          preloaded = true; standby.setAttribute('preload','auto'); standby.load();
-        }
-        if((v.duration - v.currentTime) <= 1) crossfade();
-      });
-    }
-    bind(a); bind(b);
   })();
 
   /* ---- музика: автозапуск при першому скролі, вручну — кнопкою ---- */
