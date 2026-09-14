@@ -7,7 +7,7 @@
 <meta name="description" content="Японський графічний та fine-line тату-стиль. Студія YYOKAI, Львів.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- тільки ті ваги шрифтів, які реально використовуються — менше даних, швидше завантаження -->
+
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;900&family=Inter:wght@400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -36,7 +36,7 @@
   .noise{position:fixed;inset:0;z-index:998;opacity:.045;pointer-events:none;mix-blend-mode:overlay;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");}
 
-  /* ---------- LOADER (коротший — сайт відчувається швидшим) ---------- */
+ 
   #loader{position:fixed;inset:0;background:var(--black);z-index:9999;display:flex;flex-direction:column;gap:16px;justify-content:center;align-items:center;transition:transform .7s var(--ease);will-change:transform;}
   #loader.done{transform:translateY(-100%);}
   .loader-mark{font-size:14px;color:var(--red);opacity:.85;}
@@ -61,15 +61,7 @@
   /* ---------- HERO ---------- */
   .hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;padding:120px var(--gutter) 60px;text-align:center;overflow:hidden;}
 
-  /* ============================================================
-     👉 ФОН ЛОГОТИПА — підключений файл videopodlogo2.mov (ім'я має
-     збігатися з точністю до великих/малих літер з тим, що лежить у репозиторії).
-     Два відео-теги працюють у парі і перелаштовуються (crossfade),
-     тому перехід з кінця в початок виглядає плавною склейкою,
-     а не різким рестартом.
-     Прозорість (20–30%) і розмиття (~10%, тобто легке) вже виставлені
-     нижче — значення --hero-opacity і --hero-blur.
-     ============================================================ */
+
   :root{ --hero-opacity:.7; --hero-blur:2px; }
   .hero-bg-wrap{position:absolute;inset:-40px;z-index:0;overflow:hidden;opacity:0;transition:opacity 1.2s var(--ease) .1s;}
   .hero.active .hero-bg-wrap{opacity:var(--hero-opacity);}
@@ -329,7 +321,7 @@
     if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
   }
 
-  /* ---- плавна склейка циклу відео-фону (без різкого рестарту) ---- */
+  
   (function(){
     var a = document.getElementById('heroVideoA');
     var b = document.getElementById('heroVideoB');
@@ -369,11 +361,7 @@
     bind(a); bind(b);
   })();
 
-  /* Раніше цей блок чекав на window 'load' — а це подія, яка спрацьовує
-     тільки коли ВСІ ресурси, включно з відео, повністю довантажаться.
-     Через це лоадер міг зависати, якщо відео велике або мережа повільна.
-     Тепер лоадер показує сторінку одразу після розбору HTML,
-     а відео вантажиться і програється незалежно, у фоні. */
+
   (function(){
     var count = 0;
     var loadVal = document.getElementById('load-val');
@@ -395,8 +383,7 @@
         setTimeout(function(){
           loader.classList.add('done');
           hero.classList.add('active');
-          /* явно намагаємось запустити відео — на випадок якщо autoplay
-             заблоковано системою (наприклад Low Power Mode на iOS) */
+          
           var v = document.getElementById('heroVideoA');
           if(v){
             var p = v.play();
