@@ -32,15 +32,15 @@
 
   /* ============================================================
      👉 ФОН СТОРІНКИ — те саме відео, що й на головній.
-     Просто впиши точну назву файлу (з великими/малими літерами
+     Впиши точну назву файлу (з великими/малими літерами
      як у репозиторії) у два теги <source> нижче в HTML.
      ============================================================ */
-  .bg-video-wrap{position:fixed;inset:0;z-index:0;overflow:hidden;opacity:.3;}
+  .bg-video-wrap{position:fixed;inset:0;z-index:0;overflow:hidden;opacity:.25;}
   .bg-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(3px);opacity:0;transition:opacity 1s linear;}
   .bg-video.is-active{opacity:1;}
   .bg-tint{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(6,6,5,.2) 0%,rgba(6,6,5,.92) 85%);}
 
-  /* ---------- NAV (ідентично головній сторінці) ---------- */
+  /* ---------- TOP BAR ---------- */
   .menu-btn{position:fixed;top:26px;right:24px;z-index:2000;width:26px;height:14px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;}
   .menu-btn span{display:block;width:100%;height:1px;background:var(--white);transition:transform .35s var(--ease),opacity .35s;}
   .menu-btn.active span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
@@ -48,6 +48,14 @@
   .menu-btn.active span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
 
   .brand-mark{position:fixed;top:24px;left:24px;z-index:2000;font-family:'Unbounded',sans-serif;font-size:13px;letter-spacing:.04em;text-decoration:none;color:var(--white);}
+
+  /* 👉 іконка звуку — рівно по центру між лого і бургером */
+  .sound-btn{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:2000;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:rgba(14,14,13,.6);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .3s,background .3s;}
+  .sound-btn:hover{border-color:var(--red-deep);}
+  .sound-btn svg{width:15px;height:15px;}
+  .sound-btn .icon-off{display:none;}
+  .sound-btn.muted .icon-on{display:none;}
+  .sound-btn.muted .icon-off{display:block;}
 
   .nav-overlay{position:fixed;inset:0;background:var(--black);z-index:1999;display:flex;flex-direction:column;justify-content:center;padding:0 var(--gutter);transform:translateY(-102%);transition:transform .55s var(--ease);}
   .nav-overlay.active{transform:translateY(0);}
@@ -58,30 +66,32 @@
   .cta-fixed{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--red);color:var(--black);padding:16px 36px;border-radius:100px;text-decoration:none;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:600;z-index:1500;box-shadow:0 10px 30px rgba(255,106,85,.35);white-space:nowrap;transition:transform .25s var(--ease);}
   .cta-fixed:hover{transform:translateX(-50%) translateY(-2px);}
 
-  /* ---------- COMPACT HEADER (замість повноекранного hero) ---------- */
-  .page-head{position:relative;z-index:1;padding:100px var(--gutter) 18px;text-align:center;}
+  /* ---------- COMPACT HEADER ---------- */
+  .page-head{position:relative;z-index:1;padding:100px var(--gutter) 24px;text-align:center;}
   .page-head .mono{font-size:11px;color:var(--red);opacity:0;transition:opacity .8s var(--ease) .1s;}
   .page-head h1{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.3rem,4vw,1.8rem);margin-top:8px;opacity:0;transform:translateY(10px);transition:opacity .8s var(--ease) .2s,transform .8s var(--ease) .2s;}
   .page-head.active .mono,.page-head.active h1{opacity:1;transform:none;}
 
-  /* ---------- GALLERY — займає майже весь екран одразу ---------- */
-  .gallery-container{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 var(--gutter) 130px;display:flex;flex-direction:column;align-items:center;}
-  .gallery-viewer{position:relative;width:100%;height:calc(100svh - 300px);min-height:380px;max-height:760px;display:flex;align-items:center;justify-content:center;background:var(--panel);border:1px solid var(--line);overflow:hidden;
-    opacity:0;transform:scale(.98);transition:opacity .8s var(--ease) .3s,transform .8s var(--ease) .3s;}
-  .gallery-viewer.active{opacity:1;transform:scale(1);}
-  .gallery-viewer img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;transition:opacity .25s linear;}
-  .nav-zone{position:absolute;top:0;bottom:0;width:35%;cursor:pointer;z-index:2;}
-  .nav-zone.left-zone{left:0;}
-  .nav-zone.right-zone{right:0;}
+  /* ---------- GRID GALLERY ---------- */
+  .grid-wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 var(--gutter) 140px;}
+  .photo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;}
+  @media(min-width:720px){.photo-grid{grid-template-columns:repeat(3,1fr);gap:4px;}}
+  .photo-cell{position:relative;aspect-ratio:3/4;overflow:hidden;cursor:pointer;background:var(--panel);border:1px solid var(--line);}
+  .photo-cell img{width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s var(--ease),transform .5s var(--ease);}
+  .photo-cell img.loaded{opacity:1;}
+  .photo-cell:hover img{transform:scale(1.04);}
 
-  .bottom-nav{display:flex;align-items:center;justify-content:center;gap:34px;margin-top:24px;width:100%;}
-  .arrow-wrapper{cursor:pointer;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid var(--red-deep);border-radius:50%;transition:border-color .3s,background .3s;}
-  .arrow-wrapper:hover{border-color:var(--red);background:#161311;}
-  .counter{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.05em;color:var(--white-dim);min-width:80px;text-align:center;}
+  /* ---------- LIGHTBOX ---------- */
+  .lightbox{position:fixed;inset:0;background:rgba(6,6,5,.97);z-index:3000;display:flex;align-items:center;justify-content:center;padding:60px 20px;opacity:0;visibility:hidden;transition:opacity .35s var(--ease);}
+  .lightbox.open{opacity:1;visibility:visible;}
+  .lightbox img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;transform:scale(.96);transition:transform .35s var(--ease);}
+  .lightbox.open img{transform:scale(1);}
+  .lightbox-close{position:absolute;top:22px;right:22px;width:40px;height:40px;border-radius:50%;border:1px solid var(--red-deep);background:rgba(14,14,13,.7);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .3s,background .3s;}
+  .lightbox-close:hover{border-color:var(--red);background:#161311;}
 
   @media(prefers-reduced-motion:reduce){
     *{animation:none!important;transition:none!important;}
-    .page-head .mono,.page-head h1,.gallery-viewer{opacity:1!important;transform:none!important;}
+    .page-head .mono,.page-head h1{opacity:1!important;transform:none!important;}
   }
 </style>
 </head>
@@ -98,6 +108,14 @@
 </div>
 
 <a href="index.html" class="brand-mark">YYOKAI</a>
+
+<!-- 👉 звук: файл track.mp3 (той, що вже лежить у репозиторії) -->
+<audio id="bgAudio" src="track.mp3" loop preload="none"></audio>
+<button class="sound-btn muted" id="soundBtn" aria-label="Увімкнути/вимкнути музику">
+  <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.6"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16 8a5 5 0 0 1 0 8"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+  <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.6"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16 9l5 6M21 9l-5 6"/></svg>
+</button>
+
 <div class="menu-btn" id="menuBtn" onclick="toggleMenu()"><span></span><span></span><span></span></div>
 
 <nav class="nav-overlay" id="nav">
@@ -116,23 +134,16 @@
   <h1>Портфоліо</h1>
 </div>
 
-<section class="gallery-container" id="gallery">
-  <div class="gallery-viewer" id="viewer">
-    <div class="nav-zone left-zone" onclick="prevImg()" aria-label="Попереднє фото"></div>
-    <div class="nav-zone right-zone" onclick="nextImg()" aria-label="Наступне фото"></div>
-    <img id="mainImg" src="" alt="YYOKAI tattoo робота">
-  </div>
+<div class="grid-wrap">
+  <div class="photo-grid" id="photoGrid"></div>
+</div>
 
-  <div class="bottom-nav">
-    <div class="arrow-wrapper" onclick="prevImg()" aria-label="Попереднє фото">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-    </div>
-    <div class="counter" id="imgCounter">1 / 83</div>
-    <div class="arrow-wrapper" onclick="nextImg()" aria-label="Наступне фото">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-    </div>
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-close" id="lightboxClose" aria-label="Закрити">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
   </div>
-</section>
+  <img id="lightboxImg" src="" alt="YYOKAI tattoo робота — повний розмір">
+</div>
 
 <script>
   function toggleMenu(){
@@ -143,14 +154,8 @@
   (function(){
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var head = document.getElementById('pageHead');
-    var viewer = document.getElementById('viewer');
-    if(reduce){ head.classList.add('active'); viewer.classList.add('active'); return; }
-    requestAnimationFrame(function(){
-      setTimeout(function(){
-        head.classList.add('active');
-        viewer.classList.add('active');
-      }, 60);
-    });
+    if(reduce){ head.classList.add('active'); return; }
+    requestAnimationFrame(function(){ setTimeout(function(){ head.classList.add('active'); }, 60); });
   })();
 
   /* ---- плавна склейка циклу фонового відео ---- */
@@ -183,6 +188,35 @@
     bind(a); bind(b);
   })();
 
+  /* ---- музика: автозапуск при першому скролі, вручну — кнопкою ---- */
+  (function(){
+    var audio = document.getElementById('bgAudio');
+    var btn = document.getElementById('soundBtn');
+    var triedAutoplay = false;
+
+    function setIcon(){
+      if(audio.paused) btn.classList.add('muted');
+      else btn.classList.remove('muted');
+    }
+    function tryAutoplay(){
+      if(triedAutoplay) return;
+      triedAutoplay = true;
+      audio.play().then(setIcon).catch(function(){
+        /* браузер заблокував автозапуск без прямого дотику — чекаємо клік по іконці */
+      });
+    }
+    window.addEventListener('scroll', tryAutoplay, {once:true, passive:true});
+    window.addEventListener('touchstart', tryAutoplay, {once:true, passive:true});
+
+    btn.addEventListener('click', function(){
+      if(audio.paused){ audio.play().catch(function(){}); }
+      else{ audio.pause(); }
+    });
+    audio.addEventListener('play', setIcon);
+    audio.addEventListener('pause', setIcon);
+  })();
+
+  /* ---- галерея: сітка + лайтбокс ---- */
   const photos = [
     "19.jpg","20.JPG","21.JPG","22.JPG","23.JPG","24.JPG","25.JPG","26.JPG","27.JPG","28.JPG",
     "29.JPG","30.JPG","31.JPG","32.JPG","33.JPG","34.JPG","35.jpg","36.JPG","37.JPG","38.JPG",
@@ -195,30 +229,34 @@
     "98.JPG","99.JPG","100.JPG"
   ];
 
-  let currentIdx = 0;
-  const mainImg = document.getElementById('mainImg');
-  const counter = document.getElementById('imgCounter');
+  var grid = document.getElementById('photoGrid');
+  var lightbox = document.getElementById('lightbox');
+  var lightboxImg = document.getElementById('lightboxImg');
 
-  function updateImg(){
-    mainImg.style.opacity = '0';
-    setTimeout(function(){
-      mainImg.src = photos[currentIdx];
-      counter.textContent = (currentIdx + 1) + ' / ' + photos.length;
-      mainImg.style.opacity = '1';
-    }, 120);
+  photos.forEach(function(src){
+    var cell = document.createElement('div');
+    cell.className = 'photo-cell';
+    var img = document.createElement('img');
+    img.loading = 'lazy';
+    img.src = src;
+    img.alt = 'YYOKAI tattoo робота';
+    img.addEventListener('load', function(){ img.classList.add('loaded'); });
+    cell.appendChild(img);
+    cell.addEventListener('click', function(){
+      lightboxImg.src = src;
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+    grid.appendChild(cell);
+  });
+
+  function closeLightbox(){
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
   }
-  function nextImg(){ currentIdx = (currentIdx + 1) % photos.length; updateImg(); }
-  function prevImg(){ currentIdx = (currentIdx - 1 + photos.length) % photos.length; updateImg(); }
-
-  let startX = 0;
-  document.addEventListener('touchstart', function(e){ startX = e.touches[0].clientX; }, {passive:true});
-  document.addEventListener('touchend', function(e){
-    var endX = e.changedTouches[0].clientX;
-    if (startX - endX > 50) nextImg();
-    if (endX - startX > 50) prevImg();
-  }, {passive:true});
-
-  updateImg();
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', function(e){ if(e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeLightbox(); });
 </script>
 </body>
 </html>
