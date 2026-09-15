@@ -30,6 +30,21 @@
   :focus-visible{outline:2px solid var(--red);outline-offset:3px;}
   .mono{font-family:'JetBrains Mono',monospace;}
 
+  /* ============================================================
+     👉 ФОН СТОРІНКИ — відео позаду контенту, затемнене і трохи розмите.
+     Файл: -5816441903785162927.mov (має лежати поруч з lettering.html,
+     назва має збігатися з точністю до регістру літер).
+     Можеш підкрутити прозорість і розмиття тут:
+     ============================================================ */
+  :root{ --bg-video-opacity:.3; --bg-video-blur:4px; }
+  .hero-video-section{position:relative;overflow:hidden;min-height:56vh;display:flex;align-items:center;}
+  .bg-video-wrap{position:absolute;inset:0;z-index:0;overflow:hidden;opacity:0;transition:opacity 1.2s ease;}
+  .bg-video-wrap.active{opacity:var(--bg-video-opacity);}
+  .bg-fade-bottom{position:absolute;left:0;right:0;bottom:0;height:40%;z-index:1;background:linear-gradient(to bottom,transparent,var(--black));pointer-events:none;}
+  .bg-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(var(--bg-video-blur));opacity:0;transition:opacity 1s linear;}
+  .bg-video.is-active{opacity:1;}
+  .bg-tint{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(6,6,5,.35) 0%,rgba(6,6,5,.9) 85%);}
+
   /* ---------- TOP BAR (як на решті сайту) ---------- */
   .menu-btn{position:fixed;top:26px;right:24px;z-index:2000;width:26px;height:14px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;}
   .menu-btn span{display:block;width:100%;height:1px;background:var(--white);transition:transform .35s var(--ease),opacity .35s;}
@@ -96,6 +111,25 @@
 </head>
 <body>
 
+<section class="hero-video-section">
+  <div class="bg-video-wrap" id="bgVideoWrap">
+    <video class="bg-video is-active" id="bgVideoA" muted playsinline preload="auto" autoplay>
+      <source src="-5816441903785162927.mov" type="video/mp4">
+    </video>
+    <video class="bg-video" id="bgVideoB" muted playsinline preload="none">
+      <source src="-5816441903785162927.mov" type="video/mp4">
+    </video>
+    <div class="bg-tint"></div>
+  </div>
+  <div class="bg-fade-bottom"></div>
+
+  <div class="page-head">
+    <div class="mono">flash</div>
+    <h1>Вільні ескізи</h1>
+    <p>Кожен ескіз — в одному екземплярі. Заброньовані роботи більше не повторюються.</p>
+  </div>
+</section>
+
 <audio id="bgAudio" src="track.mp3" loop preload="none"></audio>
 <button class="sound-btn muted" id="soundBtn" aria-label="Увімкнути/вимкнути музику">
   <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.6"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16 8a5 5 0 0 1 0 8"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
@@ -116,17 +150,44 @@
 
 <a href="booking.html" class="cta-fixed">Записатися</a>
 
-<div class="page-head">
-  <div class="mono">flash</div>
-  <h1>Вільні ескізи</h1>
-  <p>Кожен ескіз — в одному екземплярі. Заброньовані роботи більше не повторюються.</p>
-</div>
-
 <div class="grid-wrap">
   <div class="flash-grid" id="flashGrid"></div>
 </div>
 
 <script>
+  /* фонове відео: плавна поява + безшовна склейка циклу */
+  (function(){
+    var wrap = document.getElementById('bgVideoWrap');
+    requestAnimationFrame(function(){ setTimeout(function(){ wrap.classList.add('active'); }, 60); });
+
+    var a = document.getElementById('bgVideoA');
+    var b = document.getElementById('bgVideoB');
+    if(!a || !b) return;
+    var active = a, standby = b, crossfading = false, preloaded = false;
+    function crossfade(){
+      if(crossfading) return;
+      crossfading = true;
+      try{ standby.currentTime = 0; standby.play().catch(function(){}); }catch(e){}
+      standby.classList.add('is-active');
+      active.classList.remove('is-active');
+      setTimeout(function(){
+        try{ active.pause(); }catch(e){}
+        var tmp = active; active = standby; standby = tmp;
+        preloaded = false; crossfading = false;
+      }, 1000);
+    }
+    function bind(v){
+      v.addEventListener('timeupdate', function(){
+        if(v !== active || !v.duration) return;
+        if(!preloaded && v.currentTime >= v.duration * 0.5){
+          preloaded = true; standby.setAttribute('preload','auto'); standby.load();
+        }
+        if((v.duration - v.currentTime) <= 1) crossfade();
+      });
+    }
+    bind(a); bind(b);
+  })();
+
   function toggleMenu(){
     document.getElementById('nav').classList.toggle('active');
     document.getElementById('menuBtn').classList.toggle('active');
@@ -166,18 +227,19 @@
   const flashItems = [
     {src:'yok1.png', claimed:false, tryOn:'primerka.html'},
     {src:'yok2.jpg', claimed:false, tryOn:'primerka3.html'},
-    {src:'yok3.png', claimed:false, tryOn:'primerka4.html'},
+    {src:'yok3.png', claimed:false, tryOn:''},
     {src:'yok4.png', claimed:false, tryOn:''},
     {src:'yok5.png', claimed:false, tryOn:''},
-    {src:'yok5.1.png', claimed:true, tryOn:''},
+    {src:'yok5.1.png', claimed:false, tryOn:''},
     {src:'yok6.png', claimed:false, tryOn:''},
     {src:'yok7.png', claimed:false, tryOn:''},
     {src:'yok8.png', claimed:false, tryOn:''},
     {src:'yok9.png', claimed:false, tryOn:''},
     {src:'yok10.png', claimed:false, tryOn:''},
-   
-  
     // --- запас під майбутні ескізи (просто встав src, коли буде готово) ---
+    {src:'', claimed:false, tryOn:''},
+    {src:'', claimed:false, tryOn:''},
+    {src:'', claimed:false, tryOn:''},
     {src:'', claimed:false, tryOn:''},
     {src:'', claimed:false, tryOn:''},
     {src:'', claimed:false, tryOn:''},
