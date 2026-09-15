@@ -74,17 +74,17 @@
   .flash-cell.claimed img{opacity:.55;filter:grayscale(1);}
   .flash-cell.claimed img.loaded{opacity:.55;filter:grayscale(1);}
 
-  .tag{position:absolute;left:10px;bottom:10px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.03em;
-    color:#2a2a28;padding:9px 20px;border-radius:100px;white-space:nowrap;background-size:500% 100%;
-    animation:tagShimmer 8s linear infinite;text-shadow:none;}
-  .tag-available{background-image:linear-gradient(100deg,#ffd6e6,#d6ecff,#e3d6ff,#fff2cf,#ffd6e6);}
+  .tag{position:absolute;left:10px;bottom:10px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.03em;
+    color:#3a3632;padding:5px 20px;border-radius:100px;white-space:nowrap;background-size:260% 100%;
+    animation:tagShimmer 15s ease-in-out infinite alternate;text-shadow:none;}
+  .tag-available{background-image:linear-gradient(100deg,#e6b9c6,#b9cbe6,#dcd3ad,#e6b9c6);}
 
   .claimed-badge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;
-    font-family:'Unbounded',sans-serif;font-weight:600;font-size:12px;letter-spacing:.06em;text-transform:uppercase;
-    color:#e8e8e4;padding:12px 26px;border-radius:100px;white-space:nowrap;
+    font-family:'Unbounded',sans-serif;font-weight:600;font-size:10px;letter-spacing:.05em;text-transform:uppercase;
+    color:#e8e8e4;padding:9px 16px;border-radius:100px;white-space:nowrap;
     background:rgba(90,90,86,.85);border:1px solid rgba(232,232,228,.15);}
 
-  @keyframes tagShimmer{0%{background-position:0% 50%;}100%{background-position:500% 50%;}}
+  @keyframes tagShimmer{0%{background-position:0% 50%;}100%{background-position:100% 50%;}}
 
   .empty-cell{position:relative;aspect-ratio:3/4;border-radius:10px;border:1px dashed var(--line);display:flex;align-items:center;justify-content:center;}
   .empty-cell span{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--white-dim);opacity:.5;letter-spacing:.03em;}
@@ -126,14 +126,6 @@
   <div class="flash-grid" id="flashGrid"></div>
 </div>
 
-<div class="lightbox" id="lightbox" style="position:fixed;inset:0;background:rgba(6,6,5,.97);z-index:3000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:60px 20px;opacity:0;visibility:hidden;transition:opacity .35s ease;">
-  <div id="lightboxClose" style="position:absolute;top:22px;right:22px;width:40px;height:40px;border-radius:50%;border:1px solid var(--red-deep);background:rgba(14,14,13,.7);display:flex;align-items:center;justify-content:center;cursor:pointer;">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-  </div>
-  <img id="lightboxImg" src="" alt="Ескіз YYOKAI" style="max-width:100%;max-height:70vh;object-fit:contain;border-radius:8px;">
-  <a href="booking.html" class="cta-fixed" style="position:relative;bottom:auto;left:auto;transform:none;">Записатися з цим ескізом</a>
-</div>
-
 <script>
   function toggleMenu(){
     document.getElementById('nav').classList.toggle('active');
@@ -162,55 +154,56 @@
   /* ============================================================
      👉 СПИСОК ЕСКІЗІВ
      - src: назва файлу зображення (постав поруч з lettering.html)
-     - claimed: true/false — true = показує переливний бейдж
-       "Заброньовано" (сірий), false = "Вільно" (червоно-золотий),
-       клік по вільному відкриває ескіз на весь екран.
+     - claimed: true/false — true = сірий бейдж "Заброньовано" по
+       центру фото, false = пастельне "Вільно" знизу зліва.
+     - tryOn: посилання на сторінку примірки цього ескізу (наприклад
+       'primerka.html'). Клік по доступному ескізу одразу відкриває
+       цю сторінку. Залиш порожнім '', якщо примірки ще немає —
+       тоді клік просто покаже фото на весь екран.
      Порожні місця в кінці — запас під майбутні ескізи, просто
      заміни src у будь-якому рядку, коли з'явиться нова робота.
      ============================================================ */
   const flashItems = [
-    {src:'flash-01.jpg', claimed:false},
-    {src:'flash-02.jpg', claimed:true},
-    {src:'flash-03.jpg', claimed:false},
-    {src:'flash-04.jpg', claimed:false},
-    {src:'flash-05.jpg', claimed:false},
-    {src:'flash-06.jpg', claimed:true},
-    {src:'flash-07.jpg', claimed:false},
-    {src:'flash-08.jpg', claimed:false},
-    {src:'flash-09.jpg', claimed:false},
-    {src:'flash-10.jpg', claimed:false},
-    {src:'flash-11.jpg', claimed:false},
-    {src:'flash-12.jpg', claimed:false},
-    {src:'flash-13.jpg', claimed:false},
-    {src:'flash-14.jpg', claimed:false},
-    {src:'flash-15.jpg', claimed:false},
-    {src:'flash-16.jpg', claimed:false},
-    {src:'flash-17.jpg', claimed:false},
-    {src:'flash-18.jpg', claimed:false},
-    {src:'flash-19.jpg', claimed:false},
-    {src:'flash-20.jpg', claimed:false},
-    {src:'flash-21.jpg', claimed:false},
-    {src:'flash-22.jpg', claimed:false},
-    {src:'flash-23.jpg', claimed:false},
-    {src:'flash-24.jpg', claimed:false},
+    {src:'yok1.png', claimed:true, tryOn:''},
+    {src:'yok2.jpg', claimed:true, tryOn:''},
+    {src:'yok3.png', claimed:true, tryOn:''},
+    {src:'yok4.png', claimed:true, tryOn:''},
+    {src:'yok5.png', claimed:true, tryOn:''},
+    {src:'yok5.1.png', claimed:false, tryOn:''},
+    {src:'yok6.png', claimed:true, tryOn:''},
+    {src:'yok7.png', claimed:true, tryOn:''},
+    {src:'yok8.png', claimed:true, tryOn:''},
+    {src:'yok9.png', claimed:true, tryOn:''},
+    {src:'yok10.png', claimed:true, tryOn:''},
+    {src:'flash-11.jpg', claimed:true, tryOn:''},
+    {src:'flash-13.jpg', claimed:false, tryOn:''},
+    {src:'flash-14.jpg', claimed:false, tryOn:''},
+    {src:'flash-15.jpg', claimed:false, tryOn:''},
+    {src:'flash-16.jpg', claimed:false, tryOn:''},
+    {src:'flash-17.jpg', claimed:false, tryOn:''},
+    {src:'flash-18.jpg', claimed:false, tryOn:''},
+    {src:'flash-19.jpg', claimed:false, tryOn:''},
+    {src:'flash-20.jpg', claimed:false, tryOn:''},
+    {src:'flash-21.jpg', claimed:false, tryOn:''},
+    {src:'flash-22.jpg', claimed:false, tryOn:''},
+    {src:'flash-23.jpg', claimed:false, tryOn:''},
+    {src:'flash-24.jpg', claimed:false, tryOn:''},
     // --- запас під майбутні ескізи (просто встав src, коли буде готово) ---
-    {src:'', claimed:false},
-    {src:'', claimed:false},
-    {src:'', claimed:false},
-    {src:'', claimed:false},
-    {src:'', claimed:false},
-    {src:'', claimed:false},
-    {src:'', claimed:false},
-    {src:'', claimed:false},
-    {src:'', claimed:false},
-    {src:'', claimed:false},
-    {src:'', claimed:false},
-    {src:'', claimed:false}
+    {src:'', claimed:false, tryOn:''},
+    {src:'', claimed:false, tryOn:''},
+    {src:'', claimed:false, tryOn:''},
+    {src:'', claimed:false, tryOn:''},
+    {src:'', claimed:false, tryOn:''},
+    {src:'', claimed:false, tryOn:''},
+    {src:'', claimed:false, tryOn:''},
+    {src:'', claimed:false, tryOn:''},
+    {src:'', claimed:false, tryOn:''},
+    {src:'', claimed:false, tryOn:''},
+    {src:'', claimed:false, tryOn:''},
+    {src:'', claimed:false, tryOn:''}
   ];
 
   var grid = document.getElementById('flashGrid');
-  var lightbox = document.getElementById('lightbox');
-  var lightboxImg = document.getElementById('lightboxImg');
 
   flashItems.forEach(function(item){
     if(!item.src){
@@ -242,25 +235,15 @@
       tag.textContent = 'Вільно';
       cell.appendChild(tag);
 
-      cell.addEventListener('click', function(){
-        lightboxImg.src = item.src;
-        lightbox.style.opacity = '1';
-        lightbox.style.visibility = 'visible';
-        document.body.style.overflow = 'hidden';
-      });
+      if(item.tryOn){
+        cell.addEventListener('click', function(){
+          window.location.href = item.tryOn;
+        });
+      }
     }
 
     grid.appendChild(cell);
   });
-
-  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
-  lightbox.addEventListener('click', function(e){ if(e.target === lightbox) closeLightbox(); });
-  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeLightbox(); });
-  function closeLightbox(){
-    lightbox.style.opacity = '0';
-    lightbox.style.visibility = 'hidden';
-    document.body.style.overflow = '';
-  }
 </script>
 </body>
 </html>
