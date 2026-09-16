@@ -36,7 +36,7 @@
      назва має збігатися з точністю до регістру літер).
      Можеш підкрутити прозорість і розмиття тут:
      ============================================================ */
-  :root{ --bg-video-opacity:.55; --bg-video-blur:1.5px; }
+  :root{ --bg-video-opacity:.75; --bg-video-blur:1.5px; }
   .hero-video-section{position:relative;overflow:hidden;min-height:56vh;display:flex;align-items:center;}
   .bg-video-wrap{position:absolute;inset:0;z-index:0;overflow:hidden;opacity:0;transition:opacity 1.2s ease;}
   .bg-video-wrap.active{opacity:var(--bg-video-opacity);}
@@ -114,10 +114,10 @@
 <section class="hero-video-section">
   <div class="bg-video-wrap" id="bgVideoWrap">
     <video class="bg-video is-active" id="bgVideoA" muted playsinline preload="auto" autoplay>
-      <source src="3289293265806962362_4IBv8pGp.mov" type="video/mp4">
+      <source src="-5816441903785162927.mov" type="video/mp4">
     </video>
     <video class="bg-video" id="bgVideoB" muted playsinline preload="none">
-      <source src="3289293265806962362_4IBv8pGp.mov" type="video/mp4">
+      <source src="-5816441903785162927.mov" type="video/mp4">
     </video>
     <div class="bg-tint"></div>
   </div>
@@ -130,7 +130,7 @@
   </div>
 </section>
 
-<audio id="bgAudio" src="1234_out.mp3" loop preload="none"></audio>
+<audio id="bgAudio" src="track.mp3" loop preload="none"></audio>
 <button class="sound-btn muted" id="soundBtn" aria-label="Увімкнути/вимкнути музику">
   <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.6"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16 8a5 5 0 0 1 0 8"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
   <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.6"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16 9l5 6M21 9l-5 6"/></svg>
@@ -227,7 +227,7 @@
   const flashItems = [
     {src:'yok1.png', claimed:false, tryOn:'primerka.html'},
     {src:'yok2.jpg', claimed:false, tryOn:'primerka3.html'},
-    {src:'yok3.png', claimed:false, tryOn:''},
+    {src:'yok3.png', claimed:false, tryOn:'primerka4.html'},
     {src:'yok4.png', claimed:false, tryOn:''},
     {src:'yok5.png', claimed:false, tryOn:''},
     {src:'yok5.1.png', claimed:true, tryOn:''},
