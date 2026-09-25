@@ -7,7 +7,7 @@
 <meta name="description" content="Готові ескізи — унікальні, не повторюються. YYOKAI, Львів.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;900&family=Inter:wght@400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600&family=Inter:wght@400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
   :root{
     --black:#060605;
@@ -29,21 +29,6 @@
   ::selection{background:var(--red);color:var(--black);}
   :focus-visible{outline:2px solid var(--red);outline-offset:3px;}
   .mono{font-family:'JetBrains Mono',monospace;}
-
-  /* ============================================================
-     👉 ФОН СТОРІНКИ — відео позаду контенту, затемнене і трохи розмите.
-     Файл: -5816441903785162927.mov (має лежати поруч з lettering.html,
-     назва має збігатися з точністю до регістру літер).
-     Можеш підкрутити прозорість і розмиття тут:
-     ============================================================ */
-  :root{ --bg-video-opacity:.75; --bg-video-blur:1.5px; }
-  .hero-video-section{position:relative;overflow:hidden;min-height:56vh;display:flex;align-items:center;}
-  .bg-video-wrap{position:absolute;inset:0;z-index:0;overflow:hidden;opacity:0;transition:opacity 1.2s ease;}
-  .bg-video-wrap.active{opacity:var(--bg-video-opacity);}
-  .bg-fade-bottom{position:absolute;left:0;right:0;bottom:0;height:40%;z-index:1;background:linear-gradient(to bottom,transparent,var(--black));pointer-events:none;}
-  .bg-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(var(--bg-video-blur));opacity:0;transition:opacity 1s linear;}
-  .bg-video.is-active{opacity:1;}
-  .bg-tint{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(6,6,5,.1) 0%,rgba(6,6,5,.7) 85%);}
 
   /* ---------- TOP BAR (як на решті сайту) ---------- */
   .menu-btn{position:fixed;top:26px;right:24px;z-index:2000;width:26px;height:14px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;}
@@ -70,18 +55,18 @@
   .cta-fixed{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--red);color:var(--black);padding:16px 36px;border-radius:100px;text-decoration:none;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:600;z-index:1500;box-shadow:0 10px 30px rgba(255,106,85,.35);white-space:nowrap;transition:transform .25s var(--ease);}
   .cta-fixed:hover{transform:translateX(-50%) translateY(-2px);}
 
-  /* ---------- HEADER ---------- */
-  .page-head{position:relative;z-index:1;padding:100px var(--gutter) 24px;text-align:center;}
+  /* ---------- HEADER (без відео — просто чорний фон) ---------- */
+  .page-head{padding:100px var(--gutter) 24px;text-align:center;}
   .page-head .mono{font-size:11px;color:var(--red);}
   .page-head h1{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.3rem,4vw,1.8rem);margin-top:8px;}
   .page-head p{color:var(--white-dim);font-size:.9rem;margin-top:8px;max-width:44ch;margin-left:auto;margin-right:auto;}
 
   /* ---------- GRID GALLERY (2 колонки, як портфоліо) ---------- */
-  .grid-wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 var(--gutter) 140px;}
+  .grid-wrap{max-width:1100px;margin:0 auto;padding:0 var(--gutter) 140px;}
   .flash-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
   @media(min-width:820px){.flash-grid{grid-template-columns:repeat(3,1fr);gap:12px;}}
 
-  .flash-cell{position:relative;aspect-ratio:3/4;overflow:hidden;}
+  .flash-cell{position:relative;aspect-ratio:3/4;overflow:hidden;background:var(--panel);}
   .flash-cell img{width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s var(--ease),transform .4s var(--ease);}
   .flash-cell img.loaded{opacity:1;}
   .flash-cell.available{cursor:pointer;}
@@ -111,25 +96,6 @@
 </head>
 <body>
 
-<section class="hero-video-section">
-  <div class="bg-video-wrap" id="bgVideoWrap">
-    <video class="bg-video is-active" id="bgVideoA" muted playsinline preload="auto" autoplay>
-      <source src="3289293265806962362_4IBv8pGp.mov" type="video/mp4">
-    </video>
-    <video class="bg-video" id="bgVideoB" muted playsinline preload="none">
-      <source src="3289293265806962362_4IBv8pGp.mov" type="video/mp4">
-    </video>
-    <div class="bg-tint"></div>
-  </div>
-  <div class="bg-fade-bottom"></div>
-
-  <div class="page-head">
-    <div class="mono">flash</div>
-    <h1>Вільні ескізи</h1>
-    <p>Кожен ескіз — в одному екземплярі. Заброньовані роботи більше не повторюються.</p>
-  </div>
-</section>
-
 <audio id="bgAudio" src="track.mp3" loop preload="none"></audio>
 <button class="sound-btn muted" id="soundBtn" aria-label="Увімкнути/вимкнути музику">
   <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.6"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16 8a5 5 0 0 1 0 8"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
@@ -150,50 +116,23 @@
 
 <a href="booking.html" class="cta-fixed">Записатися</a>
 
+<div class="page-head">
+  <div class="mono">flash</div>
+  <h1>Вільні ескізи</h1>
+  <p>Кожен ескіз — в одному екземплярі. Заброньовані роботи більше не повторюються.</p>
+</div>
+
 <div class="grid-wrap">
   <div class="flash-grid" id="flashGrid"></div>
 </div>
 
 <script>
-  /* фонове відео: плавна поява + безшовна склейка циклу */
-  (function(){
-    var wrap = document.getElementById('bgVideoWrap');
-    requestAnimationFrame(function(){ setTimeout(function(){ wrap.classList.add('active'); }, 60); });
-
-    var a = document.getElementById('bgVideoA');
-    var b = document.getElementById('bgVideoB');
-    if(!a || !b) return;
-    var active = a, standby = b, crossfading = false, preloaded = false;
-    function crossfade(){
-      if(crossfading) return;
-      crossfading = true;
-      try{ standby.currentTime = 0; standby.play().catch(function(){}); }catch(e){}
-      standby.classList.add('is-active');
-      active.classList.remove('is-active');
-      setTimeout(function(){
-        try{ active.pause(); }catch(e){}
-        var tmp = active; active = standby; standby = tmp;
-        preloaded = false; crossfading = false;
-      }, 1000);
-    }
-    function bind(v){
-      v.addEventListener('timeupdate', function(){
-        if(v !== active || !v.duration) return;
-        if(!preloaded && v.currentTime >= v.duration * 0.5){
-          preloaded = true; standby.setAttribute('preload','auto'); standby.load();
-        }
-        if((v.duration - v.currentTime) <= 1) crossfade();
-      });
-    }
-    bind(a); bind(b);
-  })();
-
   function toggleMenu(){
     document.getElementById('nav').classList.toggle('active');
     document.getElementById('menuBtn').classList.toggle('active');
   }
 
-  /* звук: та сама логіка, що на портфоліо */
+  /* звук: не вантажиться, поки людина сама не скролить/торкнеться */
   (function(){
     var audio = document.getElementById('bgAudio');
     var btn = document.getElementById('soundBtn');
@@ -217,12 +156,9 @@
      - src: назва файлу зображення (постав поруч з lettering.html)
      - claimed: true/false — true = сірий бейдж "Заброньовано" по
        центру фото, false = пастельне "Вільно" знизу зліва.
-     - tryOn: посилання на сторінку примірки цього ескізу (наприклад
-       'primerka.html'). Клік по доступному ескізу одразу відкриває
-       цю сторінку. Залиш порожнім '', якщо примірки ще немає —
-       тоді клік просто покаже фото на весь екран.
-     Порожні місця в кінці — запас під майбутні ескізи, просто
-     заміни src у будь-якому рядку, коли з'явиться нова робота.
+     - tryOn: посилання на сторінку примірки цього ескізу. Клік по
+       доступному ескізу відкриває цю сторінку. Порожнє '' — без кліку.
+     Порожні місця в кінці — запас під майбутні ескізи.
      ============================================================ */
   const flashItems = [
     {src:'yok1.png', claimed:false, tryOn:'primerka.html'},
@@ -236,7 +172,6 @@
     {src:'yok8.png', claimed:false, tryOn:''},
     {src:'yok9.png', claimed:false, tryOn:''},
     {src:'yok10.png', claimed:false, tryOn:''},
-    // --- запас під майбутні ескізи (просто встав src, коли буде готово) ---
     {src:'', claimed:false, tryOn:''},
     {src:'', claimed:false, tryOn:''},
     {src:'', claimed:false, tryOn:''},
@@ -256,7 +191,7 @@
 
   var grid = document.getElementById('flashGrid');
 
-  flashItems.forEach(function(item){
+  flashItems.forEach(function(item, index){
     if(!item.src){
       var empty = document.createElement('div');
       empty.className = 'empty-cell';
@@ -269,7 +204,15 @@
     cell.className = 'flash-cell ' + (item.claimed ? 'claimed' : 'available');
 
     var img = document.createElement('img');
-    img.loading = 'lazy';
+    /* перші кілька комірок видно одразу без скролу — вантажимо їх
+       негайно з високим пріоритетом; решту — лениво */
+    if(index < 4){
+      img.loading = 'eager';
+      img.fetchPriority = 'high';
+    } else {
+      img.loading = 'lazy';
+    }
+    img.decoding = 'async';
     img.src = item.src;
     img.alt = 'Ескіз YYOKAI';
     img.addEventListener('load', function(){ img.classList.add('loaded'); });
