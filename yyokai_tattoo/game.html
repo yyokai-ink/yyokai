@@ -17,7 +17,8 @@
                         inkBorder: '#272235',
                         crimsonRed: '#ff2a5f',
                         neonGold: '#ffb703',
-                        deepPurple: '#3b0764'
+                        deepPurple: '#3b0764',
+                        cyberBlue: '#00f0ff'
                     },
                     fontFamily: {
                         sans: ['system-ui', '-apple-system', 'sans-serif'],
@@ -39,22 +40,27 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-inkDark text-white font-sans antialiased min-h-screen flex flex-col selection:bg-crimsonRed selection:text-white select-none">
+<body id="appBodyTheme" class="bg-inkDark text-white font-sans antialiased min-h-screen flex flex-col selection:bg-crimsonRed selection:text-white select-none transition-colors duration-500">
 
     <!-- TOP NAVIGATION BAR -->
     <header class="sticky top-0 z-50 bg-inkDark/85 backdrop-blur-md border-b border-inkBorder px-4 py-3 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-crimsonRed to-neonGold flex items-center justify-center font-black text-lg tracking-wider shadow-lg shadow-crimsonRed/30">
+            <div id="headerLogoIcon" class="w-9 h-9 rounded-xl bg-gradient-to-br from-crimsonRed to-neonGold flex items-center justify-center font-black text-lg tracking-wider shadow-lg shadow-crimsonRed/30 cursor-pointer" onclick="router.navigate('game')" title="Швидко на клікер">
                 ⛩️
             </div>
             <div>
                 <span class="font-black text-lg tracking-widest bg-gradient-to-r from-white via-gray-200 to-crimsonRed bg-clip-text text-transparent">INK</span>
-                <span class="text-[10px] block text-neonGold tracking-widest font-semibold uppercase">Japanese Gaming</span>
+                <span id="headerLocationTitle" class="text-[10px] block text-neonGold tracking-widest font-semibold uppercase">Shrine Level 1</span>
             </div>
         </div>
 
         <!-- USER STATS & CONTROLS -->
         <div class="flex items-center space-x-3">
+            <!-- Кнопка швидкого повернення на клікер -->
+            <button onclick="router.navigate('game')" class="px-2.5 py-1 rounded-lg bg-crimsonRed/20 border border-crimsonRed/40 text-xs font-bold text-crimsonRed hover:bg-crimsonRed hover:text-white transition">
+                <i class="fa-solid fa-gamepad"></i>
+            </button>
+
             <div id="userBalanceBadge" class="hidden items-center bg-inkCard border border-inkBorder px-3 py-1 rounded-full text-xs font-bold space-x-1.5 shadow-inner">
                 <span class="text-neonGold"><i class="fa-solid fa-droplet"></i></span>
                 <span id="headerInkCount" class="text-white font-mono">0</span>
@@ -82,7 +88,7 @@
                     Play. Earn. <span class="bg-gradient-to-r from-crimsonRed to-neonGold bg-clip-text text-transparent">Unlock.</span>
                 </h1>
                 <p class="text-gray-400 text-sm sm:text-base" data-i18n="landing.subtitle">
-                    Ексклюзивна ігрова loyalty-платформа у стилі японського кіберпанку. 100 рівнів прогресу (x2), бустери та реальні нагороди.
+                    Японська кіберпанк платформа. 100 унікальних локацій, еволюція механік (x2), 100 квестів та реферальна система.
                 </p>
                 <div class="pt-4 flex flex-col sm:flex-row gap-3 w-full">
                     <button onclick="router.navigate('game')" class="flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-crimsonRed to-rose-600 font-bold text-white shadow-lg shadow-crimsonRed/40 hover:opacity-95 transition transform active:scale-95">
@@ -100,7 +106,7 @@
             <div class="w-full max-w-sm bg-inkCard border border-inkBorder rounded-2xl p-6 shadow-2xl relative">
                 <div class="text-center mb-6">
                     <h2 id="authTitle" class="text-2xl font-black uppercase tracking-wider" data-i18n="auth.loginTitle">Вхід у систему</h2>
-                    <p class="text-xs text-gray-400 mt-1" data-i18n="auth.loginSub">Продовжуй свій шлях до легендарних нагород</p>
+                    <p class="text-xs text-gray-400 mt-1" data-i18n="auth.loginSub">Синхронізуй свої досягнення на всіх пристроях</p>
                 </div>
                 <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
                     <div>
@@ -123,27 +129,27 @@
             </div>
         </section>
 
-        <!-- VIEW: GAME (CLICKER) -->
+        <!-- VIEW: GAME (CLICKER & LOCATION) -->
         <section id="view-game" class="view-section hidden flex-1 flex flex-col items-center justify-between p-4 max-w-md mx-auto w-full">
             <!-- Game Top HUD -->
-            <div class="w-full flex justify-between items-center bg-inkCard/80 border border-inkBorder p-3 rounded-2xl backdrop-blur">
+            <div class="w-full flex justify-between items-center bg-inkCard/90 border border-inkBorder p-3 rounded-2xl backdrop-blur">
                 <div>
-                    <span class="text-[10px] text-gray-400 block uppercase tracking-wider" data-i18n="game.levelLabel">Рівень</span>
-                    <span id="gameLevelName" class="text-sm font-bold text-neonGold">Lv. 1 (Kitsune)</span>
+                    <span id="locationNameDisplay" class="text-[10px] text-neonGold block uppercase tracking-wider font-bold">Локація: Святилище</span>
+                    <span id="gameLevelName" class="text-sm font-bold text-white">Рівень 1</span>
                 </div>
                 <div class="text-center">
-                    <span class="text-[10px] text-gray-400 block uppercase tracking-wider" data-i18n="game.comboLabel">Прогрес рівня</span>
-                    <span id="gameLevelProgressText" class="text-xs font-black text-crimsonRed">0 / 2</span>
+                    <span class="text-[10px] text-gray-400 block uppercase tracking-wider">Прогрес локації</span>
+                    <span id="gameLevelProgressText" class="text-xs font-black text-crimsonRed">0 / 1,000</span>
                 </div>
                 <div class="text-right">
-                    <span class="text-[10px] text-gray-400 block uppercase tracking-wider">Сила кліка</span>
+                    <span class="text-[10px] text-gray-400 block uppercase tracking-wider">Клік x2</span>
                     <span id="clickPowerDisplay" class="text-xs font-bold text-emerald-400">+1 💧</span>
                 </div>
             </div>
 
-            <!-- Central Multi-Touch Clicker Object -->
-            <div class="my-auto relative flex flex-col items-center justify-center w-full">
-                <div id="clickerTarget" class="w-60 h-60 sm:w-68 sm:h-68 rounded-full bg-gradient-to-tr from-deepPurple via-inkCard to-crimsonRed/30 border-2 border-inkBorder flex items-center justify-center cursor-pointer select-none relative shadow-2xl kitsune-glow touch-none">
+            <!-- Central Multi-Touch Clicker Object & Dynamic Background Zone -->
+            <div id="clickerZoneBox" class="my-auto relative flex flex-col items-center justify-center w-full p-6 rounded-3xl transition-all duration-700">
+                <div id="clickerTarget" class="w-60 h-60 sm:w-68 sm:h-68 rounded-full bg-gradient-to-tr from-deepPurple via-inkCard to-crimsonRed/40 border-2 border-inkBorder flex items-center justify-center cursor-pointer select-none relative shadow-2xl kitsune-glow touch-none">
                     <span id="activeAvatarDisplay" class="text-7xl sm:text-8xl filter drop-shadow-[0_0_20px_rgba(255,42,95,0.6)] pointer-events-none">🦊</span>
                     <div id="floatingNumbersContainer" class="absolute inset-0 pointer-events-none overflow-visible"></div>
                 </div>
@@ -153,7 +159,7 @@
                 </div>
             </div>
 
-            <!-- Energy Bar & Next Level Progress -->
+            <!-- Energy Bar & Location Progress -->
             <div class="w-full space-y-3 bg-inkCard border border-inkBorder p-3 rounded-2xl">
                 <div class="flex justify-between text-xs font-medium">
                     <span class="text-gray-400" data-i18n="game.energy">Енергія кліків</span>
@@ -164,44 +170,56 @@
                 </div>
                 <div class="pt-2 border-t border-inkBorder/60 flex justify-between items-center text-xs">
                     <div>
-                        <span class="text-gray-400 block">Потрібно для наступного рівня:</span>
-                        <span id="nextLevelNeeded" class="font-bold text-white">2 очок</span>
+                        <span class="text-gray-400 block">До наступної локації/рівня:</span>
+                        <span id="nextLevelNeeded" class="font-bold text-white">1,000 очок</span>
                     </div>
                     <span id="levelPercentage" class="text-neonGold font-mono font-bold">0%</span>
                 </div>
             </div>
         </section>
 
-        <!-- VIEW: BOOSTERS / UPGRADES (Ускорялки за монети) -->
+        <!-- VIEW: BOOSTERS / UPGRADES (x2 Механіки) -->
         <section id="view-boosters" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
-            <h2 class="text-xl font-black uppercase tracking-wider text-neonGold"><i class="fa-solid fa-bolt mr-2"></i>Ускорялки & Бустери</h2>
-            <p class="text-xs text-gray-400">Купуй покращення за зібрані INK, щоб швидше фармити та легше долати важкі рівні прогресії!</p>
-            <div id="boostersList" class="space-y-3 pb-6">
-                <!-- Динамічні ускорялки рендеряться через JS -->
-            </div>
+            <h2 class="text-xl font-black uppercase tracking-wider text-neonGold"><i class="fa-solid fa-bolt mr-2"></i>Еволюція & Бустери (x2)</h2>
+            <p class="text-xs text-gray-400">Прокачуй механіки. Кожне покращення збільшує ефективність подвійно (x2), полегшуючи проходження високих рівнів.</p>
+            <div id="boostersList" class="space-y-3 pb-6"></div>
         </section>
 
-        <!-- VIEW: QUESTS -->
+        <!-- VIEW: QUESTS (100 Квестів) -->
         <section id="view-quests" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
-            <h2 class="text-xl font-black uppercase tracking-wider" data-i18n="nav.quests">Квести та Нагороди</h2>
-            <p class="text-xs text-gray-400">Виконуй завдання, збирай кліки та забирай заслужені бонуси!</p>
-            <div id="questsList" class="space-y-3"></div>
+            <div class="flex justify-between items-center">
+                <h2 class="text-xl font-black uppercase tracking-wider" data-i18n="nav.quests">Квести (100 Етапів)</h2>
+                <span id="completedQuestsCount" class="text-xs text-neonGold font-mono font-bold">0 / 100</span>
+            </div>
+            <p class="text-xs text-gray-400">Попутні завдання заробляють тобі величезну кількість балів INK у міру твого прогресу!</p>
+            <div id="questsList" class="space-y-3 pb-6"></div>
         </section>
 
-        <!-- VIEW: PARTNER OFFERS -->
+        <!-- VIEW: REFERRALS & PARTNERS (Пришли друга) -->
         <section id="view-offers" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
             <div class="flex justify-between items-center">
-                <h2 class="text-xl font-black uppercase tracking-wider" data-i18n="nav.offers">Партнери</h2>
+                <h2 class="text-xl font-black uppercase tracking-wider text-neonGold"><i class="fa-solid fa-user-plus mr-2"></i>Пришли друга</h2>
                 <button onclick="openAdminIfAllowed()" id="adminNavBtn" class="hidden px-3 py-1 bg-crimsonRed text-xs font-bold rounded-lg shadow">Admin</button>
             </div>
-            <p class="text-xs text-gray-400" data-i18n="offers.subtitle">Виконуй партнерські завдання та заробляй величезну кількість INK.</p>
-            <div id="partnerOffersList" class="space-y-3"></div>
+            
+            <!-- Referral Card -->
+            <div class="bg-gradient-to-br from-inkCard to-deepPurple/40 border border-inkBorder rounded-2xl p-5 space-y-3 shadow-xl">
+                <h3 class="font-black text-sm text-white uppercase">Запрошуй друзів — отримуй +10,000 INK</h3>
+                <p class="text-xs text-gray-300">Поділися своїм унікальним посиланням. Коли друг перейде і почне грати, ви обоє отримаєте бонус на баланс!</p>
+                <div class="flex items-center space-x-2 pt-2">
+                    <input type="text" id="refLinkInput" readonly value="https://t.me/YyokaiInkBot?start=ref_user_777" class="w-full bg-inkDark border border-inkBorder rounded-xl px-3 py-2.5 text-xs font-mono text-neonGold select-all">
+                    <button onclick="copyRefLink()" class="px-4 py-2.5 bg-crimsonRed text-white font-bold text-xs rounded-xl shadow hover:bg-rose-600 transition">Копіювати</button>
+                </div>
+            </div>
+
+            <h3 class="text-sm font-black uppercase tracking-wider pt-2" data-i18n="nav.offers">Партнери та Активності</h3>
+            <div id="partnerOffersList" class="space-y-3 pb-6"></div>
         </section>
 
         <!-- VIEW: REWARDS & SHOP -->
         <section id="view-rewards" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
             <h2 class="text-xl font-black uppercase tracking-wider" data-i18n="nav.rewards">Нагороди студії</h2>
-            <div id="rewardsList" class="space-y-3"></div>
+            <div id="rewardsList" class="space-y-3 pb-6"></div>
         </section>
 
         <!-- VIEW: PROFILE & AVATAR SHOP -->
@@ -212,23 +230,21 @@
                 </div>
                 <div>
                     <h3 id="profileEmail" class="font-bold text-sm text-white">user@ink.local</h3>
-                    <span class="inline-block mt-1 px-2 py-0.5 bg-crimsonRed/20 border border-crimsonRed/40 text-crimsonRed text-[10px] font-bold rounded-full uppercase" id="profileVipBadge">Рівень 1 (Kitsune)</span>
+                    <span class="inline-block mt-1 px-2 py-0.5 bg-crimsonRed/20 border border-crimsonRed/40 text-crimsonRed text-[10px] font-bold rounded-full uppercase" id="profileVipBadge">Рівень 1 • INK Member</span>
                 </div>
             </div>
 
-            <!-- AVATAR SELECTOR -->
+            <!-- AVATAR SELECTOR (Миттєве оновлення всюди) -->
             <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 space-y-3">
                 <h4 class="text-xs font-bold text-neonGold uppercase tracking-wider"><i class="fa-solid fa-masks-theater mr-1"></i> Обери аватар персонажа</h4>
-                <p class="text-[11px] text-gray-400">Твої іконки змінюють образ і візуальний стиль кліку.</p>
+                <p class="text-[11px] text-gray-400">Твій вибір автоматично синхронізується в профілі, на клікері та дошці лідерів.</p>
                 <div id="avatarGridSelector" class="grid grid-cols-4 gap-2.5 pt-2"></div>
             </div>
 
+            <!-- LEADERBOARD PREVIEW -->
             <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 space-y-3">
-                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider" data-i18n="profile.settings">Налаштування</h4>
-                <div class="flex justify-between items-center py-2 border-b border-inkBorder">
-                    <span class="text-sm" data-i18n="profile.sound">Звуки гри</span>
-                    <input type="checkbox" id="settingSound" checked class="accent-crimsonRed w-4 h-4">
-                </div>
+                <h4 class="text-xs font-bold text-neonGold uppercase tracking-wider"><i class="fa-solid fa-trophy mr-1"></i> Топ гравців (Leaderboard)</h4>
+                <div id="leaderboardList" class="space-y-2 text-xs"></div>
             </div>
 
             <button onclick="handleLogout()" class="w-full py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 font-bold text-sm hover:bg-red-500/20 transition">
@@ -243,8 +259,8 @@
                 <button onclick="router.navigate('offers')" class="text-xs text-gray-400 hover:text-white"><i class="fa-solid fa-arrow-left mr-1"></i> Назад</button>
             </div>
             <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 space-y-3">
-                <h3 class="text-sm font-bold text-neonGold uppercase">Безпека та Експоненційна Прогресія</h3>
-                <p class="text-xs text-gray-400">Рівні зростають за формулою х2 (2, 4, 8, 16 ... до 100 рівня). З кожним етапом накопичувати бали стає складніше.</p>
+                <h3 class="text-sm font-bold text-neonGold uppercase">Керування платформою</h3>
+                <p class="text-xs text-gray-400">Тут налаштовуються пороги рівнів, реферальні бонуси та модерація користувачів.</p>
             </div>
         </section>
 
@@ -265,8 +281,8 @@
             <span class="text-[9px] font-semibold mt-0.5" data-i18n="nav.quests">Квести</span>
         </button>
         <button onclick="router.navigate('offers')" class="nav-btn flex flex-col items-center text-gray-400 hover:text-crimsonRed transition" data-target="offers">
-            <i class="fa-solid fa-fire text-base"></i>
-            <span class="text-[9px] font-semibold mt-0.5" data-i18n="nav.offers">Партнери</span>
+            <i class="fa-solid fa-user-plus text-base"></i>
+            <span class="text-[9px] font-semibold mt-0.5">Реферали</span>
         </button>
         <button onclick="router.navigate('rewards')" class="nav-btn flex flex-col items-center text-gray-400 hover:text-crimsonRed transition" data-target="rewards">
             <i class="fa-solid fa-gift text-base"></i>
@@ -318,108 +334,108 @@
 
         // --- Game State & Boosters ---
         let gameState = {
-            ink: 150,
+            ink: 250,
             totalClicks: 0,
             energy: 1000,
             maxEnergy: 1000,
             selectedAvatar: "🦊",
-            // Рівні та куплені ускорялки
             upgrades: {
-                clickPower: 1,      // + до сили кліку
-                autoClicker: 0,     // Авто-фарм за секунду
-                energyCap: 0,       // Збільшення максимальної енергії
-                energyRegen: 0      // Прискорена регенерація енергії
-            },
-            quests: {
-                clicks1000: { claimed: false, progress: 0, target: 1000 },
+                clickPower: 1,      // Сила кліку
+                autoClicker: 0,     // Авто-фарм
+                energyCap: 0,       // Максимум енергії
+                energyRegen: 0      // Регенерація
             }
         };
 
-        // --- Таблиця вартості ускорялок ---
+        // Генерація 100 унікальних квестів автоматично
+        let questsState = [];
+        for (let i = 1; i <= 100; i++) {
+            questsState.push({
+                id: i,
+                title: `Квест #${i}: Шлях Самурая (Етап ${i})`,
+                reward: i * 500,
+                targetClicks: i * 50,
+                claimed: false
+            });
+        }
+
+        // --- Таблиця вартості ускорялок (збільшення на x2 з кожним рівнем) ---
         const boosterConfigs = {
-            clickPower: { name: "Гострий Катана-Клік (+1 за клік)", baseCost: 100, costMult: 2.2, icon: "⚔️" },
-            autoClicker: { name: "Кібер-Дух (Авто-клік 1 INK/сек)", baseCost: 250, costMult: 2.5, icon: "⛩️" },
-            energyCap: { name: "Чаша Енергії (+250 ліміт енергії)", baseCost: 150, costMult: 1.8, icon: "⚡" },
-            energyRegen: { name: "Подих Дракона (Швидша регенерація)", baseCost: 300, costMult: 2.3, icon: "🐉" }
+            clickPower: { name: "Гострий Катана-Клік (x2 Сила)", baseCost: 150, costMult: 2.0, icon: "⚔️" },
+            autoClicker: { name: "Кібер-Дух (x2 Авто-клік)", baseCost: 400, costMult: 2.2, icon: "⛩️" },
+            energyCap: { name: "Чаша Енергії (x2 Ліміт)", baseCost: 250, costMult: 1.9, icon: "⚡" },
+            energyRegen: { name: "Подих Дракона (x2 Швидкість)", baseCost: 500, costMult: 2.3, icon: "🐉" }
         };
 
-        // --- Експоненційна прогресія рівнів (х2 рост до 100 рівня) ---
-        // Рівень 1: 0 - 2 очок (потрібно 2)
-        // Рівень 2: 2 - 6 очок (потрібно 4)
-        // Рівень 3: 6 - 14 очок (потрібно 8) ... і так далі до 100 рівня.
+        // --- Локації та глобальні рівні (масштабні пороги 1k, 10k, 100k, 1M...) ---
+        const locationThemes = [
+            { threshold: 0, name: "Рівень 1: Святилище Кіцуне", bgClass: "bg-inkDark" },
+            { threshold: 10000, name: "Рівень 2: Неоновий Кібер-Міст", bgClass: "bg-slate-900" },
+            { threshold: 100000, name: "Рівень 3: Темний Храм Дракона", bgClass: "bg-purple-950/40" },
+            { threshold: 1000000, name: "Рівень 4: Цитадель Самурая", bgClass: "bg-red-950/40" },
+            { threshold: 10000000, name: "Рівень 5: Легендарний Кіберпанк", bgClass: "bg-zinc-950" }
+        ];
+
         function getLevelData(totalPoints) {
-            let currentLevel = 1;
-            let pointsInThisLevel = totalPoints;
+            let currentLoc = locationThemes[0];
+            let nextThreshold = locationThemes[1].threshold;
             
-            // Розраховуємо сумарну вартість рівнів за формулою 2^level
-            for (let lvl = 1; lvl < 100; lvl++) {
-                let costForThisLevel = Math.pow(2, lvl);
-                if (pointsInThisLevel >= costForThisLevel) {
-                    pointsInThisLevel -= costForThisLevel;
-                    currentLevel = lvl + 1;
-                } else {
+            for (let i = locationThemes.length - 1; i >= 0; i--) {
+                if (totalPoints >= locationThemes[i].threshold) {
+                    currentLoc = locationThemes[i];
+                    nextThreshold = locationThemes[i + 1] ? locationThemes[i + 1].threshold : locationThemes[i].threshold * 10;
                     break;
                 }
             }
-            
-            if (currentLevel > 100) currentLevel = 100;
-            
-            // Визначаємо необхідну кількість очок саме для поточного рівня
-            let requiredForCurrentLevel = currentLevel >= 100 ? Math.pow(2, 99) : Math.pow(2, currentLevel - 1);
-            
+
+            let progressInTier = totalPoints - currentLoc.threshold;
+            let neededInTier = nextThreshold - currentLoc.threshold;
+            let percent = Math.min(100, Math.floor((progressInTier / neededInTier) * 100));
+
             return {
-                level: currentLevel,
-                progress: Math.floor(pointsInThisLevel),
-                target: Math.floor(requiredForCurrentLevel),
-                percent: currentLevel >= 100 ? 100 : Math.min(100, Math.floor((pointsInThisLevel / requiredForCurrentLevel) * 100))
+                name: currentLoc.name,
+                bgClass: currentLoc.bgClass,
+                progress: progressInTier,
+                target: neededInTier,
+                percent: percent
             };
         }
 
         const i18n = {
             ua: {
-                "landing.subtitle": "Ігрова loyalty-платформа у стилі японського кіберпанку. 100 експоненційних рівнів (x2), ускорялки та реальні тату-нагороди.",
+                "landing.subtitle": "Японська кіберпанк платформа. 100 унікальних локацій, еволюція механік (x2), 100 квестів та реферальна система.",
                 "landing.playBtn": "Грати зараз",
                 "landing.loginBtn": "Увійти / Реєстрація",
                 "auth.loginTitle": "Вхід у систему",
-                "auth.loginSub": "Продовжуй свій шлях до легендарних нагород",
+                "auth.loginSub": "Синхронізуй свої досягнення на всіх пристроях",
                 "auth.emailLabel": "Email",
                 "auth.passLabel": "Пароль",
                 "auth.loginBtnText": "Увійти",
                 "auth.switchToReg": "Ще немає акаунта? Зареєструватися",
-                "game.levelLabel": "Рівень",
-                "game.comboLabel": "Прогрес рівня",
                 "game.energy": "Енергія кліків",
                 "nav.play": "Гра",
                 "nav.quests": "Квести",
-                "nav.offers": "Партнери",
+                "nav.offers": "Реферали",
                 "nav.rewards": "Нагороди",
                 "nav.profile": "Профіль",
-                "offers.subtitle": "Виконуй партнерські завдання та заробляй INK.",
-                "profile.settings": "Налаштування",
-                "profile.sound": "Звуки гри",
                 "profile.logout": "Вийти з акаунта"
             },
             en: {
-                "landing.subtitle": "Cyberpunk Japanese tattoo gaming platform. 100 exponential levels (x2), boosters & real tattoo rewards.",
+                "landing.subtitle": "Japanese cyberpunk platform. 100 locations, mechanics evolution (x2), 100 quests & referral system.",
                 "landing.playBtn": "Play Now",
                 "landing.loginBtn": "Login / Register",
                 "auth.loginTitle": "Sign In",
-                "auth.loginSub": "Continue your journey to legendary rewards",
+                "auth.loginSub": "Sync your progress across all devices",
                 "auth.emailLabel": "Email",
                 "auth.passLabel": "Password",
                 "auth.loginBtnText": "Sign In",
                 "auth.switchToReg": "No account yet? Register",
-                "game.levelLabel": "Level",
-                "game.comboLabel": "Level Progress",
                 "game.energy": "Click Energy",
                 "nav.play": "Play",
                 "nav.quests": "Quests",
-                "nav.offers": "Offers",
+                "nav.offers": "Referrals",
                 "nav.rewards": "Rewards",
                 "nav.profile": "Profile",
-                "offers.subtitle": "Complete partner tasks and earn massive INK.",
-                "profile.settings": "Settings",
-                "profile.sound": "Game Sound",
                 "profile.logout": "Logout"
             }
         };
@@ -468,6 +484,8 @@
                     }
                 }
                 if (viewId === 'boosters') renderBoosters();
+                if (viewId === 'quests') renderQuests();
+                if (viewId === 'profile') renderLeaderboard();
             }
         };
 
@@ -478,7 +496,7 @@
             e.preventDefault();
             if (gameState.energy <= 0) return;
 
-            let clickGain = 1 + gameState.upgrades.clickPower;
+            let clickGain = 1 * Math.pow(2, gameState.upgrades.clickPower - 1);
             if (gameState.energy >= clickGain) {
                 gameState.energy -= clickGain;
                 gameState.ink += clickGain;
@@ -499,30 +517,34 @@
 
         function updateGameUI() {
             const lvlData = getLevelData(gameState.ink);
-            gameState.maxEnergy = 1000 + (gameState.upgrades.energyCap * 250);
+            gameState.maxEnergy = 1000 * Math.pow(2, gameState.upgrades.energyCap);
             if (gameState.energy > gameState.maxEnergy) gameState.energy = gameState.maxEnergy;
 
             document.getElementById('headerInkCount').textContent = gameState.ink.toLocaleString();
             document.getElementById('gameInkDisplay').textContent = gameState.ink.toLocaleString();
-            document.getElementById('energyText').textContent = `${gameState.energy} / ${gameState.maxEnergy}`;
+            document.getElementById('energyText').textContent = `${gameState.energy.toLocaleString()} / ${gameState.maxEnergy.toLocaleString()}`;
             document.getElementById('energyBar').style.width = `${(gameState.energy / gameState.maxEnergy) * 100}%`;
             
-            document.getElementById('gameLevelName').textContent = `Lv. ${lvlData.level}`;
+            document.getElementById('locationNameDisplay').textContent = lvlData.name;
+            document.getElementById('headerLocationTitle').textContent = lvlData.name;
             document.getElementById('gameLevelProgressText').textContent = `${lvlData.progress.toLocaleString()} / ${lvlData.target.toLocaleString()}`;
-            document.getElementById('nextLevelNeeded').textContent = `${(lvlData.target - lvlData.progress).toLocaleString()} очок до Лвл ${lvlData.level + 1}`;
+            document.getElementById('nextLevelNeeded').textContent = `${(lvlData.target - lvlData.progress).toLocaleString()} очок`;
             document.getElementById('levelPercentage').textContent = `${lvlData.percent}%`;
-            document.getElementById('clickPowerDisplay').textContent = `+${1 + gameState.upgrades.clickPower} 💧`;
+            
+            const currentClickVal = 1 * Math.pow(2, gameState.upgrades.clickPower - 1);
+            document.getElementById('clickPowerDisplay').textContent = `+${currentClickVal.toLocaleString()} 💧`;
 
+            // Синхронізація аватара по всій системі
             document.getElementById('activeAvatarDisplay').textContent = gameState.selectedAvatar;
             document.getElementById('landingAvatarIcon').textContent = gameState.selectedAvatar;
             document.getElementById('profileAvatarBox').textContent = gameState.selectedAvatar;
-            document.getElementById('profileVipBadge').textContent = `Рівень ${lvlData.level} • INK Member`;
+            document.getElementById('headerLogoIcon').textContent = gameState.selectedAvatar;
         }
 
         function spawnFloatingNumber(e, amount) {
             const container = document.getElementById('floatingNumbersContainer');
             const el = document.createElement('div');
-            el.textContent = `+${amount} INK`;
+            el.textContent = `+${amount.toLocaleString()} INK`;
             el.className = 'absolute text-neonGold font-black text-sm pointer-events-none transition-all duration-700 ease-out z-30';
             
             const rect = container.getBoundingClientRect();
@@ -541,7 +563,7 @@
             setTimeout(() => el.remove(), 700);
         }
 
-        // --- Ускорялки / Бустери (Купівля за монети) ---
+        // --- Ускорялки / Бустери (Збільшення на x2) ---
         function getBoosterCost(key, level) {
             const cfg = boosterConfigs[key];
             return Math.floor(cfg.baseCost * Math.pow(cfg.costMult, level));
@@ -577,7 +599,7 @@
                         <span class="text-3xl">${cfg.icon}</span>
                         <div>
                             <h4 class="font-bold text-xs sm:text-sm text-white">${cfg.name}</h4>
-                            <span class="text-[11px] text-gray-400">Рівень: <strong class="text-neonGold">${lvl}</strong></span>
+                            <span class="text-[11px] text-gray-400">Рівень механіки: <strong class="text-neonGold">${lvl}</strong> (x2)</span>
                         </div>
                     </div>
                     <button onclick="buyBooster('${key}')" class="px-4 py-2 bg-gradient-to-r from-neonGold to-crimsonRed text-white font-bold text-xs rounded-xl shadow hover:opacity-90 transition transform active:scale-95">
@@ -588,40 +610,40 @@
             });
         }
 
-        // --- Авто-клік та регенерація енергії (Таймер) ---
+        // --- Авто-клік та регенерація енергії ---
         setInterval(() => {
             let changed = false;
-            // Авто-клікер приносить INK автоматично
             if (gameState.upgrades.autoClicker > 0) {
-                gameState.ink += gameState.upgrades.autoClicker;
+                let autoGain = 1 * Math.pow(2, gameState.upgrades.autoClicker - 1);
+                gameState.ink += autoGain;
                 changed = true;
             }
-            // Регенерація енергії (базова + бонус від прокачки)
-            const regenAmount = 5 + (gameState.upgrades.energyRegen * 5);
+            const regenAmount = (10 * Math.pow(2, gameState.upgrades.energyRegen));
             if (gameState.energy < gameState.maxEnergy) {
                 gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + regenAmount);
                 changed = true;
             }
-            if (changed) {
-                updateGameUI();
-            }
+            if (changed) updateGameUI();
         }, 1000);
 
-        // --- Quests ---
+        // --- Квести (100 штук) ---
         function checkQuestsProgress() {
-            if (gameState.totalClicks >= 1000 && !gameState.quests.clicks1000.claimed) {
-                gameState.quests.clicks1000.progress = 1000;
-            } else {
-                gameState.quests.clicks1000.progress = Math.min(1000, gameState.totalClicks);
-            }
-            renderQuests();
+            let completedCount = 0;
+            questsState.forEach(q => {
+                if (gameState.totalClicks >= q.target && !q.claimed) {
+                    // Квест виконано, готовий до збору
+                }
+                if (q.claimed) completedCount++;
+            });
+            document.getElementById('completedQuestsCount').textContent = `${completedCount} / 100`;
         }
 
-        window.claimQuestReward = function(questKey) {
-            if (questKey === 'clicks1000' && !gameState.quests.clicks1000.claimed && gameState.totalClicks >= 1000) {
-                gameState.quests.clicks1000.claimed = true;
-                gameState.ink += 5000;
-                alert('🎉 Вітаємо! Нагороду за 1000 кліків (+5,000 INK) успішно зараховано!');
+        window.claimQuestReward = function(questId) {
+            const q = questsState.find(item => item.id === questId);
+            if (q && !q.claimed && gameState.totalClicks >= q.target) {
+                q.claimed = true;
+                gameState.ink += q.reward;
+                alert(`🎉 Квест #${q.id} виконано! Отримано +${q.reward.toLocaleString()} INK!`);
                 updateGameUI();
                 renderQuests();
             }
@@ -632,27 +654,31 @@
             if (!list) return;
             list.innerHTML = '';
 
-            const q1 = gameState.quests.clicks1000;
-            const isReady = q1.progress >= 1000 && !q1.claimed;
-            
-            const el = document.createElement('div');
-            el.className = 'bg-inkCard border border-inkBorder p-4 rounded-2xl flex items-center justify-between';
-            el.innerHTML = `
-                <div>
-                    <h4 class="font-bold text-sm text-white">Зробити 1000 кліків</h4>
-                    <span class="text-xs text-neonGold font-mono">+5,000 INK • ${q1.progress} / 1000</span>
-                </div>
-                <button onclick="claimQuestReward('clicks1000')" ${q1.claimed ? 'disabled' : ''} class="px-4 py-2 text-xs font-bold rounded-xl shadow transition ${
-                    q1.claimed ? 'bg-gray-700 text-gray-400 cursor-not-allowed' : 
-                    isReady ? 'bg-gradient-to-r from-neonGold to-crimsonRed text-white animate-pulse' : 'bg-inkDark border border-inkBorder text-gray-400'
-                }">
-                    ${q1.claimed ? 'Забрано' : isReady ? 'Забрати!' : ' В процесі'}
-                </button>
-            `;
-            list.appendChild(el);
+            let completedCount = 0;
+            questsState.forEach(q => {
+                if (q.claimed) completedCount++;
+                const isReady = gameState.totalClicks >= q.target && !q.claimed;
+
+                const el = document.createElement('div');
+                el.className = 'bg-inkCard border border-inkBorder p-3 rounded-2xl flex items-center justify-between';
+                el.innerHTML = `
+                    <div>
+                        <h4 class="font-bold text-xs text-white">${q.title}</h4>
+                        <span class="text-[10px] text-neonGold font-mono">+${q.reward.toLocaleString()} INK • Кліків: ${Math.min(gameState.totalClicks, q.target)}/${q.target}</span>
+                    </div>
+                    <button onclick="claimQuestReward(${q.id})" ${q.claimed ? 'disabled' : ''} class="px-3 py-1.5 text-xs font-bold rounded-xl shadow transition ${
+                        q.claimed ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 
+                        isReady ? 'bg-gradient-to-r from-neonGold to-crimsonRed text-white animate-pulse' : 'bg-inkDark border border-inkBorder text-gray-400'
+                    }">
+                        ${q.claimed ? 'Забрано' : isReady ? 'Забрати!' : 'В процесі'}
+                    </button>
+                `;
+                list.appendChild(el);
+            });
+            document.getElementById('completedQuestsCount').textContent = `${completedCount} / 100`;
         }
 
-        // --- Avatar Selection ---
+        // --- Avatar Selection (Миттєве збереження по всій системі) ---
         function renderAvatars() {
             const grid = document.getElementById('avatarGridSelector');
             if (!grid) return;
@@ -666,6 +692,7 @@
                     gameState.selectedAvatar = av.icon;
                     updateGameUI();
                     renderAvatars();
+                    renderLeaderboard();
                 };
                 btn.className = `p-3 rounded-2xl border flex flex-col items-center justify-center transition transform active:scale-95 ${
                     isSelected ? 'bg-crimsonRed/20 border-crimsonRed kitsune-glow' : 'bg-inkDark border-inkBorder hover:border-gray-500'
@@ -678,7 +705,44 @@
             });
         }
 
-        // Auth & Firebase Sync State
+        // --- Реферальна система ---
+        window.copyRefLink = function() {
+            const input = document.getElementById('refLinkInput');
+            input.select();
+            navigator.clipboard.writeText(input.value);
+            alert("Реферальне посилання скопійовано! Запрошуй друзів та отримуй +10,000 INK за кожного.");
+        };
+
+        // --- Дошка лідерів (Leaderboard) ---
+        function renderLeaderboard() {
+            const lb = document.getElementById('leaderboardList');
+            if (!lb) return;
+            lb.innerHTML = '';
+
+            const sampleLeaders = [
+                { name: "YYOKAI (Ти)", avatar: gameState.selectedAvatar, score: gameState.ink, isMe: true },
+                { name: "CyberSamurai", avatar: "👺", score: 1450000, isMe: false },
+                { name: "KitsuneQueen", avatar: "🦊", score: 890000, isMe: false }
+            ];
+
+            sampleLeaders.sort((a, b) => b.score - a.score);
+
+            sampleLeaders.forEach((l, idx) => {
+                const row = document.createElement('div');
+                row.className = `flex items-center justify-between p-2.5 rounded-xl border ${l.isMe ? 'bg-crimsonRed/10 border-crimsonRed/40' : 'bg-inkDark border-inkBorder'}`;
+                row.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <span class="font-mono text-neonGold font-bold">#${idx + 1}</span>
+                        <span class="text-xl">${l.avatar}</span>
+                        <span class="font-bold text-white text-xs">${l.name}</span>
+                    </div>
+                    <span class="font-mono text-xs text-crimsonRed font-bold">${l.score.toLocaleString()} INK</span>
+                `;
+                lb.appendChild(row);
+            });
+        }
+
+        // Auth & Firebase
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             if (user) {
@@ -686,6 +750,7 @@
                 if (ADMIN_UIDS.includes(user.uid)) {
                     document.getElementById('adminNavBtn').classList.remove('hidden');
                 }
+                document.getElementById('refLinkInput').value = `https://t.me/YyokaiInkBot?start=ref_${user.uid}`;
                 router.navigate('game');
             } else {
                 document.getElementById('adminNavBtn').classList.add('hidden');
@@ -724,7 +789,6 @@
             router.navigate('admin');
         };
 
-        // Initialize App on load
         window.addEventListener('DOMContentLoaded', () => {
             translateUI();
             updateGameUI();
@@ -735,8 +799,8 @@
             const offersList = document.getElementById('partnerOffersList');
             if (offersList) {
                 const sampleOffers = [
-                    { title: "Cyberpunk Arena Quest", reward: 15000, category: "GAMES", url: "#" },
-                    { title: "Tattoo Flash Studio App", reward: 8500, category: "APPS", url: "#" }
+                    { title: "Підпишись на Instagram студії", reward: 5000, category: "SOCIAL" },
+                    { title: "Запусти Telegram Telegram-бота", reward: 7500, category: "BOT" }
                 ];
                 sampleOffers.forEach(o => {
                     const d = document.createElement('div');
@@ -747,7 +811,7 @@
                             <h4 class="font-bold text-sm text-white">${o.title}</h4>
                             <span class="text-xs text-crimsonRed font-mono">+${o.reward.toLocaleString()} INK</span>
                         </div>
-                        <a href="${o.url}" onclick="alert('Перенаправлення на партнерський трекер...')" class="px-4 py-2 bg-crimsonRed text-white text-xs font-bold rounded-xl shadow">START</a>
+                        <button onclick="alert('Завдання виконано! Нагороду зараховано.')" class="px-4 py-2 bg-crimsonRed text-white text-xs font-bold rounded-xl shadow">START</button>
                     `;
                     offersList.appendChild(d);
                 });
@@ -757,8 +821,8 @@
             const rewardsList = document.getElementById('rewardsList');
             if (rewardsList) {
                 const sampleRewards = [
-                    { title: "10% Знижка на татуювання у Lviv", cost: "50,000 INK", tag: "DISCOUNT" },
-                    { title: "Безкоштовний сеанс тату (VIP)", cost: "1,000,000 INK", tag: "FREE TATTOO" }
+                    { title: "10% Знижка на татуювання", cost: "50,000 INK", tag: "DISCOUNT" },
+                    { title: "Ексклюзивний тату-ескіз (Flash)", cost: "250,000 INK", tag: "ART" }
                 ];
                 sampleRewards.forEach(r => {
                     const el = document.createElement('div');
@@ -769,7 +833,7 @@
                             <h4 class="font-bold text-sm text-white mt-1">${r.title}</h4>
                             <span class="text-xs text-crimsonRed font-mono font-bold">${r.cost}</span>
                         </div>
-                        <button onclick="alert('Запит на отримання нагороди надіслано адміністратору!')" class="px-3 py-2 bg-crimsonRed text-white text-xs font-bold rounded-xl">Unlock</button>
+                        <button onclick="alert('Запит на отримання нагороди надіслано!')" class="px-3 py-2 bg-crimsonRed text-white text-xs font-bold rounded-xl">Unlock</button>
                     `;
                     rewardsList.appendChild(el);
                 });
