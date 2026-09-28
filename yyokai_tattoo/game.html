@@ -1,629 +1,445 @@
 <!DOCTYPE html>
-<html lang="uk" class="dark">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>INK — Japanese Gaming & Rewards</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        inkDark: '#0a090d',
-                        inkCard: '#131118',
-                        inkBorder: '#272235',
-                        crimsonRed: '#ff2a5f',
-                        neonGold: '#ffb703',
-                        deepPurple: '#3b0764'
-                    },
-                    fontFamily: {
-                        sans: ['system-ui', '-apple-system', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="title">Клікер & Авторизація</title>
     <style>
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 15px rgba(255, 42, 95, 0.4); }
-            50% { box-shadow: 0 0 35px rgba(255, 183, 3, 0.7); }
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --danger: #ef4444;
         }
-        .kitsune-glow { animation: pulse-glow 3s infinite; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+            position: relative;
+        }
+        /* Шапка з лого та мовним перемикачем */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .logo-container img {
+            max-height: 50px;
+            width: auto;
+            display: block;
+        }
+        .lang-switcher button {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--text-color);
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 5px;
+            transition: 0.2s;
+        }
+        .lang-switcher button:hover {
+            background: var(--accent);
+            color: var(--bg-color);
+        }
+        /* Екрани (Auth vs Game) */
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+        h2 {
+            text-align: center;
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #475569;
+            background: #0f172a;
+            color: #fff;
+            box-sizing: border-box;
+        }
+        button.primary-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent);
+            color: #0f172a;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+        button.primary-btn:hover {
+            background: var(--accent-hover);
+        }
+        .social-btn {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #475569;
+            background: #fff;
+            color: #000;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .switch-text {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        .switch-text span {
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .error-msg {
+            color: var(--danger);
+            font-size: 13px;
+            text-align: center;
+            margin-top: 10px;
+        }
+        /* Стилі гри-клікера */
+        .clicker-box {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .counter {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--accent);
+            margin: 20px 0;
+        }
+        .click-btn {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #38bdf8, #0369a1);
+            color: #fff;
+            border: none;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4);
+            transition: transform 0.1s;
+        }
+        .click-btn:active {
+            transform: scale(0.95);
+        }
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+        }
     </style>
 </head>
-<body class="bg-inkDark text-white font-sans antialiased min-h-screen flex flex-col selection:bg-crimsonRed selection:text-white">
+<body>
 
-    <!-- TOP NAVIGATION BAR -->
-    <header class="sticky top-0 z-50 bg-inkDark/85 backdrop-blur-md border-b border-inkBorder px-4 py-3 flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-crimsonRed to-neonGold flex items-center justify-center font-black text-lg tracking-wider shadow-lg shadow-crimsonRed/30">
-                ⛩️
-            </div>
-            <div>
-                <span class="font-black text-lg tracking-widest bg-gradient-to-r from-white via-gray-200 to-crimsonRed bg-clip-text text-transparent">INK</span>
-                <span class="text-[10px] block text-neonGold tracking-widest font-semibold uppercase">Japanese Gaming</span>
-            </div>
+<div class="container">
+    <!-- Шапка сайту -->
+    <div class="header">
+        <!-- Твоє лого замість маски (заміни шлях на свій логотип) -->
+        <div class="logo-container">
+            <img src="your-logo.png" alt="Logo" id="siteLogo">
+        </div>
+        <!-- Перемикач мови -->
+        <div class="lang-switcher">
+            <button onclick="setLanguage('uk')">UA</button>
+            <button onclick="setLanguage('en')">EN</button>
+        </div>
+    </div>
+
+    <!-- ЕКРАН АВТОРИЗАЦІЇ / РЕЄСТРАЦІЇ -->
+    <div id="authScreen" class="screen active">
+        <h2 id="authTitle">Вхід в акаунт</h2>
+        
+        <div class="form-group">
+            <label data-i18n="emailLabel">Електронна пошта</label>
+            <input type="email" id="emailInput" placeholder="name@example.com">
+        </div>
+        <div class="form-group">
+            <label data-i18n="passLabel">Пароль</label>
+            <input type="password" id="passwordInput" placeholder="********">
         </div>
 
-        <!-- USER STATS & CONTROLS -->
-        <div class="flex items-center space-x-3">
-            <div id="userBalanceBadge" class="hidden items-center bg-inkCard border border-inkBorder px-3 py-1 rounded-full text-xs font-bold space-x-1.5 shadow-inner">
-                <span class="text-neonGold"><i class="fa-solid fa-droplet"></i></span>
-                <span id="headerInkCount" class="text-white font-mono">0</span>
-                <span class="text-[10px] text-gray-400">INK</span>
-            </div>
+        <button class="primary-btn" id="authSubmitBtn" onclick="handleEmailAuth()">Увійти</button>
+        
+        <button class="social-btn" onclick="loginWithGoogle()">
+            🌐 <span data-i18n="googleBtn">Увійти через Google</span>
+        </button>
+        <button class="social-btn" onclick="loginWithApple()">
+            🍏 <span data-i18n="appleBtn">Увійти через Apple</span>
+        </button>
 
-            <!-- LANGUAGE SWITCHER -->
-            <button onclick="toggleLanguage()" id="langSwitcherBtn" class="px-2.5 py-1 rounded-lg bg-inkCard border border-inkBorder text-xs font-bold text-gray-300 hover:text-white hover:border-crimsonRed transition">
-                🇺🇦 UA
-            </button>
+        <div class="error-msg" id="errorMsg"></div>
+
+        <div class="switch-text" id="switchText">
+            Немає акаунта? <span onclick="toggleAuthMode()">Зареєструватися</span>
         </div>
-    </header>
+    </div>
 
-    <!-- MAIN APP CONTAINER -->
-    <main class="flex-1 flex flex-col pb-20">
+    <!-- ЕКРАН ГРИ (КЛІКЕР) -->
+    <div id="gameScreen" class="screen">
+        <h2 data-i18n="gameHeader">Гра-Клікер</h2>
+        <p style="text-align: center; color: #94a3b8;" id="userEmailDisplay"></p>
+        
+        <div class="clicker-box">
+            <div class="counter" id="scoreDisplay">0</div>
+            <button class="clicker-btn click-btn" onclick="incrementScore()" data-i18n="clickBtn">Клік!</button>
+        </div>
 
-        <!-- VIEW: LANDING -->
-        <section id="view-landing" class="view-section flex-1 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
-            <div class="absolute inset-0 z-0 opacity-20 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-crimsonRed via-transparent to-transparent"></div>
-            <div class="relative z-10 max-w-md mx-auto space-y-6">
-                <div class="inline-block p-4 rounded-3xl bg-gradient-to-tr from-crimsonRed/20 to-neonGold/20 border border-inkBorder kitsune-glow mb-2">
-                    <span class="text-5xl">🦊</span>
-                </div>
-                <h1 class="text-4xl sm:text-5xl font-black tracking-tight uppercase">
-                    Play. Earn. <span class="bg-gradient-to-r from-crimsonRed to-neonGold bg-clip-text text-transparent">Unlock.</span>
-                </h1>
-                <p class="text-gray-400 text-sm sm:text-base" data-i18n="landing.subtitle">
-                    Ексклюзивна ігрова loyalty-платформа у стилі японського кіберпанку. Кликай, виконуй квести, запрошуй друзів та забирай реальні тату-нагороди.
-                </p>
-                <div class="pt-4 flex flex-col sm:flex-row gap-3 w-full">
-                    <button onclick="router.navigate('game')" class="flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-crimsonRed to-rose-600 font-bold text-white shadow-lg shadow-crimsonRed/40 hover:opacity-95 transition transform active:scale-95">
-                        <i class="fa-solid fa-gamepad mr-2"></i> <span data-i18n="landing.playBtn">Грати зараз</span>
-                    </button>
-                    <button onclick="router.navigate('auth')" class="flex-1 py-3.5 px-6 rounded-xl bg-inkCard border border-inkBorder font-bold text-gray-200 hover:bg-inkBorder/50 transition">
-                        <i class="fa-solid fa-right-to-bracket mr-2"></i> <span data-i18n="landing.loginBtn">Увійти / Реєстрація</span>
-                    </button>
-                </div>
-            </div>
-        </section>
+        <button class="logout-btn" onclick="logout()" data-i18n="logoutBtn">Вийти з акаунта</button>
+    </div>
+</div>
 
-        <!-- VIEW: AUTH -->
-        <section id="view-auth" class="view-section hidden flex-1 flex flex-col items-center justify-center p-4">
-            <div class="w-full max-w-sm bg-inkCard border border-inkBorder rounded-2xl p-6 shadow-2xl relative">
-                <div class="text-center mb-6">
-                    <h2 id="authTitle" class="text-2xl font-black uppercase tracking-wider" data-i18n="auth.loginTitle">Вхід у систему</h2>
-                    <p class="text-xs text-gray-400 mt-1" data-i18n="auth.loginSub">Продовжуй свій шлях до легендарних нагород</p>
-                </div>
-                <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-400 mb-1" data-i18n="auth.emailLabel">Email</label>
-                        <input type="email" id="authEmail" required class="w-full bg-inkDark border border-inkBorder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-crimsonRed transition" placeholder="you@example.com">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-400 mb-1" data-i18n="auth.passLabel">Пароль</label>
-                        <input type="password" id="authPass" required class="w-full bg-inkDark border border-inkBorder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-crimsonRed transition" placeholder="••••••••">
-                    </div>
-                    <button type="submit" id="authSubmitBtn" class="w-full py-3.5 rounded-xl bg-crimsonRed font-bold text-white shadow-lg shadow-crimsonRed/30 hover:bg-rose-600 transition">
-                        <span data-i18n="auth.loginBtnText">Увійти</span>
-                    </button>
-                </form>
-                <div class="mt-4 text-center">
-                    <button onclick="toggleAuthMode()" class="text-xs text-neonGold hover:underline" id="authToggleText" data-i18n="auth.switchToReg">
-                        Ще немає акаунта? Зареєструватися
-                    </button>
-                </div>
-            </div>
-        </section>
+<!-- Firebase SDK (Modular) -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+        getAuth, 
+        signInWithEmailAndPassword, 
+        createUserWithEmailAndPassword, 
+        sendEmailVerification, 
+        signInWithPopup, 
+        GoogleAuthProvider, 
+        OAuthProvider, 
+        onAuthStateChanged, 
+        signOut 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { 
+        getFirestore, 
+        doc, 
+        setDoc, 
+        getDoc, 
+        updateField, 
+        increment 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        <!-- VIEW: GAME (CLICKER) -->
-        <section id="view-game" class="view-section hidden flex-1 flex flex-col items-center justify-between p-4 max-w-md mx-auto w-full">
-            <!-- Game Top HUD -->
-            <div class="w-full flex justify-between items-center bg-inkCard/80 border border-inkBorder p-3 rounded-2xl backdrop-blur">
-                <div>
-                    <span class="text-[10px] text-gray-400 block uppercase tracking-wider" data-i18n="game.levelLabel">Рівень</span>
-                    <span id="gameLevelName" class="text-sm font-bold text-neonGold">Kitsune Lv.1</span>
-                </div>
-                <div class="text-center">
-                    <span class="text-[10px] text-gray-400 block uppercase tracking-wider" data-i18n="game.comboLabel">Комбо</span>
-                    <span id="gameCombo" class="text-sm font-black text-crimsonRed">×1</span>
-                </div>
-                <div class="text-right">
-                    <span class="text-[10px] text-gray-400 block uppercase tracking-wider">VIP</span>
-                    <span id="gameVipStatus" class="text-xs font-bold text-gray-500">FREE</span>
-                </div>
-            </div>
+    // ⚠️ ВСТУПИ СВОЇ ДАНІ FIREBASE ТУТ:
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
 
-            <!-- Central Clicker Object -->
-            <div class="my-auto relative flex flex-col items-center justify-center">
-                <div id="clickerTarget" onclick="handleGameClick(event)" class="w-56 h-56 sm:w-64 sm:h-64 rounded-full bg-gradient-to-tr from-deepPurple via-inkCard to-crimsonRed/30 border-2 border-inkBorder flex items-center justify-center cursor-pointer select-none relative shadow-2xl kitsune-glow transform active:scale-95 transition duration-75">
-                    <span class="text-7xl sm:text-8xl filter drop-shadow-[0_0_20px_rgba(255,42,95,0.6)]">🦊</span>
-                    <div id="floatingNumbersContainer" class="absolute inset-0 pointer-events-none overflow-visible"></div>
-                </div>
-                <div class="mt-6 text-center">
-                    <div class="text-3xl sm:text-4xl font-black font-mono tracking-wider text-white" id="gameInkDisplay">0</div>
-                    <span class="text-xs text-neonGold uppercase tracking-widest font-semibold">INK BALANCE</span>
-                </div>
-            </div>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-            <!-- Energy Bar & Next Reward Progress -->
-            <div class="w-full space-y-3 bg-inkCard border border-inkBorder p-3 rounded-2xl">
-                <div class="flex justify-between text-xs font-medium">
-                    <span class="text-gray-400" data-i18n="game.energy">Енергія</span>
-                    <span id="energyText" class="text-neonGold font-mono">100 / 100</span>
-                </div>
-                <div class="w-full bg-inkDark h-2 rounded-full overflow-hidden border border-inkBorder">
-                    <div id="energyBar" class="bg-gradient-to-r from-neonGold to-crimsonRed h-full w-full transition-all duration-300"></div>
-                </div>
-                <div class="pt-2 border-t border-inkBorder/60 flex justify-between items-center text-xs">
-                    <div>
-                        <span class="text-gray-400 block" data-i18n="game.nextReward">Наступна нагорода:</span>
-                        <span class="font-bold text-white">5% Discount</span>
-                    </div>
-                    <span id="nextRewardProgress" class="text-neonGold font-mono font-bold">0 / 50k</span>
-                </div>
-            </div>
-        </section>
+    let isRegisterMode = false;
+    let currentScore = 0;
+    let currentUser = null;
 
-        <!-- VIEW: QUESTS -->
-        <section id="view-quests" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
-            <h2 class="text-xl font-black uppercase tracking-wider" data-i18n="nav.quests">Квести</h2>
-            <div id="questsList" class="space-y-3">
-                <!-- Dynamic Quests Loaded Here -->
-            </div>
-        </section>
-
-        <!-- VIEW: PARTNER OFFERS (CPA / Affiliate) -->
-        <section id="view-offers" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
-            <div class="flex justify-between items-center">
-                <h2 class="text-xl font-black uppercase tracking-wider" data-i18n="nav.offers">Партнери</h2>
-                <button onclick="openAdminIfAllowed()" id="adminNavBtn" class="hidden px-3 py-1 bg-crimsonRed text-xs font-bold rounded-lg shadow">Admin</button>
-            </div>
-            <p class="text-xs text-gray-400" data-i18n="offers.subtitle">Виконуй партнерські завдання та заробляй величезну кількість INK.</p>
-            <div id="partnerOffersList" class="space-y-3">
-                <!-- Offers loaded here -->
-            </div>
-        </section>
-
-        <!-- VIEW: REWARDS & SHOP -->
-        <section id="view-rewards" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
-            <h2 class="text-xl font-black uppercase tracking-wider" data-i18n="nav.rewards">Нагороди</h2>
-            <div id="rewardsList" class="space-y-3">
-                <!-- Rewards items -->
-            </div>
-        </section>
-
-        <!-- VIEW: PROFILE & SETTINGS -->
-        <section id="view-profile" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
-            <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 flex items-center space-x-4">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-crimsonRed to-neonGold flex items-center justify-center text-2xl font-black shadow-lg">
-                    🦊
-                </div>
-                <div>
-                    <h3 id="profileEmail" class="font-bold text-sm text-white">user@ink.local</h3>
-                    <span class="inline-block mt-1 px-2 py-0.5 bg-crimsonRed/20 border border-crimsonRed/40 text-crimsonRed text-[10px] font-bold rounded-full uppercase" id="profileVipBadge">Standard User</span>
-                </div>
-            </div>
-
-            <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 space-y-3">
-                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider" data-i18n="profile.settings">Налаштування</h4>
-                <div class="flex justify-between items-center py-2 border-b border-inkBorder">
-                    <span class="text-sm" data-i18n="profile.sound">Звуки гри</span>
-                    <input type="checkbox" id="settingSound" checked class="accent-crimsonRed w-4 h-4">
-                </div>
-                <div class="flex justify-between items-center py-2">
-                    <span class="text-sm" data-i18n="profile.perf">Режим продуктивності</span>
-                    <select id="settingPerf" class="bg-inkDark border border-inkBorder rounded-lg px-2 py-1 text-xs text-white">
-                        <option value="HIGH">High (3D/FX)</option>
-                        <option value="MEDIUM">Medium</option>
-                        <option value="LOW">Low (2D)</option>
-                    </select>
-                </div>
-            </div>
-
-            <button onclick="handleLogout()" class="w-full py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 font-bold text-sm hover:bg-red-500/20 transition">
-                <i class="fa-solid fa-right-from-bracket mr-2"></i> <span data-i18n="profile.logout">Вийти з акаунта</span>
-            </button>
-        </section>
-
-        <!-- VIEW: ADMIN PANEL (Partner & Rewards Manager) -->
-        <section id="view-admin" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
-            <div class="flex items-center justify-between">
-                <h2 class="text-xl font-black uppercase tracking-wider text-crimsonRed">Admin Panel</h2>
-                <button onclick="router.navigate('offers')" class="text-xs text-gray-400 hover:text-white"><i class="fa-solid fa-arrow-left mr-1"></i> Назад</button>
-            </div>
-
-            <!-- ADD PARTNER OFFER FORM -->
-            <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 space-y-3">
-                <h3 class="text-sm font-bold text-neonGold uppercase">Додати партнерський оффер</h3>
-                <form onsubmit="handleAdminAddOffer(event)" class="space-y-3">
-                    <div>
-                        <label class="block text-[10px] font-semibold text-gray-400 mb-1">Партнер / Назва</label>
-                        <input type="text" id="adminOfferTitle" required class="w-full bg-inkDark border border-inkBorder rounded-xl px-3 py-2 text-xs text-white" placeholder="Game Partner">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-semibold text-gray-400 mb-1">Партнерське посилання (Partner URL)</label>
-                        <input type="url" id="adminOfferUrl" required class="w-full bg-inkDark border border-inkBorder rounded-xl px-3 py-2 text-xs text-white" placeholder="https://partner.example/click?subid={userId}">
-                        <span class="text-[9px] text-gray-500 block mt-1">Paste your affiliate / CPA tracking link here</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-[10px] font-semibold text-gray-400 mb-1">Нагорода (INK)</label>
-                            <input type="number" id="adminOfferReward" value="10000" required class="w-full bg-inkDark border border-inkBorder rounded-xl px-3 py-2 text-xs text-white">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-semibold text-gray-400 mb-1">Категорія</label>
-                            <select id="adminOfferCategory" class="w-full bg-inkDark border border-inkBorder rounded-xl px-3 py-2 text-xs text-white">
-                                <option value="GAMES">Games</option>
-                                <option value="APPS">Apps</option>
-                                <option value="SERVICES">Services</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button type="submit" class="w-full py-2.5 rounded-xl bg-crimsonRed font-bold text-xs text-white shadow hover:opacity-90">Зберегти оффер</button>
-                </form>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- BOTTOM MOBILE NAVIGATION BAR -->
-    <nav id="bottomNav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-inkDark/95 border-t border-inkBorder backdrop-blur-md px-2 py-2 flex justify-around items-center">
-        <button onclick="router.navigate('game')" class="nav-btn flex flex-col items-center text-gray-400 hover:text-crimsonRed transition" data-target="game">
-            <i class="fa-solid fa-gamepad text-lg"></i>
-            <span class="text-[10px] font-semibold mt-0.5" data-i18n="nav.play">Гра</span>
-        </button>
-        <button onclick="router.navigate('quests')" class="nav-btn flex flex-col items-center text-gray-400 hover:text-crimsonRed transition" data-target="quests">
-            <i class="fa-solid fa-scroll text-lg"></i>
-            <span class="text-[10px] font-semibold mt-0.5" data-i18n="nav.quests">Квести</span>
-        </button>
-        <button onclick="router.navigate('offers')" class="nav-btn flex flex-col items-center text-gray-400 hover:text-crimsonRed transition" data-target="offers">
-            <i class="fa-solid fa-fire text-lg"></i>
-            <span class="text-[10px] font-semibold mt-0.5" data-i18n="nav.offers">Партнери</span>
-        </button>
-        <button onclick="router.navigate('rewards')" class="nav-btn flex flex-col items-center text-gray-400 hover:text-crimsonRed transition" data-target="rewards">
-            <i class="fa-solid fa-gift text-lg"></i>
-            <span class="text-[10px] font-semibold mt-0.5" data-i18n="nav.rewards">Нагороди</span>
-        </button>
-        <button onclick="router.navigate('profile')" class="nav-btn flex flex-col items-center text-gray-400 hover:text-crimsonRed transition" data-target="profile">
-            <i class="fa-solid fa-user text-lg"></i>
-            <span class="text-[10px] font-semibold mt-0.5" data-i18n="nav.profile">Профіль</span>
-        </button>
-    </nav>
-
-    <!-- CLIENT CORE LOGIC & FIREBASE SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDb, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        // Firebase Config (Replace with environment credentials in production)
-        const firebaseConfig = {
-            apiKey: "AIzaSyMockKeyForINkPlatform2026...",
-            authDomain: "ink-japanese-rewards.firebaseapp.com",
-            projectId: "ink-japanese-rewards",
-            storageBucket: "ink-japanese-rewards.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456:web:abcde"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // Admin UIDs configuration
-        const ADMIN_UIDS = ["admin_uid_placeholder_123", "owner_uid_777"];
-
-        // Localization Dictionary
-        const i18n = {
-            ua: {
-                "landing.subtitle": "Ігрова loyalty-платформа у стилі японського кіберпанку. Кликай, виконуй квести, запрошуй друзів та забирай реальні тату-нагороди.",
-                "landing.playBtn": "Грати зараз",
-                "landing.loginBtn": "Увійти / Реєстрація",
-                "auth.loginTitle": "Вхід у систему",
-                "auth.loginSub": "Продовжуй свій шлях до легендарних нагород",
-                "auth.emailLabel": "Email",
-                "auth.passLabel": "Пароль",
-                "auth.loginBtnText": "Увійти",
-                "auth.switchToReg": "Ще немає акаунта? Зареєструватися",
-                "auth.regTitle": "Реєстрація",
-                "auth.regBtnText": "Створити акаунт",
-                "auth.switchToLogin": "Вже є акаунт? Увійти",
-                "game.levelLabel": "Рівень",
-                "game.comboLabel": "Комбо",
-                "game.energy": "Енергія",
-                "game.nextReward": "Наступна нагорода:",
-                "nav.play": "Гра",
-                "nav.quests": "Квести",
-                "nav.offers": "Партнери",
-                "nav.rewards": "Нагороди",
-                "nav.profile": "Профіль",
-                "offers.subtitle": "Виконуй партнерські завдання та заробляй INK.",
-                "profile.settings": "Налаштування",
-                "profile.sound": "Звуки гри",
-                "profile.perf": "Режим продуктивності",
-                "profile.logout": "Вийти з акаунта"
-            },
-            en: {
-                "landing.subtitle": "Cyberpunk Japanese tattoo gaming loyalty platform. Click, complete quests, invite friends and unlock real tattoo rewards.",
-                "landing.playBtn": "Play Now",
-                "landing.loginBtn": "Login / Register",
-                "auth.loginTitle": "Sign In",
-                "auth.loginSub": "Continue your journey to legendary rewards",
-                "auth.emailLabel": "Email",
-                "auth.passLabel": "Password",
-                "auth.loginBtnText": "Sign In",
-                "auth.switchToReg": "No account yet? Register",
-                "auth.regTitle": "Registration",
-                "auth.regBtnText": "Create Account",
-                "auth.switchToLogin": "Already have an account? Sign In",
-                "game.levelLabel": "Level",
-                "game.comboLabel": "Combo",
-                "game.energy": "Energy",
-                "game.nextReward": "Next Reward:",
-                "nav.play": "Play",
-                "nav.quests": "Quests",
-                "nav.offers": "Offers",
-                "nav.rewards": "Rewards",
-                "nav.profile": "Profile",
-                "offers.subtitle": "Complete partner tasks and earn massive INK.",
-                "profile.settings": "Settings",
-                "profile.sound": "Game Sound",
-                "profile.perf": "Performance Mode",
-                "profile.logout": "Logout"
-            }
-        };
-
-        let currentLang = localStorage.getItem('ink_lang') || 'ua';
-        let currentUser = null;
-        let gameState = {
-            ink: 1250,
-            energy: 100,
-            maxEnergy: 100,
-            combo: 1,
-            level: 1,
-            levelName: "Kitsune Lv.1"
-        };
-
-        // UI Translation Engine
-        window.translateUI = function() {
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (i18n[currentLang][key]) {
-                    el.textContent = i18n[currentLang][key];
-                }
-            });
-            document.getElementById('langSwitcherBtn').innerHTML = currentLang === 'ua' ? '🇺🇦 UA' : '🇬🇧 EN';
-        };
-
-        window.toggleLanguage = function() {
-            currentLang = currentLang === 'ua' ? 'en' : 'ua';
-            localStorage.setItem('ink_lang', currentLang);
-            translateUI();
-        };
-
-        // Router Engine
-        window.router = {
-            navigate: function(viewId) {
-                document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-                const target = document.getElementById(`view-${viewId}`);
-                if (target) target.classList.remove('hidden');
-
-                // Update Bottom Nav active state
-                document.querySelectorAll('.nav-btn').forEach(btn => {
-                    if (btn.getAttribute('data-target') === viewId) {
-                        btn.classList.add('text-crimsonRed');
-                        btn.classList.remove('text-gray-400');
-                    } else {
-                        btn.classList.remove('text-crimsonRed');
-                        btn.classList.add('text-gray-400');
-                    }
-                });
-
-                if (viewId === 'game' || viewId === 'quests' || viewId === 'offers' || viewId === 'rewards' || viewId === 'profile') {
-                    document.getElementById('bottomNav').classList.remove('hidden');
-                    document.getElementById('userBalanceBadge').classList.remove('hidden');
-                    document.getElementById('userBalanceBadge').classList.add('flex');
-                } else {
-                    document.getElementById('bottomNav').classList.add('hidden');
-                    if (viewId === 'landing') {
-                        document.getElementById('userBalanceBadge').classList.add('hidden');
-                        document.getElementById('userBalanceBadge').classList.remove('flex');
-                    }
-                }
-            }
-        };
-
-        // Clicker Mechanics
-        window.handleGameClick = function(event) {
-            if (gameState.energy <= 0) return;
-            gameState.energy = Math.max(0, gameState.energy - 1);
-            gameState.ink += 1 * gameState.combo;
-
-            updateGameUI();
-            spawnFloatingNumber(event);
-        };
-
-        function updateGameUI() {
-            document.getElementById('headerInkCount').textContent = gameState.ink.toLocaleString();
-            document.getElementById('gameInkDisplay').textContent = gameState.ink.toLocaleString();
-            document.getElementById('energyText').textContent = `${gameState.energy} / ${gameState.maxEnergy}`;
-            document.getElementById('energyBar').style.width = `${(gameState.energy / gameState.maxEnergy) * 100}%`;
+    // Словник перемикача мов
+    const translations = {
+        uk: {
+            title: "Клікер & Авторизація",
+            emailLabel: "Електронна пошта",
+            passLabel: "Пароль",
+            googleBtn: "Увійти через Google",
+            appleBtn: "Увійти через Apple",
+            gameHeader: "Гра-Клікер",
+            clickBtn: "Клік!",
+            logoutBtn: "Вийти з акаунта",
+            loginHeader: "Вхід в акаунт",
+            registerHeader: "Реєстрація акаунта",
+            loginBtn: "Увійти",
+            registerBtn: "Зареєструватися",
+            switchLogin: "Немає акаунта? Зареєструватися",
+            switchRegister: "Вже є акаунт? Увійти",
+            verifyNotice: "Будь ласка, перевірте пошту та підтвердьте акаунт за посиланням у листі!"
+        },
+        en: {
+            title: "Clicker & Auth",
+            emailLabel: "Email address",
+            passLabel: "Password",
+            googleBtn: "Sign in with Google",
+            appleBtn: "Sign in with Apple",
+            gameHeader: "Clicker Game",
+            clickBtn: "Click!",
+            logoutBtn: "Log out",
+            loginHeader: "Sign In",
+            registerHeader: "Create Account",
+            loginBtn: "Sign In",
+            registerBtn: "Register",
+            switchLogin: "No account? Register",
+            switchRegister: "Already have an account? Sign In",
+            verifyNotice: "Please check your inbox and verify your email address!"
         }
+    };
 
-        function spawnFloatingNumber(e) {
-            const container = document.getElementById('floatingNumbersContainer');
-            const el = document.createElement('div');
-            el.textContent = `+${1 * gameState.combo} INK`;
-            el.className = 'absolute text-neonGold font-black text-lg pointer-events-none transition-all duration-700 ease-out';
-            
-            const rect = container.getBoundingClientRect();
-            const x = (e.clientX || rect.width / 2) - rect.left;
-            const y = (e.clientY || rect.height / 2) - rect.top;
-            
-            el.style.left = `${x}px`;
-            el.style.top = `${y}px`;
-            container.appendChild(el);
+    let currentLang = localStorage.getItem('site_lang') || 'uk';
 
-            setTimeout(() => {
-                el.style.transform = 'translateY(-60px) scale(1.2)';
-                el.style.opacity = '0';
-            }, 20);
+    window.setLanguage = function(lang) {
+        currentLang = lang;
+        localStorage.setItem('site_lang', lang);
+        updateTexts();
+    }
 
-            setTimeout(() => el.remove(), 750);
-        }
+    function updateTexts() {
+        const t = translations[currentLang];
+        document.querySelectorAll("[data-i18n]").forEach(el => {
+            const key = el.getAttribute("data-i18n");
+            if (t[key]) el.innerText = t[key];
+        });
+        document.getElementById("authTitle").innerText = isRegisterMode ? t.registerHeader : t.loginHeader;
+        document.getElementById("authSubmitBtn").innerText = isRegisterMode ? t.registerBtn : t.loginBtn;
+        document.getElementById("switchText").innerHTML = isRegisterMode 
+            ? `${t.switchRegister.split('?')[0]}? <span onclick="toggleAuthMode()">${t.switchRegister.split('?')[1]}</span>`
+            : `${t.switchLogin.split('?')[0]}? <span onclick="toggleAuthMode()">${t.switchLogin.split('?')[1]}</span>`;
+    }
 
-        // Energy Regeneration Loop
-        setInterval(() => {
-            if (gameState.energy < gameState.maxEnergy) {
-                gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + 2);
-                updateGameUI();
+    window.toggleAuthMode = function() {
+        isRegisterMode = !isRegisterMode;
+        updateTexts();
+    }
+
+    // Перевірка стану акаунта (чи збережений у браузері/Firebase)
+    onAuthStateChanged(auth, async (user) => {
+        const errorEl = document.getElementById("errorMsg");
+        errorEl.innerText = "";
+        
+        if (user) {
+            // Якщо потрібна обов'язкова перевірка пошти (крім соцмереж)
+            if (!user.emailVerified && user.providerData.some(p => p.providerId === 'password')) {
+                errorEl.innerText = translations[currentLang].verifyNotice;
+                return;
             }
-        }, 1000);
 
-        // Authentication State Listener
-        onAuthStateChanged(auth, (user) => {
             currentUser = user;
-            if (user) {
-                document.getElementById('profileEmail').textContent = user.email;
-                if (ADMIN_UIDS.includes(user.uid)) {
-                    document.getElementById('adminNavBtn').classList.remove('hidden');
-                }
-                router.navigate('game');
-            } else {
-                document.getElementById('adminNavBtn').classList.add('hidden');
-            }
-        });
-
-        let isRegisterMode = false;
-        window.toggleAuthMode = function() {
-            isRegisterMode = !isRegisterMode;
-            document.getElementById('authTitle').textContent = isRegisterMode ? 'Реєстрація' : 'Вхід у систему';
-            document.getElementById('authSubmitBtn').textContent = isRegisterMode ? 'Створити акаунт' : 'Увійти';
-            document.getElementById('authToggleText').textContent = isRegisterMode ? 'Вже є акаунт? Увійти' : 'Ще немає акаунта? Зареєстраватися';
-        };
-
-        window.handleAuthSubmit = async function(e) {
-            e.preventDefault();
-            const email = document.getElementById('authEmail').value;
-            const pass = document.getElementById('authPass').value;
-            try {
-                if (isRegisterMode) {
-                    await createUserWithEmailAndPassword(auth, email, pass);
-                } else {
-                    await signInWithEmailAndPassword(auth, email, pass);
-                }
-            } catch (err) {
-                alert("Помилка авторизації: " + err.message);
-            }
-        };
-
-        window.handleLogout = async function() {
-            await signOut(auth);
-            router.navigate('landing');
-        };
-
-        window.openAdminIfAllowed = function() {
-            router.navigate('admin');
-        };
-
-        window.handleAdminAddOffer = function(e) {
-            e.preventDefault();
-            const title = document.getElementById('adminOfferTitle').value;
-            const url = document.getElementById('adminOfferUrl').value;
-            const reward = document.getElementById('adminOfferReward').value;
-            const category = document.getElementById('adminOfferCategory').value;
-
-            // Render mock partner offer card instantly for MVP
-            const list = document.getElementById('partnerOffersList');
-            const card = document.createElement('div');
-            card.className = 'bg-inkCard border border-inkBorder p-4 rounded-2xl flex items-center justify-between';
-            card.innerHTML = `
-                <div>
-                    <span class="text-[10px] text-neonGold uppercase font-bold">${category}</span>
-                    <h4 class="font-bold text-sm text-white">${title}</h4>
-                    <span class="text-xs text-crimsonRed font-mono">+${Number(reward).toLocaleString()} INK</span>
-                </div>
-                <a href="${url}" target="_blank" onclick="alert('Перенаправлення на партнерський ресурс... (Tracking Active)')" class="px-4 py-2 bg-crimsonRed text-white text-xs font-bold rounded-xl shadow">START</a>
-            `;
-            list.prepend(card);
-            alert('Партнерський оффер успішно створено та опубліковано!');
-            router.navigate('offers');
-        };
-
-        // Initialize App on load
-        window.addEventListener('DOMContentLoaded', () => {
-            translateUI();
-            updateGameUI();
+            document.getElementById("userEmailDisplay").innerText = user.email || user.displayName;
             
-            // Populate sample partner offers
-            const sampleOffers = [
-                { title: "Cyberpunk Arena Quest", reward: 15000, category: "GAMES", url: "https://partner.example/offer1" },
-                { title: "Tattoo Flash Studio App", reward: 8500, category: "APPS", url: "https://partner.example/offer2" }
-            ];
-            const offersList = document.getElementById('partnerOffersList');
-            sampleOffers.forEach(o => {
-                const d = document.createElement('div');
-                d.className = 'bg-inkCard border border-inkBorder p-4 rounded-2xl flex items-center justify-between';
-                d.innerHTML = `
-                    <div>
-                        <span class="text-[10px] text-neonGold uppercase font-bold">${o.category}</span>
-                        <h4 class="font-bold text-sm text-white">${o.title}</h4>
-                        <span class="text-xs text-crimsonRed font-mono">+${o.reward.toLocaleString()} INK</span>
-                    </div>
-                    <a href="${o.url}" target="_blank" onclick="alert('Відкриття партнерського посилання з трекінгом (subid/userId)...')" class="px-4 py-2 bg-crimsonRed text-white text-xs font-bold rounded-xl shadow hover:bg-rose-600 transition">START</a>
-                `;
-                offersList.appendChild(d);
-            });
+            // Завантажуємо дані клікера з бази
+            await loadUserData(user.uid);
 
-            // Populate Quests
-            const sampleQuests = [
-                { title: "Зробити 100 кліків", reward: 500, progress: "45 / 100" },
-                { title: "Запросити 1 друга", reward: 5000, progress: "0 / 1" },
-                { title: "Досягти Комбо ×5", reward: 2000, progress: "Активно" }
-            ];
-            const questsList = document.getElementById('questsList');
-            sampleQuests.forEach(q => {
-                const el = document.createElement('div');
-                el.className = 'bg-inkCard border border-inkBorder p-4 rounded-2xl flex items-center justify-between';
-                el.innerHTML = `
-                    <div>
-                        <h4 class="font-bold text-sm text-white">${q.title}</h4>
-                        <span class="text-xs text-neonGold font-mono">+${q.reward} INK • ${q.progress}</span>
-                    </div>
-                    <button class="px-3 py-1.5 bg-inkDark border border-inkBorder text-gray-300 text-xs font-bold rounded-xl">Claim</button>
-                `;
-                questsList.appendChild(el);
-            });
+            // Перемикаємо екран на гру
+            document.getElementById("authScreen").classList.remove("active");
+            document.getElementById("gameScreen").classList.add("active");
+        } else {
+            currentUser = null;
+            document.getElementById("gameScreen").classList.remove("active");
+            document.getElementById("authScreen").classList.add("active");
+        }
+    });
 
-            // Populate Rewards Shop
-            const sampleRewards = [
-                { title: "5% Знижка на татуювання", cost: "50,000 INK", tag: "DISCOUNT" },
-                { title: "10% Знижка на татуювання", cost: "150,000 INK", tag: "DISCOUNT" },
-                { title: "Безкоштовне тату (VIP Prestige)", cost: "1,000,000 INK", tag: "FREE TATTOO" }
-            ];
-            const rewardsList = document.getElementById('rewardsList');
-            sampleRewards.forEach(r => {
-                const el = document.createElement('div');
-                el.className = 'bg-inkCard border border-inkBorder p-4 rounded-2xl flex items-center justify-between';
-                el.innerHTML = `
-                    <div>
-                        <span class="text-[9px] px-2 py-0.5 bg-neonGold/20 text-neonGold font-bold rounded">${r.tag}</span>
-                        <h4 class="font-bold text-sm text-white mt-1">${r.title}</h4>
-                        <span class="text-xs text-crimsonRed font-mono font-bold">${r.cost}</span>
-                    </div>
-                    <button onclick="alert('Для отримання нагороди потрібен підтверджений адміністратором запит або VIP статус.')" class="px-3 py-2 bg-crimsonRed text-white text-xs font-bold rounded-xl">Unlock</button>
-                `;
-                rewardsList.appendChild(el);
-            });
-        });
-    </script>
+    // Email Авторизація / Реєстрація
+    window.handleEmailAuth = async function() {
+        const email = document.getElementById("emailInput").value;
+        const password = document.getElementById("passwordInput").value;
+        const errorEl = document.getElementById("errorMsg");
+        errorEl.innerText = "";
+
+        try {
+            if (isRegisterMode) {
+                const userCred = await createUserWithEmailAndPassword(auth, email, password);
+                await sendEmailVerification(userCred.user);
+                alert(translations[currentLang].verifyNotice);
+                signOut(auth);
+            } else {
+                await signInWithEmailAndPassword(auth, email, password);
+            }
+        } catch (error) {
+            errorEl.innerText = error.message;
+        }
+    }
+
+    // Вхід через Google
+    window.loginWithGoogle = async function() {
+        const provider = new GoogleAuthProvider();
+        try {
+            await signInWithPopup(auth, provider);
+        } catch (error) {
+            document.getElementById("errorMsg").innerText = error.message;
+        }
+    }
+
+    // Вхід через Apple
+    window.loginWithApple = async function() {
+        const provider = new OAuthProvider('apple.com');
+        try {
+            await signInWithPopup(auth, provider);
+        } catch (error) {
+            document.getElementById("errorMsg").innerText = error.message;
+        }
+    }
+
+    // Вихід
+    window.logout = function() {
+        signOut(auth);
+    }
+
+    // Робота з базою даних (Збереження та завантаження клікера)
+    async function loadUserData(uid) {
+        const docRef = doc(db, "clickers", uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            currentScore = docSnap.data().score || 0;
+        } else {
+            currentScore = 0;
+            await setDoc(docRef, { score: 0 });
+        }
+        document.getElementById("scoreDisplay").innerText = currentScore;
+    }
+
+    window.incrementScore = async function() {
+        if (!currentUser) return;
+        currentScore++;
+        document.getElementById("scoreDisplay").innerText = currentScore;
+        
+        // Зберігаємо в базі
+        const docRef = doc(db, "clickers", currentUser.uid);
+        await setDoc(docRef, { score: currentScore }, { merge: true });
+    }
+
+    // Ініціалізація мови при завантаженні
+    updateTexts();
+</script>
+
 </body>
 </html>
-
