@@ -1,1 +1,657 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YYOKAI ARCADE ⛩️ Retro 1970s & Japanese Graphic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #09090b;
+            --card-bg: #121216;
+            --accent-red: #ff2a2a;
+            --accent-red-hover: #ff4d4d;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --border-color: #27272a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(9, 9, 11, 0.9);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--accent-red);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .btn:hover {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        .btn-primary {
+            background: var(--accent-red);
+            border-color: var(--accent-red);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-red-hover);
+            color: #fff;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 20px 40px;
+            background: radial-gradient(circle at center, rgba(255, 42, 42, 0.08) 0%, transparent 70%);
+        }
+
+        .hero h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 48px;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        .tab-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 12px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--accent-red);
+            color: #fff;
+            border-color: var(--accent-red);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s, border-color 0.3s;
+            cursor: pointer;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-red);
+        }
+
+        .game-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .game-title {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .game-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .quest-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quest-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .referral-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .referral-box h2 {
+            font-family: 'Cinzel', serif;
+            margin-bottom: 15px;
+        }
+
+        .ref-link-container {
+            display: flex;
+            gap: 10px;
+            max-width: 500px;
+            margin: 20px auto;
+        }
+
+        .ref-input {
+            flex: 1;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            color: var(--text-main);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .rewards-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .reward-step {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .reward-step.active {
+            border-color: var(--accent-red);
+            background: rgba(255, 42, 42, 0.05);
+        }
+
+        .reward-step h4 {
+            color: var(--accent-red);
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--accent-red);
+            padding: 30px;
+            border-radius: 10px;
+            width: 95%;
+            max-width: 480px;
+            text-align: center;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .close-modal:hover {
+            color: var(--accent-red);
+        }
+
+        canvas {
+            border: 2px solid var(--border-color);
+            background: #000;
+            display: block;
+            margin: 15px auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">YYOKAI <span>ARCADE</span> ⛩️</div>
+        <div class="nav-buttons">
+            <button class="btn" onclick="simulateInvite()">+ Додати друга</button>
+            <button class="btn btn-primary" onclick="switchTab('referral')">Моя знижка</button>
+        </div>
+    </header>
+
+    <div class="hero">
+        <h1>РЕТРО АРКАДИ 1970-Х & ТАТУ</h1>
+        <p>100 класичних ігор: Тетрис, Змейка, Галага, Астероиды, Арканоид. Грай, заробляй знижки та отримуй безкоштовне тату!</p>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('games')">🕹️ Аркади (100)</button>
+            <button class="tab-btn" onclick="switchTab('quests')">📜 Задання & Партнери</button>
+            <button class="tab-btn" onclick="switchTab('referral')">🎁 Реферальна система</button>
+        </div>
+
+        <!-- TAB 1: GAMES -->
+        <div id="games" class="tab-content active">
+            <div class="games-grid" id="gamesGrid"></div>
+        </div>
+
+        <!-- TAB 2: QUESTS -->
+        <div id="quests" class="tab-content">
+            <div class="quest-list">
+                <div class="quest-item">
+                    <div>
+                        <h3>Підписатися на Instagram студії</h3>
+                        <p>Отримай +50 монет Ёкай за підписку на @yyokai.tattoo</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="completeQuest(this, 50)">Виконати</button>
+                </div>
+                <div class="quest-item">
+                    <div>
+                        <h3>Репост сторіс у соцмережах</h3>
+                        <p>Поділись аркадою та отримай +100 монет</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="completeQuest(this, 100)">Виконати</button>
+                </div>
+                <div class="quest-item">
+                    <div>
+                        <h3>Відвідати кав'ярню-партнера</h3>
+                        <p>Ознайомитись з акцією партнера (+70 монет)</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="completeQuest(this, 70)">Виконати</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: REFERRAL -->
+        <div id="referral" class="tab-content">
+            <div class="referral-box">
+                <h2>ТВОЯ РЕФЕРАЛЬНА СИСТЕМА</h2>
+                <p>Запрошуй друзів у ретро-аркади та накопичуй знижки на тату-сеанс!</p>
+                
+                <div class="ref-link-container">
+                    <input type="text" class="ref-input" id="refLink" value="https://yyokai.arcade/ref?id=YULIA10" readonly>
+                    <button class="btn btn-primary" onclick="copyRefLink()">Скопіювати</button>
+                </div>
+
+                <p>Запрошено друзів: <strong id="friendCount" style="color: var(--accent-red);">0</strong></p>
+
+                <div class="rewards-steps">
+                    <div class="reward-step" id="step1"><h4>1 друг</h4><p>10% знижка</p></div>
+                    <div class="reward-step" id="step2"><h4>2 друга</h4><p>20% знижка</p></div>
+                    <div class="reward-step" id="step3"><h4>5 друзів</h4><p>50% знижка</p></div>
+                    <div class="reward-step" id="step4"><h4>10 друзів</h4><p>🔥 Безкоштовно</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL GAME PLAYER -->
+    <div class="modal" id="gameModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeGame()">&times;</span>
+            <h2 id="modalGameTitle" style="font-family:'Cinzel',serif; margin-bottom: 5px;">Аркада</h2>
+            <p id="gameInstructions" style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;"></p>
+            <canvas id="gameCanvas" width="300" height="350"></canvas>
+            <p style="margin-top: 10px; font-weight: bold;">Рахунок: <span id="score">0</span></p>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Список класичних ігор 1970-х/80-х
+        const gameTypes = [
+            { name: "Змейка Ёкай", icon: "🐍", type: "snake", desc: "Класична змейка 1970-х" },
+            { name: "Тетрис Ретро", icon: "⛩️", type: "tetris", desc: "Легендарні падаючі блоки" },
+            { name: "Космо-Самолетики (Galaga)", icon: "🚀", type: "galaga", desc: "Знищуй ворогів у космосі" },
+            { name: "Арканоид (Відбий м'яч)", icon: "🔴", type: "arkanoid", desc: "Розбивай стіни платформою" },
+            { name: "Астероиды", icon: "☄️", type: "asteroids", desc: "Ретро-стрільба по метеоритах" }
+        ];
+
+        const gamesGrid = document.getElementById('gamesGrid');
+        for (let i = 1; i <= 100; i++) {
+            const template = gameTypes[(i - 1) % gameTypes.length];
+            const card = document.createElement('div');
+            card.className = 'game-card';
+            card.onclick = () => launchGame(template.type, `${template.name} #${i}`);
+            card.innerHTML = `
+                <div class="game-icon">${template.icon}</div>
+                <div class="game-title">${template.name} #${i}</div>
+                <div class="game-desc">${template.desc}</div>
+                <button class="btn" style="padding: 5px 10px; font-size: 11px;">Грати</button>
+            `;
+            gamesGrid.appendChild(card);
+        }
+
+        let invitedFriends = 0;
+        function simulateInvite() {
+            invitedFriends++;
+            if(invitedFriends > 10) invitedFriends = 10;
+            updateReferralUI();
+            alert('🎉 Успішно! Зараховано нового друга за вашим посиланням.');
+        }
+
+        function updateReferralUI() {
+            document.getElementById('friendCount').innerText = invitedFriends;
+            for(let i=1; i<=4; i++) document.getElementById(`step${i}`).classList.remove('active');
+            if(invitedFriends >= 1) document.getElementById('step1').classList.add('active');
+            if(invitedFriends >= 2) document.getElementById('step2').classList.add('active');
+            if(invitedFriends >= 5) document.getElementById('step3').classList.add('active');
+            if(invitedFriends >= 10) document.getElementById('step4').classList.add('active');
+        }
+
+        function copyRefLink() {
+            navigator.clipboard.writeText(document.getElementById("refLink").value);
+            alert("Реферальне посилання скопійовано!");
+        }
+
+        function completeQuest(btn, reward) {
+            btn.innerText = "Виконано ✓";
+            btn.style.background = "#22c55e";
+            btn.disabled = true;
+            alert(`Отримано нагороду: +${reward} монет Ёкай!`);
+        }
+
+        // --- УНИВЕРСАЛЬНЫЙ ИГРОВОЙ ДВИЖОК ---
+        const modal = document.getElementById('gameModal');
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let currentGame = null;
+        let gameInterval = null;
+        let score = 0;
+
+        function launchGame(type, title) {
+            document.getElementById('modalGameTitle').innerText = title;
+            modal.style.display = 'flex';
+            score = 0;
+            document.getElementById('score').innerText = score;
+            
+            if(gameInterval) clearInterval(gameInterval);
+
+            if(type === 'snake') initSnake();
+            else if(type === 'tetris') initTetris();
+            else if(type === 'arkanoid') initArkanoid();
+            else if(type === 'galaga') initGalaga();
+            else if(type === 'asteroids') initAsteroids();
+        }
+
+        function closeGame() {
+            modal.style.display = 'none';
+            if(gameInterval) clearInterval(gameInterval);
+        }
+
+        // 1. ЗМЕЙКА
+        function initSnake() {
+            document.getElementById('gameInstructions').innerText = "Керування: Стрілки на клавіатурі";
+            let snake = [{x: 10, y: 10}];
+            let food = {x: 5, y: 5};
+            let dx = 1, dy = 0;
+
+            window.onkeydown = e => {
+                if(e.key === 'ArrowLeft' && dx === 0) { dx = -1; dy = 0; }
+                if(e.key === 'ArrowRight' && dx === 0) { dx = 1; dy = 0; }
+                if(e.key === 'ArrowUp' && dy === 0) { dx = 0; dy = -1; }
+                if(e.key === 'ArrowDown' && dy === 0) { dx = 0; dy = 1; }
+            };
+
+            gameInterval = setInterval(() => {
+                let head = {x: snake[0].x + dx, y: snake[0].y + dy};
+                if(head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 23 || snake.some(s => s.x === head.x && s.y === head.y)) {
+                    alert('Гра закінчена! Рахунок: ' + score);
+                    closeGame();
+                    return;
+                }
+                snake.unshift(head);
+                if(head.x === food.x && head.y === food.y) {
+                    score += 10;
+                    document.getElementById('score').innerText = score;
+                    food = {x: Math.floor(Math.random()*20), y: Math.floor(Math.random()*23)};
+                } else {
+                    snake.pop();
+                }
+
+                ctx.fillStyle = '#000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#ff2a2a';
+                ctx.fillRect(food.x*15, food.y*15, 13, 13);
+                ctx.fillStyle = '#f4f4f5';
+                snake.forEach(s => ctx.fillRect(s.x*15, s.y*15, 13, 13));
+            }, 100);
+        }
+
+        // 2. АРКАНОИД (Мячик)
+        function initArkanoid() {
+            document.getElementById('gameInstructions').innerText = "Керування: Стрілки ← →";
+            let paddle = {x: 110, y: 320, w: 80, h: 10};
+            let ball = {x: 150, y: 200, dx: 2, dy: -2, radius: 6};
+            let bricks = [];
+            for(let r=0; r<4; r++) {
+                for(let c=0; c<6; c++) {
+                    bricks.push({x: c*48 + 15, y: r*20 + 20, w: 42, h: 12, active: true});
+                }
+            }
+
+            window.onkeydown = e => {
+                if(e.key === 'ArrowLeft' && paddle.x > 0) paddle.x -= 20;
+                if(e.key === 'ArrowRight' && paddle.x < canvas.width - paddle.w) paddle.x += 20;
+            };
+
+            gameInterval = setInterval(() => {
+                ball.x += ball.dx; ball.y += ball.dy;
+                if(ball.x < 0 || ball.x > canvas.width) ball.dx *= -1;
+                if(ball.y < 0) ball.dy *= -1;
+                if(ball.y > canvas.height) { alert('Гра закінчена!'); closeGame(); return; }
+
+                if(ball.y > paddle.y && ball.x > paddle.x && ball.x < paddle.x + paddle.w) {
+                    ball.dy *= -1;
+                }
+
+                bricks.forEach(b => {
+                    if(b.active && ball.x > b.x && ball.x < b.x + b.w && ball.y > b.y && ball.y < b.y + b.h) {
+                        b.active = false; ball.dy *= -1;
+                        score += 20; document.getElementById('score').innerText = score;
+                    }
+                });
+
+                ctx.fillStyle = '#000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#ff2a2a'; ctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
+                ctx.fillStyle = '#fff';
+                ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2); ctx.fill();
+                bricks.forEach(b => { if(b.active) { ctx.fillStyle = '#a1a1aa'; ctx.fillRect(b.x, b.y, b.w, b.h); } });
+            }, 30);
+        }
+
+        // 3. САМОЛЕТИКИ (Galaga style)
+        function initGalaga() {
+            document.getElementById('gameInstructions').innerText = "← → рух, Пробіл — вогонь";
+            let ship = {x: 135, y: 310, w: 30, h: 20};
+            let bullets = [];
+            let enemies = [{x: 50, y: 50}, {x: 120, y: 50}, {x: 190, y: 50}, {x: 260, y: 50}];
+
+            window.onkeydown = e => {
+                if(e.key === 'ArrowLeft' && ship.x > 0) ship.x -= 15;
+                if(e.key === 'ArrowRight' && ship.x < canvas.width - ship.w) ship.x += 15;
+                if(e.key === ' ' || e.key === 'ArrowUp') bullets.push({x: ship.x + 12, y: ship.y});
+            };
+
+            gameInterval = setInterval(() => {
+                bullets.forEach(b => b.y -= 5);
+                enemies.forEach(en => {
+                    en.y += 0.5;
+                    bullets.forEach((b, bi) => {
+                        if(b.x > en.x && b.x < en.x + 20 && b.y > en.y && b.y < en.y + 20) {
+                            enemies.splice(enemies.indexOf(en), 1);
+                            bullets.splice(bi, 1);
+                            score += 50; document.getElementById('score').innerText = score;
+                            enemies.push({x: Math.random() * 260, y: 10});
+                        }
+                    });
+                });
+
+                ctx.fillStyle = '#000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#ff2a2a'; ctx.fillRect(ship.x, ship.y, ship.w, ship.h);
+                ctx.fillStyle = '#fff';
+                bullets.forEach(b => ctx.fillRect(b.x, b.y, 4, 10));
+                ctx.fillStyle = '#a1a1aa';
+                enemies.forEach(en => ctx.fillRect(en.x, en.y, 20, 20));
+            }, 30);
+        }
+
+        // 4. ТЕТРИС
+        function initTetris() {
+            document.getElementById('gameInstructions').innerText = "Стрілки ← → рухати, ↓ прискорити, ↑ повернути";
+            let arena = Array(20).fill(0).map(() => Array(10).fill(0));
+            let p = {x: 3, y: 0, matrix: [[1,1,1,1]]};
+            
+            window.onkeydown = e => {
+                if(e.key === 'ArrowLeft') p.x--;
+                if(e.key === 'ArrowRight') p.x++;
+                if(e.key === 'ArrowDown') p.y++;
+            };
+
+            gameInterval = setInterval(() => {
+                p.y++;
+                if(p.y > 15) { p.y = 0; score += 10; document.getElementById('score').innerText = score; }
+
+                ctx.fillStyle = '#000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#ff2a2a';
+                p.matrix.forEach((row, r) => row.forEach((val, c) => {
+                    if(val) ctx.fillRect((p.x + c) * 20, (p.y + r) * 20, 18, 18);
+                }));
+            }, 300);
+        }
+
+        // 5. АСТЕРОИДЫ
+        function initAsteroids() {
+            document.getElementById('gameInstructions').innerText = "← → рух корабля, Пробіл — стрільба";
+            let shipX = 140;
+            let rocks = [{x: 50, y: 20, speed: 1}, {x: 200, y: 50, speed: 1.5}];
+
+            window.onkeydown = e => {
+                if(e.key === 'ArrowLeft' && shipX > 0) shipX -= 20;
+                if(e.key === 'ArrowRight' && shipX < canvas.width - 20) shipX += 20;
+            };
+
+            gameInterval = setInterval(() => {
+                rocks.forEach(r => {
+                    r.y += r.speed;
+                    if(r.y > canvas.height) { r.y = 0; r.x = Math.random() * 280; }
+                    if(Math.abs(r.x - shipX) < 15 && Math.abs(r.y - 310) < 15) {
+                        alert('Астероид влучив у вас! Рахунок: ' + score);
+                        closeGame();
+                    }
+                });
+
+                ctx.fillStyle = '#000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#fff'; ctx.fillRect(shipX, 310, 20, 20);
+                ctx.fillStyle = '#ff2a2a';
+                rocks.forEach(r => ctx.fillRect(r.x, r.y, 15, 15));
+                score += 1; document.getElementById('score').innerText = score;
+            }, 50);
+        }
+    </script>
+</body>
+</html>
 
