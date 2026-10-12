@@ -1,328 +1,349 @@
 <!DOCTYPE html>
 <html lang="uk" class="dark"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>INK — Печать Ёкаїв</title>
+<title>INK — Yokai Seal</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{inkDark:'#0a090d',inkCard:'#131118',inkBorder:'#272235',crimsonRed:'#ff2a5f',neonGold:'#ffb703',deepPurple:'#3b0764',cyberBlue:'#00f0ff'}}}}</script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
+<style type="text/tailwindcss">
+.card{@apply bg-inkCard border border-inkBorder rounded-2xl p-4}
+.btn{@apply px-4 py-2 rounded-xl text-xs font-bold bg-crimsonRed text-white active:scale-95 transition disabled:opacity-40}
+.btng{@apply px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-neonGold to-crimsonRed active:scale-95 transition disabled:opacity-40}
+.inp{@apply w-full bg-inkDark border border-inkBorder rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-crimsonRed}
 @keyframes pulse-glow{0%,100%{box-shadow:0 0 15px rgba(255,42,95,.4);transform:scale(1)}50%{box-shadow:0 0 35px rgba(255,183,3,.7);transform:scale(1.02)}}
+@keyframes fall{to{transform:translateY(560px) rotate(360deg);opacity:.2}}
+@keyframes flick{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.25)}}
+@keyframes flash{to{background:rgba(255,183,3,.5)}}
+@keyframes shake{0%,100%{transform:translate(0)}20%{transform:translate(-5px,3px)}40%{transform:translate(5px,-3px)}60%{transform:translate(-4px,-2px)}80%{transform:translate(4px,2px)}}
+@keyframes pop{from{transform:scale(.3);opacity:0}}
 .kitsune-glow{animation:pulse-glow 3s infinite}
 canvas{touch-action:none}
+.sym{height:58px;display:flex;align-items:center;justify-content:center;font-size:34px;filter:drop-shadow(0 0 6px rgba(255,183,3,.5))}
+.blur{filter:blur(2px)}.winc{animation:flash .35s infinite alternate;border-radius:10px}.shake{animation:shake .5s}
+.dun{background:radial-gradient(ellipse at top,#4c1d95 0,#12091f 55%,#07050b 100%);border:3px solid;border-image:linear-gradient(135deg,#ffb703,#7c2d12,#ffb703) 1;box-shadow:inset 0 0 40px rgba(255,183,3,.25),0 0 30px rgba(124,58,237,.3)}
 </style></head>
-<body class="bg-inkDark text-white font-sans antialiased min-h-screen flex flex-col selection:bg-crimsonRed select-none">
+<body class="bg-inkDark text-white font-sans antialiased min-h-screen flex flex-col select-none">
 
 <header class="sticky top-0 z-50 bg-inkDark/85 backdrop-blur-md border-b border-inkBorder px-4 py-3 flex items-center justify-between">
  <div class="flex items-center space-x-3">
-  <div id="headerLogoIcon" class="w-9 h-9 rounded-xl bg-gradient-to-br from-crimsonRed to-neonGold flex items-center justify-center text-lg shadow-lg shadow-crimsonRed/30 cursor-pointer" onclick="router.navigate('game')">⛩️</div>
-  <div><span class="font-black text-lg tracking-widest bg-gradient-to-r from-white via-gray-200 to-crimsonRed bg-clip-text text-transparent">INK</span><span id="headerLocationTitle" class="text-[10px] block text-neonGold tracking-widest font-semibold uppercase">Yokai Seal</span></div>
+  <div id="headerLogoIcon" class="w-9 h-9 rounded-xl overflow-hidden bg-gradient-to-br from-crimsonRed to-neonGold flex items-center justify-center text-lg cursor-pointer" onclick="router.navigate('game')">⛩️</div>
+  <div><span class="font-black text-lg tracking-widest bg-gradient-to-r from-white via-gray-200 to-crimsonRed bg-clip-text text-transparent">INK</span><span id="headerLocationTitle" class="text-[10px] block text-neonGold tracking-widest font-semibold uppercase"></span></div>
  </div>
  <div class="flex items-center space-x-2">
-  <button onclick="router.navigate('game')" class="px-2.5 py-1 rounded-lg bg-crimsonRed/20 border border-crimsonRed/40 text-xs font-bold text-crimsonRed"><i class="fa-solid fa-gamepad"></i></button>
   <div id="userBalanceBadge" class="hidden items-center bg-inkCard border border-inkBorder px-3 py-1 rounded-full text-xs font-bold space-x-1.5"><span class="text-neonGold">文</span><span id="headerInkCount" class="font-mono">0</span><span>🔮</span><span id="headerGems" class="font-mono">0</span></div>
-  <button onclick="toggleLanguage()" id="langSwitcherBtn" class="px-2.5 py-1 rounded-lg bg-inkCard border border-inkBorder text-xs font-bold text-gray-300">🇺🇦 UA</button>
+  <button onclick="toggleLanguage()" id="langSwitcherBtn" class="px-2.5 py-1 rounded-lg bg-inkCard border border-inkBorder text-xs font-bold text-gray-300"></button>
  </div>
 </header>
 
 <main class="flex-1 flex flex-col pb-24">
-
-<section id="view-landing" class="view-section flex-1 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
- <div class="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-crimsonRed via-transparent to-transparent"></div>
- <div class="relative z-10 max-w-md mx-auto space-y-6">
-  <div class="inline-block p-4 rounded-3xl bg-gradient-to-tr from-crimsonRed/20 to-neonGold/20 border border-inkBorder kitsune-glow"><span class="text-5xl" id="landingAvatarIcon">🦊</span></div>
-  <h1 class="text-4xl sm:text-5xl font-black tracking-tight uppercase">Seal. Earn. <span class="bg-gradient-to-r from-crimsonRed to-neonGold bg-clip-text text-transparent">Unlock.</span></h1>
-  <p class="text-gray-400 text-sm" data-i18n="landing.subtitle"></p>
-  <div class="pt-4 flex flex-col sm:flex-row gap-3 w-full">
-   <button onclick="router.navigate('game')" class="flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-crimsonRed to-rose-600 font-bold shadow-lg shadow-crimsonRed/40 active:scale-95 transition"><i class="fa-solid fa-gamepad mr-2"></i><span data-i18n="landing.playBtn"></span></button>
-   <button onclick="authMode('reg');router.navigate('auth')" class="flex-1 py-3.5 px-6 rounded-xl bg-inkCard border border-inkBorder font-bold text-gray-200"><i class="fa-solid fa-right-to-bracket mr-2"></i><span data-i18n="landing.loginBtn"></span></button>
+<section id="view-landing" class="view-section flex-1 flex flex-col items-center justify-center p-6 text-center">
+ <div class="max-w-md mx-auto space-y-6">
+  <div class="inline-block w-24 h-24 rounded-3xl overflow-hidden bg-gradient-to-tr from-crimsonRed/20 to-neonGold/20 border border-inkBorder kitsune-glow text-5xl flex items-center justify-center" id="landingAvatarIcon">🦊</div>
+  <h1 class="text-4xl font-black uppercase">Seal. Earn. <span class="bg-gradient-to-r from-crimsonRed to-neonGold bg-clip-text text-transparent">Unlock.</span></h1>
+  <p class="text-gray-400 text-sm" data-t="Печатай ёкаїв пензлем, збирай монети епох Японії, грай у підземеллі храму — і виграй справжнє тату.|Seal yokai with your brush, earn coins of Japan's eras, play the temple dungeon — and win a real tattoo."></p>
+  <div class="flex flex-col sm:flex-row gap-3">
+   <button onclick="router.navigate('game')" class="btn flex-1 py-3.5 text-sm" data-t="Грати зараз|Play now"></button>
+   <button onclick="authMode('reg');router.navigate('auth')" class="flex-1 py-3.5 rounded-xl bg-inkCard border border-inkBorder font-bold text-sm" data-t="Реєстрація / Вхід|Register / Login"></button>
   </div>
  </div>
 </section>
 
-<!-- AUTH: нова реєстрація у 2 кроки -->
 <section id="view-auth" class="view-section hidden flex-1 flex flex-col items-center justify-center p-4">
- <div class="w-full max-w-sm bg-inkCard border border-inkBorder rounded-3xl p-6 shadow-2xl space-y-4">
-  <div id="refBanner" class="hidden text-xs text-center bg-neonGold/10 border border-neonGold/30 text-neonGold rounded-xl py-2">🎁 Тебе запросив друг — після реєстрації +5 🔮</div>
+ <div class="w-full max-w-sm card rounded-3xl p-6 space-y-4">
+  <div id="refBanner" class="hidden text-xs text-center bg-neonGold/10 border border-neonGold/30 text-neonGold rounded-xl py-2" data-t="🎁 Тебе запросив друг — +5 🔮 після реєстрації|🎁 A friend invited you — +5 🔮 after sign-up"></div>
   <div id="dots" class="flex justify-center gap-2"><i id="dot1" class="h-1.5 w-10 rounded-full bg-crimsonRed"></i><i id="dot2" class="h-1.5 w-10 rounded-full bg-inkBorder"></i></div>
   <div id="as1" class="space-y-4">
-   <h2 class="text-2xl font-black text-center uppercase">Обери свого ёкая</h2>
-   <p class="text-xs text-gray-400 text-center">Він стане твоїм хранителем у грі</p>
+   <h2 class="text-2xl font-black text-center uppercase" data-t="Обери ёкая|Choose your yokai"></h2>
    <div id="authAvatars" class="grid grid-cols-4 gap-2"></div>
-   <div class="flex gap-2"><input id="authNick" maxlength="16" placeholder="Нікнейм" class="flex-1 bg-inkDark border border-inkBorder rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-crimsonRed"><button type="button" onclick="rndNick()" class="px-4 rounded-xl bg-inkDark border border-inkBorder">🎲</button></div>
-   <button onclick="authStep(2)" class="w-full py-3.5 rounded-xl bg-crimsonRed font-bold shadow-lg shadow-crimsonRed/30">Далі →</button>
+   <div class="flex gap-2"><input id="authNick" maxlength="16" data-p="Нікнейм|Nickname" class="inp flex-1"><button type="button" onclick="rndNick()" class="px-4 rounded-xl bg-inkDark border border-inkBorder">🎲</button></div>
+   <button onclick="authStep(2)" class="btn w-full py-3.5 text-sm" data-t="Далі →|Next →"></button>
   </div>
   <div id="as2" class="hidden space-y-3">
-   <h2 id="as2Title" class="text-2xl font-black text-center uppercase">Збережи прогрес</h2>
-   <button type="button" onclick="googleLogin()" class="w-full py-3 rounded-xl bg-white text-black font-bold text-sm"><i class="fa-brands fa-google mr-2"></i>Продовжити з Google</button>
-   <div class="text-center text-[11px] text-gray-500">або email</div>
+   <h2 id="as2Title" class="text-2xl font-black text-center uppercase"></h2>
+   <button type="button" onclick="social('g')" class="w-full py-3 rounded-xl bg-white text-black font-bold text-sm"><i class="fa-brands fa-google mr-2"></i><span data-t="Продовжити з Google|Continue with Google"></span></button>
+   <button type="button" onclick="social('a')" class="w-full py-3 rounded-xl bg-black border border-gray-600 font-bold text-sm"><i class="fa-brands fa-apple mr-2"></i><span data-t="Продовжити з Apple|Continue with Apple"></span></button>
+   <div class="text-center text-[11px] text-gray-500">Email</div>
    <form onsubmit="handleAuthSubmit(event)" class="space-y-3">
-    <input type="email" id="authEmail" required placeholder="you@example.com" class="w-full bg-inkDark border border-inkBorder rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-crimsonRed">
-    <input type="password" id="authPass" required minlength="6" placeholder="Пароль (від 6 символів)" class="w-full bg-inkDark border border-inkBorder rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-crimsonRed">
-    <button type="submit" id="authSubmitBtn" class="w-full py-3.5 rounded-xl bg-crimsonRed font-bold shadow-lg shadow-crimsonRed/30">Створити акаунт</button>
+    <input type="email" id="authEmail" required placeholder="you@example.com" class="inp">
+    <input type="password" id="authPass" required minlength="6" data-p="Пароль (від 6 символів)|Password (6+ chars)" class="inp">
+    <button type="submit" id="authSubmitBtn" class="btn w-full py-3.5 text-sm"></button>
    </form>
-   <button id="backBtn" onclick="authStep(1)" class="w-full text-xs text-gray-400">← Назад</button>
+   <button id="backBtn" onclick="authStep(1)" class="w-full text-xs text-gray-400" data-t="← Назад|← Back"></button>
   </div>
-  <div class="text-center space-y-1">
-   <button onclick="authMode(mode=='reg'?'login':'reg')" class="text-xs text-neonGold hover:underline" id="authToggleText">Вже є акаунт? Увійти</button>
-   <button onclick="router.navigate('game')" class="block mx-auto text-[11px] text-gray-500">Грати як гість</button>
-  </div>
+  <div class="text-center space-y-1"><button onclick="authMode(mode=='reg'?'login':'reg')" class="text-xs text-neonGold" id="authToggleText"></button><button onclick="router.navigate('game')" class="block mx-auto text-[11px] text-gray-500" data-t="Грати як гість|Play as guest"></button></div>
  </div>
 </section>
 
-<!-- GAME -->
 <section id="view-game" class="view-section hidden flex-1 flex flex-col p-4 max-w-md mx-auto w-full gap-3">
- <div class="w-full flex justify-between items-center bg-inkCard/90 border border-inkBorder p-3 rounded-2xl">
-  <div><span id="locationNameDisplay" class="text-[10px] text-neonGold block uppercase tracking-wider font-bold"></span><span id="coinName" class="text-sm font-bold"></span></div>
-  <div class="text-center"><span class="text-[10px] text-gray-400 block uppercase">Прогрес</span><span id="gameLevelProgressText" class="text-xs font-black text-crimsonRed"></span></div>
-  <div class="text-right"><span class="text-[10px] text-gray-400 block uppercase">Сила печаті</span><span id="clickPowerDisplay" class="text-xs font-bold text-emerald-400"></span></div>
+ <div class="card !p-3 flex justify-between items-center">
+  <div><span id="locationNameDisplay" class="text-[10px] text-neonGold block uppercase font-bold"></span><span id="coinName" class="text-sm font-bold"></span></div>
+  <div class="text-center"><span class="text-[10px] text-gray-400 block uppercase" data-t="Прогрес|Progress"></span><span id="gameLevelProgressText" class="text-xs font-black text-crimsonRed"></span></div>
+  <div class="text-right"><span class="text-[10px] text-gray-400 block uppercase" data-t="Сила|Power"></span><span id="clickPowerDisplay" class="text-xs font-bold text-emerald-400"></span></div>
  </div>
- <div class="grid grid-cols-2 gap-2 text-xs font-bold">
-  <button id="tabSeal" onclick="tab('seal')" class="py-2 rounded-xl bg-crimsonRed">🖌 Печать</button>
-  <button id="tabSlot" onclick="tab('slot')" class="py-2 rounded-xl bg-inkCard border border-inkBorder">🎰 Храм удачі</button>
- </div>
- <div id="panelSeal">
-  <div id="clickerZoneBox" class="rounded-3xl p-2 transition-all duration-700">
-   <div class="relative w-full max-w-[320px] mx-auto">
-    <canvas id="cv" width="320" height="320" class="w-full rounded-3xl bg-inkCard/80 border border-inkBorder"></canvas>
-    <span id="activeAvatarDisplay" class="absolute inset-0 flex items-center justify-center text-7xl pointer-events-none drop-shadow-[0_0_20px_rgba(255,42,95,0.6)]"></span>
-    <span id="bossTag" class="hidden absolute top-3 left-3 text-[10px] font-black bg-crimsonRed px-2 py-0.5 rounded-full">БОС ×5</span>
-   </div>
-   <div id="sealMsg" class="text-center text-sm font-bold text-neonGold mt-2 h-5"></div>
-   <div class="text-center mt-1"><div class="text-3xl font-black font-mono" id="gameInkDisplay">0</div><span class="text-xs text-neonGold uppercase tracking-widest font-semibold">文 MON</span></div>
+ <div class="grid grid-cols-2 gap-2 text-xs font-bold"><button id="tabSeal" onclick="tab('seal')" class="py-2 rounded-xl" data-t="🖌 Печать|🖌 Seal"></button><button id="tabSlot" onclick="tab('slot')" class="py-2 rounded-xl" data-t="🏯 Підземелля|🏯 Dungeon"></button></div>
+
+ <div id="panelSeal" class="space-y-2">
+  <div id="clickerZoneBox" class="rounded-3xl p-2">
+   <div id="bossBox" class="hidden mb-2"><div class="flex justify-between text-[11px] font-black"><span class="text-crimsonRed">👑 BOSS</span><span id="bossTxt"></span></div><div class="h-2 bg-inkDark rounded-full overflow-hidden"><div id="bossHp" class="h-full bg-gradient-to-r from-crimsonRed to-neonGold transition-all"></div></div></div>
+   <div class="relative w-full max-w-[320px] mx-auto"><canvas id="cv" width="320" height="320" class="w-full rounded-3xl bg-inkCard/80 border border-inkBorder"></canvas><span id="activeAvatarDisplay" class="absolute inset-0 flex items-center justify-center text-7xl pointer-events-none"></span></div>
+   <div id="sealMsg" class="text-center text-sm font-bold text-neonGold mt-2 min-h-[20px]"></div>
+   <div class="text-center"><div class="text-3xl font-black font-mono" id="gameInkDisplay">0</div><span class="text-xs text-neonGold uppercase tracking-widest font-semibold">文 MON</span></div>
   </div>
  </div>
- <div id="panelSlot" class="hidden bg-inkCard border border-inkBorder rounded-2xl p-5 text-center space-y-4">
-  <h3 class="font-black uppercase text-neonGold">Храм удачі</h3>
-  <div id="reels" class="flex justify-center gap-3 text-5xl"><span>🦊</span><span>🦊</span><span>🦊</span></div>
-  <div id="slotInfo" class="text-xs text-gray-400 h-4"></div>
-  <button id="spinBtn" onclick="spin()" class="w-full py-3 rounded-xl bg-gradient-to-r from-neonGold to-crimsonRed font-bold"></button>
-  <p class="text-[10px] text-gray-500">Тільки за ігрові 文. Три однакових — 500, дві — 50, три 🪙 — 1000. Реальні гроші не потрібні.</p>
+
+ <div id="panelSlot" class="hidden dun rounded-3xl p-3 relative overflow-hidden space-y-3">
+  <div id="rain" class="absolute inset-0 pointer-events-none overflow-hidden z-20"></div>
+  <span class="absolute left-1 top-20 text-2xl" style="animation:flick 1s infinite">🔥</span><span class="absolute right-1 top-20 text-2xl" style="animation:flick 1.3s infinite">🔥</span>
+  <div class="text-center font-black tracking-widest text-neonGold" data-t="🏯 ПІДЗЕМЕЛЛЯ ХРАМУ 🏯|🏯 TEMPLE DUNGEON 🏯"></div>
+  <div id="slotBox" class="relative mx-auto w-[296px] bg-black/70 border border-neonGold/50 rounded-xl">
+   <div id="reels" class="flex gap-1"></div><svg id="lines" class="absolute inset-0 pointer-events-none" width="296" height="174"></svg>
+   <div id="winBanner" class="hidden absolute inset-0 flex-col items-center justify-center bg-black/60 text-center z-10"><div id="winT" class="text-3xl font-black text-neonGold" style="animation:pop .4s"></div><div id="winV" class="text-3xl font-mono font-black"></div></div>
+  </div>
+  <div id="slotInfo" class="text-center text-xs text-gray-300 min-h-[16px]"></div>
+  <div class="flex items-center justify-between text-xs px-1">
+   <div class="flex items-center gap-1"><button onclick="chBet(-1)" class="btn !px-3">−</button><div class="text-center w-16"><div class="text-[9px] text-gray-400" data-t="СТАВКА|BET"></div><b id="betV" class="font-mono text-neonGold"></b></div><button onclick="chBet(1)" class="btn !px-3">+</button></div>
+   <div class="flex gap-1" id="lnBtns"></div>
+  </div>
+  <div class="flex items-center justify-between gap-2">
+   <button onclick="buyBonus()" class="btng flex-1 py-3" id="buyBtn"></button>
+   <button id="spinBtn" onclick="spin()" class="w-20 h-20 rounded-full bg-gradient-to-br from-neonGold to-crimsonRed font-black text-sm shadow-[0_0_25px_#ff2a5f] active:scale-90 disabled:opacity-50">SPIN</button>
+   <div class="flex-1 text-center"><div class="text-[9px] text-gray-400" data-t="ЗАГАЛОМ|TOTAL"></div><b id="totV" class="font-mono"></b><br><button onclick="mute=!mute;localStorage.ink_mute=mute?1:0;ui()" id="muteBtn" class="text-lg"></button></div>
+  </div>
+  <p class="text-[10px] text-gray-500 text-center" data-t="Лише за ігрові 文. Виграші слоту не рахуються в прогрес нагород.|Play-money only. Slot wins don't count toward reward progress."></p>
  </div>
- <div class="w-full space-y-2 bg-inkCard border border-inkBorder p-3 rounded-2xl">
-  <div class="flex justify-between text-xs"><span class="text-gray-400" data-i18n="game.energy"></span><span id="energyText" class="text-neonGold font-mono"></span></div>
-  <div class="w-full bg-inkDark h-2 rounded-full overflow-hidden border border-inkBorder"><div id="energyBar" class="bg-gradient-to-r from-neonGold to-crimsonRed h-full transition-all duration-300"></div></div>
-  <div class="pt-2 border-t border-inkBorder/60 flex justify-between items-center text-xs"><div><span class="text-gray-400 block">До наступної ери:</span><span id="nextLevelNeeded" class="font-bold"></span></div><span id="levelPercentage" class="text-neonGold font-mono font-bold"></span></div>
+
+ <div class="card !p-3 space-y-2">
+  <div class="flex justify-between text-xs"><span class="text-gray-400" data-t="Туш (енергія)|Ink (energy)"></span><span id="energyText" class="text-neonGold font-mono"></span></div>
+  <div class="w-full bg-inkDark h-2 rounded-full overflow-hidden border border-inkBorder"><div id="energyBar" class="bg-gradient-to-r from-neonGold to-crimsonRed h-full transition-all"></div></div>
+  <div class="pt-2 border-t border-inkBorder/60 flex justify-between items-center text-xs"><div><span class="text-gray-400 block" data-t="До наступної ери:|To next era:"></span><span id="nextLevelNeeded" class="font-bold"></span></div><span id="levelPercentage" class="text-neonGold font-mono font-bold"></span></div>
  </div>
 </section>
 
-<section id="view-boosters" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4">
- <h2 class="text-xl font-black uppercase tracking-wider text-neonGold"><i class="fa-solid fa-bolt mr-2"></i>Еволюція & Бустери (x2)</h2>
- <p class="text-xs text-gray-400">Кожне покращення подвоює ефект.</p>
- <div id="boostersList" class="space-y-3 pb-6"></div>
-</section>
-
-<section id="view-quests" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4">
- <div class="flex justify-between items-center"><h2 class="text-xl font-black uppercase tracking-wider" data-i18n="nav.quests"></h2><span id="completedQuestsCount" class="text-xs text-neonGold font-mono font-bold">0 / 100</span></div>
- <div id="questsList" class="space-y-3 pb-6"></div>
-</section>
-
+<section id="view-boosters" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4"><h2 class="text-xl font-black uppercase text-neonGold" data-t="⚡ Еволюція & Бустери|⚡ Evolution & Boosters"></h2><div id="boostersList" class="space-y-3 pb-6"></div></section>
+<section id="view-quests" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4"><div class="flex justify-between"><h2 class="text-xl font-black uppercase" data-t="Квести|Quests"></h2><span id="completedQuestsCount" class="text-xs text-neonGold font-mono font-bold"></span></div><div id="questsList" class="space-y-3 pb-6"></div></section>
 <section id="view-offers" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4">
- <div class="flex justify-between items-center"><h2 class="text-xl font-black uppercase tracking-wider text-neonGold"><i class="fa-solid fa-user-plus mr-2"></i>Пришли друга</h2><button onclick="router.navigate('admin')" id="adminNavBtn" class="hidden px-3 py-1 bg-crimsonRed text-xs font-bold rounded-lg">Admin</button></div>
- <div class="bg-gradient-to-br from-inkCard to-deepPurple/40 border border-inkBorder rounded-2xl p-5 space-y-3">
-  <h3 class="font-black text-sm uppercase">Запрошуй друзів — вони рахуються в нагороду</h3>
-  <p class="text-xs text-gray-300">Друг рахується, коли зареєструється за твоїм посиланням і дійде до 3-го рівня.</p>
-  <div class="flex items-center space-x-2"><input id="refLinkInput" readonly class="w-full bg-inkDark border border-inkBorder rounded-xl px-3 py-2.5 text-xs font-mono text-neonGold"><button onclick="copyRefLink()" class="px-4 py-2.5 bg-crimsonRed text-xs font-bold rounded-xl">Копіювати</button></div>
- </div>
- <h3 class="text-sm font-black uppercase tracking-wider pt-2">Партнери та Активності</h3>
- <div id="partnerOffersList" class="space-y-3 pb-6"></div>
+ <div class="flex justify-between items-center"><h2 class="text-xl font-black uppercase text-neonGold" data-t="👥 Пришли друга|👥 Invite a friend"></h2><button onclick="router.navigate('admin')" id="adminNavBtn" class="hidden btn">Admin</button></div>
+ <div class="card space-y-3 bg-gradient-to-br from-inkCard to-deepPurple/40"><p class="text-xs text-gray-300" data-t="Друг рахується, коли зареєструється за твоїм посиланням і дійде до 3-го рівня.|A friend counts once they sign up via your link and reach level 3."></p><div class="flex gap-2"><input id="refLinkInput" readonly class="inp !py-2.5 text-xs font-mono text-neonGold"><button onclick="copyRefLink()" class="btn" data-t="Копіювати|Copy"></button></div></div>
+ <h3 class="text-sm font-black uppercase" data-t="Мої друзі|My friends"></h3><div id="friendsList" class="space-y-2"></div>
+ <h3 class="text-sm font-black uppercase pt-2" data-t="Партнери та активності|Partners & tasks"></h3><div id="partnerOffersList" class="space-y-3 pb-6"></div>
 </section>
-
-<section id="view-rewards" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4">
- <h2 class="text-xl font-black uppercase tracking-wider" data-i18n="nav.rewards"></h2>
- <div id="rewardsList" class="space-y-3 pb-6"></div>
-</section>
-
+<section id="view-rewards" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4"><h2 class="text-xl font-black uppercase" data-t="Нагороди студії|Studio rewards"></h2><div id="rewardsList" class="space-y-3 pb-6"></div></section>
 <section id="view-profile" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4">
- <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 flex items-center space-x-4">
-  <div id="profileAvatarBox" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-crimsonRed to-neonGold flex items-center justify-center text-3xl kitsune-glow">🦊</div>
-  <div><h3 id="profileEmail" class="font-bold text-sm">Гість</h3><span id="profileVipBadge" class="inline-block mt-1 px-2 py-0.5 bg-crimsonRed/20 border border-crimsonRed/40 text-crimsonRed text-[10px] font-bold rounded-full uppercase"></span></div>
- </div>
- <button id="saveProgBtn" onclick="authMode('reg');router.navigate('auth')" class="w-full py-3 rounded-xl bg-neonGold/10 border border-neonGold/40 text-neonGold font-bold text-sm">Зберегти прогрес — створити акаунт</button>
- <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 space-y-3">
-  <h4 class="text-xs font-bold text-neonGold uppercase tracking-wider"><i class="fa-solid fa-masks-theater mr-1"></i> Обери аватар</h4>
-  <div id="avatarGridSelector" class="grid grid-cols-4 gap-2.5"></div>
- </div>
- <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 space-y-3"><h4 class="text-xs font-bold text-neonGold uppercase tracking-wider"><i class="fa-solid fa-trophy mr-1"></i> Топ гравців</h4><div id="leaderboardList" class="space-y-2 text-xs"></div></div>
- <button onclick="handleLogout()" class="w-full py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 font-bold text-sm"><i class="fa-solid fa-right-from-bracket mr-2"></i><span data-i18n="profile.logout"></span></button>
+ <div class="card flex items-center space-x-4"><div id="profileAvatarBox" class="w-16 h-16 rounded-2xl overflow-hidden flex items-center justify-center text-3xl"></div><div><h3 id="profileEmail" class="font-bold text-sm"></h3><span id="profileVipBadge" class="inline-block mt-1 px-2 py-0.5 bg-crimsonRed/20 border border-crimsonRed/40 text-crimsonRed text-[10px] font-bold rounded-full uppercase"></span></div></div>
+ <button id="saveProgBtn" onclick="authMode('reg');router.navigate('auth')" class="w-full py-3 rounded-xl bg-neonGold/10 border border-neonGold/40 text-neonGold font-bold text-sm" data-t="Зберегти прогрес — увійти|Save progress — sign in"></button>
+ <div class="card space-y-3"><h4 class="text-xs font-bold text-neonGold uppercase" data-t="Мої аватари|My avatars"></h4><div id="avatarGridSelector" class="grid grid-cols-4 gap-2.5"></div></div>
+ <div class="card space-y-3"><h4 class="text-xs font-bold text-neonGold uppercase" data-t="🏆 Топ гравців|🏆 Leaderboard"></h4><div id="leaderboardList" class="space-y-2 text-xs"></div></div>
+ <button onclick="handleLogout()" class="w-full py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 font-bold text-sm" data-t="Вийти з акаунта|Logout"></button>
 </section>
-
 <section id="view-admin" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4">
- <div class="flex items-center justify-between"><h2 class="text-xl font-black uppercase text-crimsonRed">Admin Panel</h2><button onclick="router.navigate('offers')" class="text-xs text-gray-400"><i class="fa-solid fa-arrow-left mr-1"></i>Назад</button></div>
- <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 space-y-3">
-  <h3 class="text-sm font-bold text-neonGold uppercase">Новий партнерський оффер</h3>
-  <input id="admTitle" placeholder="Назва завдання" class="w-full bg-inkDark border border-inkBorder rounded-xl px-3 py-2.5 text-sm">
-  <input id="admUrl" placeholder="https://посилання-оффера" class="w-full bg-inkDark border border-inkBorder rounded-xl px-3 py-2.5 text-sm">
-  <button onclick="addOffer()" class="w-full py-2.5 rounded-xl bg-crimsonRed font-bold text-sm">Додати</button>
-  <p class="text-[11px] text-gray-500">Підтвердження: у Firestore колекція submissions → документ uid_offerId → status = "ok". Заявки на нагороди — колекція claims.</p>
- </div>
+ <div class="flex justify-between"><h2 class="text-xl font-black uppercase text-crimsonRed">Admin</h2><button onclick="router.navigate('offers')" class="text-xs text-gray-400" data-t="← Назад|← Back"></button></div>
+ <div class="card space-y-3"><input id="admTitle" placeholder="Title" class="inp"><input id="admUrl" placeholder="https://…" class="inp"><button onclick="addOffer()" class="btn w-full py-2.5">+ Offer</button><p class="text-[11px] text-gray-500">Firestore: submissions/uid_offerId → status "ok"; claims; users.</p></div>
 </section>
 </main>
 
-<div id="promo" class="hidden fixed inset-0 z-[60] bg-black/70 items-center justify-center p-6">
- <div class="w-full max-w-xs bg-inkCard border border-neonGold/40 rounded-3xl p-6 text-center space-y-3 kitsune-glow">
-  <div class="text-4xl">📣</div><h3 id="promoText" class="font-black"></h3>
-  <button id="promoBtn" onclick="promoGo()" class="w-full py-3 rounded-xl bg-gradient-to-r from-neonGold to-crimsonRed font-bold text-sm"></button>
-  <button onclick="promoX()" class="text-xs text-gray-500">Пізніше</button>
- </div>
+<div id="adOv" class="hidden fixed inset-0 z-[60] bg-black/75 items-center justify-center p-6"><div class="w-full max-w-xs card !border-neonGold/40 rounded-3xl text-center space-y-3 kitsune-glow"><div class="text-4xl">📣</div><h3 id="adText" class="font-black"></h3><button onclick="window.open(CFG.promo.url,'_blank')" class="w-full py-2 rounded-xl bg-inkDark border border-inkBorder text-xs font-bold" data-t="Відкрити|Open"></button><button id="adBtn" onclick="adClaim()" class="btng w-full py-3" disabled></button></div></div>
+<div id="bonusOv" class="hidden fixed inset-0 z-[70] bg-black/90 flex-col items-center justify-center p-6 text-center gap-4">
+ <div class="w-56 h-56 rounded-3xl overflow-hidden shadow-[0_0_80px_#ffb703] flex items-center justify-center text-8xl" style="animation:pulse-glow 2s infinite"><img src="img/bonus.png" data-e="⛩️" onerror="this.outerHTML=this.dataset.e" class="w-full h-full object-cover"></div>
+ <h2 id="bonusT" class="text-3xl font-black text-neonGold" style="animation:pop .5s"></h2><div id="bonusS" class="text-3xl font-mono font-black"></div><button id="bonusBtn" onclick="bonusAct()" class="btng px-12 py-3 text-base"></button>
 </div>
 
-<nav id="bottomNav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-inkDark/95 border-t border-inkBorder backdrop-blur-md px-1.5 py-2 flex justify-around items-center">
- <button onclick="router.navigate('game')" class="nav-btn flex flex-col items-center text-gray-400" data-target="game"><i class="fa-solid fa-gamepad text-base"></i><span class="text-[9px] font-semibold mt-0.5" data-i18n="nav.play"></span></button>
- <button onclick="router.navigate('boosters')" class="nav-btn flex flex-col items-center text-gray-400" data-target="boosters"><i class="fa-solid fa-bolt text-base"></i><span class="text-[9px] font-semibold mt-0.5">Бустери</span></button>
- <button onclick="router.navigate('quests')" class="nav-btn flex flex-col items-center text-gray-400" data-target="quests"><i class="fa-solid fa-scroll text-base"></i><span class="text-[9px] font-semibold mt-0.5" data-i18n="nav.quests"></span></button>
- <button onclick="router.navigate('offers')" class="nav-btn flex flex-col items-center text-gray-400" data-target="offers"><i class="fa-solid fa-user-plus text-base"></i><span class="text-[9px] font-semibold mt-0.5" data-i18n="nav.offers"></span></button>
- <button onclick="router.navigate('rewards')" class="nav-btn flex flex-col items-center text-gray-400" data-target="rewards"><i class="fa-solid fa-gift text-base"></i><span class="text-[9px] font-semibold mt-0.5" data-i18n="nav.rewards"></span></button>
- <button onclick="router.navigate('profile')" class="nav-btn flex flex-col items-center text-gray-400" data-target="profile"><i class="fa-solid fa-user text-base"></i><span class="text-[9px] font-semibold mt-0.5" data-i18n="nav.profile"></span></button>
+<nav id="bottomNav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-inkDark/95 border-t border-inkBorder backdrop-blur-md px-1.5 py-2 flex justify-around">
+ <button onclick="router.navigate('game')" class="nav-btn flex flex-col items-center text-gray-400" data-target="game"><i class="fa-solid fa-gamepad"></i><span class="text-[9px] font-semibold mt-0.5" data-t="Гра|Play"></span></button>
+ <button onclick="router.navigate('boosters')" class="nav-btn flex flex-col items-center text-gray-400" data-target="boosters"><i class="fa-solid fa-bolt"></i><span class="text-[9px] font-semibold mt-0.5" data-t="Бустери|Boosts"></span></button>
+ <button onclick="router.navigate('quests')" class="nav-btn flex flex-col items-center text-gray-400" data-target="quests"><i class="fa-solid fa-scroll"></i><span class="text-[9px] font-semibold mt-0.5" data-t="Квести|Quests"></span></button>
+ <button onclick="router.navigate('offers')" class="nav-btn flex flex-col items-center text-gray-400" data-target="offers"><i class="fa-solid fa-user-plus"></i><span class="text-[9px] font-semibold mt-0.5" data-t="Друзі|Friends"></span></button>
+ <button onclick="router.navigate('rewards')" class="nav-btn flex flex-col items-center text-gray-400" data-target="rewards"><i class="fa-solid fa-gift"></i><span class="text-[9px] font-semibold mt-0.5" data-t="Нагороди|Rewards"></span></button>
+ <button onclick="router.navigate('profile')" class="nav-btn flex flex-col items-center text-gray-400" data-target="profile"><i class="fa-solid fa-user"></i><span class="text-[9px] font-semibold mt-0.5" data-t="Профіль|Profile"></span></button>
 </nav>
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import {getAuth,signInWithEmailAndPassword,createUserWithEmailAndPassword,signOut,onAuthStateChanged,GoogleAuthProvider,signInWithPopup} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import {getAuth,signInWithEmailAndPassword,createUserWithEmailAndPassword,signOut,onAuthStateChanged,GoogleAuthProvider,OAuthProvider,signInWithPopup,setPersistence,browserLocalPersistence} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import {getFirestore,doc,getDoc,setDoc,addDoc,collection,getDocs,query,where,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// ⚠️ ВСТАВ СВОЇ КЛЮЧІ FIREBASE (Project settings → Your apps)
+// ⚠️ ВСТАВ КЛЮЧІ FIREBASE. У Authentication → Sign-in method увімкни Google та Apple (Apple потребує Apple Developer акаунт).
 const firebaseConfig={apiKey:"PASTE_API_KEY",authDomain:"PASTE_PROJECT_ID.firebaseapp.com",projectId:"PASTE_PROJECT_ID",storageBucket:"PASTE_PROJECT_ID.appspot.com",messagingSenderId:"PASTE_SENDER_ID",appId:"PASTE_APP_ID"};
 const ADMIN_UIDS=["PASTE_ADMIN_UID"];
-// ⚠️ Налаштування: місця на велику нагороду цього місяця + реклама-підписка (з'являється кожні N печатей)
-const CFG={slots:1,every:6,promo:{text:"Підпишись на Instagram студії",url:"https://instagram.com/yyokai.tattoo",gems:2}};
+const CFG={slots:1,every:6,promo:{text:"Підпишись на Instagram студії|Follow the studio on Instagram",url:"https://instagram.com/yyokai.tattoo",gems:2}};
+// 🔊 Свої звуки кидай у папку sfx/ (назви нижче). Якщо файлу нема — просто тиша.
+const SFX={spin:"sfx/spin.mp3",stop:"sfx/stop.mp3",win:"sfx/win.mp3",big:"sfx/bigwin.mp3",bonus:"sfx/bonus.mp3"};
 let app,auth,db;try{app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app)}catch(e){}
 
-const $=i=>document.getElementById(i),today=()=>new Date().toISOString().slice(0,10),fmt=n=>Math.floor(n).toLocaleString();
-const AV=[["🦊","Kitsune"],["👹","Hannya"],["👺","Tengu"],["🐉","Ryujin"],["🐱","Bakeneko"],["💀","Gashadokuro"],["🌸","Sakura"],["⚔️","Katana"],["⛩️","Torii"],["🥷","Shinobi"],["🦈","Same"],["🍥","Naruto"]];
-const YN={"🦊":"Кіцуне","🐸":"Каппа","👹":"Они","👺":"Тэнгу","🐱":"Бакэнэко","❄️":"Юки-онна","🐉":"Рюдзин","💀":"Гасядокуро"};
-const ERAS=[[0,"Нара · Святилище Кіцуне","Вадо Кайтин","bg-inkDark",["🦊","🐸"]],[1e4,"Хэйан · Ніч Ста Демонів","Вадо Кайтин","bg-slate-900",["👹","👺"]],[1e5,"Едо · Місто Кан'эй","Кан'эй Цухо","bg-purple-950/40",["🐱","❄️"]],[1e6,"Едо · Ера Тэмпо","Тэмпо Цухо","bg-red-950/40",["🐉","💀"]],[1e7,"Золотий Кобан","Кобан","bg-zinc-950",["🦊","🐉"]]];
-const BOOST={clickPower:["Кисть Катана (x2 сила печаті)",150,2,"⚔️"],autoClicker:["Дух-помічник (x2 авто-фарм)",400,2.2,"⛩️"],energyCap:["Чаша Туші (x2 ліміт)",250,1.9,"⚡"],energyRegen:["Подих Дракона (x2 відновлення)",500,2.3,"🐉"]};
-const SAMPLE=[{id:"ig",title:"Підпишись на Instagram студії",url:"https://instagram.com/yyokai.tattoo",cat:"SOCIAL"},{id:"tg",title:"Запусти Telegram-бота",url:"https://t.me/YyokaiInkBot",cat:"BOT"}];
-const I18={ua:{"landing.subtitle":"Печатай ёкаїв пензлем, збирай монети епох Японії, виконуй умови — і отримай справжнє тату.","landing.playBtn":"Грати зараз","landing.loginBtn":"Реєстрація / Вхід","game.energy":"Туш (енергія)","nav.play":"Гра","nav.quests":"Квести","nav.offers":"Друзі","nav.rewards":"Нагороди","nav.profile":"Профіль","profile.logout":"Вийти з акаунта"},
-en:{"landing.subtitle":"Seal yokai with your brush, earn coins of Japan's eras, complete the checklist — and win a real tattoo.","landing.playBtn":"Play Now","landing.loginBtn":"Register / Login","game.energy":"Ink (energy)","nav.play":"Play","nav.quests":"Quests","nav.offers":"Friends","nav.rewards":"Rewards","nav.profile":"Profile","profile.logout":"Logout"}};
+const $=i=>document.getElementById(i),today=()=>new Date().toISOString().slice(0,10),fmt=n=>Math.floor(n).toLocaleString(),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let lang=localStorage.ink_lang||"ua";const t=s=>{const a=s.split("|");return lang=="ua"?a[0]:a[1]||a[0]};
+let mute=localStorage.ink_mute==1;window.CFG=CFG;
+const play=k=>{if(mute||!SFX[k])return;try{const a=new Audio(SFX[k]);a.volume=.7;a.play().catch(()=>{})}catch(e){}};
 
-const def={mon:250,total:0,gems:0,seals:0,energy:100,av:"🦊",nick:"",days:1,last:today(),fs:"",friends:0,offers:{},claimed:[],qd:[],up:{clickPower:1,autoClicker:0,energyCap:0,energyRegen:0}};
-let S={...def,...JSON.parse(localStorage.getItem("ink_s")||"{}")};S.up={...def.up,...S.up};
+// ---------- Дані ----------
+const AVS=[{i:"fox",e:"🦊",r:0,p:0},{i:"oni",e:"👹",r:0,p:0},{i:"tengu",e:"👺",r:0,p:0},{i:"sakura",e:"🌸",r:0,p:0},
+{i:"logo",e:"⛩️",s:"img/logo.png",r:1,p:20000,n:"yyokai Logo"},{i:"master",e:"🎴",s:"img/master.jpg",r:2,p:150000,n:"The Master"},{i:"dragon",e:"🐉",s:"img/dragon.png",r:3,p:600000,n:"Ryujin"},{i:"king",e:"👑",s:"img/legend.png",r:4,p:2000000,n:"Yokai King"}];
+const RAR=[["Звичайний|Common","#6b7280"],["Рідкісний|Rare","#3b82f6"],["Епічний|Epic","#a855f7"],["Легендарний|Legendary","#ffb703"],["Міфічний|Mythic","#ff2a5f"]];
+const ERAS=[[0,"Нара · Святилище Кіцуне|Nara · Kitsune Shrine","Вадо Кайтин|Wadō Kaichin","bg-inkDark",["🦊","🐸"]],[1e4,"Хэйан · Ніч Ста Демонів|Heian · Night of 100 Demons","Вадо Кайтин|Wadō Kaichin","bg-slate-900",["👹","👺"]],[1e5,"Едо · Місто Кан'эй|Edo · Kan'ei City","Кан'эй Цухо|Kan'ei Tsūhō","bg-purple-950/40",["🐱","❄️"]],[1e6,"Едо · Ера Тэмпо|Edo · Tenpō Era","Тэмпо Цухо|Tenpō Tsūhō","bg-red-950/40",["🐉","💀"]],[1e7,"Золотий Кобан|Golden Koban","Кобан|Koban","bg-zinc-950",["🦊","🐉"]]];
+const YK=["👹","👺","🐉","💀","❄️","🐱","🦊"];
+const STG=[["Бамбук|Bamboo","#84cc16"],["Сталь|Steel","#60a5fa"],["Золото|Gold","#ffb703"],["Дракон|Dragon","#ff2a5f"]];
+const BO={power:["⚔️","Кисть|Brush",150,2,l=>`×${2**l} ${t("монет|coins")}`],auto:["👻","Дух-помічник|Spirit helper",400,2.2,l=>`${l?2**(l-1):0} 文/${t("сек|s")}`],cap:["🏺","Чаша Туші|Ink Cup",250,1.9,l=>`${100*2**l} ${t("туші|ink")}`],regen:["🐉","Подих Дракона|Dragon Breath",500,2.3,l=>`${2**l}/${t("сек|s")}`],crit:["💥","Крит-печать|Crit seal",800,2.1,l=>`${Math.min(50,l*5)}% ×5`],luck:["🍀","Удача Кіцуне|Kitsune luck",1200,2.4,l=>`+${l*3}% 🔮`]};
+const SAMPLE=[["ig","Підпишись на Instagram|Follow on Instagram","https://instagram.com/yyokai.tattoo","SOCIAL"],["tt","Підпишись на TikTok|Follow on TikTok","https://tiktok.com/@your","SOCIAL"],["yt","Підпишись на YouTube|Subscribe on YouTube","https://youtube.com/@your","VIDEO"],["tc","Telegram-канал|Telegram channel","https://t.me/your","SOCIAL"],["tg","Запусти Telegram-бота|Start the Telegram bot","https://t.me/YyokaiInkBot","BOT"],["pt","Партнер: бонус за дію|Partner: action bonus","https://example.com","PARTNER"]].map(([id,title,url,cat])=>({id,title,url,cat}));
+
+const def={mon:250,total:0,gems:0,seals:0,kills:0,ads:0,energy:100,av:"fox",own:["fox","oni","tengu","sakura"],nick:"",days:1,last:today(),friends:0,offers:{},claimed:[],qd:[],boss:null,rage:0,up:{power:0,auto:0,cap:0,regen:0,crit:0,luck:0}};
+let S={...def,...JSON.parse(localStorage.getItem("ink_s2")||"{}")};S.up={...def.up,...S.up};
 if(S.last!==today()){S.days++;S.last=today()}
-let user=null,lang=localStorage.getItem("ink_lang")||"ua",mode="reg",pickAv=S.av,dirty=0,OFFERS=[...SAMPLE];
+let user=null,mode="reg",pickAv=S.av,cur="landing",OFFERS=[...SAMPLE],FR=[];
 const refId=new URLSearchParams(location.search).get("ref");
-const maxE=()=>100*Math.pow(2,S.up.energyCap),lv=()=>{let l=0;ERAS.forEach((e,i)=>{if(S.total>=e[0])l=i});return l};
-const gain=n=>{S.mon+=n;S.total+=n};
-function save(){localStorage.setItem("ink_s",JSON.stringify(S));dirty=1}
-setInterval(async()=>{if(dirty&&user&&db){dirty=0;const{offers,friends,...r}=S;try{await setDoc(doc(db,"users",user.uid),{...r,email:user.email||"",ts:serverTimestamp()},{merge:true})}catch(e){}}},15000);
+const maxE=()=>100*2**S.up.cap,lvOf=x=>{let l=0;ERAS.forEach((e,i)=>{if(x>=e[0])l=i});return l},lv=()=>lvOf(S.total),mult=()=>Date.now()<S.rage?3:1,gain=n=>{S.mon+=n;S.total+=n},okN=()=>Object.values(S.offers).filter(v=>v=="ok").length;
+function save(){localStorage.setItem("ink_s2",JSON.stringify(S))}
+async function push(){if(!user||!db)return;const{offers,...r}=S;try{await setDoc(doc(db,"users",user.uid),{...r,email:user.email||"",ts:serverTimestamp()},{merge:true})}catch(e){}}
+setInterval(()=>{save();push()},15000);
+const avHTML=i=>{const a=AVS.find(x=>x.i==i)||AVS[0];return a.s?`<img src="${a.s}" data-e="${a.e}" onerror="this.outerHTML=this.dataset.e" class="w-full h-full object-cover">`:a.e};
+const frame=(i,c)=>{const a=AVS.find(x=>x.i==i)||AVS[0],col=RAR[a.r][1];return `style="border:2px solid ${col};box-shadow:0 0 ${a.r*7}px ${col}"`};
 
-// ---------- i18n / router ----------
-window.translateUI=()=>{document.querySelectorAll("[data-i18n]").forEach(el=>{const t=I18[lang][el.dataset.i18n];if(t)el.textContent=t});$("langSwitcherBtn").textContent=lang=="ua"?"🇺🇦 UA":"🇬🇧 EN"};
-window.toggleLanguage=()=>{lang=lang=="ua"?"en":"ua";localStorage.setItem("ink_lang",lang);translateUI()};
-const NAVV=["game","boosters","quests","offers","rewards","profile"];
-window.router={navigate(v){document.querySelectorAll(".view-section").forEach(e=>e.classList.add("hidden"));const t=$("view-"+v);if(t)t.classList.remove("hidden");
+// ---------- i18n + router ----------
+function translateUI(){document.querySelectorAll("[data-t]").forEach(e=>e.textContent=t(e.dataset.t));document.querySelectorAll("[data-p]").forEach(e=>e.placeholder=t(e.dataset.p));$("langSwitcherBtn").textContent=lang=="ua"?"🇺🇦 UA":"🇬🇧 EN";authMode(mode,1)}
+window.toggleLanguage=()=>{lang=lang=="ua"?"en":"ua";localStorage.ink_lang=lang;translateUI();rend()};
+const R={game:()=>{},boosters:()=>rB(),quests:()=>rQ(),offers:()=>rO(),rewards:()=>rR(),profile:()=>rP()};
+function rend(){(R[cur]||(()=>{}))();ui();slotUI()}
+window.router={navigate(v){cur=v;document.querySelectorAll(".view-section").forEach(e=>e.classList.add("hidden"));$("view-"+v).classList.remove("hidden");
  document.querySelectorAll(".nav-btn").forEach(b=>{const a=b.dataset.target==v;b.classList.toggle("text-crimsonRed",a);b.classList.toggle("text-gray-400",!a)});
- const on=NAVV.includes(v);$("bottomNav").classList.toggle("hidden",!on);const bb=$("userBalanceBadge");bb.classList.toggle("hidden",!on);bb.classList.toggle("flex",on);
- if(v=="boosters")renderBoosters();if(v=="quests")renderQuests();if(v=="offers")renderOffers();if(v=="rewards")renderRewards();if(v=="profile")renderProfile();ui()}};
+ const on=!!R[v];$("bottomNav").classList.toggle("hidden",!on);const bb=$("userBalanceBadge");bb.classList.toggle("hidden",!on);bb.classList.toggle("flex",on);rend()}};
 
-// ---------- UI ----------
-function ui(){const L=lv(),E=ERAS[L],nx=ERAS[L+1]?ERAS[L+1][0]:E[0]*10,pr=S.total-E[0],tg=nx-E[0],pc=Math.min(100,Math.floor(pr/tg*100)),mx=maxE();S.energy=Math.min(S.energy,mx);
+function ui(){const L=lv(),E=ERAS[L],nx=ERAS[L+1]?ERAS[L+1][0]:E[0]*10,pr=S.total-E[0],tg=nx-E[0],mx=maxE();S.energy=Math.min(S.energy,mx);
  $("headerInkCount").textContent=fmt(S.mon);$("headerGems").textContent=S.gems;$("gameInkDisplay").textContent=fmt(S.mon);
  $("energyText").textContent=Math.floor(S.energy)+" / "+mx;$("energyBar").style.width=S.energy/mx*100+"%";
- $("locationNameDisplay").textContent=E[1];$("headerLocationTitle").textContent="Рівень "+(L+1);$("coinName").textContent="文 "+E[2];
- $("gameLevelProgressText").textContent=fmt(pr)+" / "+fmt(tg);$("nextLevelNeeded").textContent=fmt(tg-pr)+" 文";$("levelPercentage").textContent=pc+"%";
- $("clickPowerDisplay").textContent="×"+Math.pow(2,S.up.clickPower-1);$("clickerZoneBox").className="rounded-3xl p-2 transition-all duration-700 "+E[3];
- ["landingAvatarIcon","profileAvatarBox","headerLogoIcon"].forEach(i=>$(i).textContent=S.av)}
-const msg=t=>{$("sealMsg").textContent=t};
-window.tab=n=>{$("panelSeal").classList.toggle("hidden",n!="seal");$("panelSlot").classList.toggle("hidden",n!="slot");$("tabSeal").className="py-2 rounded-xl "+(n=="seal"?"bg-crimsonRed":"bg-inkCard border border-inkBorder");$("tabSlot").className="py-2 rounded-xl "+(n=="slot"?"bg-crimsonRed":"bg-inkCard border border-inkBorder")};
+ $("locationNameDisplay").textContent=t(E[1]);$("headerLocationTitle").textContent=t("Рівень|Level")+" "+(L+1);$("coinName").textContent="文 "+t(E[2]);
+ $("gameLevelProgressText").textContent=fmt(pr)+" / "+fmt(tg);$("nextLevelNeeded").textContent=fmt(tg-pr)+" 文";$("levelPercentage").textContent=Math.min(100,Math.floor(pr/tg*100))+"%";
+ $("clickPowerDisplay").textContent="×"+(2**S.up.power*mult());$("clickerZoneBox").className="rounded-3xl p-2 transition-all duration-700 "+E[3];
+ $("landingAvatarIcon").innerHTML=$("headerLogoIcon").innerHTML=avHTML(S.av);$("muteBtn").textContent=mute?"🔇":"🔊";
+ $("tabSeal").className="py-2 rounded-xl "+($("panelSeal").classList.contains("hidden")?"bg-inkCard border border-inkBorder":"bg-crimsonRed");$("tabSlot").className="py-2 rounded-xl "+($("panelSlot").classList.contains("hidden")?"bg-inkCard border border-inkBorder":"bg-crimsonRed")}
+const msg=x=>{$("sealMsg").textContent=x};
+window.tab=n=>{$("panelSeal").classList.toggle("hidden",n!="seal");$("panelSlot").classList.toggle("hidden",n!="slot");ui()};
 
-// ---------- ПЕЧАТЬ: проведи лінію пензля по контуру ----------
-const cv=$("cv"),cx=cv.getContext("2d"),W=320,C=160,TOL=24;
-const SH=[t=>{const a=t*6.283-1.571;return[Math.cos(a)*.38,Math.sin(a)*.38]},
- t=>[(t-.5)*.84,Math.sin(t*12.57)*.2],
- t=>{const a=t*12.57,r=.04+.36*t;return[Math.cos(a)*r,Math.sin(a)*r]},
- t=>{const v=[0,2,4,1,3,0].map(k=>[Math.cos(k*1.2566-1.5708)*.4,Math.sin(k*1.2566-1.5708)*.4]),s=t*5,i=Math.min(4,Math.floor(s)),f=s-i;return[v[i][0]+(v[i+1][0]-v[i][0])*f,v[i][1]+(v[i+1][1]-v[i][1])*f]}];
-let pts=[],idx=1,err=0,drawing=0,last=null;
-const dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]),isBoss=()=>(S.seals+1)%10==0;
-function guide(){cx.clearRect(0,0,W,W);cx.lineCap="round";cx.lineJoin="round";cx.setLineDash([2,14]);cx.strokeStyle="rgba(255,183,3,.55)";cx.lineWidth=6;cx.beginPath();pts.forEach((p,i)=>i?cx.lineTo(p[0],p[1]):cx.moveTo(p[0],p[1]));cx.stroke();cx.setLineDash([]);cx.fillStyle="#00f0ff";cx.beginPath();cx.arc(pts[0][0],pts[0][1],9,0,6.3);cx.fill()}
-function newSeal(){const f=SH[(S.seals+lv())%4];pts=[...Array(48)].map((_,i)=>{const p=f(i/47);return[C+p[0]*W,C+p[1]*W]});idx=1;err=0;drawing=0;guide();
- $("activeAvatarDisplay").textContent=ERAS[lv()][4][S.seals%2];$("bossTag").classList.toggle("hidden",!isBoss())}
+// ---------- ПЕЧАТЬ ----------
+const cv=$("cv"),cx=cv.getContext("2d"),W=320,C=160,TOL=24;let pts=[],idx=1,err=0,drawing=0,last=null;
+function mk(easy){const Rn=Math.random,rot=Rn()*6.283,c=Math.cos(rot),s=Math.sin(rot),k=easy?0:Rn()*4|0;let f;
+ if(k==0){const a=1+(Rn()*(easy?2:4)|0),b=1+(Rn()*(easy?2:4)|0),p=.6+Rn()*5,A=.3+Rn()*.08;f=u=>[Math.sin(a*6.283*u+p)*A,Math.sin(b*6.283*u)*A]}
+ else if(k==1){const n=2+(Rn()*4|0),th=Math.PI*(n%2?1:2);f=u=>{const a=u*th,r=.4*Math.cos(n*a);return[r*Math.cos(a),r*Math.sin(a)]}}
+ else if(k==2){const n=3+(Rn()*5|0),V=[...Array(n)].map((_,i)=>{const a=i/n*6.283,r=.2+Rn()*.2;return[Math.cos(a)*r,Math.sin(a)*r]});V.push(V[0]);f=u=>{const q=u*n,i=Math.min(n-1,q|0),w=q-i;return[V[i][0]+(V[i+1][0]-V[i][0])*w,V[i][1]+(V[i+1][1]-V[i][1])*w]}}
+ else{const tn=1.5+Rn()*2.5;f=u=>{const a=u*tn*6.283,r=.05+.35*u;return[Math.cos(a)*r,Math.sin(a)*r]}}
+ return u=>{const p=f(u);return[p[0]*c-p[1]*s,p[0]*s+p[1]*c]}}
+const dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
+function guide(){cx.clearRect(0,0,W,W);cx.lineCap=cx.lineJoin="round";cx.setLineDash([2,14]);cx.strokeStyle="rgba(255,183,3,.55)";cx.lineWidth=6;cx.beginPath();pts.forEach((p,i)=>i?cx.lineTo(p[0],p[1]):cx.moveTo(p[0],p[1]));cx.stroke();cx.setLineDash([]);cx.fillStyle="#00f0ff";cx.beginPath();cx.arc(pts[0][0],pts[0][1],9,0,6.3);cx.fill()}
+function newSeal(){const f=mk(!!S.boss);pts=[...Array(56)].map((_,i)=>{const p=f(i/55);return[C+p[0]*W,C+p[1]*W]});idx=1;err=0;drawing=0;guide();
+ $("activeAvatarDisplay").textContent=S.boss?S.boss.e:ERAS[lv()][4][S.seals%2];$("bossBox").classList.toggle("hidden",!S.boss);if(S.boss){$("bossHp").style.width=S.boss.hp*10+"%";$("bossTxt").textContent=S.boss.hp+"/10"}}
 const pos=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*W/r.width]};
-cv.addEventListener("pointerdown",e=>{e.preventDefault();if(S.energy<10){msg("Бракує туші — зачекай або забери бонус");return}const p=pos(e);if(dist(p,pts[0])>TOL*1.8){msg("Почни з блакитної точки");return}cv.setPointerCapture(e.pointerId);drawing=1;last=p;idx=1;err=0;guide();msg("")});
+cv.addEventListener("pointerdown",e=>{e.preventDefault();if(S.energy<10){msg(t("Бракує туші ⚡|Out of ink ⚡"));return}const p=pos(e);if(dist(p,pts[0])>TOL*1.8){msg(t("Почни з блакитної точки|Start at the blue dot"));return}cv.setPointerCapture(e.pointerId);drawing=1;last=p;idx=1;err=0;guide();msg("")});
 cv.addEventListener("pointermove",e=>{if(!drawing)return;const p=pos(e);cx.strokeStyle="#ff2a5f";cx.shadowColor="#ff2a5f";cx.shadowBlur=12;cx.lineWidth=7;cx.beginPath();cx.moveTo(last[0],last[1]);cx.lineTo(p[0],p[1]);cx.stroke();cx.shadowBlur=0;last=p;
- for(let j=idx;j<Math.min(idx+3,pts.length);j++){const d=dist(p,pts[j]);if(d<TOL){err+=d;idx=j+1;break}}
- if(idx>=pts.length){drawing=0;done()}});
-["pointerup","pointercancel"].forEach(n=>cv.addEventListener(n,()=>{if(drawing){drawing=0;msg("Печать порвалась — спробуй ще");guide()}}));
-function done(){const acc=Math.max(0,1-err/pts.length/TOL),m=acc>.6?2:acc>.3?1.5:1,boss=isBoss();
- const g=Math.round(10*(lv()+1)*m*Math.pow(2,S.up.clickPower-1)*(boss?5:1));
- S.energy-=10;S.seals++;gain(g);if(boss)S.gems+=3;else if(acc>.6&&Math.random()<.1)S.gems++;
- msg((acc>.6?"✨ Ідеально! ":acc>.3?"Добре! ":"Печать тримає. ")+"+"+fmt(g)+" 文"+(boss?" · +3 🔮":""));
- if(S.seals%CFG.every==0)setTimeout(promo,900);
+ for(let j=idx;j<Math.min(idx+3,pts.length);j++){const d=dist(p,pts[j]);if(d<TOL){err+=d;idx=j+1;break}}if(idx>=pts.length){drawing=0;done()}});
+["pointerup","pointercancel"].forEach(n=>cv.addEventListener(n,()=>{if(drawing){drawing=0;msg(t("Печать порвалась — ще раз|The seal broke — again"));guide()}}));
+function done(){const acc=Math.max(0,1-err/pts.length/TOL),m=acc>.6?2:acc>.3?1.5:1;let g=Math.round(10*(lv()+1)*m*2**S.up.power*mult()),ex="";const crit=Math.random()<Math.min(.5,S.up.crit*.05);if(crit){g*=5;ex+=" 💥×5"}
+ S.energy-=10;S.seals++;
+ if(S.boss){S.boss.hp--;if(S.boss.hp<=0){const b=Math.round(800*(lv()+1)*2**S.up.power*mult());gain(b);S.gems+=5;S.kills++;S.boss=null;ex+=` · 👑 +${fmt(b)} · +5 🔮`}}else if(S.seals>5&&Math.random()<.07)S.boss={e:YK[Math.random()*YK.length|0],hp:10};
+ gain(g);if(acc>.6&&Math.random()<.1+S.up.luck*.03){S.gems++;ex+=" · +1 🔮"}
+ msg((acc>.6?t("✨ Ідеально! |✨ Perfect! "):acc>.3?t("Добре! |Good! "):t("Печать тримає. |Sealed. "))+"+"+fmt(g)+" 文"+ex);
+ if(S.seals%CFG.every==0)setTimeout(()=>ad(CFG.promo.text,()=>{S.gems+=CFG.promo.gems;S.energy=maxE()},"+"+CFG.promo.gems+" 🔮"),900);
  save();ui();setTimeout(newSeal,800)}
 
-// ---------- Реклама-підписка ----------
-function promo(){const p=CFG.promo;$("promoText").textContent=p.text;$("promoBtn").textContent="Відкрити · +"+p.gems+" 🔮 і повна туш";$("promo").classList.replace("hidden","flex")}
-window.promoX=()=>$("promo").classList.replace("flex","hidden");
-window.promoGo=()=>{window.open(CFG.promo.url,"_blank");S.gems+=CFG.promo.gems;S.energy=maxE();save();ui();promoX()};
+// ---------- Реклама (rewarded) ----------
+let adCb=null,adTm=null;
+window.ad=(txt,cb,rw)=>{adCb=cb;$("adText").textContent=t(txt);$("adOv").classList.replace("hidden","flex");const b=$("adBtn");b.disabled=true;let n=5;const tick=()=>{b.textContent=n>0?`${t("Зачекай|Wait")} ${n}s`:`${t("Забрати|Claim")} ${rw||""}`;if(n--<=0){b.disabled=false}else adTm=setTimeout(tick,1000)};clearTimeout(adTm);tick()};
+window.adClaim=()=>{$("adOv").classList.replace("flex","hidden");S.ads++;if(adCb)adCb();adCb=null;save();rend()};
 
-// ---------- Храм удачі (слот) ----------
-const SY=["🦊","👹","👺","🐸","🪙"];
-const slotLbl=()=>{$("spinBtn").textContent=S.fs!==today()?"Безкоштовний оберт дня":"Крутити · 50 文"};
-window.spin=()=>{const free=S.fs!==today();if(!free&&S.mon<50){$("slotInfo").textContent="Недостатньо 文";return}
- if(free)S.fs=today();else S.mon-=50;$("spinBtn").disabled=true;const r=[...$("reels").children];let n=0;
- const iv=setInterval(()=>{r.forEach(x=>x.textContent=SY[Math.random()*5|0]);if(++n>12){clearInterval(iv);const res=r.map(x=>x.textContent),u=new Set(res).size;let w=0;if(u==1)w=res[0]=="🪙"?1000:500;else if(u==2)w=50;if(w)gain(w);
-  $("slotInfo").textContent=w?"Виграш +"+w+" 文!":"Не пощастило — ще раз?";$("spinBtn").disabled=false;save();ui();slotLbl()}},90)};
+// ---------- ПІДЗЕМЕЛЛЯ (слот) ----------
+const SYM=["🏮","🗡️","🎭","👹","🐉","🪙","🕯️"],SC="⛩️",PAY=[8,20,50,120,400],PW=[55,25,12,6,2],CNT=[3,3,4,4,5],CELL=58,BETS=[10,50,100,500,1000,5000,25000];
+const LINES=[[1,1,1,1,1],[0,0,0,0,0],[2,2,2,2,2],[0,1,2,1,0],[2,1,0,1,2],[0,0,1,2,2],[2,2,1,0,0],[1,0,0,0,1],[1,2,2,2,1],[0,1,0,1,0]];
+let bi=1,nl=10,busy=0,grid=[],reelEls=[];const rs=()=>SYM[Math.random()*7|0],tot=()=>BETS[bi]*nl;
+grid=[0,1,2,3,4].map(()=>[rs(),rs(),rs()]);
+$("reels").innerHTML=[0,1,2,3,4].map(r=>`<div class="w-14 h-[174px] overflow-hidden"><div class="strip">${grid[r].map(s=>`<div class="sym">${s}</div>`).join("")}</div></div>`).join("");reelEls=[...$("reels").children];
+const inf=x=>{$("slotInfo").textContent=x};
+function slotUI(){$("betV").textContent=fmt(BETS[bi]);$("totV").textContent=fmt(tot())+" 文";$("buyBtn").textContent=`${t("🎁 КУПИТИ БОНУС|🎁 BUY BONUS")} · ${fmt(tot()*100)}`;$("lnBtns").innerHTML=[1,5,10].map(n=>`<button onclick="setL(${n})" class="px-2 py-1 rounded-lg font-bold ${nl==n?"bg-neonGold text-black":"bg-inkDark border border-inkBorder"}">${n}<span class="text-[8px]"> ${t("лін|ln")}</span></button>`).join("")}
+window.chBet=d=>{if(busy)return;bi=Math.max(0,Math.min(BETS.length-1,bi+d));slotUI()};window.setL=n=>{if(!busy){nl=n;slotUI()}};
+function evalG(g){const w=[];LINES.forEach((L,li)=>{const s=g[0][L[0]];if(s==SC)return;let c=1;for(let r=1;r<5;r++){if(g[r][L[r]]==s)c++;else break}if(c>=3)w.push({li,s,c})});return w}
+const pickT=()=>{let x=Math.random()*100,k=0;for(;k<4;k++){x-=PW[k];if(x<0)break}return k};
+function roll(b){const r=Math.random();if(b)return r<.26?{k:pickT()}:{k:-1};if(r<.01)return{k:-1,sc:1};if(r<.04)return{k:pickT()};return{k:-1}}
+function make(o){for(let n=0;n<80;n++){const g=[0,1,2,3,4].map(()=>[rs(),rs(),rs()]);let ok;
+ if(o.sc){const rr=[0,1,2,3,4].sort(()=>Math.random()-.5).slice(0,3);rr.forEach(r=>g[r][Math.random()*3|0]=SC);ok=!evalG(g).length}
+ else if(o.k>=0){const li=Math.random()*nl|0;for(let r=0;r<CNT[o.k];r++)g[r][LINES[li][r]]=SYM[o.k];const w=evalG(g);ok=w.length==1&&w[0].c==CNT[o.k]&&!g.flat().includes(SC)}
+ else ok=!evalG(g).length;if(ok)return g}return grid}
+function animTo(g2){return new Promise(res=>{reelEls.forEach((el,r)=>{const st=el.firstChild,seq=[...grid[r],...Array.from({length:14},rs),...g2[r]],d=1+r*.3;st.style.transition="none";st.innerHTML=seq.map(s=>`<div class="sym">${s}</div>`).join("");st.style.transform="translateY(0)";st.offsetHeight;st.style.transition=`transform ${d}s cubic-bezier(.15,.7,.2,1)`;st.style.transform=`translateY(-${17*CELL}px)`;st.classList.add("blur");setTimeout(()=>{st.classList.remove("blur");play("stop")},d*1000-150)});grid=g2;setTimeout(res,2300)})}
+function rain(n){const c=$("rain");for(let i=0;i<n;i++){const s=document.createElement("span");s.textContent="🪙";s.style.cssText=`position:absolute;top:-30px;left:${Math.random()*100}%;font-size:${16+Math.random()*18}px;animation:fall ${1+Math.random()}s ${Math.random()*.6}s ease-in forwards`;c.appendChild(s);setTimeout(()=>s.remove(),2600)}}
+function countUp(el,to,ms){const t0=performance.now();const f=n=>{const p=Math.min(1,(n-t0)/ms);el.textContent=fmt(to*p)+" 文";if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
+async function doSpin(b){$("lines").innerHTML="";$("winBanner").classList.replace("flex","hidden");play("spin");const o=roll(b),g=make(o);await animTo(g);
+ let w=0;if(o.k>=0){w=PAY[o.k]*tot();S.mon+=w;const wl=evalG(g);
+  wl.forEach(x=>{const L=LINES[x.li];for(let r=0;r<x.c;r++)reelEls[r].firstChild.children[17+L[r]].classList.add("winc")});
+  $("lines").innerHTML=wl.map(x=>`<polyline fill="none" stroke="#ffb703" stroke-width="3" stroke-linejoin="round" points="${LINES[x.li].map((y,r)=>`${r*60+28},${y*CELL+29}`).join(" ")}"/>`).join("");
+  const big=o.k>=2;play(big?"big":"win");rain(big?40:16);if(big){$("slotBox").classList.add("shake");setTimeout(()=>$("slotBox").classList.remove("shake"),600)}
+  $("winT").textContent=[t("ПЕРЕМОГА|WIN"),t("ПЕРЕМОГА|WIN"),"BIG WIN","MEGA WIN","💎 JACKPOT 💎"][o.k];$("winBanner").classList.replace("hidden","flex");countUp($("winV"),w,1200);await sleep(2000);$("winBanner").classList.replace("flex","hidden")}
+ save();ui();return{w,sc:o.sc}}
+window.spin=async()=>{if(busy)return;if(S.mon<tot()){inf(t("Недостатньо 文|Not enough 文"));return}busy=1;$("spinBtn").disabled=true;S.mon-=tot();ui();inf("");const r=await doSpin(0);busy=0;$("spinBtn").disabled=false;if(r.sc)bonusIntro()};
+let bonusAct=()=>{};window.bonusAct=()=>bonusAct();
+function ov(title,sub,btn,fn){$("bonusT").textContent=title;$("bonusS").textContent=sub;$("bonusBtn").textContent=btn;bonusAct=fn;$("bonusOv").classList.replace("hidden","flex")}
+function bonusIntro(){play("bonus");busy=1;ov(t("БОНУС: 12 ОБЕРТІВ|BONUS: 12 SPINS"),"⛩️ ×12",t("СТАРТ|START"),async()=>{$("bonusOv").classList.replace("flex","hidden");$("spinBtn").disabled=true;let sum=0;for(let i=1;i<=12;i++){inf(`${t("Фріспіни|Free spins")} ${i}/12 · +${fmt(sum)}`);sum+=(await doSpin(1)).w;await sleep(400)}
+ $("spinBtn").disabled=false;busy=0;inf("");ov(t("ЗАГАЛЬНИЙ ВИГРАШ|TOTAL WIN"),"",t("ОК|OK"),()=>$("bonusOv").classList.replace("flex","hidden"));countUp($("bonusS"),sum,1500);rain(60)})}
+window.buyBonus=()=>{if(busy)return;const c=tot()*100;if(S.mon<c){inf(t("Недостатньо 文|Not enough 文"));return}S.mon-=c;save();ui();bonusIntro()};
 
 // ---------- Бустери ----------
-const cost=(k,l)=>Math.floor(BOOST[k][1]*Math.pow(BOOST[k][2],l));
-window.buyBooster=k=>{const c=cost(k,S.up[k]);if(S.mon>=c){S.mon-=c;S.up[k]++;save();ui();renderBoosters()}else alert("Недостатньо 文!")};
-function renderBoosters(){$("boostersList").innerHTML=Object.keys(BOOST).map(k=>`<div class="bg-inkCard border border-inkBorder p-4 rounded-2xl flex items-center justify-between"><div class="flex items-center space-x-3"><span class="text-3xl">${BOOST[k][3]}</span><div><h4 class="font-bold text-xs text-white">${BOOST[k][0]}</h4><span class="text-[11px] text-gray-400">Рівень: <strong class="text-neonGold">${S.up[k]}</strong></span></div></div><button onclick="buyBooster('${k}')" class="px-4 py-2 bg-gradient-to-r from-neonGold to-crimsonRed font-bold text-xs rounded-xl active:scale-95">${fmt(cost(k,S.up[k]))} 文</button></div>`).join("")}
-setInterval(()=>{if(S.up.autoClicker>0)gain(Math.pow(2,S.up.autoClicker-1));if(S.energy<maxE())S.energy=Math.min(maxE(),S.energy+Math.pow(2,S.up.energyRegen));ui()},1000);
+const bc=(k,l)=>Math.floor(BO[k][2]*BO[k][3]**l);
+window.buyB=k=>{const c=bc(k,S.up[k]);if(S.up[k]>=20||S.mon<c)return;S.mon-=c;S.up[k]++;save();rend()};
+window.buyG=k=>{const c=k=="rage"?5:2;if(S.gems<c)return;S.gems-=c;if(k=="rage")S.rage=Date.now()+3e5;else S.energy=maxE();save();rend()};
+function rB(){const gm=[["rage","😈",t("Ярость Они: ×3 монет 5 хв|Oni Rage: ×3 coins 5 min"),5],["fill","🍶",t("Повна туш|Full ink refill"),2]];
+ $("boostersList").innerHTML=gm.map(x=>`<div class="card flex items-center justify-between !border-cyberBlue/40"><div class="flex items-center gap-3"><span class="text-3xl">${x[1]}</span><div class="text-xs font-bold">${x[2]}${x[0]=="rage"&&Date.now()<S.rage?`<div class="text-emerald-400">${Math.ceil((S.rage-Date.now())/1000)}s</div>`:""}</div></div><button class="btng" onclick="buyG('${x[0]}')">${x[3]} 🔮</button></div>`).join("")+
+ Object.keys(BO).map(k=>{const l=S.up[k],st=STG[Math.min(3,l/5|0)],b=BO[k],mx=l>=20;return `<div class="card space-y-2" style="border-color:${st[1]};box-shadow:0 0 ${6+l}px ${st[1]}55"><div class="flex items-center justify-between"><div class="flex items-center gap-3"><span class="text-3xl">${b[0]}</span><div><h4 class="font-bold text-sm">${t(b[1])}</h4><span class="text-[10px] font-black" style="color:${st[1]}">${t(st[0])} · Lv ${l}</span></div></div><button class="btng" ${mx?"disabled":""} onclick="buyB('${k}')">${mx?"MAX":fmt(bc(k,l))+" 文"}</button></div><div class="flex justify-between text-[11px]"><span class="text-gray-400">${b[4](l)}</span><span class="text-emerald-400">${mx?"":"→ "+b[4](l+1)}</span></div><div class="h-1.5 bg-inkDark rounded-full overflow-hidden"><div class="h-full" style="width:${l%5*20+(l%5?0:0)}%;background:${st[1]}"></div></div><div class="text-[9px] text-gray-500">${t("До еволюції|To evolution")}: ${5-l%5}</div></div>`}).join("")}
+setInterval(()=>{if(S.up.auto>0)gain(2**(S.up.auto-1)*mult());if(S.energy<maxE())S.energy=Math.min(maxE(),S.energy+2**S.up.regen);ui();if(cur=="boosters"&&Date.now()<S.rage)rB()},1000);
 
-// ---------- Квести (100) ----------
-const QUESTS=[...Array(100)].map((_,i)=>({id:i+1,title:`Квест #${i+1}: Шлях Самурая`,reward:(i+1)*200,target:(i+1)*5}));
-window.claimQuestReward=id=>{const q=QUESTS[id-1];if(!S.qd.includes(id)&&S.seals>=q.target){S.qd.push(id);gain(q.reward);save();ui();renderQuests()}};
-function renderQuests(){$("completedQuestsCount").textContent=S.qd.length+" / 100";$("questsList").innerHTML=QUESTS.map(q=>{const c=S.qd.includes(q.id),r=S.seals>=q.target;return `<div class="bg-inkCard border border-inkBorder p-3 rounded-2xl flex items-center justify-between"><div><h4 class="font-bold text-xs">${q.title}</h4><span class="text-[10px] text-neonGold font-mono">+${fmt(q.reward)} 文 • Печатей: ${Math.min(S.seals,q.target)}/${q.target}</span></div><button onclick="claimQuestReward(${q.id})" ${c?"disabled":""} class="px-3 py-1.5 text-xs font-bold rounded-xl ${c?"bg-gray-800 text-gray-500":r?"bg-gradient-to-r from-neonGold to-crimsonRed animate-pulse":"bg-inkDark border border-inkBorder text-gray-400"}">${c?"Забрано":r?"Забрати!":"В процесі"}</button></div>`}).join("")}
+// ---------- Квести ----------
+const QUESTS=[...Array(100)].map((_,i)=>{const n=i+1;return n%5==0?{id:n,ad:1,tg:2*(n/5),rw:{g:3+(n/10|0)}}:{id:n,tg:10+(n*n/2.5|0),rw:{m:n*300}}});
+window.claimQ=id=>{const q=QUESTS[id-1];if(S.qd.includes(id)||(q.ad?S.ads:S.seals)<q.tg)return;S.qd.push(id);if(q.rw.m)gain(q.rw.m);else S.gems+=q.rw.g;save();rend()};
+window.watchQ=()=>ad("Підтримай студію — подивись рекламу|Support the studio — watch an ad",()=>{S.gems+=1},"+1 🔮");
+function rQ(){$("completedQuestsCount").textContent=S.qd.length+" / 100";$("questsList").innerHTML=QUESTS.map(q=>{const c=S.qd.includes(q.id),v=q.ad?S.ads:S.seals,r=v>=q.tg&&!c;return `<div class="card !p-3 flex items-center justify-between ${q.ad?"!border-cyberBlue/40":""}"><div><h4 class="font-bold text-xs">${q.ad?"📺 "+t("Подивись рекламу|Watch ads")+" ×"+q.tg:"🖌 "+t("Запечатай|Seal")+" "+fmt(q.tg)}</h4><span class="text-[10px] text-neonGold font-mono">+${q.rw.m?fmt(q.rw.m)+" 文":q.rw.g+" 🔮"} • ${fmt(Math.min(v,q.tg))}/${fmt(q.tg)}</span></div><div class="flex gap-1">${q.ad&&!c&&!r?`<button class="btn !bg-cyberBlue/30" onclick="watchQ()">📺</button>`:""}<button onclick="claimQ(${q.id})" ${c?"disabled":""} class="btn ${c?"!bg-gray-800 !text-gray-500":r?"!bg-gradient-to-r from-neonGold to-crimsonRed animate-pulse":"!bg-inkDark border border-inkBorder !text-gray-400"}">${c?"✓":r?t("Забрати|Claim"):"…"}</button></div></div>`}).join("")}
 
 // ---------- Друзі та офери ----------
-const okN=()=>Object.values(S.offers).filter(v=>v=="ok").length;
-window.copyRefLink=()=>{const i=$("refLinkInput");i.select();navigator.clipboard.writeText(i.value);alert("Посилання скопійовано!")};
-window.doOffer=async id=>{if(!user){alert("Зареєструйся, щоб завдання зарахувалось");authMode("reg");router.navigate("auth");return}
- const o=OFFERS.find(x=>x.id==id);window.open(o.url,"_blank");try{await setDoc(doc(db,"submissions",user.uid+"_"+id),{uid:user.uid,offer:id,status:"pending"});S.offers[id]="pending";renderOffers()}catch(e){alert("Помилка: "+e.message)}};
-function renderOffers(){$("refLinkInput").value=location.origin+location.pathname+"?ref="+(user?user.uid:"");
- $("partnerOffersList").innerHTML=OFFERS.map(o=>{const s=S.offers[o.id];return `<div class="bg-inkCard border border-inkBorder p-4 rounded-2xl flex items-center justify-between"><div><span class="text-[10px] text-neonGold uppercase font-bold">${o.cat||"PARTNER"}</span><h4 class="font-bold text-sm">${o.title}</h4><span class="text-xs text-crimsonRed">Зараховується до нагород після перевірки</span></div><button ${s?"disabled":""} onclick="doOffer('${o.id}')" class="px-4 py-2 text-xs font-bold rounded-xl ${s=="ok"?"bg-emerald-600":s?"bg-gray-800 text-gray-400":"bg-crimsonRed"}">${s=="ok"?"✓":s?"Перевірка":"START"}</button></div>`}).join("")}
-window.addOffer=async()=>{const t=$("admTitle").value,u=$("admUrl").value;if(!t||!u)return;try{await addDoc(collection(db,"offers"),{title:t,url:u,cat:"PARTNER"});alert("Додано");$("admTitle").value=$("admUrl").value=""}catch(e){alert("Помилка: "+e.message)}};
+window.copyRefLink=()=>{const i=$("refLinkInput");i.select();navigator.clipboard.writeText(i.value);alert(t("Скопійовано!|Copied!"))};
+window.doOffer=async id=>{if(!user){alert(t("Спочатку увійди в акаунт|Please sign in first"));authMode("reg");router.navigate("auth");return}const o=OFFERS.find(x=>x.id==id);window.open(o.url,"_blank");try{await setDoc(doc(db,"submissions",user.uid+"_"+id),{uid:user.uid,offer:id,status:"pending"});S.offers[id]="pending";rO()}catch(e){alert(e.message)}};
+function rO(){$("refLinkInput").value=location.origin+location.pathname+"?ref="+(user?user.uid:"");
+ $("friendsList").innerHTML=FR.length?FR.map(f=>`<div class="card !p-3 flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center text-xl" ${frame(f.a)}>${avHTML(f.a)}</div><div><b class="text-xs">${f.n}</b><div class="text-[10px] text-gray-400">${t("Рівень|Level")} ${lvOf(f.s)+1} ${lvOf(f.s)>=2?"✅":""}</div></div></div><span class="font-mono text-xs text-neonGold">${fmt(f.s)} 文</span></div>`).join(""):`<p class="text-xs text-gray-500">${t("Поки нікого. Поділись посиланням!|No friends yet. Share your link!")}</p>`;
+ $("partnerOffersList").innerHTML=OFFERS.map(o=>{const s=S.offers[o.id];return `<div class="card flex items-center justify-between"><div><span class="text-[10px] text-neonGold font-bold">${o.cat||"PARTNER"}</span><h4 class="font-bold text-sm">${t(o.title)}</h4><span class="text-[10px] text-crimsonRed">${t("Зараховується після перевірки|Counts after verification")}</span></div><button ${s?"disabled":""} onclick="doOffer('${o.id}')" class="btn ${s=="ok"?"!bg-emerald-600":s?"!bg-gray-800 !text-gray-400":""}">${s=="ok"?"✓":s?t("Перевірка|Pending"):"START"}</button></div>`}).join("")}
+window.addOffer=async()=>{const a=$("admTitle").value,u=$("admUrl").value;if(!a||!u)return;try{await addDoc(collection(db,"offers"),{title:a,url:u,cat:"PARTNER"});alert("OK")}catch(e){alert(e.message)}};
+async function loadFriends(){FR=[];try{const q=await getDocs(query(collection(db,"referrals"),where("by","==",user.uid)));for(const d of q.docs){try{const u=await getDoc(doc(db,"users",d.id));FR.push(u.exists()?{n:u.data().nick||"?",a:u.data().av||"fox",s:u.data().total||0}:{n:"…",a:"fox",s:0})}catch(e){}}}catch(e){}S.friends=FR.filter(f=>lvOf(f.s)>=2).length}
 
-// ---------- Нагороди: чекліст замість «фонду» ----------
-const TIERS=[["mini","🎁 Міні-тату (до 1500 грн)",()=>[["Зібрати 50 000 文",S.total,5e4],["Днів у грі",S.days,7],["Завдань партнерів підтверджено",okN(),1]]],
-["big","👑 Велике тату (7000 грн)",()=>[["Зібрати 500 000 文",S.total,5e5],["Днів у грі",S.days,20],["Друзів запрошено (дійшли до 3-го рівня)",S.friends,3],["Завдань партнерів підтверджено",okN(),3]]]];
-const SHOP=[["d10","10% Знижка на татуювання",5e4,"DISCOUNT"],["flash","Ексклюзивний тату-ескіз (Flash)",25e4,"ART"]];
-window.claim=async(id,title,c=0)=>{if(S.claimed.includes(id))return;if(!user){alert("Зареєструйся, щоб заявка дійшла до студії");authMode("reg");router.navigate("auth");return}
- if(S.mon<c){alert("Недостатньо 文");return}
- try{await addDoc(collection(db,"claims"),{uid:user.uid,email:user.email||"",nick:S.nick,tier:id,title,total:S.total,days:S.days,ts:serverTimestamp()});S.mon-=c;S.claimed.push(id);save();ui();renderRewards();alert("Заявку надіслано! Студія перевірить умови і зв'яжеться з тобою.")}catch(e){alert("Помилка: "+e.message)}};
-function renderRewards(){$("rewardsList").innerHTML=`<p class="text-[11px] text-gray-400">Виконай усі пункти — і подай заявку. Місць на велику нагороду цього місяця: <b class="text-neonGold">${CFG.slots}</b></p>`+
- TIERS.map(([id,t,f])=>{const r=f(),all=r.every(x=>x[1]>=x[2]),cl=S.claimed.includes(id);return `<div class="bg-inkCard border border-inkBorder rounded-2xl p-4 space-y-3"><h3 class="font-black text-sm">${t}</h3>`+r.map(x=>{const p=Math.min(100,x[1]/x[2]*100);return `<div><div class="flex justify-between text-[11px]"><span class="text-gray-300">${x[0]}</span><span class="font-mono ${x[1]>=x[2]?"text-emerald-400":"text-neonGold"}">${fmt(Math.min(x[1],x[2]))}/${fmt(x[2])}</span></div><div class="h-1.5 bg-inkDark rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-neonGold to-crimsonRed" style="width:${p}%"></div></div></div>`}).join("")+`<button onclick="claim('${id}','${t}')" ${all&&!cl?"":"disabled"} class="w-full py-2.5 rounded-xl text-sm font-bold ${all&&!cl?"bg-gradient-to-r from-neonGold to-crimsonRed":"bg-gray-800 text-gray-500"}">${cl?"Заявку подано":all?"Забрати нагороду":"Умови не виконано"}</button></div>`}).join("")+
- SHOP.map(([id,t,c,tag])=>`<div class="bg-inkCard border border-inkBorder p-4 rounded-2xl flex items-center justify-between"><div><span class="text-[9px] px-2 py-0.5 bg-neonGold/20 text-neonGold font-bold rounded">${tag}</span><h4 class="font-bold text-sm mt-1">${t}</h4><span class="text-xs text-crimsonRed font-mono font-bold">${fmt(c)} 文</span></div><button onclick="claim('${id}','${t}',${c})" ${S.claimed.includes(id)?"disabled":""} class="px-3 py-2 bg-crimsonRed text-xs font-bold rounded-xl">Unlock</button></div>`).join("")}
+// ---------- Нагороди ----------
+const rows=r=>r.map(x=>`<div><div class="flex justify-between text-[11px]"><span class="text-gray-300">${t(x[0])}</span><span class="font-mono ${x[1]>=x[2]?"text-emerald-400":"text-neonGold"}">${fmt(Math.min(x[1],x[2]))}/${fmt(x[2])}</span></div><div class="h-1.5 bg-inkDark rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-neonGold to-crimsonRed" style="width:${Math.min(100,x[1]/x[2]*100)}%"></div></div></div>`).join("");
+window.claim=async(id,c)=>{if(S.claimed.includes(id))return;if(!user){alert(t("Спочатку увійди в акаунт|Please sign in first"));authMode("reg");router.navigate("auth");return}if(S.mon<c){alert(t("Недостатньо 文|Not enough 文"));return}
+ try{await addDoc(collection(db,"claims"),{uid:user.uid,email:user.email||"",nick:S.nick,tier:id,total:S.total,days:S.days,ts:serverTimestamp()});S.mon-=c;S.claimed.push(id);save();rend();alert(t("Заявку надіслано! Студія перевірить умови.|Request sent! The studio will verify the conditions."))}catch(e){alert(e.message)}};
+window.buyAv=i=>{const a=AVS.find(x=>x.i==i);if(S.mon<a.p||S.own.includes(i))return;S.mon-=a.p;S.own.push(i);S.av=i;save();rend()};
+function rR(){const F=t("Друзів (3-й рівень)|Friends (level 3)"),B=t("Баланс 文|Balance 文");
+ const L=[...[1,2,3,4].map(n=>["d"+n*10,"🏷 "+t("Знижка|Discount")+" "+n*10+"% "+t("на татуювання|on tattoo"),[[F,S.friends,n]],0]),
+ ["mini","🎁 "+t("Міні-тату (до 1500 грн)|Mini tattoo (up to 1500 UAH)"),[[t("Зібрати 文|Earn 文"),S.total,125e3],[t("Днів у грі|Days played"),S.days,14],[t("Завдань партнерів|Partner tasks"),okN(),3],[F,S.friends,1]],0],
+ ["big","👑 "+t("Велике тату (7000 грн)|Big tattoo (7000 UAH)"),[[t("Зібрати 文|Earn 文"),S.total,12e5],[t("Днів у грі|Days played"),S.days,30],[t("Завдань партнерів|Partner tasks"),okN(),7],[F,S.friends,5],[t("Реклам переглянуто|Ads watched"),S.ads,30],[t("Босів переможено|Bosses defeated"),S.kills,10]],0],
+ ["flash","🎴 "+t("Ексклюзивний флеш-ескіз|Exclusive flash sketch"),[[B,S.mon,25e4]],25e4]];
+ $("rewardsList").innerHTML=`<p class="text-[11px] text-gray-400">${t("Місць на велику нагороду цього місяця|Big-reward slots this month")}: <b class="text-neonGold">${CFG.slots}</b></p>`+L.map(([id,ti,r,c])=>{const all=r.every(x=>x[1]>=x[2]),cl=S.claimed.includes(id);return `<div class="card space-y-3"><h3 class="font-black text-sm">${ti}</h3>${rows(r)}<button onclick="claim('${id}',${c})" ${all&&!cl?"":"disabled"} class="btng w-full py-2.5 ${all&&!cl?"":"!from-gray-800 !to-gray-800 !text-gray-500"}">${cl?t("Заявку подано|Request sent"):all?t("Забрати нагороду|Claim reward"):t("Умови не виконано|Conditions not met")}</button></div>`}).join("")+
+ `<h3 class="text-sm font-black uppercase pt-2">${t("💎 Магазин аватарів|💎 Avatar shop")}</h3><div class="grid grid-cols-2 gap-3">`+AVS.filter(a=>a.p).map(a=>{const own=S.own.includes(a.i),[rn,col]=RAR[a.r];return `<div class="card !p-3 text-center space-y-2" style="border-color:${col};box-shadow:0 0 ${a.r*8}px ${col}66"><div class="w-20 h-20 mx-auto rounded-2xl overflow-hidden flex items-center justify-center text-5xl kitsune-glow" ${frame(a.i)}>${avHTML(a.i)}</div><div class="text-[10px] font-black" style="color:${col}">${t(rn)}</div><b class="text-xs">${a.n}</b><button onclick="buyAv('${a.i}')" ${own?"disabled":""} class="btng w-full">${own?"✓":fmt(a.p)+" 文"}</button></div>`}).join("")+`</div>`}
 
-// ---------- Профіль, аватари, лідерборд ----------
-function avGrid(el,sel,cb){el.innerHTML=AV.map(([ic,n])=>`<button type="button" data-i="${ic}" class="p-2.5 rounded-2xl border flex flex-col items-center ${sel()==ic?"bg-crimsonRed/20 border-crimsonRed":"bg-inkDark border-inkBorder"}"><span class="text-2xl">${ic}</span><span class="text-[8px] text-gray-400 truncate w-full text-center">${n}</span></button>`).join("");el.querySelectorAll("button").forEach(b=>b.onclick=()=>{cb(b.dataset.i);avGrid(el,sel,cb)})}
-function renderProfile(){$("profileEmail").textContent=(S.nick||"Гість")+(user&&user.email?" · "+user.email:"");$("profileVipBadge").textContent="Рівень "+(lv()+1)+" • "+S.days+" дн.";$("saveProgBtn").classList.toggle("hidden",!!user);
- avGrid($("avatarGridSelector"),()=>S.av,i=>{S.av=i;save();ui()});
- const L=[{n:(S.nick||"YYOKAI")+" (Ти)",a:S.av,s:S.total,me:1},{n:"CyberSamurai",a:"👺",s:1450000},{n:"KitsuneQueen",a:"🦊",s:890000}].sort((a,b)=>b.s-a.s);
- $("leaderboardList").innerHTML=L.map((l,i)=>`<div class="flex items-center justify-between p-2.5 rounded-xl border ${l.me?"bg-crimsonRed/10 border-crimsonRed/40":"bg-inkDark border-inkBorder"}"><div class="flex items-center space-x-2"><span class="font-mono text-neonGold font-bold">#${i+1}</span><span class="text-xl">${l.a}</span><span class="font-bold text-xs">${l.n}</span></div><span class="font-mono text-xs text-crimsonRed font-bold">${fmt(l.s)} 文</span></div>`).join("")}
+// ---------- Профіль ----------
+function avGrid(el,items,sel,cb){el.innerHTML=items.map(a=>`<button type="button" data-i="${a.i}" class="aspect-square rounded-2xl flex items-center justify-center text-3xl overflow-hidden ${sel()==a.i?"ring-2 ring-white":""}" ${frame(a.i)}>${avHTML(a.i)}</button>`).join("");el.querySelectorAll("button").forEach(b=>b.onclick=()=>{cb(b.dataset.i);avGrid(el,items,sel,cb)})}
+function rP(){$("profileEmail").textContent=(S.nick||t("Гість|Guest"))+(user&&user.email?" · "+user.email:"");$("profileVipBadge").textContent=t("Рівень|Level")+" "+(lv()+1)+" • "+S.days+" "+t("дн.|d.");$("saveProgBtn").classList.toggle("hidden",!!user);
+ $("profileAvatarBox").innerHTML=avHTML(S.av);$("profileAvatarBox").setAttribute("style",frame(S.av).slice(7,-1));
+ avGrid($("avatarGridSelector"),AVS.filter(a=>S.own.includes(a.i)),()=>S.av,i=>{S.av=i;save();ui();$("profileAvatarBox").innerHTML=avHTML(i)});
+ const Lb=[{n:(S.nick||"YYOKAI")+" ("+t("Ти|You")+")",a:S.av,s:S.total,me:1},{n:"CyberSamurai",a:"oni",s:1450000},{n:"KitsuneQueen",a:"fox",s:890000}].sort((a,b)=>b.s-a.s);
+ $("leaderboardList").innerHTML=Lb.map((l,i)=>`<div class="flex items-center justify-between p-2.5 rounded-xl border ${l.me?"bg-crimsonRed/10 border-crimsonRed/40":"bg-inkDark border-inkBorder"}"><div class="flex items-center gap-2"><span class="font-mono text-neonGold font-bold">#${i+1}</span><span class="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center">${avHTML(l.a)}</span><b>${l.n}</b></div><span class="font-mono text-crimsonRed font-bold">${fmt(l.s)} 文</span></div>`).join("")}
 
-// ---------- Реєстрація (нова) ----------
+// ---------- Авторизація: Google / Apple / email, пам'ять у Firebase ----------
 const NICKS=["Kage","Tsuki","Yuki","Kuro","Akai","Raiden","Hoshi","Sora"];
 window.rndNick=()=>{$("authNick").value=NICKS[Math.random()*8|0]+(10+Math.random()*89|0)};
 window.authStep=n=>{$("as1").classList.toggle("hidden",n!=1);$("as2").classList.toggle("hidden",n!=2);$("dot1").className="h-1.5 w-10 rounded-full "+(n==1?"bg-crimsonRed":"bg-crimsonRed/50");$("dot2").className="h-1.5 w-10 rounded-full "+(n==2?"bg-crimsonRed":"bg-inkBorder")};
-window.authMode=m=>{mode=m;const reg=m=="reg";$("dots").classList.toggle("hidden",!reg);$("backBtn").classList.toggle("hidden",!reg);
- $("as2Title").textContent=reg?"Збережи прогрес":"З поверненням";$("authSubmitBtn").textContent=reg?"Створити акаунт":"Увійти";$("authToggleText").textContent=reg?"Вже є акаунт? Увійти":"Ще немає акаунта? Реєстрація";
- if(reg)authStep(1);else{$("as1").classList.add("hidden");$("as2").classList.remove("hidden")}};
-window.handleAuthSubmit=async e=>{e.preventDefault();const em=$("authEmail").value,pw=$("authPass").value;
- try{if(mode=="reg"){const c=await createUserWithEmailAndPassword(auth,em,pw);S.nick=$("authNick").value||NICKS[0]+"77";S.av=pickAv;if(refId&&refId!=c.user.uid){S.gems+=5;await setDoc(doc(db,"referrals",c.user.uid),{by:refId,ts:serverTimestamp()})}save()}
- else await signInWithEmailAndPassword(auth,em,pw)}catch(err){alert("Помилка: "+err.message)}};
-window.googleLogin=async()=>{try{const c=await signInWithPopup(auth,new GoogleAuthProvider());if(!S.nick){S.nick=$("authNick").value||c.user.displayName||"Yokai";S.av=pickAv;if(refId&&refId!=c.user.uid){S.gems+=5;try{await setDoc(doc(db,"referrals",c.user.uid),{by:refId,ts:serverTimestamp()})}catch(e){}}save()}}catch(err){alert("Помилка: "+err.message)}};
-window.handleLogout=async()=>{try{await signOut(auth)}catch(e){}user=null;router.navigate("landing")};
-
-if(auth)onAuthStateChanged(auth,async u=>{user=u;if(!u){$("adminNavBtn").classList.add("hidden");return}
- $("adminNavBtn").classList.toggle("hidden",!ADMIN_UIDS.includes(u.uid));
- try{const r=await getDoc(doc(db,"users",u.uid));if(r.exists()){const R=r.data();if((R.total||0)>=S.total){const o=S.offers;S={...S,...R,up:{...S.up,...R.up},offers:o}}}}catch(e){}
- try{S.friends=(await getDocs(query(collection(db,"referrals"),where("by","==",u.uid)))).size}catch(e){}
- try{(await getDocs(query(collection(db,"submissions"),where("uid","==",u.uid)))).forEach(d=>{S.offers[d.data().offer]=d.data().status})}catch(e){}
- try{const o=[];(await getDocs(collection(db,"offers"))).forEach(d=>o.push({id:d.id,...d.data()}));if(o.length)OFFERS=o}catch(e){}
- save();ui();router.navigate("game")});
+window.authMode=(m,keep)=>{mode=m;const reg=m=="reg";$("dots").classList.toggle("hidden",!reg);$("backBtn").classList.toggle("hidden",!reg);
+ $("as2Title").textContent=reg?t("Збережи прогрес|Save your progress"):t("З поверненням|Welcome back");$("authSubmitBtn").textContent=reg?t("Створити акаунт|Create account"):t("Увійти|Sign in");$("authToggleText").textContent=reg?t("Вже є акаунт? Увійти|Have an account? Sign in"):t("Немає акаунта? Реєстрація|No account? Register");
+ if(keep)return;if(reg)authStep(1);else{$("as1").classList.add("hidden");$("as2").classList.remove("hidden")}};
+window.social=async k=>{try{await signInWithPopup(auth,k=="g"?new GoogleAuthProvider():new OAuthProvider("apple.com"))}catch(e){alert(e.message)}};
+window.handleAuthSubmit=async e=>{e.preventDefault();const em=$("authEmail").value,pw=$("authPass").value;try{mode=="reg"?await createUserWithEmailAndPassword(auth,em,pw):await signInWithEmailAndPassword(auth,em,pw)}catch(x){alert(x.message)}};
+window.handleLogout=async()=>{try{await signOut(auth)}catch(e){}user=null;FR=[];router.navigate("landing")};
+if(auth){setPersistence(auth,browserLocalPersistence).catch(()=>{});
+ onAuthStateChanged(auth,async u=>{user=u;if(!u){$("adminNavBtn").classList.add("hidden");return}
+  $("adminNavBtn").classList.toggle("hidden",!ADMIN_UIDS.includes(u.uid));let fresh=0;
+  try{const r=await getDoc(doc(db,"users",u.uid));if(r.exists()){const D=r.data();if((D.total||0)>=S.total){const{offers,...x}=D;S={...S,...x,up:{...S.up,...D.up}}}}else fresh=1}catch(e){}
+  if(fresh){S.nick=S.nick||$("authNick").value||u.displayName||"Yokai";S.av=pickAv;if(refId&&refId!=u.uid){S.gems+=5;try{await setDoc(doc(db,"referrals",u.uid),{by:refId,ts:serverTimestamp()})}catch(e){}}}
+  await loadFriends();try{(await getDocs(query(collection(db,"submissions"),where("uid","==",u.uid)))).forEach(d=>S.offers[d.data().offer]=d.data().status)}catch(e){}
+  try{const o=[];(await getDocs(collection(db,"offers"))).forEach(d=>o.push({id:d.id,...d.data()}));if(o.length)OFFERS=o}catch(e){}
+  save();await push();router.navigate("game")})}
 
 // ---------- Старт ----------
-translateUI();avGrid($("authAvatars"),()=>pickAv,i=>{pickAv=i});slotLbl();newSeal();ui();
+avGrid($("authAvatars"),AVS.filter(a=>!a.p),()=>pickAv,i=>{pickAv=i});translateUI();newSeal();
 if(refId){$("refBanner").classList.remove("hidden");authMode("reg");router.navigate("auth")}else router.navigate("landing");
 </script></body></html>
