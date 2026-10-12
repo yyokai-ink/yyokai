@@ -1,844 +1,328 @@
 <!DOCTYPE html>
-<html lang="uk" class="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>INK — Japanese Gaming & Rewards</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        inkDark: '#0a090d',
-                        inkCard: '#131118',
-                        inkBorder: '#272235',
-                        crimsonRed: '#ff2a5f',
-                        neonGold: '#ffb703',
-                        deepPurple: '#3b0764',
-                        cyberBlue: '#00f0ff'
-                    },
-                    fontFamily: {
-                        sans: ['system-ui', '-apple-system', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 15px rgba(255, 42, 95, 0.4); transform: scale(1); }
-            50% { box-shadow: 0 0 35px rgba(255, 183, 3, 0.7); transform: scale(1.02); }
-        }
-        .kitsune-glow { animation: pulse-glow 3s infinite; }
-        .click-animate { animation: pulse-glow 0.2s ease-in-out; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
-</head>
-<body id="appBodyTheme" class="bg-inkDark text-white font-sans antialiased min-h-screen flex flex-col selection:bg-crimsonRed selection:text-white select-none transition-colors duration-500">
-
-    <!-- TOP NAVIGATION BAR -->
-    <header class="sticky top-0 z-50 bg-inkDark/85 backdrop-blur-md border-b border-inkBorder px-4 py-3 flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-            <div id="headerLogoIcon" class="w-9 h-9 rounded-xl bg-gradient-to-br from-crimsonRed to-neonGold flex items-center justify-center font-black text-lg tracking-wider shadow-lg shadow-crimsonRed/30 cursor-pointer" onclick="router.navigate('game')" title="Швидко на клікер">
-                ⛩️
-            </div>
-            <div>
-                <span class="font-black text-lg tracking-widest bg-gradient-to-r from-white via-gray-200 to-crimsonRed bg-clip-text text-transparent">INK</span>
-                <span id="headerLocationTitle" class="text-[10px] block text-neonGold tracking-widest font-semibold uppercase">Shrine Level 1</span>
-            </div>
-        </div>
-
-        <!-- USER STATS & CONTROLS -->
-        <div class="flex items-center space-x-3">
-            <!-- Кнопка швидкого повернення на клікер -->
-            <button onclick="router.navigate('game')" class="px-2.5 py-1 rounded-lg bg-crimsonRed/20 border border-crimsonRed/40 text-xs font-bold text-crimsonRed hover:bg-crimsonRed hover:text-white transition">
-                <i class="fa-solid fa-gamepad"></i>
-            </button>
-
-            <div id="userBalanceBadge" class="hidden items-center bg-inkCard border border-inkBorder px-3 py-1 rounded-full text-xs font-bold space-x-1.5 shadow-inner">
-                <span class="text-neonGold"><i class="fa-solid fa-droplet"></i></span>
-                <span id="headerInkCount" class="text-white font-mono">0</span>
-                <span class="text-[10px] text-gray-400">INK</span>
-            </div>
-
-            <!-- LANGUAGE SWITCHER -->
-            <button onclick="toggleLanguage()" id="langSwitcherBtn" class="px-2.5 py-1 rounded-lg bg-inkCard border border-inkBorder text-xs font-bold text-gray-300 hover:text-white hover:border-crimsonRed transition">
-                🇺🇦 UA
-            </button>
-        </div>
-    </header>
-
-    <!-- MAIN APP CONTAINER -->
-    <main class="flex-1 flex flex-col pb-24">
-
-        <!-- VIEW: LANDING -->
-        <section id="view-landing" class="view-section flex-1 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
-            <div class="absolute inset-0 z-0 opacity-20 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-crimsonRed via-transparent to-transparent"></div>
-            <div class="relative z-10 max-w-md mx-auto space-y-6">
-                <div class="inline-block p-4 rounded-3xl bg-gradient-to-tr from-crimsonRed/20 to-neonGold/20 border border-inkBorder kitsune-glow mb-2">
-                    <span class="text-5xl" id="landingAvatarIcon">🦊</span>
-                </div>
-                <h1 class="text-4xl sm:text-5xl font-black tracking-tight uppercase">
-                    Play. Earn. <span class="bg-gradient-to-r from-crimsonRed to-neonGold bg-clip-text text-transparent">Unlock.</span>
-                </h1>
-                <p class="text-gray-400 text-sm sm:text-base" data-i18n="landing.subtitle">
-                    Японська кіберпанк платформа. 100 унікальних локацій, еволюція механік (x2), 100 квестів та реферальна система.
-                </p>
-                <div class="pt-4 flex flex-col sm:flex-row gap-3 w-full">
-                    <button onclick="router.navigate('game')" class="flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-crimsonRed to-rose-600 font-bold text-white shadow-lg shadow-crimsonRed/40 hover:opacity-95 transition transform active:scale-95">
-                        <i class="fa-solid fa-gamepad mr-2"></i> <span data-i18n="landing.playBtn">Грати зараз</span>
-                    </button>
-                    <button onclick="router.navigate('auth')" class="flex-1 py-3.5 px-6 rounded-xl bg-inkCard border border-inkBorder font-bold text-gray-200 hover:bg-inkBorder/50 transition">
-                        <i class="fa-solid fa-right-to-bracket mr-2"></i> <span data-i18n="landing.loginBtn">Увійти / Реєстрація</span>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- VIEW: AUTH -->
-        <section id="view-auth" class="view-section hidden flex-1 flex flex-col items-center justify-center p-4">
-            <div class="w-full max-w-sm bg-inkCard border border-inkBorder rounded-2xl p-6 shadow-2xl relative">
-                <div class="text-center mb-6">
-                    <h2 id="authTitle" class="text-2xl font-black uppercase tracking-wider" data-i18n="auth.loginTitle">Вхід у систему</h2>
-                    <p class="text-xs text-gray-400 mt-1" data-i18n="auth.loginSub">Синхронізуй свої досягнення на всіх пристроях</p>
-                </div>
-                <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-400 mb-1" data-i18n="auth.emailLabel">Email</label>
-                        <input type="email" id="authEmail" required class="w-full bg-inkDark border border-inkBorder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-crimsonRed transition" placeholder="you@example.com">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-400 mb-1" data-i18n="auth.passLabel">Пароль</label>
-                        <input type="password" id="authPass" required class="w-full bg-inkDark border border-inkBorder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-crimsonRed transition" placeholder="••••••••">
-                    </div>
-                    <button type="submit" id="authSubmitBtn" class="w-full py-3.5 rounded-xl bg-crimsonRed font-bold text-white shadow-lg shadow-crimsonRed/30 hover:bg-rose-600 transition">
-                        <span data-i18n="auth.loginBtnText">Увійти</span>
-                    </button>
-                </form>
-                <div class="mt-4 text-center">
-                    <button onclick="toggleAuthMode()" class="text-xs text-neonGold hover:underline" id="authToggleText" data-i18n="auth.switchToReg">
-                        Ще немає акаунта? Зареєструватися
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- VIEW: GAME (CLICKER & LOCATION) -->
-        <section id="view-game" class="view-section hidden flex-1 flex flex-col items-center justify-between p-4 max-w-md mx-auto w-full">
-            <!-- Game Top HUD -->
-            <div class="w-full flex justify-between items-center bg-inkCard/90 border border-inkBorder p-3 rounded-2xl backdrop-blur">
-                <div>
-                    <span id="locationNameDisplay" class="text-[10px] text-neonGold block uppercase tracking-wider font-bold">Локація: Святилище</span>
-                    <span id="gameLevelName" class="text-sm font-bold text-white">Рівень 1</span>
-                </div>
-                <div class="text-center">
-                    <span class="text-[10px] text-gray-400 block uppercase tracking-wider">Прогрес локації</span>
-                    <span id="gameLevelProgressText" class="text-xs font-black text-crimsonRed">0 / 1,000</span>
-                </div>
-                <div class="text-right">
-                    <span class="text-[10px] text-gray-400 block uppercase tracking-wider">Клік x2</span>
-                    <span id="clickPowerDisplay" class="text-xs font-bold text-emerald-400">+1 💧</span>
-                </div>
-            </div>
-
-            <!-- Central Multi-Touch Clicker Object & Dynamic Background Zone -->
-            <div id="clickerZoneBox" class="my-auto relative flex flex-col items-center justify-center w-full p-6 rounded-3xl transition-all duration-700">
-                <div id="clickerTarget" class="w-60 h-60 sm:w-68 sm:h-68 rounded-full bg-gradient-to-tr from-deepPurple via-inkCard to-crimsonRed/40 border-2 border-inkBorder flex items-center justify-center cursor-pointer select-none relative shadow-2xl kitsune-glow touch-none">
-                    <span id="activeAvatarDisplay" class="text-7xl sm:text-8xl filter drop-shadow-[0_0_20px_rgba(255,42,95,0.6)] pointer-events-none">🦊</span>
-                    <div id="floatingNumbersContainer" class="absolute inset-0 pointer-events-none overflow-visible"></div>
-                </div>
-                <div class="mt-6 text-center">
-                    <div class="text-3xl sm:text-4xl font-black font-mono tracking-wider text-white" id="gameInkDisplay">0</div>
-                    <span class="text-xs text-neonGold uppercase tracking-widest font-semibold">INK BALANCE</span>
-                </div>
-            </div>
-
-            <!-- Energy Bar & Location Progress -->
-            <div class="w-full space-y-3 bg-inkCard border border-inkBorder p-3 rounded-2xl">
-                <div class="flex justify-between text-xs font-medium">
-                    <span class="text-gray-400" data-i18n="game.energy">Енергія кліків</span>
-                    <span id="energyText" class="text-neonGold font-mono">1000 / 1000</span>
-                </div>
-                <div class="w-full bg-inkDark h-2 rounded-full overflow-hidden border border-inkBorder">
-                    <div id="energyBar" class="bg-gradient-to-r from-neonGold to-crimsonRed h-full w-full transition-all duration-300"></div>
-                </div>
-                <div class="pt-2 border-t border-inkBorder/60 flex justify-between items-center text-xs">
-                    <div>
-                        <span class="text-gray-400 block">До наступної локації/рівня:</span>
-                        <span id="nextLevelNeeded" class="font-bold text-white">1,000 очок</span>
-                    </div>
-                    <span id="levelPercentage" class="text-neonGold font-mono font-bold">0%</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- VIEW: BOOSTERS / UPGRADES (x2 Механіки) -->
-        <section id="view-boosters" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
-            <h2 class="text-xl font-black uppercase tracking-wider text-neonGold"><i class="fa-solid fa-bolt mr-2"></i>Еволюція & Бустери (x2)</h2>
-            <p class="text-xs text-gray-400">Прокачуй механіки. Кожне покращення збільшує ефективність подвійно (x2), полегшуючи проходження високих рівнів.</p>
-            <div id="boostersList" class="space-y-3 pb-6"></div>
-        </section>
-
-        <!-- VIEW: QUESTS (100 Квестів) -->
-        <section id="view-quests" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
-            <div class="flex justify-between items-center">
-                <h2 class="text-xl font-black uppercase tracking-wider" data-i18n="nav.quests">Квести (100 Етапів)</h2>
-                <span id="completedQuestsCount" class="text-xs text-neonGold font-mono font-bold">0 / 100</span>
-            </div>
-            <p class="text-xs text-gray-400">Попутні завдання заробляють тобі величезну кількість балів INK у міру твого прогресу!</p>
-            <div id="questsList" class="space-y-3 pb-6"></div>
-        </section>
-
-        <!-- VIEW: REFERRALS & PARTNERS (Пришли друга) -->
-        <section id="view-offers" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
-            <div class="flex justify-between items-center">
-                <h2 class="text-xl font-black uppercase tracking-wider text-neonGold"><i class="fa-solid fa-user-plus mr-2"></i>Пришли друга</h2>
-                <button onclick="openAdminIfAllowed()" id="adminNavBtn" class="hidden px-3 py-1 bg-crimsonRed text-xs font-bold rounded-lg shadow">Admin</button>
-            </div>
-            
-            <!-- Referral Card -->
-            <div class="bg-gradient-to-br from-inkCard to-deepPurple/40 border border-inkBorder rounded-2xl p-5 space-y-3 shadow-xl">
-                <h3 class="font-black text-sm text-white uppercase">Запрошуй друзів — отримуй +10,000 INK</h3>
-                <p class="text-xs text-gray-300">Поділися своїм унікальним посиланням. Коли друг перейде і почне грати, ви обоє отримаєте бонус на баланс!</p>
-                <div class="flex items-center space-x-2 pt-2">
-                    <input type="text" id="refLinkInput" readonly value="https://t.me/YyokaiInkBot?start=ref_user_777" class="w-full bg-inkDark border border-inkBorder rounded-xl px-3 py-2.5 text-xs font-mono text-neonGold select-all">
-                    <button onclick="copyRefLink()" class="px-4 py-2.5 bg-crimsonRed text-white font-bold text-xs rounded-xl shadow hover:bg-rose-600 transition">Копіювати</button>
-                </div>
-            </div>
-
-            <h3 class="text-sm font-black uppercase tracking-wider pt-2" data-i18n="nav.offers">Партнери та Активності</h3>
-            <div id="partnerOffersList" class="space-y-3 pb-6"></div>
-        </section>
-
-        <!-- VIEW: REWARDS & SHOP -->
-        <section id="view-rewards" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
-            <h2 class="text-xl font-black uppercase tracking-wider" data-i18n="nav.rewards">Нагороди студії</h2>
-            <div id="rewardsList" class="space-y-3 pb-6"></div>
-        </section>
-
-        <!-- VIEW: PROFILE & AVATAR SHOP -->
-        <section id="view-profile" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
-            <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 flex items-center space-x-4">
-                <div id="profileAvatarBox" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-crimsonRed to-neonGold flex items-center justify-center text-3xl font-black shadow-lg kitsune-glow">
-                    🦊
-                </div>
-                <div>
-                    <h3 id="profileEmail" class="font-bold text-sm text-white">user@ink.local</h3>
-                    <span class="inline-block mt-1 px-2 py-0.5 bg-crimsonRed/20 border border-crimsonRed/40 text-crimsonRed text-[10px] font-bold rounded-full uppercase" id="profileVipBadge">Рівень 1 • INK Member</span>
-                </div>
-            </div>
-
-            <!-- AVATAR SELECTOR (Миттєве оновлення всюди) -->
-            <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 space-y-3">
-                <h4 class="text-xs font-bold text-neonGold uppercase tracking-wider"><i class="fa-solid fa-masks-theater mr-1"></i> Обери аватар персонажа</h4>
-                <p class="text-[11px] text-gray-400">Твій вибір автоматично синхронізується в профілі, на клікері та дошці лідерів.</p>
-                <div id="avatarGridSelector" class="grid grid-cols-4 gap-2.5 pt-2"></div>
-            </div>
-
-            <!-- LEADERBOARD PREVIEW -->
-            <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 space-y-3">
-                <h4 class="text-xs font-bold text-neonGold uppercase tracking-wider"><i class="fa-solid fa-trophy mr-1"></i> Топ гравців (Leaderboard)</h4>
-                <div id="leaderboardList" class="space-y-2 text-xs"></div>
-            </div>
-
-            <button onclick="handleLogout()" class="w-full py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 font-bold text-sm hover:bg-red-500/20 transition">
-                <i class="fa-solid fa-right-from-bracket mr-2"></i> <span data-i18n="profile.logout">Вийти з акаунта</span>
-            </button>
-        </section>
-
-        <!-- VIEW: ADMIN PANEL -->
-        <section id="view-admin" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
-            <div class="flex items-center justify-between">
-                <h2 class="text-xl font-black uppercase tracking-wider text-crimsonRed">Admin Panel</h2>
-                <button onclick="router.navigate('offers')" class="text-xs text-gray-400 hover:text-white"><i class="fa-solid fa-arrow-left mr-1"></i> Назад</button>
-            </div>
-            <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 space-y-3">
-                <h3 class="text-sm font-bold text-neonGold uppercase">Керування платформою</h3>
-                <p class="text-xs text-gray-400">Тут налаштовуються пороги рівнів, реферальні бонуси та модерація користувачів.</p>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- BOTTOM MOBILE NAVIGATION BAR -->
-    <nav id="bottomNav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-inkDark/95 border-t border-inkBorder backdrop-blur-md px-1.5 py-2 flex justify-around items-center">
-        <button onclick="router.navigate('game')" class="nav-btn flex flex-col items-center text-gray-400 hover:text-crimsonRed transition" data-target="game">
-            <i class="fa-solid fa-gamepad text-base"></i>
-            <span class="text-[9px] font-semibold mt-0.5" data-i18n="nav.play">Гра</span>
-        </button>
-        <button onclick="router.navigate('boosters')" class="nav-btn flex flex-col items-center text-gray-400 hover:text-crimsonRed transition" data-target="boosters">
-            <i class="fa-solid fa-bolt text-base"></i>
-            <span class="text-[9px] font-semibold mt-0.5">Бустери</span>
-        </button>
-        <button onclick="router.navigate('quests')" class="nav-btn flex flex-col items-center text-gray-400 hover:text-crimsonRed transition" data-target="quests">
-            <i class="fa-solid fa-scroll text-base"></i>
-            <span class="text-[9px] font-semibold mt-0.5" data-i18n="nav.quests">Квести</span>
-        </button>
-        <button onclick="router.navigate('offers')" class="nav-btn flex flex-col items-center text-gray-400 hover:text-crimsonRed transition" data-target="offers">
-            <i class="fa-solid fa-user-plus text-base"></i>
-            <span class="text-[9px] font-semibold mt-0.5">Реферали</span>
-        </button>
-        <button onclick="router.navigate('rewards')" class="nav-btn flex flex-col items-center text-gray-400 hover:text-crimsonRed transition" data-target="rewards">
-            <i class="fa-solid fa-gift text-base"></i>
-            <span class="text-[9px] font-semibold mt-0.5" data-i18n="nav.rewards">Нагороди</span>
-        </button>
-        <button onclick="router.navigate('profile')" class="nav-btn flex flex-col items-center text-gray-400 hover:text-crimsonRed transition" data-target="profile">
-            <i class="fa-solid fa-user text-base"></i>
-            <span class="text-[9px] font-semibold mt-0.5" data-i18n="nav.profile">Профіль</span>
-        </button>
-    </nav>
-
-    <!-- CLIENT CORE LOGIC & FIREBASE SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyMockKeyForINkPlatform2026...",
-            authDomain: "ink-japanese-rewards.firebaseapp.com",
-            projectId: "ink-japanese-rewards",
-            storageBucket: "ink-japanese-rewards.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456:web:abcde"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const ADMIN_UIDS = ["admin_uid_placeholder_123", "owner_uid_777"];
-
-        const AVATAR_SLOTS = [
-            { id: 1, name: "Kitsune Mask", icon: "🦊" },
-            { id: 2, name: "Hannya Spirit", icon: "👹" },
-            { id: 3, name: "Samurai Oni", icon: "👺" },
-            { id: 4, name: "Cyber Shark", icon: "🦈" },
-            { id: 5, name: "Ramen Stingray", icon: "🍥" },
-            { id: 6, name: "Dragon Soul", icon: "🐉" },
-            { id: 7, name: "Golden Cat", icon: "🐱" },
-            { id: 8, name: "Neon Skull", icon: "💀" },
-            { id: 9, name: "Cherry Blossom", icon: "🌸" },
-            { id: 10, name: "Katana Blade", icon: "⚔️" },
-            { id: 11, name: "Temple Gate", icon: "⛩️" },
-            { id: 12, name: "Dark Demon", icon: "🥷" }
-        ];
-
-        let currentLang = localStorage.getItem('ink_lang') || 'ua';
-        let currentUser = null;
-
-        // --- Game State & Boosters ---
-        let gameState = {
-            ink: 250,
-            totalClicks: 0,
-            energy: 1000,
-            maxEnergy: 1000,
-            selectedAvatar: "🦊",
-            upgrades: {
-                clickPower: 1,      // Сила кліку
-                autoClicker: 0,     // Авто-фарм
-                energyCap: 0,       // Максимум енергії
-                energyRegen: 0      // Регенерація
-            }
-        };
-
-        // Генерація 100 унікальних квестів автоматично
-        let questsState = [];
-        for (let i = 1; i <= 100; i++) {
-            questsState.push({
-                id: i,
-                title: `Квест #${i}: Шлях Самурая (Етап ${i})`,
-                reward: i * 500,
-                targetClicks: i * 50,
-                claimed: false
-            });
-        }
-
-        // --- Таблиця вартості ускорялок (збільшення на x2 з кожним рівнем) ---
-        const boosterConfigs = {
-            clickPower: { name: "Гострий Катана-Клік (x2 Сила)", baseCost: 150, costMult: 2.0, icon: "⚔️" },
-            autoClicker: { name: "Кібер-Дух (x2 Авто-клік)", baseCost: 400, costMult: 2.2, icon: "⛩️" },
-            energyCap: { name: "Чаша Енергії (x2 Ліміт)", baseCost: 250, costMult: 1.9, icon: "⚡" },
-            energyRegen: { name: "Подих Дракона (x2 Швидкість)", baseCost: 500, costMult: 2.3, icon: "🐉" }
-        };
-
-        // --- Локації та глобальні рівні (масштабні пороги 1k, 10k, 100k, 1M...) ---
-        const locationThemes = [
-            { threshold: 0, name: "Рівень 1: Святилище Кіцуне", bgClass: "bg-inkDark" },
-            { threshold: 10000, name: "Рівень 2: Неоновий Кібер-Міст", bgClass: "bg-slate-900" },
-            { threshold: 100000, name: "Рівень 3: Темний Храм Дракона", bgClass: "bg-purple-950/40" },
-            { threshold: 1000000, name: "Рівень 4: Цитадель Самурая", bgClass: "bg-red-950/40" },
-            { threshold: 10000000, name: "Рівень 5: Легендарний Кіберпанк", bgClass: "bg-zinc-950" }
-        ];
-
-        function getLevelData(totalPoints) {
-            let currentLoc = locationThemes[0];
-            let nextThreshold = locationThemes[1].threshold;
-            
-            for (let i = locationThemes.length - 1; i >= 0; i--) {
-                if (totalPoints >= locationThemes[i].threshold) {
-                    currentLoc = locationThemes[i];
-                    nextThreshold = locationThemes[i + 1] ? locationThemes[i + 1].threshold : locationThemes[i].threshold * 10;
-                    break;
-                }
-            }
-
-            let progressInTier = totalPoints - currentLoc.threshold;
-            let neededInTier = nextThreshold - currentLoc.threshold;
-            let percent = Math.min(100, Math.floor((progressInTier / neededInTier) * 100));
-
-            return {
-                name: currentLoc.name,
-                bgClass: currentLoc.bgClass,
-                progress: progressInTier,
-                target: neededInTier,
-                percent: percent
-            };
-        }
-
-        const i18n = {
-            ua: {
-                "landing.subtitle": "Японська кіберпанк платформа. 100 унікальних локацій, еволюція механік (x2), 100 квестів та реферальна система.",
-                "landing.playBtn": "Грати зараз",
-                "landing.loginBtn": "Увійти / Реєстрація",
-                "auth.loginTitle": "Вхід у систему",
-                "auth.loginSub": "Синхронізуй свої досягнення на всіх пристроях",
-                "auth.emailLabel": "Email",
-                "auth.passLabel": "Пароль",
-                "auth.loginBtnText": "Увійти",
-                "auth.switchToReg": "Ще немає акаунта? Зареєструватися",
-                "game.energy": "Енергія кліків",
-                "nav.play": "Гра",
-                "nav.quests": "Квести",
-                "nav.offers": "Реферали",
-                "nav.rewards": "Нагороди",
-                "nav.profile": "Профіль",
-                "profile.logout": "Вийти з акаунта"
-            },
-            en: {
-                "landing.subtitle": "Japanese cyberpunk platform. 100 locations, mechanics evolution (x2), 100 quests & referral system.",
-                "landing.playBtn": "Play Now",
-                "landing.loginBtn": "Login / Register",
-                "auth.loginTitle": "Sign In",
-                "auth.loginSub": "Sync your progress across all devices",
-                "auth.emailLabel": "Email",
-                "auth.passLabel": "Password",
-                "auth.loginBtnText": "Sign In",
-                "auth.switchToReg": "No account yet? Register",
-                "game.energy": "Click Energy",
-                "nav.play": "Play",
-                "nav.quests": "Quests",
-                "nav.offers": "Referrals",
-                "nav.rewards": "Rewards",
-                "nav.profile": "Profile",
-                "profile.logout": "Logout"
-            }
-        };
-
-        window.translateUI = function() {
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (i18n[currentLang][key]) {
-                    el.textContent = i18n[currentLang][key];
-                }
-            });
-            document.getElementById('langSwitcherBtn').innerHTML = currentLang === 'ua' ? '🇺🇦 UA' : '🇬🇧 EN';
-        };
-
-        window.toggleLanguage = function() {
-            currentLang = currentLang === 'ua' ? 'en' : 'ua';
-            localStorage.setItem('ink_lang', currentLang);
-            translateUI();
-        };
-
-        window.router = {
-            navigate: function(viewId) {
-                document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-                const target = document.getElementById(`view-${viewId}`);
-                if (target) target.classList.remove('hidden');
-
-                document.querySelectorAll('.nav-btn').forEach(btn => {
-                    if (btn.getAttribute('data-target') === viewId) {
-                        btn.classList.add('text-crimsonRed');
-                        btn.classList.remove('text-gray-400');
-                    } else {
-                        btn.classList.remove('text-crimsonRed');
-                        btn.classList.add('text-gray-400');
-                    }
-                });
-
-                if (viewId === 'game' || viewId === 'boosters' || viewId === 'quests' || viewId === 'offers' || viewId === 'rewards' || viewId === 'profile') {
-                    document.getElementById('bottomNav').classList.remove('hidden');
-                    document.getElementById('userBalanceBadge').classList.remove('hidden');
-                    document.getElementById('userBalanceBadge').classList.add('flex');
-                } else {
-                    document.getElementById('bottomNav').classList.add('hidden');
-                    if (viewId === 'landing') {
-                        document.getElementById('userBalanceBadge').classList.add('hidden');
-                        document.getElementById('userBalanceBadge').classList.remove('flex');
-                    }
-                }
-                if (viewId === 'boosters') renderBoosters();
-                if (viewId === 'quests') renderQuests();
-                if (viewId === 'profile') renderLeaderboard();
-            }
-        };
-
-        // --- Multi-Touch Clicker Handling ---
-        const clickerTarget = document.getElementById('clickerTarget');
-        
-        clickerTarget.addEventListener('pointerdown', (e) => {
-            e.preventDefault();
-            if (gameState.energy <= 0) return;
-
-            let clickGain = 1 * Math.pow(2, gameState.upgrades.clickPower - 1);
-            if (gameState.energy >= clickGain) {
-                gameState.energy -= clickGain;
-                gameState.ink += clickGain;
-                gameState.totalClicks += 1;
-            } else {
-                clickGain = 1;
-                gameState.energy = 0;
-                gameState.ink += 1;
-            }
-
-            updateGameUI();
-            spawnFloatingNumber(e, clickGain);
-            checkQuestsProgress();
-
-            clickerTarget.classList.add('click-animate');
-            setTimeout(() => clickerTarget.classList.remove('click-animate'), 150);
-        });
-
-        function updateGameUI() {
-            const lvlData = getLevelData(gameState.ink);
-            gameState.maxEnergy = 1000 * Math.pow(2, gameState.upgrades.energyCap);
-            if (gameState.energy > gameState.maxEnergy) gameState.energy = gameState.maxEnergy;
-
-            document.getElementById('headerInkCount').textContent = gameState.ink.toLocaleString();
-            document.getElementById('gameInkDisplay').textContent = gameState.ink.toLocaleString();
-            document.getElementById('energyText').textContent = `${gameState.energy.toLocaleString()} / ${gameState.maxEnergy.toLocaleString()}`;
-            document.getElementById('energyBar').style.width = `${(gameState.energy / gameState.maxEnergy) * 100}%`;
-            
-            document.getElementById('locationNameDisplay').textContent = lvlData.name;
-            document.getElementById('headerLocationTitle').textContent = lvlData.name;
-            document.getElementById('gameLevelProgressText').textContent = `${lvlData.progress.toLocaleString()} / ${lvlData.target.toLocaleString()}`;
-            document.getElementById('nextLevelNeeded').textContent = `${(lvlData.target - lvlData.progress).toLocaleString()} очок`;
-            document.getElementById('levelPercentage').textContent = `${lvlData.percent}%`;
-            
-            const currentClickVal = 1 * Math.pow(2, gameState.upgrades.clickPower - 1);
-            document.getElementById('clickPowerDisplay').textContent = `+${currentClickVal.toLocaleString()} 💧`;
-
-            // Синхронізація аватара по всій системі
-            document.getElementById('activeAvatarDisplay').textContent = gameState.selectedAvatar;
-            document.getElementById('landingAvatarIcon').textContent = gameState.selectedAvatar;
-            document.getElementById('profileAvatarBox').textContent = gameState.selectedAvatar;
-            document.getElementById('headerLogoIcon').textContent = gameState.selectedAvatar;
-        }
-
-        function spawnFloatingNumber(e, amount) {
-            const container = document.getElementById('floatingNumbersContainer');
-            const el = document.createElement('div');
-            el.textContent = `+${amount.toLocaleString()} INK`;
-            el.className = 'absolute text-neonGold font-black text-sm pointer-events-none transition-all duration-700 ease-out z-30';
-            
-            const rect = container.getBoundingClientRect();
-            const x = (e.clientX || rect.width / 2) - rect.left + (Math.random() * 40 - 20);
-            const y = (e.clientY || rect.height / 2) - rect.top + (Math.random() * 20 - 10);
-            
-            el.style.left = `${x}px`;
-            el.style.top = `${y}px`;
-            container.appendChild(el);
-
-            setTimeout(() => {
-                el.style.transform = 'translateY(-70px) scale(1.3)';
-                el.style.opacity = '0';
-            }, 20);
-
-            setTimeout(() => el.remove(), 700);
-        }
-
-        // --- Ускорялки / Бустери (Збільшення на x2) ---
-        function getBoosterCost(key, level) {
-            const cfg = boosterConfigs[key];
-            return Math.floor(cfg.baseCost * Math.pow(cfg.costMult, level));
-        }
-
-        window.buyBooster = function(key) {
-            const currentLevel = gameState.upgrades[key];
-            const cost = getBoosterCost(key, currentLevel);
-
-            if (gameState.ink >= cost) {
-                gameState.ink -= cost;
-                gameState.upgrades[key] += 1;
-                updateGameUI();
-                renderBoosters();
-            } else {
-                alert("Недостатньо INK монет для купівлі цього бустера!");
-            }
-        };
-
-        function renderBoosters() {
-            const container = document.getElementById('boostersList');
-            container.innerHTML = '';
-
-            Object.keys(boosterConfigs).forEach(key => {
-                const cfg = boosterConfigs[key];
-                const lvl = gameState.upgrades[key];
-                const cost = getBoosterCost(key, lvl);
-
-                const card = document.createElement('div');
-                card.className = 'bg-inkCard border border-inkBorder p-4 rounded-2xl flex items-center justify-between shadow-lg';
-                card.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <span class="text-3xl">${cfg.icon}</span>
-                        <div>
-                            <h4 class="font-bold text-xs sm:text-sm text-white">${cfg.name}</h4>
-                            <span class="text-[11px] text-gray-400">Рівень механіки: <strong class="text-neonGold">${lvl}</strong> (x2)</span>
-                        </div>
-                    </div>
-                    <button onclick="buyBooster('${key}')" class="px-4 py-2 bg-gradient-to-r from-neonGold to-crimsonRed text-white font-bold text-xs rounded-xl shadow hover:opacity-90 transition transform active:scale-95">
-                        ${cost.toLocaleString()} 💧
-                    </button>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // --- Авто-клік та регенерація енергії ---
-        setInterval(() => {
-            let changed = false;
-            if (gameState.upgrades.autoClicker > 0) {
-                let autoGain = 1 * Math.pow(2, gameState.upgrades.autoClicker - 1);
-                gameState.ink += autoGain;
-                changed = true;
-            }
-            const regenAmount = (10 * Math.pow(2, gameState.upgrades.energyRegen));
-            if (gameState.energy < gameState.maxEnergy) {
-                gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + regenAmount);
-                changed = true;
-            }
-            if (changed) updateGameUI();
-        }, 1000);
-
-        // --- Квести (100 штук) ---
-        function checkQuestsProgress() {
-            let completedCount = 0;
-            questsState.forEach(q => {
-                if (gameState.totalClicks >= q.target && !q.claimed) {
-                    // Квест виконано, готовий до збору
-                }
-                if (q.claimed) completedCount++;
-            });
-            document.getElementById('completedQuestsCount').textContent = `${completedCount} / 100`;
-        }
-
-        window.claimQuestReward = function(questId) {
-            const q = questsState.find(item => item.id === questId);
-            if (q && !q.claimed && gameState.totalClicks >= q.target) {
-                q.claimed = true;
-                gameState.ink += q.reward;
-                alert(`🎉 Квест #${q.id} виконано! Отримано +${q.reward.toLocaleString()} INK!`);
-                updateGameUI();
-                renderQuests();
-            }
-        };
-
-        function renderQuests() {
-            const list = document.getElementById('questsList');
-            if (!list) return;
-            list.innerHTML = '';
-
-            let completedCount = 0;
-            questsState.forEach(q => {
-                if (q.claimed) completedCount++;
-                const isReady = gameState.totalClicks >= q.target && !q.claimed;
-
-                const el = document.createElement('div');
-                el.className = 'bg-inkCard border border-inkBorder p-3 rounded-2xl flex items-center justify-between';
-                el.innerHTML = `
-                    <div>
-                        <h4 class="font-bold text-xs text-white">${q.title}</h4>
-                        <span class="text-[10px] text-neonGold font-mono">+${q.reward.toLocaleString()} INK • Кліків: ${Math.min(gameState.totalClicks, q.target)}/${q.target}</span>
-                    </div>
-                    <button onclick="claimQuestReward(${q.id})" ${q.claimed ? 'disabled' : ''} class="px-3 py-1.5 text-xs font-bold rounded-xl shadow transition ${
-                        q.claimed ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 
-                        isReady ? 'bg-gradient-to-r from-neonGold to-crimsonRed text-white animate-pulse' : 'bg-inkDark border border-inkBorder text-gray-400'
-                    }">
-                        ${q.claimed ? 'Забрано' : isReady ? 'Забрати!' : 'В процесі'}
-                    </button>
-                `;
-                list.appendChild(el);
-            });
-            document.getElementById('completedQuestsCount').textContent = `${completedCount} / 100`;
-        }
-
-        // --- Avatar Selection (Миттєве збереження по всій системі) ---
-        function renderAvatars() {
-            const grid = document.getElementById('avatarGridSelector');
-            if (!grid) return;
-            grid.innerHTML = '';
-
-            AVATAR_SLOTS.forEach(av => {
-                const isSelected = gameState.selectedAvatar === av.icon;
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.onclick = () => {
-                    gameState.selectedAvatar = av.icon;
-                    updateGameUI();
-                    renderAvatars();
-                    renderLeaderboard();
-                };
-                btn.className = `p-3 rounded-2xl border flex flex-col items-center justify-center transition transform active:scale-95 ${
-                    isSelected ? 'bg-crimsonRed/20 border-crimsonRed kitsune-glow' : 'bg-inkDark border-inkBorder hover:border-gray-500'
-                }`;
-                btn.innerHTML = `
-                    <span class="text-3xl">${av.icon}</span>
-                    <span class="text-[9px] text-gray-400 mt-1 truncate w-full text-center">${av.name}</span>
-                `;
-                grid.appendChild(btn);
-            });
-        }
-
-        // --- Реферальна система ---
-        window.copyRefLink = function() {
-            const input = document.getElementById('refLinkInput');
-            input.select();
-            navigator.clipboard.writeText(input.value);
-            alert("Реферальне посилання скопійовано! Запрошуй друзів та отримуй +10,000 INK за кожного.");
-        };
-
-        // --- Дошка лідерів (Leaderboard) ---
-        function renderLeaderboard() {
-            const lb = document.getElementById('leaderboardList');
-            if (!lb) return;
-            lb.innerHTML = '';
-
-            const sampleLeaders = [
-                { name: "YYOKAI (Ти)", avatar: gameState.selectedAvatar, score: gameState.ink, isMe: true },
-                { name: "CyberSamurai", avatar: "👺", score: 1450000, isMe: false },
-                { name: "KitsuneQueen", avatar: "🦊", score: 890000, isMe: false }
-            ];
-
-            sampleLeaders.sort((a, b) => b.score - a.score);
-
-            sampleLeaders.forEach((l, idx) => {
-                const row = document.createElement('div');
-                row.className = `flex items-center justify-between p-2.5 rounded-xl border ${l.isMe ? 'bg-crimsonRed/10 border-crimsonRed/40' : 'bg-inkDark border-inkBorder'}`;
-                row.innerHTML = `
-                    <div class="flex items-center space-x-2">
-                        <span class="font-mono text-neonGold font-bold">#${idx + 1}</span>
-                        <span class="text-xl">${l.avatar}</span>
-                        <span class="font-bold text-white text-xs">${l.name}</span>
-                    </div>
-                    <span class="font-mono text-xs text-crimsonRed font-bold">${l.score.toLocaleString()} INK</span>
-                `;
-                lb.appendChild(row);
-            });
-        }
-
-        // Auth & Firebase
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            if (user) {
-                document.getElementById('profileEmail').textContent = user.email;
-                if (ADMIN_UIDS.includes(user.uid)) {
-                    document.getElementById('adminNavBtn').classList.remove('hidden');
-                }
-                document.getElementById('refLinkInput').value = `https://t.me/YyokaiInkBot?start=ref_${user.uid}`;
-                router.navigate('game');
-            } else {
-                document.getElementById('adminNavBtn').classList.add('hidden');
-            }
-        });
-
-        let isRegisterMode = false;
-        window.toggleAuthMode = function() {
-            isRegisterMode = !isRegisterMode;
-            document.getElementById('authTitle').textContent = isRegisterMode ? 'Реєстрація' : 'Вхід у систему';
-            document.getElementById('authSubmitBtn').textContent = isRegisterMode ? 'Створити акаунт' : 'Увійти';
-            document.getElementById('authToggleText').textContent = isRegisterMode ? 'Вже є акаунт? Увійти' : 'Ще немає акаунта? Зареєструватися';
-        };
-
-        window.handleAuthSubmit = async function(e) {
-            e.preventDefault();
-            const email = document.getElementById('authEmail').value;
-            const pass = document.getElementById('authPass').value;
-            try {
-                if (isRegisterMode) {
-                    await createUserWithEmailAndPassword(auth, email, pass);
-                } else {
-                    await signInWithEmailAndPassword(auth, email, pass);
-                }
-            } catch (err) {
-                alert("Помилка авторизації: " + err.message);
-            }
-        };
-
-        window.handleLogout = async function() {
-            await signOut(auth);
-            router.navigate('landing');
-        };
-
-        window.openAdminIfAllowed = function() {
-            router.navigate('admin');
-        };
-
-        window.addEventListener('DOMContentLoaded', () => {
-            translateUI();
-            updateGameUI();
-            renderAvatars();
-            renderQuests();
-
-            // Partner Offers
-            const offersList = document.getElementById('partnerOffersList');
-            if (offersList) {
-                const sampleOffers = [
-                    { title: "Підпишись на Instagram студії", reward: 5000, category: "SOCIAL" },
-                    { title: "Запусти Telegram Telegram-бота", reward: 7500, category: "BOT" }
-                ];
-                sampleOffers.forEach(o => {
-                    const d = document.createElement('div');
-                    d.className = 'bg-inkCard border border-inkBorder p-4 rounded-2xl flex items-center justify-between';
-                    d.innerHTML = `
-                        <div>
-                            <span class="text-[10px] text-neonGold uppercase font-bold">${o.category}</span>
-                            <h4 class="font-bold text-sm text-white">${o.title}</h4>
-                            <span class="text-xs text-crimsonRed font-mono">+${o.reward.toLocaleString()} INK</span>
-                        </div>
-                        <button onclick="alert('Завдання виконано! Нагороду зараховано.')" class="px-4 py-2 bg-crimsonRed text-white text-xs font-bold rounded-xl shadow">START</button>
-                    `;
-                    offersList.appendChild(d);
-                });
-            }
-
-            // Rewards Shop
-            const rewardsList = document.getElementById('rewardsList');
-            if (rewardsList) {
-                const sampleRewards = [
-                    { title: "10% Знижка на татуювання", cost: "50,000 INK", tag: "DISCOUNT" },
-                    { title: "Ексклюзивний тату-ескіз (Flash)", cost: "250,000 INK", tag: "ART" }
-                ];
-                sampleRewards.forEach(r => {
-                    const el = document.createElement('div');
-                    el.className = 'bg-inkCard border border-inkBorder p-4 rounded-2xl flex items-center justify-between';
-                    el.innerHTML = `
-                        <div>
-                            <span class="text-[9px] px-2 py-0.5 bg-neonGold/20 text-neonGold font-bold rounded">${r.tag}</span>
-                            <h4 class="font-bold text-sm text-white mt-1">${r.title}</h4>
-                            <span class="text-xs text-crimsonRed font-mono font-bold">${r.cost}</span>
-                        </div>
-                        <button onclick="alert('Запит на отримання нагороди надіслано!')" class="px-3 py-2 bg-crimsonRed text-white text-xs font-bold rounded-xl">Unlock</button>
-                    `;
-                    rewardsList.appendChild(el);
-                });
-            }
-        });
-    </script>
-</body>
-</html>
+<html lang="uk" class="dark"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>INK — Печать Ёкаїв</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class',theme:{extend:{colors:{inkDark:'#0a090d',inkCard:'#131118',inkBorder:'#272235',crimsonRed:'#ff2a5f',neonGold:'#ffb703',deepPurple:'#3b0764',cyberBlue:'#00f0ff'}}}}</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+@keyframes pulse-glow{0%,100%{box-shadow:0 0 15px rgba(255,42,95,.4);transform:scale(1)}50%{box-shadow:0 0 35px rgba(255,183,3,.7);transform:scale(1.02)}}
+.kitsune-glow{animation:pulse-glow 3s infinite}
+canvas{touch-action:none}
+</style></head>
+<body class="bg-inkDark text-white font-sans antialiased min-h-screen flex flex-col selection:bg-crimsonRed select-none">
+
+<header class="sticky top-0 z-50 bg-inkDark/85 backdrop-blur-md border-b border-inkBorder px-4 py-3 flex items-center justify-between">
+ <div class="flex items-center space-x-3">
+  <div id="headerLogoIcon" class="w-9 h-9 rounded-xl bg-gradient-to-br from-crimsonRed to-neonGold flex items-center justify-center text-lg shadow-lg shadow-crimsonRed/30 cursor-pointer" onclick="router.navigate('game')">⛩️</div>
+  <div><span class="font-black text-lg tracking-widest bg-gradient-to-r from-white via-gray-200 to-crimsonRed bg-clip-text text-transparent">INK</span><span id="headerLocationTitle" class="text-[10px] block text-neonGold tracking-widest font-semibold uppercase">Yokai Seal</span></div>
+ </div>
+ <div class="flex items-center space-x-2">
+  <button onclick="router.navigate('game')" class="px-2.5 py-1 rounded-lg bg-crimsonRed/20 border border-crimsonRed/40 text-xs font-bold text-crimsonRed"><i class="fa-solid fa-gamepad"></i></button>
+  <div id="userBalanceBadge" class="hidden items-center bg-inkCard border border-inkBorder px-3 py-1 rounded-full text-xs font-bold space-x-1.5"><span class="text-neonGold">文</span><span id="headerInkCount" class="font-mono">0</span><span>🔮</span><span id="headerGems" class="font-mono">0</span></div>
+  <button onclick="toggleLanguage()" id="langSwitcherBtn" class="px-2.5 py-1 rounded-lg bg-inkCard border border-inkBorder text-xs font-bold text-gray-300">🇺🇦 UA</button>
+ </div>
+</header>
+
+<main class="flex-1 flex flex-col pb-24">
+
+<section id="view-landing" class="view-section flex-1 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
+ <div class="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-crimsonRed via-transparent to-transparent"></div>
+ <div class="relative z-10 max-w-md mx-auto space-y-6">
+  <div class="inline-block p-4 rounded-3xl bg-gradient-to-tr from-crimsonRed/20 to-neonGold/20 border border-inkBorder kitsune-glow"><span class="text-5xl" id="landingAvatarIcon">🦊</span></div>
+  <h1 class="text-4xl sm:text-5xl font-black tracking-tight uppercase">Seal. Earn. <span class="bg-gradient-to-r from-crimsonRed to-neonGold bg-clip-text text-transparent">Unlock.</span></h1>
+  <p class="text-gray-400 text-sm" data-i18n="landing.subtitle"></p>
+  <div class="pt-4 flex flex-col sm:flex-row gap-3 w-full">
+   <button onclick="router.navigate('game')" class="flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-crimsonRed to-rose-600 font-bold shadow-lg shadow-crimsonRed/40 active:scale-95 transition"><i class="fa-solid fa-gamepad mr-2"></i><span data-i18n="landing.playBtn"></span></button>
+   <button onclick="authMode('reg');router.navigate('auth')" class="flex-1 py-3.5 px-6 rounded-xl bg-inkCard border border-inkBorder font-bold text-gray-200"><i class="fa-solid fa-right-to-bracket mr-2"></i><span data-i18n="landing.loginBtn"></span></button>
+  </div>
+ </div>
+</section>
+
+<!-- AUTH: нова реєстрація у 2 кроки -->
+<section id="view-auth" class="view-section hidden flex-1 flex flex-col items-center justify-center p-4">
+ <div class="w-full max-w-sm bg-inkCard border border-inkBorder rounded-3xl p-6 shadow-2xl space-y-4">
+  <div id="refBanner" class="hidden text-xs text-center bg-neonGold/10 border border-neonGold/30 text-neonGold rounded-xl py-2">🎁 Тебе запросив друг — після реєстрації +5 🔮</div>
+  <div id="dots" class="flex justify-center gap-2"><i id="dot1" class="h-1.5 w-10 rounded-full bg-crimsonRed"></i><i id="dot2" class="h-1.5 w-10 rounded-full bg-inkBorder"></i></div>
+  <div id="as1" class="space-y-4">
+   <h2 class="text-2xl font-black text-center uppercase">Обери свого ёкая</h2>
+   <p class="text-xs text-gray-400 text-center">Він стане твоїм хранителем у грі</p>
+   <div id="authAvatars" class="grid grid-cols-4 gap-2"></div>
+   <div class="flex gap-2"><input id="authNick" maxlength="16" placeholder="Нікнейм" class="flex-1 bg-inkDark border border-inkBorder rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-crimsonRed"><button type="button" onclick="rndNick()" class="px-4 rounded-xl bg-inkDark border border-inkBorder">🎲</button></div>
+   <button onclick="authStep(2)" class="w-full py-3.5 rounded-xl bg-crimsonRed font-bold shadow-lg shadow-crimsonRed/30">Далі →</button>
+  </div>
+  <div id="as2" class="hidden space-y-3">
+   <h2 id="as2Title" class="text-2xl font-black text-center uppercase">Збережи прогрес</h2>
+   <button type="button" onclick="googleLogin()" class="w-full py-3 rounded-xl bg-white text-black font-bold text-sm"><i class="fa-brands fa-google mr-2"></i>Продовжити з Google</button>
+   <div class="text-center text-[11px] text-gray-500">або email</div>
+   <form onsubmit="handleAuthSubmit(event)" class="space-y-3">
+    <input type="email" id="authEmail" required placeholder="you@example.com" class="w-full bg-inkDark border border-inkBorder rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-crimsonRed">
+    <input type="password" id="authPass" required minlength="6" placeholder="Пароль (від 6 символів)" class="w-full bg-inkDark border border-inkBorder rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-crimsonRed">
+    <button type="submit" id="authSubmitBtn" class="w-full py-3.5 rounded-xl bg-crimsonRed font-bold shadow-lg shadow-crimsonRed/30">Створити акаунт</button>
+   </form>
+   <button id="backBtn" onclick="authStep(1)" class="w-full text-xs text-gray-400">← Назад</button>
+  </div>
+  <div class="text-center space-y-1">
+   <button onclick="authMode(mode=='reg'?'login':'reg')" class="text-xs text-neonGold hover:underline" id="authToggleText">Вже є акаунт? Увійти</button>
+   <button onclick="router.navigate('game')" class="block mx-auto text-[11px] text-gray-500">Грати як гість</button>
+  </div>
+ </div>
+</section>
+
+<!-- GAME -->
+<section id="view-game" class="view-section hidden flex-1 flex flex-col p-4 max-w-md mx-auto w-full gap-3">
+ <div class="w-full flex justify-between items-center bg-inkCard/90 border border-inkBorder p-3 rounded-2xl">
+  <div><span id="locationNameDisplay" class="text-[10px] text-neonGold block uppercase tracking-wider font-bold"></span><span id="coinName" class="text-sm font-bold"></span></div>
+  <div class="text-center"><span class="text-[10px] text-gray-400 block uppercase">Прогрес</span><span id="gameLevelProgressText" class="text-xs font-black text-crimsonRed"></span></div>
+  <div class="text-right"><span class="text-[10px] text-gray-400 block uppercase">Сила печаті</span><span id="clickPowerDisplay" class="text-xs font-bold text-emerald-400"></span></div>
+ </div>
+ <div class="grid grid-cols-2 gap-2 text-xs font-bold">
+  <button id="tabSeal" onclick="tab('seal')" class="py-2 rounded-xl bg-crimsonRed">🖌 Печать</button>
+  <button id="tabSlot" onclick="tab('slot')" class="py-2 rounded-xl bg-inkCard border border-inkBorder">🎰 Храм удачі</button>
+ </div>
+ <div id="panelSeal">
+  <div id="clickerZoneBox" class="rounded-3xl p-2 transition-all duration-700">
+   <div class="relative w-full max-w-[320px] mx-auto">
+    <canvas id="cv" width="320" height="320" class="w-full rounded-3xl bg-inkCard/80 border border-inkBorder"></canvas>
+    <span id="activeAvatarDisplay" class="absolute inset-0 flex items-center justify-center text-7xl pointer-events-none drop-shadow-[0_0_20px_rgba(255,42,95,0.6)]"></span>
+    <span id="bossTag" class="hidden absolute top-3 left-3 text-[10px] font-black bg-crimsonRed px-2 py-0.5 rounded-full">БОС ×5</span>
+   </div>
+   <div id="sealMsg" class="text-center text-sm font-bold text-neonGold mt-2 h-5"></div>
+   <div class="text-center mt-1"><div class="text-3xl font-black font-mono" id="gameInkDisplay">0</div><span class="text-xs text-neonGold uppercase tracking-widest font-semibold">文 MON</span></div>
+  </div>
+ </div>
+ <div id="panelSlot" class="hidden bg-inkCard border border-inkBorder rounded-2xl p-5 text-center space-y-4">
+  <h3 class="font-black uppercase text-neonGold">Храм удачі</h3>
+  <div id="reels" class="flex justify-center gap-3 text-5xl"><span>🦊</span><span>🦊</span><span>🦊</span></div>
+  <div id="slotInfo" class="text-xs text-gray-400 h-4"></div>
+  <button id="spinBtn" onclick="spin()" class="w-full py-3 rounded-xl bg-gradient-to-r from-neonGold to-crimsonRed font-bold"></button>
+  <p class="text-[10px] text-gray-500">Тільки за ігрові 文. Три однакових — 500, дві — 50, три 🪙 — 1000. Реальні гроші не потрібні.</p>
+ </div>
+ <div class="w-full space-y-2 bg-inkCard border border-inkBorder p-3 rounded-2xl">
+  <div class="flex justify-between text-xs"><span class="text-gray-400" data-i18n="game.energy"></span><span id="energyText" class="text-neonGold font-mono"></span></div>
+  <div class="w-full bg-inkDark h-2 rounded-full overflow-hidden border border-inkBorder"><div id="energyBar" class="bg-gradient-to-r from-neonGold to-crimsonRed h-full transition-all duration-300"></div></div>
+  <div class="pt-2 border-t border-inkBorder/60 flex justify-between items-center text-xs"><div><span class="text-gray-400 block">До наступної ери:</span><span id="nextLevelNeeded" class="font-bold"></span></div><span id="levelPercentage" class="text-neonGold font-mono font-bold"></span></div>
+ </div>
+</section>
+
+<section id="view-boosters" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4">
+ <h2 class="text-xl font-black uppercase tracking-wider text-neonGold"><i class="fa-solid fa-bolt mr-2"></i>Еволюція & Бустери (x2)</h2>
+ <p class="text-xs text-gray-400">Кожне покращення подвоює ефект.</p>
+ <div id="boostersList" class="space-y-3 pb-6"></div>
+</section>
+
+<section id="view-quests" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4">
+ <div class="flex justify-between items-center"><h2 class="text-xl font-black uppercase tracking-wider" data-i18n="nav.quests"></h2><span id="completedQuestsCount" class="text-xs text-neonGold font-mono font-bold">0 / 100</span></div>
+ <div id="questsList" class="space-y-3 pb-6"></div>
+</section>
+
+<section id="view-offers" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4">
+ <div class="flex justify-between items-center"><h2 class="text-xl font-black uppercase tracking-wider text-neonGold"><i class="fa-solid fa-user-plus mr-2"></i>Пришли друга</h2><button onclick="router.navigate('admin')" id="adminNavBtn" class="hidden px-3 py-1 bg-crimsonRed text-xs font-bold rounded-lg">Admin</button></div>
+ <div class="bg-gradient-to-br from-inkCard to-deepPurple/40 border border-inkBorder rounded-2xl p-5 space-y-3">
+  <h3 class="font-black text-sm uppercase">Запрошуй друзів — вони рахуються в нагороду</h3>
+  <p class="text-xs text-gray-300">Друг рахується, коли зареєструється за твоїм посиланням і дійде до 3-го рівня.</p>
+  <div class="flex items-center space-x-2"><input id="refLinkInput" readonly class="w-full bg-inkDark border border-inkBorder rounded-xl px-3 py-2.5 text-xs font-mono text-neonGold"><button onclick="copyRefLink()" class="px-4 py-2.5 bg-crimsonRed text-xs font-bold rounded-xl">Копіювати</button></div>
+ </div>
+ <h3 class="text-sm font-black uppercase tracking-wider pt-2">Партнери та Активності</h3>
+ <div id="partnerOffersList" class="space-y-3 pb-6"></div>
+</section>
+
+<section id="view-rewards" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4">
+ <h2 class="text-xl font-black uppercase tracking-wider" data-i18n="nav.rewards"></h2>
+ <div id="rewardsList" class="space-y-3 pb-6"></div>
+</section>
+
+<section id="view-profile" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4">
+ <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 flex items-center space-x-4">
+  <div id="profileAvatarBox" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-crimsonRed to-neonGold flex items-center justify-center text-3xl kitsune-glow">🦊</div>
+  <div><h3 id="profileEmail" class="font-bold text-sm">Гість</h3><span id="profileVipBadge" class="inline-block mt-1 px-2 py-0.5 bg-crimsonRed/20 border border-crimsonRed/40 text-crimsonRed text-[10px] font-bold rounded-full uppercase"></span></div>
+ </div>
+ <button id="saveProgBtn" onclick="authMode('reg');router.navigate('auth')" class="w-full py-3 rounded-xl bg-neonGold/10 border border-neonGold/40 text-neonGold font-bold text-sm">Зберегти прогрес — створити акаунт</button>
+ <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 space-y-3">
+  <h4 class="text-xs font-bold text-neonGold uppercase tracking-wider"><i class="fa-solid fa-masks-theater mr-1"></i> Обери аватар</h4>
+  <div id="avatarGridSelector" class="grid grid-cols-4 gap-2.5"></div>
+ </div>
+ <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 space-y-3"><h4 class="text-xs font-bold text-neonGold uppercase tracking-wider"><i class="fa-solid fa-trophy mr-1"></i> Топ гравців</h4><div id="leaderboardList" class="space-y-2 text-xs"></div></div>
+ <button onclick="handleLogout()" class="w-full py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 font-bold text-sm"><i class="fa-solid fa-right-from-bracket mr-2"></i><span data-i18n="profile.logout"></span></button>
+</section>
+
+<section id="view-admin" class="view-section hidden flex-1 p-4 max-w-md mx-auto w-full space-y-4">
+ <div class="flex items-center justify-between"><h2 class="text-xl font-black uppercase text-crimsonRed">Admin Panel</h2><button onclick="router.navigate('offers')" class="text-xs text-gray-400"><i class="fa-solid fa-arrow-left mr-1"></i>Назад</button></div>
+ <div class="bg-inkCard border border-inkBorder rounded-2xl p-4 space-y-3">
+  <h3 class="text-sm font-bold text-neonGold uppercase">Новий партнерський оффер</h3>
+  <input id="admTitle" placeholder="Назва завдання" class="w-full bg-inkDark border border-inkBorder rounded-xl px-3 py-2.5 text-sm">
+  <input id="admUrl" placeholder="https://посилання-оффера" class="w-full bg-inkDark border border-inkBorder rounded-xl px-3 py-2.5 text-sm">
+  <button onclick="addOffer()" class="w-full py-2.5 rounded-xl bg-crimsonRed font-bold text-sm">Додати</button>
+  <p class="text-[11px] text-gray-500">Підтвердження: у Firestore колекція submissions → документ uid_offerId → status = "ok". Заявки на нагороди — колекція claims.</p>
+ </div>
+</section>
+</main>
+
+<div id="promo" class="hidden fixed inset-0 z-[60] bg-black/70 items-center justify-center p-6">
+ <div class="w-full max-w-xs bg-inkCard border border-neonGold/40 rounded-3xl p-6 text-center space-y-3 kitsune-glow">
+  <div class="text-4xl">📣</div><h3 id="promoText" class="font-black"></h3>
+  <button id="promoBtn" onclick="promoGo()" class="w-full py-3 rounded-xl bg-gradient-to-r from-neonGold to-crimsonRed font-bold text-sm"></button>
+  <button onclick="promoX()" class="text-xs text-gray-500">Пізніше</button>
+ </div>
+</div>
+
+<nav id="bottomNav" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-inkDark/95 border-t border-inkBorder backdrop-blur-md px-1.5 py-2 flex justify-around items-center">
+ <button onclick="router.navigate('game')" class="nav-btn flex flex-col items-center text-gray-400" data-target="game"><i class="fa-solid fa-gamepad text-base"></i><span class="text-[9px] font-semibold mt-0.5" data-i18n="nav.play"></span></button>
+ <button onclick="router.navigate('boosters')" class="nav-btn flex flex-col items-center text-gray-400" data-target="boosters"><i class="fa-solid fa-bolt text-base"></i><span class="text-[9px] font-semibold mt-0.5">Бустери</span></button>
+ <button onclick="router.navigate('quests')" class="nav-btn flex flex-col items-center text-gray-400" data-target="quests"><i class="fa-solid fa-scroll text-base"></i><span class="text-[9px] font-semibold mt-0.5" data-i18n="nav.quests"></span></button>
+ <button onclick="router.navigate('offers')" class="nav-btn flex flex-col items-center text-gray-400" data-target="offers"><i class="fa-solid fa-user-plus text-base"></i><span class="text-[9px] font-semibold mt-0.5" data-i18n="nav.offers"></span></button>
+ <button onclick="router.navigate('rewards')" class="nav-btn flex flex-col items-center text-gray-400" data-target="rewards"><i class="fa-solid fa-gift text-base"></i><span class="text-[9px] font-semibold mt-0.5" data-i18n="nav.rewards"></span></button>
+ <button onclick="router.navigate('profile')" class="nav-btn flex flex-col items-center text-gray-400" data-target="profile"><i class="fa-solid fa-user text-base"></i><span class="text-[9px] font-semibold mt-0.5" data-i18n="nav.profile"></span></button>
+</nav>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import {getAuth,signInWithEmailAndPassword,createUserWithEmailAndPassword,signOut,onAuthStateChanged,GoogleAuthProvider,signInWithPopup} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,addDoc,collection,getDocs,query,where,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+// ⚠️ ВСТАВ СВОЇ КЛЮЧІ FIREBASE (Project settings → Your apps)
+const firebaseConfig={apiKey:"PASTE_API_KEY",authDomain:"PASTE_PROJECT_ID.firebaseapp.com",projectId:"PASTE_PROJECT_ID",storageBucket:"PASTE_PROJECT_ID.appspot.com",messagingSenderId:"PASTE_SENDER_ID",appId:"PASTE_APP_ID"};
+const ADMIN_UIDS=["PASTE_ADMIN_UID"];
+// ⚠️ Налаштування: місця на велику нагороду цього місяця + реклама-підписка (з'являється кожні N печатей)
+const CFG={slots:1,every:6,promo:{text:"Підпишись на Instagram студії",url:"https://instagram.com/yyokai.tattoo",gems:2}};
+let app,auth,db;try{app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app)}catch(e){}
+
+const $=i=>document.getElementById(i),today=()=>new Date().toISOString().slice(0,10),fmt=n=>Math.floor(n).toLocaleString();
+const AV=[["🦊","Kitsune"],["👹","Hannya"],["👺","Tengu"],["🐉","Ryujin"],["🐱","Bakeneko"],["💀","Gashadokuro"],["🌸","Sakura"],["⚔️","Katana"],["⛩️","Torii"],["🥷","Shinobi"],["🦈","Same"],["🍥","Naruto"]];
+const YN={"🦊":"Кіцуне","🐸":"Каппа","👹":"Они","👺":"Тэнгу","🐱":"Бакэнэко","❄️":"Юки-онна","🐉":"Рюдзин","💀":"Гасядокуро"};
+const ERAS=[[0,"Нара · Святилище Кіцуне","Вадо Кайтин","bg-inkDark",["🦊","🐸"]],[1e4,"Хэйан · Ніч Ста Демонів","Вадо Кайтин","bg-slate-900",["👹","👺"]],[1e5,"Едо · Місто Кан'эй","Кан'эй Цухо","bg-purple-950/40",["🐱","❄️"]],[1e6,"Едо · Ера Тэмпо","Тэмпо Цухо","bg-red-950/40",["🐉","💀"]],[1e7,"Золотий Кобан","Кобан","bg-zinc-950",["🦊","🐉"]]];
+const BOOST={clickPower:["Кисть Катана (x2 сила печаті)",150,2,"⚔️"],autoClicker:["Дух-помічник (x2 авто-фарм)",400,2.2,"⛩️"],energyCap:["Чаша Туші (x2 ліміт)",250,1.9,"⚡"],energyRegen:["Подих Дракона (x2 відновлення)",500,2.3,"🐉"]};
+const SAMPLE=[{id:"ig",title:"Підпишись на Instagram студії",url:"https://instagram.com/yyokai.tattoo",cat:"SOCIAL"},{id:"tg",title:"Запусти Telegram-бота",url:"https://t.me/YyokaiInkBot",cat:"BOT"}];
+const I18={ua:{"landing.subtitle":"Печатай ёкаїв пензлем, збирай монети епох Японії, виконуй умови — і отримай справжнє тату.","landing.playBtn":"Грати зараз","landing.loginBtn":"Реєстрація / Вхід","game.energy":"Туш (енергія)","nav.play":"Гра","nav.quests":"Квести","nav.offers":"Друзі","nav.rewards":"Нагороди","nav.profile":"Профіль","profile.logout":"Вийти з акаунта"},
+en:{"landing.subtitle":"Seal yokai with your brush, earn coins of Japan's eras, complete the checklist — and win a real tattoo.","landing.playBtn":"Play Now","landing.loginBtn":"Register / Login","game.energy":"Ink (energy)","nav.play":"Play","nav.quests":"Quests","nav.offers":"Friends","nav.rewards":"Rewards","nav.profile":"Profile","profile.logout":"Logout"}};
+
+const def={mon:250,total:0,gems:0,seals:0,energy:100,av:"🦊",nick:"",days:1,last:today(),fs:"",friends:0,offers:{},claimed:[],qd:[],up:{clickPower:1,autoClicker:0,energyCap:0,energyRegen:0}};
+let S={...def,...JSON.parse(localStorage.getItem("ink_s")||"{}")};S.up={...def.up,...S.up};
+if(S.last!==today()){S.days++;S.last=today()}
+let user=null,lang=localStorage.getItem("ink_lang")||"ua",mode="reg",pickAv=S.av,dirty=0,OFFERS=[...SAMPLE];
+const refId=new URLSearchParams(location.search).get("ref");
+const maxE=()=>100*Math.pow(2,S.up.energyCap),lv=()=>{let l=0;ERAS.forEach((e,i)=>{if(S.total>=e[0])l=i});return l};
+const gain=n=>{S.mon+=n;S.total+=n};
+function save(){localStorage.setItem("ink_s",JSON.stringify(S));dirty=1}
+setInterval(async()=>{if(dirty&&user&&db){dirty=0;const{offers,friends,...r}=S;try{await setDoc(doc(db,"users",user.uid),{...r,email:user.email||"",ts:serverTimestamp()},{merge:true})}catch(e){}}},15000);
+
+// ---------- i18n / router ----------
+window.translateUI=()=>{document.querySelectorAll("[data-i18n]").forEach(el=>{const t=I18[lang][el.dataset.i18n];if(t)el.textContent=t});$("langSwitcherBtn").textContent=lang=="ua"?"🇺🇦 UA":"🇬🇧 EN"};
+window.toggleLanguage=()=>{lang=lang=="ua"?"en":"ua";localStorage.setItem("ink_lang",lang);translateUI()};
+const NAVV=["game","boosters","quests","offers","rewards","profile"];
+window.router={navigate(v){document.querySelectorAll(".view-section").forEach(e=>e.classList.add("hidden"));const t=$("view-"+v);if(t)t.classList.remove("hidden");
+ document.querySelectorAll(".nav-btn").forEach(b=>{const a=b.dataset.target==v;b.classList.toggle("text-crimsonRed",a);b.classList.toggle("text-gray-400",!a)});
+ const on=NAVV.includes(v);$("bottomNav").classList.toggle("hidden",!on);const bb=$("userBalanceBadge");bb.classList.toggle("hidden",!on);bb.classList.toggle("flex",on);
+ if(v=="boosters")renderBoosters();if(v=="quests")renderQuests();if(v=="offers")renderOffers();if(v=="rewards")renderRewards();if(v=="profile")renderProfile();ui()}};
+
+// ---------- UI ----------
+function ui(){const L=lv(),E=ERAS[L],nx=ERAS[L+1]?ERAS[L+1][0]:E[0]*10,pr=S.total-E[0],tg=nx-E[0],pc=Math.min(100,Math.floor(pr/tg*100)),mx=maxE();S.energy=Math.min(S.energy,mx);
+ $("headerInkCount").textContent=fmt(S.mon);$("headerGems").textContent=S.gems;$("gameInkDisplay").textContent=fmt(S.mon);
+ $("energyText").textContent=Math.floor(S.energy)+" / "+mx;$("energyBar").style.width=S.energy/mx*100+"%";
+ $("locationNameDisplay").textContent=E[1];$("headerLocationTitle").textContent="Рівень "+(L+1);$("coinName").textContent="文 "+E[2];
+ $("gameLevelProgressText").textContent=fmt(pr)+" / "+fmt(tg);$("nextLevelNeeded").textContent=fmt(tg-pr)+" 文";$("levelPercentage").textContent=pc+"%";
+ $("clickPowerDisplay").textContent="×"+Math.pow(2,S.up.clickPower-1);$("clickerZoneBox").className="rounded-3xl p-2 transition-all duration-700 "+E[3];
+ ["landingAvatarIcon","profileAvatarBox","headerLogoIcon"].forEach(i=>$(i).textContent=S.av)}
+const msg=t=>{$("sealMsg").textContent=t};
+window.tab=n=>{$("panelSeal").classList.toggle("hidden",n!="seal");$("panelSlot").classList.toggle("hidden",n!="slot");$("tabSeal").className="py-2 rounded-xl "+(n=="seal"?"bg-crimsonRed":"bg-inkCard border border-inkBorder");$("tabSlot").className="py-2 rounded-xl "+(n=="slot"?"bg-crimsonRed":"bg-inkCard border border-inkBorder")};
+
+// ---------- ПЕЧАТЬ: проведи лінію пензля по контуру ----------
+const cv=$("cv"),cx=cv.getContext("2d"),W=320,C=160,TOL=24;
+const SH=[t=>{const a=t*6.283-1.571;return[Math.cos(a)*.38,Math.sin(a)*.38]},
+ t=>[(t-.5)*.84,Math.sin(t*12.57)*.2],
+ t=>{const a=t*12.57,r=.04+.36*t;return[Math.cos(a)*r,Math.sin(a)*r]},
+ t=>{const v=[0,2,4,1,3,0].map(k=>[Math.cos(k*1.2566-1.5708)*.4,Math.sin(k*1.2566-1.5708)*.4]),s=t*5,i=Math.min(4,Math.floor(s)),f=s-i;return[v[i][0]+(v[i+1][0]-v[i][0])*f,v[i][1]+(v[i+1][1]-v[i][1])*f]}];
+let pts=[],idx=1,err=0,drawing=0,last=null;
+const dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]),isBoss=()=>(S.seals+1)%10==0;
+function guide(){cx.clearRect(0,0,W,W);cx.lineCap="round";cx.lineJoin="round";cx.setLineDash([2,14]);cx.strokeStyle="rgba(255,183,3,.55)";cx.lineWidth=6;cx.beginPath();pts.forEach((p,i)=>i?cx.lineTo(p[0],p[1]):cx.moveTo(p[0],p[1]));cx.stroke();cx.setLineDash([]);cx.fillStyle="#00f0ff";cx.beginPath();cx.arc(pts[0][0],pts[0][1],9,0,6.3);cx.fill()}
+function newSeal(){const f=SH[(S.seals+lv())%4];pts=[...Array(48)].map((_,i)=>{const p=f(i/47);return[C+p[0]*W,C+p[1]*W]});idx=1;err=0;drawing=0;guide();
+ $("activeAvatarDisplay").textContent=ERAS[lv()][4][S.seals%2];$("bossTag").classList.toggle("hidden",!isBoss())}
+const pos=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*W/r.width]};
+cv.addEventListener("pointerdown",e=>{e.preventDefault();if(S.energy<10){msg("Бракує туші — зачекай або забери бонус");return}const p=pos(e);if(dist(p,pts[0])>TOL*1.8){msg("Почни з блакитної точки");return}cv.setPointerCapture(e.pointerId);drawing=1;last=p;idx=1;err=0;guide();msg("")});
+cv.addEventListener("pointermove",e=>{if(!drawing)return;const p=pos(e);cx.strokeStyle="#ff2a5f";cx.shadowColor="#ff2a5f";cx.shadowBlur=12;cx.lineWidth=7;cx.beginPath();cx.moveTo(last[0],last[1]);cx.lineTo(p[0],p[1]);cx.stroke();cx.shadowBlur=0;last=p;
+ for(let j=idx;j<Math.min(idx+3,pts.length);j++){const d=dist(p,pts[j]);if(d<TOL){err+=d;idx=j+1;break}}
+ if(idx>=pts.length){drawing=0;done()}});
+["pointerup","pointercancel"].forEach(n=>cv.addEventListener(n,()=>{if(drawing){drawing=0;msg("Печать порвалась — спробуй ще");guide()}}));
+function done(){const acc=Math.max(0,1-err/pts.length/TOL),m=acc>.6?2:acc>.3?1.5:1,boss=isBoss();
+ const g=Math.round(10*(lv()+1)*m*Math.pow(2,S.up.clickPower-1)*(boss?5:1));
+ S.energy-=10;S.seals++;gain(g);if(boss)S.gems+=3;else if(acc>.6&&Math.random()<.1)S.gems++;
+ msg((acc>.6?"✨ Ідеально! ":acc>.3?"Добре! ":"Печать тримає. ")+"+"+fmt(g)+" 文"+(boss?" · +3 🔮":""));
+ if(S.seals%CFG.every==0)setTimeout(promo,900);
+ save();ui();setTimeout(newSeal,800)}
+
+// ---------- Реклама-підписка ----------
+function promo(){const p=CFG.promo;$("promoText").textContent=p.text;$("promoBtn").textContent="Відкрити · +"+p.gems+" 🔮 і повна туш";$("promo").classList.replace("hidden","flex")}
+window.promoX=()=>$("promo").classList.replace("flex","hidden");
+window.promoGo=()=>{window.open(CFG.promo.url,"_blank");S.gems+=CFG.promo.gems;S.energy=maxE();save();ui();promoX()};
+
+// ---------- Храм удачі (слот) ----------
+const SY=["🦊","👹","👺","🐸","🪙"];
+const slotLbl=()=>{$("spinBtn").textContent=S.fs!==today()?"Безкоштовний оберт дня":"Крутити · 50 文"};
+window.spin=()=>{const free=S.fs!==today();if(!free&&S.mon<50){$("slotInfo").textContent="Недостатньо 文";return}
+ if(free)S.fs=today();else S.mon-=50;$("spinBtn").disabled=true;const r=[...$("reels").children];let n=0;
+ const iv=setInterval(()=>{r.forEach(x=>x.textContent=SY[Math.random()*5|0]);if(++n>12){clearInterval(iv);const res=r.map(x=>x.textContent),u=new Set(res).size;let w=0;if(u==1)w=res[0]=="🪙"?1000:500;else if(u==2)w=50;if(w)gain(w);
+  $("slotInfo").textContent=w?"Виграш +"+w+" 文!":"Не пощастило — ще раз?";$("spinBtn").disabled=false;save();ui();slotLbl()}},90)};
+
+// ---------- Бустери ----------
+const cost=(k,l)=>Math.floor(BOOST[k][1]*Math.pow(BOOST[k][2],l));
+window.buyBooster=k=>{const c=cost(k,S.up[k]);if(S.mon>=c){S.mon-=c;S.up[k]++;save();ui();renderBoosters()}else alert("Недостатньо 文!")};
+function renderBoosters(){$("boostersList").innerHTML=Object.keys(BOOST).map(k=>`<div class="bg-inkCard border border-inkBorder p-4 rounded-2xl flex items-center justify-between"><div class="flex items-center space-x-3"><span class="text-3xl">${BOOST[k][3]}</span><div><h4 class="font-bold text-xs text-white">${BOOST[k][0]}</h4><span class="text-[11px] text-gray-400">Рівень: <strong class="text-neonGold">${S.up[k]}</strong></span></div></div><button onclick="buyBooster('${k}')" class="px-4 py-2 bg-gradient-to-r from-neonGold to-crimsonRed font-bold text-xs rounded-xl active:scale-95">${fmt(cost(k,S.up[k]))} 文</button></div>`).join("")}
+setInterval(()=>{if(S.up.autoClicker>0)gain(Math.pow(2,S.up.autoClicker-1));if(S.energy<maxE())S.energy=Math.min(maxE(),S.energy+Math.pow(2,S.up.energyRegen));ui()},1000);
+
+// ---------- Квести (100) ----------
+const QUESTS=[...Array(100)].map((_,i)=>({id:i+1,title:`Квест #${i+1}: Шлях Самурая`,reward:(i+1)*200,target:(i+1)*5}));
+window.claimQuestReward=id=>{const q=QUESTS[id-1];if(!S.qd.includes(id)&&S.seals>=q.target){S.qd.push(id);gain(q.reward);save();ui();renderQuests()}};
+function renderQuests(){$("completedQuestsCount").textContent=S.qd.length+" / 100";$("questsList").innerHTML=QUESTS.map(q=>{const c=S.qd.includes(q.id),r=S.seals>=q.target;return `<div class="bg-inkCard border border-inkBorder p-3 rounded-2xl flex items-center justify-between"><div><h4 class="font-bold text-xs">${q.title}</h4><span class="text-[10px] text-neonGold font-mono">+${fmt(q.reward)} 文 • Печатей: ${Math.min(S.seals,q.target)}/${q.target}</span></div><button onclick="claimQuestReward(${q.id})" ${c?"disabled":""} class="px-3 py-1.5 text-xs font-bold rounded-xl ${c?"bg-gray-800 text-gray-500":r?"bg-gradient-to-r from-neonGold to-crimsonRed animate-pulse":"bg-inkDark border border-inkBorder text-gray-400"}">${c?"Забрано":r?"Забрати!":"В процесі"}</button></div>`}).join("")}
+
+// ---------- Друзі та офери ----------
+const okN=()=>Object.values(S.offers).filter(v=>v=="ok").length;
+window.copyRefLink=()=>{const i=$("refLinkInput");i.select();navigator.clipboard.writeText(i.value);alert("Посилання скопійовано!")};
+window.doOffer=async id=>{if(!user){alert("Зареєструйся, щоб завдання зарахувалось");authMode("reg");router.navigate("auth");return}
+ const o=OFFERS.find(x=>x.id==id);window.open(o.url,"_blank");try{await setDoc(doc(db,"submissions",user.uid+"_"+id),{uid:user.uid,offer:id,status:"pending"});S.offers[id]="pending";renderOffers()}catch(e){alert("Помилка: "+e.message)}};
+function renderOffers(){$("refLinkInput").value=location.origin+location.pathname+"?ref="+(user?user.uid:"");
+ $("partnerOffersList").innerHTML=OFFERS.map(o=>{const s=S.offers[o.id];return `<div class="bg-inkCard border border-inkBorder p-4 rounded-2xl flex items-center justify-between"><div><span class="text-[10px] text-neonGold uppercase font-bold">${o.cat||"PARTNER"}</span><h4 class="font-bold text-sm">${o.title}</h4><span class="text-xs text-crimsonRed">Зараховується до нагород після перевірки</span></div><button ${s?"disabled":""} onclick="doOffer('${o.id}')" class="px-4 py-2 text-xs font-bold rounded-xl ${s=="ok"?"bg-emerald-600":s?"bg-gray-800 text-gray-400":"bg-crimsonRed"}">${s=="ok"?"✓":s?"Перевірка":"START"}</button></div>`}).join("")}
+window.addOffer=async()=>{const t=$("admTitle").value,u=$("admUrl").value;if(!t||!u)return;try{await addDoc(collection(db,"offers"),{title:t,url:u,cat:"PARTNER"});alert("Додано");$("admTitle").value=$("admUrl").value=""}catch(e){alert("Помилка: "+e.message)}};
+
+// ---------- Нагороди: чекліст замість «фонду» ----------
+const TIERS=[["mini","🎁 Міні-тату (до 1500 грн)",()=>[["Зібрати 50 000 文",S.total,5e4],["Днів у грі",S.days,7],["Завдань партнерів підтверджено",okN(),1]]],
+["big","👑 Велике тату (7000 грн)",()=>[["Зібрати 500 000 文",S.total,5e5],["Днів у грі",S.days,20],["Друзів запрошено (дійшли до 3-го рівня)",S.friends,3],["Завдань партнерів підтверджено",okN(),3]]]];
+const SHOP=[["d10","10% Знижка на татуювання",5e4,"DISCOUNT"],["flash","Ексклюзивний тату-ескіз (Flash)",25e4,"ART"]];
+window.claim=async(id,title,c=0)=>{if(S.claimed.includes(id))return;if(!user){alert("Зареєструйся, щоб заявка дійшла до студії");authMode("reg");router.navigate("auth");return}
+ if(S.mon<c){alert("Недостатньо 文");return}
+ try{await addDoc(collection(db,"claims"),{uid:user.uid,email:user.email||"",nick:S.nick,tier:id,title,total:S.total,days:S.days,ts:serverTimestamp()});S.mon-=c;S.claimed.push(id);save();ui();renderRewards();alert("Заявку надіслано! Студія перевірить умови і зв'яжеться з тобою.")}catch(e){alert("Помилка: "+e.message)}};
+function renderRewards(){$("rewardsList").innerHTML=`<p class="text-[11px] text-gray-400">Виконай усі пункти — і подай заявку. Місць на велику нагороду цього місяця: <b class="text-neonGold">${CFG.slots}</b></p>`+
+ TIERS.map(([id,t,f])=>{const r=f(),all=r.every(x=>x[1]>=x[2]),cl=S.claimed.includes(id);return `<div class="bg-inkCard border border-inkBorder rounded-2xl p-4 space-y-3"><h3 class="font-black text-sm">${t}</h3>`+r.map(x=>{const p=Math.min(100,x[1]/x[2]*100);return `<div><div class="flex justify-between text-[11px]"><span class="text-gray-300">${x[0]}</span><span class="font-mono ${x[1]>=x[2]?"text-emerald-400":"text-neonGold"}">${fmt(Math.min(x[1],x[2]))}/${fmt(x[2])}</span></div><div class="h-1.5 bg-inkDark rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-neonGold to-crimsonRed" style="width:${p}%"></div></div></div>`}).join("")+`<button onclick="claim('${id}','${t}')" ${all&&!cl?"":"disabled"} class="w-full py-2.5 rounded-xl text-sm font-bold ${all&&!cl?"bg-gradient-to-r from-neonGold to-crimsonRed":"bg-gray-800 text-gray-500"}">${cl?"Заявку подано":all?"Забрати нагороду":"Умови не виконано"}</button></div>`}).join("")+
+ SHOP.map(([id,t,c,tag])=>`<div class="bg-inkCard border border-inkBorder p-4 rounded-2xl flex items-center justify-between"><div><span class="text-[9px] px-2 py-0.5 bg-neonGold/20 text-neonGold font-bold rounded">${tag}</span><h4 class="font-bold text-sm mt-1">${t}</h4><span class="text-xs text-crimsonRed font-mono font-bold">${fmt(c)} 文</span></div><button onclick="claim('${id}','${t}',${c})" ${S.claimed.includes(id)?"disabled":""} class="px-3 py-2 bg-crimsonRed text-xs font-bold rounded-xl">Unlock</button></div>`).join("")}
+
+// ---------- Профіль, аватари, лідерборд ----------
+function avGrid(el,sel,cb){el.innerHTML=AV.map(([ic,n])=>`<button type="button" data-i="${ic}" class="p-2.5 rounded-2xl border flex flex-col items-center ${sel()==ic?"bg-crimsonRed/20 border-crimsonRed":"bg-inkDark border-inkBorder"}"><span class="text-2xl">${ic}</span><span class="text-[8px] text-gray-400 truncate w-full text-center">${n}</span></button>`).join("");el.querySelectorAll("button").forEach(b=>b.onclick=()=>{cb(b.dataset.i);avGrid(el,sel,cb)})}
+function renderProfile(){$("profileEmail").textContent=(S.nick||"Гість")+(user&&user.email?" · "+user.email:"");$("profileVipBadge").textContent="Рівень "+(lv()+1)+" • "+S.days+" дн.";$("saveProgBtn").classList.toggle("hidden",!!user);
+ avGrid($("avatarGridSelector"),()=>S.av,i=>{S.av=i;save();ui()});
+ const L=[{n:(S.nick||"YYOKAI")+" (Ти)",a:S.av,s:S.total,me:1},{n:"CyberSamurai",a:"👺",s:1450000},{n:"KitsuneQueen",a:"🦊",s:890000}].sort((a,b)=>b.s-a.s);
+ $("leaderboardList").innerHTML=L.map((l,i)=>`<div class="flex items-center justify-between p-2.5 rounded-xl border ${l.me?"bg-crimsonRed/10 border-crimsonRed/40":"bg-inkDark border-inkBorder"}"><div class="flex items-center space-x-2"><span class="font-mono text-neonGold font-bold">#${i+1}</span><span class="text-xl">${l.a}</span><span class="font-bold text-xs">${l.n}</span></div><span class="font-mono text-xs text-crimsonRed font-bold">${fmt(l.s)} 文</span></div>`).join("")}
+
+// ---------- Реєстрація (нова) ----------
+const NICKS=["Kage","Tsuki","Yuki","Kuro","Akai","Raiden","Hoshi","Sora"];
+window.rndNick=()=>{$("authNick").value=NICKS[Math.random()*8|0]+(10+Math.random()*89|0)};
+window.authStep=n=>{$("as1").classList.toggle("hidden",n!=1);$("as2").classList.toggle("hidden",n!=2);$("dot1").className="h-1.5 w-10 rounded-full "+(n==1?"bg-crimsonRed":"bg-crimsonRed/50");$("dot2").className="h-1.5 w-10 rounded-full "+(n==2?"bg-crimsonRed":"bg-inkBorder")};
+window.authMode=m=>{mode=m;const reg=m=="reg";$("dots").classList.toggle("hidden",!reg);$("backBtn").classList.toggle("hidden",!reg);
+ $("as2Title").textContent=reg?"Збережи прогрес":"З поверненням";$("authSubmitBtn").textContent=reg?"Створити акаунт":"Увійти";$("authToggleText").textContent=reg?"Вже є акаунт? Увійти":"Ще немає акаунта? Реєстрація";
+ if(reg)authStep(1);else{$("as1").classList.add("hidden");$("as2").classList.remove("hidden")}};
+window.handleAuthSubmit=async e=>{e.preventDefault();const em=$("authEmail").value,pw=$("authPass").value;
+ try{if(mode=="reg"){const c=await createUserWithEmailAndPassword(auth,em,pw);S.nick=$("authNick").value||NICKS[0]+"77";S.av=pickAv;if(refId&&refId!=c.user.uid){S.gems+=5;await setDoc(doc(db,"referrals",c.user.uid),{by:refId,ts:serverTimestamp()})}save()}
+ else await signInWithEmailAndPassword(auth,em,pw)}catch(err){alert("Помилка: "+err.message)}};
+window.googleLogin=async()=>{try{const c=await signInWithPopup(auth,new GoogleAuthProvider());if(!S.nick){S.nick=$("authNick").value||c.user.displayName||"Yokai";S.av=pickAv;if(refId&&refId!=c.user.uid){S.gems+=5;try{await setDoc(doc(db,"referrals",c.user.uid),{by:refId,ts:serverTimestamp()})}catch(e){}}save()}}catch(err){alert("Помилка: "+err.message)}};
+window.handleLogout=async()=>{try{await signOut(auth)}catch(e){}user=null;router.navigate("landing")};
+
+if(auth)onAuthStateChanged(auth,async u=>{user=u;if(!u){$("adminNavBtn").classList.add("hidden");return}
+ $("adminNavBtn").classList.toggle("hidden",!ADMIN_UIDS.includes(u.uid));
+ try{const r=await getDoc(doc(db,"users",u.uid));if(r.exists()){const R=r.data();if((R.total||0)>=S.total){const o=S.offers;S={...S,...R,up:{...S.up,...R.up},offers:o}}}}catch(e){}
+ try{S.friends=(await getDocs(query(collection(db,"referrals"),where("by","==",u.uid)))).size}catch(e){}
+ try{(await getDocs(query(collection(db,"submissions"),where("uid","==",u.uid)))).forEach(d=>{S.offers[d.data().offer]=d.data().status})}catch(e){}
+ try{const o=[];(await getDocs(collection(db,"offers"))).forEach(d=>o.push({id:d.id,...d.data()}));if(o.length)OFFERS=o}catch(e){}
+ save();ui();router.navigate("game")});
+
+// ---------- Старт ----------
+translateUI();avGrid($("authAvatars"),()=>pickAv,i=>{pickAv=i});slotLbl();newSeal();ui();
+if(refId){$("refBanner").classList.remove("hidden");authMode("reg");router.navigate("auth")}else router.navigate("landing");
+</script></body></html>
