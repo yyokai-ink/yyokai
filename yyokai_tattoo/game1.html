@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="uk" class="dark"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Irezumi Yokai</title>
+<title>INKAI by YYOKAI</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{inkDark:'#0a090d',inkCard:'#131118',inkBorder:'#272235',crimsonRed:'#ff2a5f',neonGold:'#ffb703',deepPurple:'#3b0764',cyberBlue:'#00f0ff'}}}}</script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -22,28 +22,28 @@ canvas{touch-action:none}
 </style></head>
 <body class="bg-inkDark text-white font-sans antialiased min-h-screen flex flex-col select-none">
 
-<!-- ================= ЕКРАН ЗАВАНТАЖЕННЯ (SPLASH / LOADING) ================= -->
+<!-- ================= ЕКРАН ЗАВАНТАЖЕННЯ (SPLASH) ================= -->
 <div id="view-splash" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-between p-6 transition-opacity duration-700">
  <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover opacity-50 pointer-events-none">
   <!-- 🎬 Заміни посилання на своє відео завантаження: video/splash.mp4 -->
-  <source src="maska1.MP4" type="video/mp4">
+  <source src="maska.MP4" type="video/mp4">
  </video>
  <div class="relative z-10 text-center pt-8 space-y-2">
   <span class="text-xs font-mono tracking-[.4em] text-neonGold uppercase">YYOKAI STUDIO PRESENTS</span>
-  <h1 class="text-4xl font-black tracking-widest bg-gradient-to-r from-white via-gray-200 to-crimsonRed bg-clip-text text-transparent">IREZUMI YOKAI</h1>
+  <h1 class="text-5xl font-black tracking-widest bg-gradient-to-r from-white via-gray-200 to-crimsonRed bg-clip-text text-transparent">INKAI</h1>
  </div>
  <div class="relative z-10 w-full max-w-xs space-y-4 pb-8">
   <div class="h-1.5 bg-inkDark/80 border border-inkBorder rounded-full overflow-hidden">
-   <div id="loadBar" class="h-full bg-gradient-to-r from-neonGold to-crimsonRed w-0 transition-all duration-300"></div>
+   <div id="loadBar" class="h-full bg-gradient-to-r from-neonGold to-crimsonRed w-0 transition-all duration-75"></div>
   </div>
-  <button id="enterBtn" onclick="finishSplash()" class="btng w-full py-4 text-sm uppercase tracking-wider hidden shadow-[0_0_25px_rgba(255,183,3,.4)]">⚔️ <span data-t="Увійти у світ |Enter the World"></span></button>
+  <button id="enterBtn" onclick="finishSplash()" class="btng w-full py-4 text-sm uppercase tracking-wider hidden shadow-[0_0_25px_rgba(255,183,3,.4)]">⚔️ <span data-t="Почати гру|Start Game"></span></button>
  </div>
 </div>
 
 <header class="sticky top-0 z-50 bg-inkDark/85 backdrop-blur-md border-b border-inkBorder px-4 py-3 flex items-center justify-between">
- <span class="font-black tracking-widest bg-gradient-to-r from-white via-gray-200 to-crimsonRed bg-clip-text text-transparent">IREZUMI YOKAI</span>
+ <span class="font-black tracking-widest bg-gradient-to-r from-white via-gray-200 to-crimsonRed bg-clip-text text-transparent">INKAI ⛩️ YYOKAI</span>
  <div class="flex items-center space-x-2">
-  <!-- 🪙 Баланс токеноміки: 文 (Монети), 🎟 (Квитки), ⛩️ (Душі/Каміння духів) -->
+  <!-- 🪙 Валюти: 文 (Монети), ⛩️ (Душі), 🎟 (Квитки) -->
   <div class="flex items-center bg-inkCard border border-inkBorder px-3 py-1 rounded-full text-xs font-bold space-x-1.5"><span class="text-neonGold">文</span><span id="hCoins" class="font-mono">0</span><span>⛩️</span><span id="hSouls" class="font-mono">0</span><span>🎟</span><span id="hTix" class="font-mono">0</span></div>
   <button onclick="toggleMusic()" id="musBtn" class="px-2 py-1 rounded-lg bg-inkCard border border-inkBorder text-xs">🔊</button>
   <button onclick="toggleLanguage()" id="langBtn" class="px-2.5 py-1 rounded-lg bg-inkCard border border-inkBorder text-xs font-bold text-gray-300">🇺🇦 UA</button>
@@ -121,33 +121,37 @@ try{const B="https://www.gstatic.com/firebasejs/10.8.0/";const m=await Promise.a
 const $=i=>document.getElementById(i),R=Math.random,today=()=>new Date().toISOString().slice(0,10),fmt=n=>Math.floor(n).toLocaleString(),sleep=ms=>new Promise(r=>setTimeout(r,ms));
 let lang=localStorage.ink_lang||"ua";const t=s=>{const a=String(s).split("|");return lang=="ua"?a[0]:a[1]||a[0]};
 
-// ---------- ЕКРАН ЗАВАНТАЖЕННЯ (Анімація і перехід) ----------
+// ---------- ЕКРАН ЗАВАНТАЖЕННЯ (Виправлений робочий бар) ----------
 window.finishSplash=()=>{
  const s=$("view-splash");
- s.style.opacity="0";
- setTimeout(()=>s.remove(),700);
- if(!user) { authMode("reg"); go("auth"); } else { go("play"); }
+ if(s){s.style.opacity="0";setTimeout(()=>s.remove(),700);}
+ if(!user){authMode("reg");go("auth");}else{go("play");}
 };
-window.addEventListener("DOMContentLoaded",async()=>{
- let p=0;const bar=$("loadBar"),btn=$("enterBtn");
- while(p<100){p+=R()*25+10;if(p>100)p=100;bar.style.width=p+"%";await sleep(150)}
- btn.classList.remove("hidden");
+
+window.addEventListener("DOMContentLoaded",()=>{
+ let p=0;
+ const bar=$("loadBar"),btn=$("enterBtn");
+ const interval=setInterval(()=>{
+  p+=2.5;
+  if(bar)bar.style.width=p+"%";
+  if(p>=100){
+   clearInterval(interval);
+   if(btn)btn.classList.remove("hidden");
+  }
+ },30);
 });
 
-// ---------- ДАНІ ТА ТОКЕНОМІКА ----------
-// Економіка: Монети (文) — фармляться в геймплеї. Душі (⛩️) — преміум валюта за босів і сундуки. Квитки (🎟) — участь у розіграші.
+// ---------- ДАНІ ТА ТОКЕНОМІКА INKAI ----------
 const PRE=["Бамбуковий|Bamboo","Залізний|Iron","Нефритовий|Jade","Срібний|Silver","Багряний|Crimson","Грозовий|Storm","Морозний|Frost","Тіньовий|Shadow","Драконячий|Dragon","Демонічний|Demon"];
 const FRM=["Танто|Tanto","Вакідзасі|Wakizashi","Катана|Katana","Нодаті|Nodachi","Нагінада|Naginata"];
 const BL=[];
 PRE.forEach((p,a)=>FRM.forEach((f,b)=>{
  const i=a*5+b;
- // Кратна прогресія цін: базові дешеві, епічні та міфічні — дорогі (щоб не купити все за 1 раз)
  const price=i===0?0:Math.round(300*1.32**i/10)*10;
  const smokeColor=`hsl(${(a*36+b*7)%360}, 100%, 60%)`;
  BL.push({i,p,f,hue:(a*36+b*7)%360,w:3+a*.8+b*.4,price,sc:1+i*.03,fx:a>=9?3:a>=7?2:a>=4?1:0,smoke:smokeColor});
 }));
 
-// Фони з різною вартістю в магазині (кратна різниця)
 const BG=[
  ["Асука|Asuka","Спокій і ясність старих храмів|Calm of old temples",["#1e3a5f","#0a1624"],"🏯",0],
  ["Нара|Nara","Перша столиця: олені та монети|First capital: deer & coins",["#14532d","#052e16"],"🦌",2500],
@@ -174,14 +178,13 @@ const lvl=x=>1+Math.floor(Math.sqrt(x/300)),cb=()=>(CH[S.char][2]+1)*.03,okN=()=
 function save(){localStorage.ink_s4=JSON.stringify(S)}
 async function persLogin(isAdmin){
  user={uid:isAdmin?"admin_uid":"local_guest",email:isAdmin?"admin1@yyokai.com":"guest@yyokai.com"};
- S.nick=isAdmin?"YYOKAI_ADMIN":(S.nick||"YokaiMaster");
+ S.nick=isAdmin?"YYOKAI_ADMIN":(S.nick||"InkMaster");
  save(); go("play"); rend();
 }
 async function push(){if(!user||!db||user.uid=="local_guest"||user.uid=="admin_uid")return;const{offers,...r}=S;try{await FB.setDoc(FB.doc(db,"users",user.uid),{...r,coins:S.mon,souls:S.souls,lvl:lvl(S.xp),email:user.email||"",ts:FB.serverTimestamp()},{merge:true})}catch(e){}}
 setInterval(()=>{save();push()},15000);
 
 // ---------- ЗВУКОВА СИСТЕМА ----------
-// 🎵 Свої файли музики закинь у папки: music/menu.mp3 та music/battle.mp3
 const MUS={menu:"music/menu.mp3",battle:"music/battle.mp3"},PENT=[0,2,4,7,9];let music=localStorage.ink_mus!=0,mTrack="menu",mStarted=0,synthT=null;const mA={};
 Object.keys(MUS).forEach(k=>{const a=new Audio(MUS[k]);a.loop=true;a.volume=0;a.preload="auto";a.onerror=()=>{a.bad=1};mA[k]=a});
 function tone(f,d,ty,v){try{window.AC=window.AC||new (window.AudioContext||window.webkitAudioContext)();const A=AC,o=A.createOscillator(),g=A.createGain();o.type=ty;o.frequency.value=f;g.gain.setValueAtTime(v,A.currentTime);g.gain.exponentialRampToValueAtTime(.0001,A.currentTime+d);o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)}catch(e){}}
@@ -191,12 +194,11 @@ function setMusic(k){mTrack=k;if(!mStarted)return;clearInterval(synthT);Object.k
 window.toggleMusic=()=>{music=!music;localStorage.ink_mus=music?1:0;$("musBtn").textContent=music?"🔊":"🔇";setMusic(mTrack)};
 addEventListener("pointerdown",()=>{if(mStarted)return;mStarted=1;Object.values(SA).forEach(a=>a.load());try{window.AC=window.AC||new (window.AudioContext||window.webkitAudioContext)();AC.resume()}catch(e){}setMusic(mTrack)},{capture:true});
 
-// 🔊 Звуки ефектів закинь у: sfx/slash.mp3, sfx/boss.mp3, sfx/tick.mp3, sfx/reveal.mp3
 const SFXF={slash:"sfx/slash.mp3",boss:"sfx/boss.mp3",tick:"sfx/tick.mp3",reveal:"sfx/reveal.mp3"},SA={};
 Object.keys(SFXF).forEach(k=>{const a=new Audio(SFXF[k]);a.preload="auto";a.onerror=()=>{a.bad=1};SA[k]=a});
 function sfx(k,fb){const a=SA[k];if(a&&!a.bad){const c=a.cloneNode();c.volume=.8;c.play().catch(()=>{a.bad=1;fb&&fb()})}else if(fb)fb()}
-window.testSnd=k=>{const a=SA[k]||mA[k];if(!a)return;const c=a.cloneNode();c.volume=.8;c.play().catch(e=>alert(k+": "+e.name+" — файл не знайдено / file missing"))};
-const sndStat=()=>Object.entries({...SFXF,...MUS}).map(([k,u])=>{const a=SA[k]||mA[k];return `<div class="flex justify-between text-[11px]"><span>${u}</span><span>${a.bad?"❌ (файл відсутній)":"✅"} <button class="underline ml-2" onclick="testSnd('${k}')">▶</button></span></div>`}).join("");
+window.testSnd=k=>{const a=SA[k]||mA[k];if(!a)return;const c=a.cloneNode();c.volume=.8;c.play().catch(e=>alert(k+": "+e.name+" — файл відсутній"))};
+const sndStat=()=>Object.entries({...SFXF,...MUS}).map(([k,u])=>{const a=SA[k]||mA[k];return `<div class="flex justify-between text-[11px]"><span>${u}</span><span>${a.bad?"❌ (файл)":"✅"} <button class="underline ml-2" onclick="testSnd('${k}')">▶</button></span></div>`}).join("");
 
 // ---------- НАВІГАЦІЯ ТА i18n ----------
 function tr(){
@@ -215,18 +217,18 @@ window.go=v=>{
 const bar=(b)=>`<div class="h-2 rounded-full" style="background:linear-gradient(90deg,hsl(${b.hue},100%,50%),#fff);box-shadow:0 0 ${6+b.fx*5}px hsl(${b.hue},100%,55%)"></div>`;
 const bname=b=>t(PRE[b.i/5|0])+" "+t(FRM[b.i%5]);
 
-// ---------- ГОЛОВНА (З зацикленим відеофоном раунду) ----------
+// ---------- ГОЛОВНА ----------
 function rPlay(){
  const b=BL[S.blade],g=BG[S.bg],left=CFG.adEvery-S.rounds%CFG.adEvery;
  $("view-play").innerHTML=`
  <div class="relative card overflow-hidden !p-6 space-y-4 text-center border-crimsonRed/40">
   <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none">
-   <!-- 🎬 Заміни посилання на своє фонове відео головного меню: video/main_bg.mp4 -->
+   <!-- 🎬 Заміни посилання на фонове відео головного меню: video/main_bg.mp4 -->
    <source src="video/main_bg.mp4" type="video/mp4">
   </video>
   <div class="relative z-10 space-y-2">
    <div class="text-6xl">${CH[S.char][0]}</div>
-   <div class="text-xs text-gray-200 font-bold">${t(g[0])} · ${bname(b)}</div>
+   <div class="text-xs text-gray-200 font-bold">INKAI · ${t(g[0])} · ${bname(b)}</div>
    ${bar(b)}
   </div>
   <div class="relative z-10 flex justify-center gap-2 flex-wrap">
@@ -244,7 +246,7 @@ function rPlay(){
  </div>`;
 }
 
-// ---------- ІГРОВИЙ ДВИЖОК (Fruit Ninja механіка + розрізання PNG) ----------
+// ---------- ІГРОВИЙ ДВИЖОК ----------
 const cv=$("cv"),cx=cv.getContext("2d"),oc=document.createElement("canvas"),oq=oc.getContext("2d");let W,H,D=1,G={on:0},ptr={};
 function rs(){D=Math.min(3,devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*D;cv.height=H*D;cx.setTransform(D,0,0,D,0,0)}
 addEventListener("resize",()=>{if(!$("gm").classList.contains("hidden"))rs()});
@@ -261,11 +263,9 @@ window.startRound=m=>{
 };
 window.quitRound=()=>{G.on=0;setMusic("menu");$("gm").classList.add("hidden");rend()};
 
-// 🖼 PNG йокаїв (завантажуються з папки img/yokai/): fox.png, oni.png, tengu.png, kappa.png, skull.png, dragon.png
 const YIMG={};[["🦊","fox"],["👹","oni"],["👺","tengu"],["🐸","kappa"],["💀","skull"],["🐉","dragon"]].forEach(([e,n])=>{const i=new Image();i.src="img/yokai/"+n+".png";YIMG[e]=i});
 const BGI=BG.map((g,i)=>{const im=new Image();im.src="img/bg/"+i+".png";return im}),rdy=i=>i&&i.complete&&i.naturalWidth;
 
-// Малювання йокай-спрайтів або якісний фоллбек на емодзі з тінями
 const sp=(c,y,r)=>{
  const i=YIMG[y];
  if(rdy(i)){
@@ -395,7 +395,7 @@ window.ad=(txt,cb,rw,forced)=>{adCb=cb;adForced=forced;$("adText").textContent=t
 window.adClose=()=>$("adOv").classList.replace("flex","hidden");
 window.adClaim=()=>{adClose();S.ads++;if(user&&db)FB.addDoc(FB.collection(db,"adEvents"),{uid:user.uid,ts:FB.serverTimestamp()}).catch(()=>{});if(adCb)adCb();adCb=null;save();rend()};
 
-// ---------- МАГАЗИН (Унікальні клинки та фони з кратною ціною) ----------
+// ---------- МАГАЗИН ----------
 const eq=(k,i)=>{S[k]=i;save();rend()};
 window.buy=(k,i)=>{
  const arr={blade:"blades",bg:"bgs"}[k],p=k=="blade"?BL[i].price:BG[i][4];
@@ -406,7 +406,7 @@ window.buyB=id=>{const p=BS.find(x=>x[0]==id)[3];if(S.mon<p)return;S.mon-=p;S[id
 window.shopTab=x=>{shopT=x;rShop()};
 
 function rShop(){
- const tb=[["b",t("🗡 Клинки з ефектами дыма|🗡 Smoke Blades")],["g",t("🖼 Фони|🖼 Backgrounds")],["u",t("⚡ Бустери|⚡ Boosts")]];
+ const tb=[["b",t("🗡 Клинки INKAI|🗡 INKAI Blades")],["g",t("🖼 Фони|🖼 Backgrounds")],["u",t("⚡ Бустери|⚡ Boosts")]];
  let h=`<div class="grid grid-cols-3 gap-2 text-xs font-bold">${tb.map(([k,l])=>`<button onclick="shopTab('${k}')" class="py-2 rounded-xl ${shopT==k?"bg-crimsonRed":"bg-inkCard border border-inkBorder"}">${l}</button>`).join("")}</div>`;
  
  if(shopT=="b") h+=`<div class="grid grid-cols-2 gap-3">`+BL.map(b=>{
@@ -423,7 +423,7 @@ function rShop(){
  $("view-shop").innerHTML=h;
 }
 
-// ---------- СУНДУКИ ТА РУЛЕТКА ----------
+// ---------- СУНДУКИ ----------
 let opening=0;
 const wp=(a)=>{let x=R()*a.reduce((s,v)=>s+v,0),i=0;for(;i<a.length-1;i++){x-=a[i];if(x<0)break}return i};
 function rollItem(k){
@@ -439,48 +439,47 @@ function apply(it){
  if(it.ty=="c")S.mon+=it.a;else if(it.ty=="u")S[it.id]+=3;else if(it.ty=="h")S.chars.push(it.i);else if(it.ty=="b")S.blades.push(it.i);
  save();push();
 }
-// 📦 PNG сундуків: img/chest/bamboo.png, gold.png, dragon.png
 const CHF=["bamboo","gold","dragon"];
 window.tapChest=k=>{if(opening)return;if(S.ch[k])openChest(k,0);else if(S.mon>=CHT[k][2]&&confirm("Купити сундук?"))openChest(k,1)};
 window.openChest=async(k,buyIt)=>{
  if(opening)return;if(buyIt){if(S.mon<CHT[k][2])return;S.mon-=CHT[k][2]}else{if(!S.ch[k])return;S.ch[k]--}
  opening=1;const it=rollItem(k);apply(it);
- $("view-chests").innerHTML=`<div class="text-center space-y-3 pt-12"><div class="text-7xl shk">📦</div><b class="text-neonGold">Відкриваємо сундук...</b></div>`;
+ $("view-chests").innerHTML=`<div class="text-center space-y-3 pt-12"><div class="text-7xl shk">📦</div><b class="text-neonGold">Відкриваємо сундук INKAI...</b></div>`;
  await sleep(2000);
  alert("Випало: "+lab(it));opening=0;rend();
 };
 function rChests(){
- $("view-chests").innerHTML=`<h2 class="text-xl font-black uppercase">Сундуки ёкаїв</h2><div class="grid grid-cols-3 gap-2">`+CHT.map((c,k)=>`<button onclick="tapChest(${k})" class="card !p-2 text-center"><div class="text-5xl h-20 flex items-center justify-center">${c[0]}</div><b class="text-[11px]">${t(c[1])}</b><div class="text-[10px] text-gray-400">${S.ch[k]?`×${S.ch[k]}`:fmt(c[2])+" 文"}</div></button>`).join("")+`</div>`;
+ $("view-chests").innerHTML=`<h2 class="text-xl font-black uppercase">Сундуки INKAI</h2><div class="grid grid-cols-3 gap-2">`+CHT.map((c,k)=>`<button onclick="tapChest(${k})" class="card !p-2 text-center"><div class="text-5xl h-20 flex items-center justify-center">${c[0]}</div><b class="text-[11px]">${t(c[1])}</b><div class="text-[10px] text-gray-400">${S.ch[k]?`×${S.ch[k]}`:fmt(c[2])+" 文"}</div></button>`).join("")+`</div>`;
 }
 
 // ---------- ДРУЗІ ТА ОФЕРИ ----------
 window.copyRef=()=>{const i=$("refIn");i.select();navigator.clipboard.writeText(i.value);alert(t("Скопійовано!|Copied!"))};
 window.doOffer=async id=>{if(!user){go("auth");return}const o=OFFERS.find(x=>x.id==id);window.open(o.url,"_blank");try{await FB.setDoc(FB.doc(db,"submissions",user.uid+"_"+id),{uid:user.uid,offer:id,status:"ok"});S.offers[id]="ok";S.mon+=1000;rFriends()}catch(e){}};
 function rFriends(){
- $("view-friends").innerHTML=`<h2 class="text-xl font-black uppercase text-neonGold">👥 Запроси друга</h2><div class="card space-y-3"><p class="text-xs text-gray-300">Отримуй бонуси за кожного активного друга.</p><div class="flex gap-2"><input id="refIn" readonly class="inp !py-2.5 text-xs font-mono text-neonGold" value="${location.origin+location.pathname}?ref=${user?user.uid:""}"><button onclick="copyRef()" class="btn">Копіювати</button></div></div><h3 class="text-sm font-black uppercase pt-2">Партнери та завдання</h3>`+OFFERS.map(o=>`<div class="card flex items-center justify-between"><div><b class="text-sm">${t(o.title)}</b><div class="text-[10px] text-crimsonRed">+1000 文</div></div><button onclick="doOffer('${o.id}')" class="btn">START</button></div>`).join("");
+ $("view-friends").innerHTML=`<h2 class="text-xl font-black uppercase text-neonGold">👥 Запроси друга в INKAI</h2><div class="card space-y-3"><p class="text-xs text-gray-300">Отримуй бонуси за кожного активного друга.</p><div class="flex gap-2"><input id="refIn" readonly class="inp !py-2.5 text-xs font-mono text-neonGold" value="${location.origin+location.pathname}?ref=${user?user.uid:""}"><button onclick="copyRef()" class="btn">Копіювати</button></div></div><h3 class="text-sm font-black uppercase pt-2">Партнери та завдання</h3>`+OFFERS.map(o=>`<div class="card flex items-center justify-between"><div><b class="text-sm">${t(o.title)}</b><div class="text-[10px] text-crimsonRed">+1000 文</div></div><button onclick="doOffer('${o.id}')" class="btn">START</button></div>`).join("");
 }
 
-// ---------- ТАБЛИЦЯ ЛІДЕРІВ (Реальний глобальний рейтинг) ----------
+// ---------- ТАБЛИЦЯ ЛІДЕРІВ ----------
 window.rRating=async()=>{
  let list=[{nick:S.nick||"Ти",xp:S.xp,coins:S.mon}];
- if(db){try{const q=await FB.getDocs(FB.query(FB.collection(db,"users"),FB.orderBy("xp","desc"),FB.limit(20)));q.forEach(d=>{const x=d.data();list.push({nick:x.nick||"Yokai",xp:x.xp||0,coins:x.coins||0})})}catch(e){}}
+ if(db){try{const q=await FB.getDocs(FB.query(FB.collection(db,"users"),FB.orderBy("xp","desc"),FB.limit(20)));q.forEach(d=>{const x=d.data();list.push({nick:x.nick||"InkMaster",xp:x.xp||0,coins:x.coins||0})})}catch(e){}}
  list.sort((a,b)=>b.xp-a.xp);
- $("view-rating").innerHTML=`<h2 class="text-xl font-black uppercase text-neonGold mb-3">⛩️ Книга Великих Самураїв</h2><div class="space-y-2">`+list.map((u,i)=>`<div class="card !p-3 flex items-center justify-between ${i<5?"border-neonGold/50":""}"><div class="flex items-center gap-3"><span class="font-black font-mono text-sm ${i==0?"text-neonGold":i==1?"text-gray-300":i==2?"text-amber-600":""}">#${i+1}</span><div><b class="text-xs">${u.nick}</b><div class="text-[10px] text-gray-400">Lv ${lvl(u.xp)}</div></div></div><span class="font-mono text-xs text-neonGold">${fmt(u.xp)} XP</span></div>`).join("")+`</div>`;
+ $("view-rating").innerHTML=`<h2 class="text-xl font-black uppercase text-neonGold mb-3">⛩️ Книга Самураїв INKAI</h2><div class="space-y-2">`+list.map((u,i)=>`<div class="card !p-3 flex items-center justify-between ${i<5?"border-neonGold/50":""}"><div class="flex items-center gap-3"><span class="font-black font-mono text-sm ${i==0?"text-neonGold":i==1?"text-gray-300":i==2?"text-amber-600":""}">#${i+1}</span><div><b class="text-xs">${u.nick}</b><div class="text-[10px] text-gray-400">Lv ${lvl(u.xp)}</div></div></div><span class="font-mono text-xs text-neonGold">${fmt(u.xp)} XP</span></div>`).join("")+`</div>`;
 };
 
-// ---------- НАГОРОДИ СТУДІЇ YYOKAI (5 виграшних місць / знижки) ----------
+// ---------- НАГОРОДИ СТУДІЇ YYOKAI ----------
 window.claim=async id=>{S.claimed.push(id);save();rend();alert("Заявку надіслано в студію YYOKAI!");};
 function rRewards(){
  const L=[
-  ["d10","🏷 Знижка 10% на тату",S.xp>=5000],
-  ["d20","🏷 Знижка 20% на тату",S.xp>=20000],
+  ["d10","🏷 Знижка 10% на тату у YYOKAI",S.xp>=5000],
+  ["d20","🏷 Знижка 20% на тату у YYOKAI",S.xp>=20000],
   ["mini","🎁 Безкоштовне міні-тату від YYOKAI",S.xp>=60000],
-  ["big","👑 Головний приз: повноцінний рукав / великий сеанс (ТОП-5 місяця)",S.xp>=150000]
+  ["big","👑 Головний приз: великий сеанс / рукав (ТОП-5 місяця)",S.xp>=150000]
  ];
- $("view-rewards").innerHTML=`<h2 class="text-xl font-black uppercase">Нагороди студії YYOKAI</h2><p class="text-xs text-gray-400 mb-3">Набирай XP у грі, піднімайся в таблиці лідерів. Щомісяця ТОП-5 гравців отримують безкоштовні сеанси та знижки!</p>`+L.map(([id,ti,ok])=>`<div class="card space-y-3"><h3 class="font-black text-sm">${ti}</h3><button onclick="claim('${id}')" ${ok&&!S.claimed.includes(id)?"":"disabled"} class="btng w-full py-2.5 ${ok?"":"!from-gray-800 !to-gray-800 !text-gray-500"}">${S.claimed.includes(id)?"Заявку подано":ok?"Забрати нагороду":"Недостатньо XP"}</button></div>`).join("");
+ $("view-rewards").innerHTML=`<h2 class="text-xl font-black uppercase">Нагороди студії YYOKAI</h2><p class="text-xs text-gray-400 mb-3">Набирай XP в INKAI. Щомісяця ТОП-5 гравців отримують безкоштовні тату-сеанси та знижки!</p>`+L.map(([id,ti,ok])=>`<div class="card space-y-3"><h3 class="font-black text-sm">${ti}</h3><button onclick="claim('${id}')" ${ok&&!S.claimed.includes(id)?"":"disabled"} class="btng w-full py-2.5 ${ok?"":"!from-gray-800 !to-gray-800 !text-gray-500"}">${S.claimed.includes(id)?"Заявку подано":ok?"Забрати нагороду":"Недостатньо XP"}</button></div>`).join("");
 }
 
-// ---------- ПРОФІЛЬ ТА АВТОРИЗАЦІЯ (Адмінка admin1 / admin1) ----------
+// ---------- ПРОФІЛЬ ТА АВТОРИЗАЦІЯ ----------
 function rProfile(){
  $("view-profile").innerHTML=`
  <div class="card flex items-center gap-4"><div class="text-5xl">${CH[S.char][0]}</div><div><h3 class="font-bold text-sm">${S.nick||"Гість"}</h3><span class="inline-block mt-1 px-2 py-0.5 bg-crimsonRed/20 border border-crimsonRed/40 text-crimsonRed text-[10px] font-bold rounded-full">Lv ${lvl(S.xp)} · ${fmt(S.xp)} XP</span></div></div>
@@ -488,13 +487,12 @@ function rProfile(){
  ${user&&user.uid!="local_guest"?`<button onclick="logout()" class="w-full py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 font-bold text-sm">Вийти з акаунта</button>`:`<button onclick="authMode('reg');go('auth')" class="w-full py-3 rounded-xl bg-neonGold/10 border border-neonGold/40 text-neonGold font-bold text-sm">Увійти / Зареєструватися</button>`}
  `;
 }
-window.authMode=m=>{mode=m;$("aTitle").textContent=m=="reg"?"Зберегти прогрес":"З поверненням";$("aBtn").textContent=m=="reg"?"Створити акаунт":"Увійти";$("aTog").textContent=m=="reg"?"Вже є акаунт? Увійти":"Немає акаунта? Реєстрація";$("aNick").classList.toggle("hidden",m!="reg")};
+window.authMode=m=>{mode=m;$("aTitle").textContent=m=="reg"?"Зберегти прогрес INKAI":"З поверненням";$("aBtn").textContent=m=="reg"?"Створити акаунт":"Увійти";$("aTog").textContent=m=="reg"?"Вже є акаунт? Увійти":"Немає акаунта? Реєстрація";$("aNick").classList.toggle("hidden",m!="reg")};
 window.social=async k=>{persLogin(false)};
 window.authSubmit=async e=>{
  e.preventDefault();
  const em=$("aEmail").value,pw=$("aPass").value;
- // 🔐 Вбудована швидка адмінка за логіном admin1 та паролем admin1
- if(em==="admin1"&&pw==="admin1"){alert("Вітаємо, Адміне YYOKAI!");persLogin(true);return;}
+ if(em==="admin1"&&pw==="admin1"){alert("Вітаємо, Головний Мастере YYOKAI!");persLogin(true);return;}
  if(mode=="reg"&&$("aNick").value)S.nick=$("aNick").value;
  persLogin(false);
 };
