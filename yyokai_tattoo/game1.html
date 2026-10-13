@@ -112,7 +112,7 @@ window.toggleMusic=()=>{music=!music;localStorage.ink_mus=music?1:0;$("musBtn").
 addEventListener("pointerdown",()=>{if(mStarted)return;mStarted=1;try{window.AC=window.AC||new (window.AudioContext||window.webkitAudioContext)();AC.resume()}catch(e){}setMusic(mTrack)},{capture:true});
 
 // 🔊 Звуки ефектів: sfx/slash.mp3 (розріз), sfx/boss.mp3 (удар по босу), sfx/tick.mp3 (клац у рулетці), sfx/reveal.mp3 (відкриття призу). Нема файлу — звучить синтез.
-const SFXF={slash:"sfx/Звук для розрезания.mp3",boss:"sfx/Звук для розрезания боса.mp3",tick:"sfx/tick.mp3",reveal:"sfx/reveal.mp3"},SA={};
+const SFXF={slash:"Звук для розрезания.mp3",boss:"Звук для розрезания боса.mp3",tick:"sfx/tick.mp3",reveal:"sfx/reveal.mp3"},SA={};
 Object.keys(SFXF).forEach(k=>{const a=new Audio(SFXF[k]);a.preload="auto";a.onerror=()=>{a.bad=1};SA[k]=a});
 function sfx(k,fb){const a=SA[k];if(a&&!a.bad&&a.readyState>=2){const c=a.cloneNode();c.volume=.8;c.play().catch(()=>{})}else if(fb)fb()}
 
