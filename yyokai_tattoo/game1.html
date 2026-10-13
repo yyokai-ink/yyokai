@@ -112,7 +112,7 @@ window.toggleMusic=()=>{music=!music;localStorage.ink_mus=music?1:0;$("musBtn").
 addEventListener("pointerdown",()=>{if(mStarted)return;mStarted=1;Object.values(SA).forEach(a=>a.load());try{window.AC=window.AC||new (window.AudioContext||window.webkitAudioContext)();AC.resume()}catch(e){}setMusic(mTrack)},{capture:true});
 
 // 🔊 Звуки ефектів: slash.mp3 (розріз), boss.mp3 (удар по босу), tick.mp3 (клац у рулетці), reveal.mp3 (відкриття призу). Нема файлу — звучить синтез.
-const SFXF={slash:"slash.mp3",boss:"boss.mp3",tick:"tick.mp3",reveal:"reveal.mp3"},SA={};
+const SFXF={slash:"Звук для розрезания.mp3",boss:"boss.mp3",tick:"tick.mp3",reveal:"reveal.mp3"},SA={};
 Object.keys(SFXF).forEach(k=>{const a=new Audio(SFXF[k]);a.preload="auto";a.onerror=()=>{a.bad=1};SA[k]=a});
 function sfx(k,fb){const a=SA[k];if(a&&!a.bad){const c=a.cloneNode();c.volume=.8;c.play().catch(()=>{a.bad=1;fb&&fb()})}else if(fb)fb()}
 window.testSnd=k=>{const a=SA[k]||mA[k];if(!a)return;const c=a.cloneNode();c.volume=.8;c.play().catch(e=>alert(k+": "+e.name+" — "+(a.bad?"файл не знайдено / file not found":"")))};
