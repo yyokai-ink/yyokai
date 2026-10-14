@@ -2,7 +2,7 @@
 <html lang="uk" class="dark"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#0a090d">
-<title>INKAI by YYOKAI</title>
+<title>by YYOKAI</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{inkDark:'#0a090d',inkCard:'#131118',inkBorder:'#272235',crimsonRed:'#ff2a5f',neonGold:'#ffb703',deepPurple:'#3b0764',cyberBlue:'#00f0ff'}}}}</script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -50,15 +50,15 @@ canvas{touch-action:none}
 
 <!-- ═════════ ЗАСТАВКА ═════════ -->
 <div id="splash" class="fixed inset-0 z-[120] overflow-hidden transition-opacity duration-700" style="background:linear-gradient(135deg,#efe3cf,#e2d2b8);font-family:Georgia,serif">
- <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover"><source src="bar.MP4" type="video/mp4"></video>
+ <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover"><source src="bar1.MP4" type="video/mp4"></video>
  <div class="absolute inset-0" style="background:linear-gradient(90deg,rgba(236,222,200,.95) 0,rgba(236,222,200,.72) 45%,rgba(236,222,200,0) 80%)"></div>
  <img src="hero.png" onerror="this.remove()" class="absolute bottom-0 right-[-10%] h-[88%] w-auto max-w-none" style="filter:drop-shadow(0 0 30px rgba(0,0,0,.35))">
  <div class="absolute left-5 top-[5%] bottom-[5%] w-px" style="background:rgba(168,133,74,.55)"><div id="spV" class="absolute left-0 top-0 w-px" style="height:0;background:#8b1a2b;box-shadow:0 0 6px #8b1a2b"></div><i class="dia" style="top:-4px"></i><i class="dia" style="bottom:-4px"></i></div>
  <div class="absolute left-[11%] right-[34%] top-1/2 -translate-y-[40%]" style="color:#8b1a2b">
   <svg viewBox="0 0 24 24" width="30" height="30" class="mb-2"><path d="M12 2c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-6 1-9z" fill="#8b1a2b"/></svg>
   <div id="spName" style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;line-height:.95;font-size:clamp(40px,14vw,76px);letter-spacing:.02em;word-break:break-word"></div>
-  <div class="mt-2 text-[11px] tracking-[.35em] uppercase" style="color:#a8854a">INKAI by YYOKAI</div>
-  <div class="mt-4 relative h-[2px]" style="background:rgba(168,133,74,.5)"><div id="spBar" class="absolute left-0 top-0 h-full transition-all duration-200" style="width:8%;background:#8b1a2b;box-shadow:0 0 8px #8b1a2b"><i class="dia dia-r"></i></div></div>
+  <div class="mt-2 text-[11px] tracking-[.35em] uppercase" style="color:#a8854a">by YYOKAI</div>
+  <div class="mt-4 relative h-[2px]" style="background:rgba(168,133,74,.5)"><div id="spBar" class="absolute left-0 top-0 h-full transition-all duration-400" style="width:8%;background:#8b1a2b;box-shadow:0 0 8px #8b1a2b"><i class="dia dia-r"></i></div></div>
   <div class="flex justify-between mt-3 text-[10px] tracking-[.25em] uppercase" style="color:#a8854a"><span id="spTxt">…</span><span id="spPct">0%</span></div>
   <div id="spQ" class="mt-5 text-[10px] leading-5 tracking-[.2em] uppercase"></div>
  </div>
@@ -192,7 +192,7 @@ canvas{touch-action:none}
 // ═══ 0. НАЛАШТУВАННЯ ═══
 const firebaseConfig={apiKey:"PASTE_API_KEY",authDomain:"PASTE_PROJECT_ID.firebaseapp.com",projectId:"PASTE_PROJECT_ID",storageBucket:"PASTE_PROJECT_ID.appspot.com",messagingSenderId:"PASTE_SENDER_ID",appId:"PASTE_APP_ID"};
 const CFG={
- hero:{name:"ТВОЄ ІМ'Я",quote:"Кожна лінія — це історія. Кожен ёкай — частина мене.|Every line tells a story. Every yokai is a part of me."}, // 🔧
+ hero:{name:"INKAI",quote:"Кожна лінія — це історія. Кожен ёкай — частина мене.|Every line tells a story. Every yokai is a part of me."}, // 🔧
  promo:{text:"Підпишись на Instagram YYOKAI|Follow YYOKAI on Instagram",url:"https://instagram.com/yyokai.tattoo"},          // 🔧
  adEvery:3,            // 🔧 обов'язкова реклама після кожного N-го раунду
  offerReward:1000,     // 🔧 нагорода монетами за партнерське завдання
