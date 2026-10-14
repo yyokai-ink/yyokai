@@ -1,57 +1,70 @@
 <!DOCTYPE html>
 <html lang="uk" class="dark"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#0a090d">
 <title>INKAI by YYOKAI</title>
-<!-- Tailwind: стилі пишуться класами прямо в HTML (bg-inkDark, text-neonGold ...). Кольори бренду — у tailwind.config нижче -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{inkDark:'#0a090d',inkCard:'#131118',inkBorder:'#272235',crimsonRed:'#ff2a5f',neonGold:'#ffb703',deepPurple:'#3b0764',cyberBlue:'#00f0ff'}}}}</script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
 <style type="text/tailwindcss">
-/* ── Готові «кнопки/картки», щоб не повторювати довгі класи ── */
 .card{@apply bg-inkCard border border-inkBorder rounded-2xl p-4}
 .btn{@apply px-4 py-2 rounded-xl text-xs font-bold bg-crimsonRed text-white active:scale-95 transition disabled:opacity-40}
 .btng{@apply px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-neonGold to-crimsonRed active:scale-95 transition disabled:opacity-40}
 .inp{@apply w-full bg-inkDark border border-inkBorder rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-crimsonRed}
 .chip{@apply px-2.5 py-1 rounded-full text-[11px] font-bold bg-inkDark border border-inkBorder}
-/* ── Анімації ── */
-@keyframes pulse-glow{0%,100%{box-shadow:0 0 15px rgba(255,42,95,.4);transform:scale(1)}50%{box-shadow:0 0 35px rgba(255,183,3,.7);transform:scale(1.02)}}
+</style>
+<style>
+/* ── Без зуму: ні щипок, ні подвійний тап ── */
+html,body{touch-action:pan-y;overscroll-behavior:none;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+input,button,select,textarea{font-size:16px}
+canvas{touch-action:none}
+@keyframes pulse-glow{0%,100%{opacity:.75}50%{opacity:1}}
 @keyframes pop{from{transform:scale(.3);opacity:0}}
 @keyframes shakeC{0%,100%{transform:rotate(0)}25%{transform:rotate(-7deg) scale(1.06)}75%{transform:rotate(7deg) scale(1.06)}}
 @keyframes spinR{to{transform:rotate(360deg)}}
 @keyframes fall{to{transform:translateY(112vh) rotate(360deg)}}
 @keyframes rise{from{transform:translateY(0);opacity:0}15%{opacity:1}to{transform:translateY(-75vh) translateX(var(--dx));opacity:0}}
+@keyframes drift{from{transform:translate3d(var(--x0),108vh,0) rotate(0)}to{transform:translate3d(var(--x1),-20vh,0) rotate(var(--rt))}}
+@keyframes shine{0%{background-position:-200% 0}100%{background-position:200% 0}}
 .glow{animation:pulse-glow 3s infinite}
 .shk{animation:shakeC .22s infinite}
-canvas{touch-action:none}
-/* ── Прикраси заставки (ромби, іскри) ── */
 .dia{position:absolute;width:8px;height:8px;background:#a8854a;transform:rotate(45deg);left:-3.5px}
 .dia-r{left:auto;right:-4px;top:-3px;background:#8b1a2b;box-shadow:0 0 8px #ff2a5f}
 .ember{position:fixed;bottom:-10px;width:5px;height:5px;border-radius:50%;background:#ffb703;box-shadow:0 0 8px #ff2a5f;animation:rise linear infinite;pointer-events:none}
+/* фонові демони (приглушені, прозорі) */
+.amb{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.fl{position:absolute;left:0;top:0;animation:drift linear infinite;will-change:transform;opacity:.13;filter:saturate(.8)}
+/* логотип */
+.logo{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:clamp(46px,15vw,66px);letter-spacing:.34em;padding-left:.34em;line-height:1;background:linear-gradient(180deg,#fff 25%,#ffd27a 70%,#ff2a5f 130%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 22px rgba(255,42,95,.35))}
+.logo-s{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:20px;letter-spacing:.3em;background:linear-gradient(180deg,#fff,#ffd27a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.glass{background:linear-gradient(160deg,rgba(28,23,40,.8),rgba(11,9,17,.9));border:1px solid rgba(255,183,3,.2);border-radius:26px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.07);backdrop-filter:blur(12px)}
+.sbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border-radius:14px;font-weight:700;font-size:14px;transition:transform .15s}
+.sbtn:active{transform:scale(.97)}
+.sline{height:1px;background:linear-gradient(90deg,transparent,rgba(255,183,3,.6),transparent)}
 </style></head>
 <body class="bg-inkDark text-white font-sans antialiased min-h-screen flex flex-col select-none">
 
-<!-- ═════════ ЗАСТАВКА (стиль «постер»). Без кнопки: сама завантажується і сама веде на реєстрацію ═════════
-     Файли поруч з html: maska.MP4 (відео-фон), hero.png (твій персонаж, прозорий фон).
-     Ім'я героя і цитата — у CFG.hero нижче в скрипті. -->
+<div id="sat" style="position:fixed;left:0;top:0;width:0;visibility:hidden;padding-top:env(safe-area-inset-top,0px)"></div>
+<div id="amb" class="amb"></div>
+
+<!-- ═════════ ЗАСТАВКА ═════════ -->
 <div id="splash" class="fixed inset-0 z-[120] overflow-hidden transition-opacity duration-700" style="background:linear-gradient(135deg,#efe3cf,#e2d2b8);font-family:Georgia,serif">
  <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover"><source src="maska.MP4" type="video/mp4"></video>
  <div class="absolute inset-0" style="background:linear-gradient(90deg,rgba(236,222,200,.95) 0,rgba(236,222,200,.72) 45%,rgba(236,222,200,0) 80%)"></div>
  <img src="hero.png" onerror="this.remove()" class="absolute bottom-0 right-[-10%] h-[88%] w-auto max-w-none" style="filter:drop-shadow(0 0 30px rgba(0,0,0,.35))">
- <!-- вертикальна нитка: теж заповнюється по мірі завантаження -->
  <div class="absolute left-5 top-[5%] bottom-[5%] w-px" style="background:rgba(168,133,74,.55)"><div id="spV" class="absolute left-0 top-0 w-px" style="height:0;background:#8b1a2b;box-shadow:0 0 6px #8b1a2b"></div><i class="dia" style="top:-4px"></i><i class="dia" style="bottom:-4px"></i></div>
  <div class="absolute left-[11%] right-[34%] top-1/2 -translate-y-[40%]" style="color:#8b1a2b">
   <svg viewBox="0 0 24 24" width="30" height="30" class="mb-2"><path d="M12 2c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-6 1-9z" fill="#8b1a2b"/></svg>
   <div id="spName" style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;line-height:.95;font-size:clamp(40px,14vw,76px);letter-spacing:.02em;word-break:break-word"></div>
   <div class="mt-2 text-[11px] tracking-[.35em] uppercase" style="color:#a8854a">INKAI by YYOKAI</div>
-  <!-- горизонтальний бар: червона лінія з ромбом -->
   <div class="mt-4 relative h-[2px]" style="background:rgba(168,133,74,.5)"><div id="spBar" class="absolute left-0 top-0 h-full transition-all duration-200" style="width:8%;background:#8b1a2b;box-shadow:0 0 8px #8b1a2b"><i class="dia dia-r"></i></div></div>
   <div class="flex justify-between mt-3 text-[10px] tracking-[.25em] uppercase" style="color:#a8854a"><span id="spTxt">…</span><span id="spPct">0%</span></div>
   <div id="spQ" class="mt-5 text-[10px] leading-5 tracking-[.2em] uppercase"></div>
  </div>
 </div>
 
-<!-- ═════════ ОБОВ'ЯЗКОВИЙ НІКНЕЙМ (з'являється після першого входу) ═════════ -->
+<!-- ═════════ НІКНЕЙМ ═════════ -->
 <div id="nickov" class="hidden fixed inset-0 z-[110] bg-inkDark/95 flex items-center justify-center p-4">
  <div class="card rounded-3xl p-6 w-full max-w-sm space-y-3">
   <h2 class="text-xl font-black uppercase text-center" data-t="Обери нікнейм|Choose a nickname"></h2>
@@ -63,18 +76,21 @@ canvas{touch-action:none}
  </div>
 </div>
 
-<!-- ═════════ ШАПКА: валюти 文 монети, ⛩️ душі ═════════ -->
-<header class="sticky top-0 z-50 bg-inkDark/85 backdrop-blur-md border-b border-inkBorder px-4 py-3 flex items-center justify-between">
- <span class="font-black tracking-widest bg-gradient-to-r from-white via-gray-200 to-crimsonRed bg-clip-text text-transparent">INKAI ⛩️ YYOKAI</span>
- <div class="flex items-center space-x-2">
-  <div class="flex items-center bg-inkCard border border-inkBorder px-3 py-1 rounded-full text-xs font-bold space-x-1.5"><span class="text-neonGold">文</span><span id="hCoins" class="font-mono">0</span><span>⛩️</span><span id="hSouls" class="font-mono">0</span></div>
+<!-- ═════════ ШАПКА: 4 валюти 文 монети · ⛩️ душі · 💎 нефрит · 🏮 ліхтарі ═════════ -->
+<header class="sticky top-0 z-50 bg-inkDark/95 border-b border-inkBorder px-3 pb-2 flex items-center justify-between" style="padding-top:calc(env(safe-area-inset-top,0px) + .5rem)">
+ <span class="logo-s">INKAI</span>
+ <div class="flex items-center gap-1.5">
+  <div class="flex items-center bg-inkCard border border-inkBorder px-2 py-1 rounded-full text-[11px] font-bold gap-1">
+   <span class="text-neonGold">文</span><span id="hCoins" class="font-mono">0</span>
+   <span class="ml-1">⛩️</span><span id="hSouls" class="font-mono">0</span>
+   <span class="ml-1">💎</span><span id="hJade" class="font-mono">0</span>
+   <span class="ml-1">🏮</span><span id="hLan" class="font-mono">0</span></div>
   <button onclick="toggleMusic()" id="musBtn" class="px-2 py-1 rounded-lg bg-inkCard border border-inkBorder text-xs">🔊</button>
-  <button onclick="toggleLanguage()" id="langBtn" class="px-2.5 py-1 rounded-lg bg-inkCard border border-inkBorder text-xs font-bold text-gray-300">🇺🇦 UA</button>
+  <button onclick="toggleLanguage()" id="langBtn" class="px-2 py-1 rounded-lg bg-inkCard border border-inkBorder text-[11px] font-bold text-gray-300">🇺🇦</button>
  </div>
 </header>
 
-<!-- ═════════ ЕКРАНИ (кожен <section> — окрема вкладка; вміст малює JS) ═════════ -->
-<main class="flex-1 pb-24">
+<main class="flex-1 pb-24 relative z-10">
  <section id="view-play" class="view p-4 max-w-md mx-auto w-full space-y-4"></section>
  <section id="view-shop" class="view hidden p-4 max-w-md mx-auto w-full space-y-3"></section>
  <section id="view-chests" class="view hidden p-4 max-w-md mx-auto w-full space-y-3"></section>
@@ -84,38 +100,49 @@ canvas{touch-action:none}
  <section id="view-profile" class="view hidden p-4 max-w-md mx-auto w-full space-y-3"></section>
  <section id="view-admin" class="view hidden p-4 max-w-md mx-auto w-full space-y-3"></section>
 
- <!-- ЕКРАН ВХОДУ. Головне — Google/Apple в один дотик (пароль не потрібен). Email — прихований «запасний» варіант. -->
- <section id="view-auth" class="view hidden fixed inset-0 z-40 flex items-center justify-center p-4 bg-inkDark">
-  <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none"><source src="video/auth_bg.mp4" type="video/mp4"></video>
-  <div class="relative z-10 card rounded-3xl p-6 space-y-3 w-full max-w-sm bg-inkCard/90 backdrop-blur-md">
-   <div id="refBanner" class="hidden text-xs text-center bg-neonGold/10 border border-neonGold/30 text-neonGold rounded-xl py-2" data-t="🎁 Тебе запросив друг — бонус після реєстрації|🎁 A friend invited you — bonus after sign-up"></div>
-   <div id="inApp" class="hidden text-xs bg-crimsonRed/10 border border-crimsonRed/40 text-crimsonRed rounded-xl p-3" data-t="⚠️ Ти у вбудованому браузері (Instagram/Telegram). Google блокує там вхід. Натисни «⋯» → «Відкрити в Safari/Chrome».|⚠️ You're in an in-app browser (Instagram/Telegram). Google blocks sign-in there. Tap “⋯” → “Open in Safari/Chrome”."></div>
-   <h2 class="text-2xl font-black text-center uppercase" data-t="Увійти в INKAI|Sign in to INKAI"></h2>
-   <p class="text-[11px] text-gray-400 text-center" data-t="Один дотик — і гра запам'ятає тебе. Пароль вводити не треба.|One tap and the game remembers you. No password needed."></p>
-   <button onclick="social('g')" class="w-full py-3.5 rounded-xl bg-white text-black font-bold text-sm"><i class="fa-brands fa-google mr-2"></i><span data-t="Продовжити з Google|Continue with Google"></span></button>
-   <button onclick="social('a')" class="w-full py-3.5 rounded-xl bg-black border border-gray-600 font-bold text-sm"><i class="fa-brands fa-apple mr-2"></i><span data-t="Продовжити з Apple|Continue with Apple"></span></button>
-   <details class="text-xs text-gray-400"><summary class="cursor-pointer text-center" data-t="Інший спосіб (email)|Other way (email)"></summary>
-    <form onsubmit="authSubmit(event)" class="space-y-2 mt-2">
-     <input id="aEmail" type="email" required placeholder="Email" class="inp">
-     <input id="aPass" type="password" required minlength="6" data-p="Пароль (від 6 символів)|Password (6+ chars)" class="inp">
-     <button id="aBtn" class="btn w-full py-3"></button>
-    </form>
-    <button onclick="toggleAuth()" id="aTog" class="w-full text-xs text-neonGold mt-1"></button>
-   </details>
-   <button onclick="guest()" class="block mx-auto text-[11px] text-gray-500" data-t="Спробувати як гість (без нагород)|Try as guest (no prizes)"></button>
+ <!-- ЕКРАН ВХОДУ -->
+ <section id="view-auth" class="view hidden fixed inset-0 z-40 overflow-y-auto bg-inkDark">
+  <video autoplay muted loop playsinline class="fixed inset-0 w-full h-full object-cover opacity-30 pointer-events-none"><source src="video/auth_bg.mp4" type="video/mp4"></video>
+  <div class="fixed inset-0 pointer-events-none" style="background:radial-gradient(ellipse at 50% 0%,rgba(255,42,95,.22),transparent 60%),radial-gradient(ellipse at 50% 100%,rgba(59,7,100,.5),transparent 60%),linear-gradient(180deg,rgba(10,9,13,.4),rgba(10,9,13,.85))"></div>
+  <div id="ambA" class="amb"></div>
+  <div class="relative z-10 min-h-full flex flex-col items-center justify-between px-6 pb-8" style="padding-top:calc(env(safe-area-inset-top,0px) + 3rem)">
+   <div class="text-center w-full">
+    <div class="logo">INKAI</div>
+    <div class="flex items-center justify-center gap-3 mt-4"><span class="sline w-10"></span><span class="text-[10px] tracking-[.5em] text-gray-400 uppercase pl-[.5em]">by YYOKAI</span><span class="sline w-10"></span></div>
+   </div>
+   <div class="glass w-full max-w-sm space-y-3 my-8">
+    <div id="refBanner" class="hidden text-xs text-center bg-neonGold/10 border border-neonGold/30 text-neonGold rounded-xl py-2" data-t="🎁 Тебе запросив друг — бонус після реєстрації|🎁 A friend invited you — bonus after sign-up"></div>
+    <div id="inApp" class="hidden text-xs bg-crimsonRed/10 border border-crimsonRed/40 text-crimsonRed rounded-xl p-3" data-t="⚠️ Ти у вбудованому браузері (Instagram/Telegram). Google блокує там вхід. Натисни «⋯» → «Відкрити в Safari/Chrome».|⚠️ You're in an in-app browser (Instagram/Telegram). Google blocks sign-in there. Tap “⋯” → “Open in Safari/Chrome”."></div>
+    <div class="text-center"><h2 class="text-lg font-black uppercase tracking-[.2em]" data-t="Увійти|Sign in"></h2><p class="text-[11px] text-gray-400 mt-1" data-t="Один дотик — і гра запам'ятає тебе|One tap and the game remembers you"></p></div>
+    <button onclick="social('g')" class="sbtn bg-white text-black"><i class="fa-brands fa-google"></i><span data-t="Продовжити з Google|Continue with Google"></span></button>
+    <button onclick="social('a')" class="sbtn bg-black border border-gray-600"><i class="fa-brands fa-apple"></i><span data-t="Продовжити з Apple|Continue with Apple"></span></button>
+    <details class="text-xs text-gray-400"><summary class="cursor-pointer text-center py-1" data-t="Інший спосіб (email)|Other way (email)"></summary>
+     <form onsubmit="authSubmit(event)" class="space-y-2 mt-2">
+      <input id="aEmail" type="email" required placeholder="Email" class="inp">
+      <input id="aPass" type="password" required minlength="6" data-p="Пароль (від 6 символів)|Password (6+ chars)" class="inp">
+      <button id="aBtn" class="btn w-full py-3"></button>
+     </form>
+     <button onclick="toggleAuth()" id="aTog" class="w-full text-xs text-neonGold mt-1"></button>
+    </details>
+    <div class="sline"></div>
+    <div class="grid grid-cols-3 gap-2 text-center text-[10px] text-gray-300">
+     <div><div class="text-lg">⚔️</div><span data-t="60 катан|60 blades"></span></div>
+     <div><div class="text-lg">🎁</div><span data-t="Призи й тату|Prizes & tattoos"></span></div>
+     <div><div class="text-lg">👥</div><span data-t="Дуо-режим|Duo mode"></span></div>
+    </div>
+   </div>
+   <button onclick="guest()" class="text-[11px] text-gray-500 py-2" data-t="Спробувати як гість (без нагород)|Try as guest (no prizes)"></button>
   </div>
  </section>
 </main>
 
-<!-- ═════════ ІГРОВИЙ ЕКРАН (canvas) ═════════ -->
+<!-- ═════════ ІГРОВИЙ ЕКРАН ═════════ -->
 <div id="gm" class="hidden fixed inset-0 z-[80] bg-black">
  <canvas id="cv" class="w-full h-full block"></canvas>
- <div id="tm" class="absolute left-0 right-0 text-center text-3xl font-black font-mono pointer-events-none" style="top:calc(env(safe-area-inset-top,0px) + 8px)"></div>
  <button onclick="quitRound()" class="absolute right-3 w-9 h-9 rounded-full bg-black/60 border border-white/20 text-sm" style="top:calc(env(safe-area-inset-top,0px) + 8px)">✕</button>
- <div id="res" class="hidden absolute inset-0 bg-black/85 flex-col items-center justify-center p-6 text-center gap-3"></div>
+ <div id="res" class="hidden absolute inset-0 bg-black/55 flex-col items-center justify-center p-6 text-center gap-3"></div>
 </div>
 
-<!-- Реклама (rewarded). Реальну рекламну мережу підключити в функції ad() -->
 <div id="adOv" class="hidden fixed inset-0 z-[90] bg-black/80 items-center justify-center p-6">
  <div class="w-full max-w-xs card !border-neonGold/40 rounded-3xl text-center space-y-3 glow">
   <div class="text-4xl">📣</div><h3 id="adText" class="font-black"></h3>
@@ -124,13 +151,13 @@ canvas{touch-action:none}
   <button id="adX" onclick="adClose()" class="text-xs text-gray-500" data-t="Пізніше|Later"></button>
  </div>
 </div>
-<!-- Епічне відкриття призу з сундука + картка гравця + тост -->
+<!-- Рулетка сундука — смуга посеред екрана -->
+<div id="ro" class="hidden fixed inset-0 z-[93] bg-black/85 items-center justify-center p-3"></div>
 <div id="rev" class="hidden fixed inset-0 z-[95] bg-black/90 flex-col items-center justify-center text-center overflow-hidden"></div>
 <div id="pc" class="hidden fixed inset-0 z-[96] bg-black/80 items-center justify-center p-6" onclick="this.classList.replace('flex','hidden')"></div>
 <div id="toast" class="hidden fixed left-4 right-4 top-16 z-[97] card !border-neonGold/50 text-xs text-center"></div>
 
-<!-- Нижнє меню (7 вкладок) -->
-<nav class="fixed bottom-0 left-0 right-0 z-40 bg-inkDark/95 border-t border-inkBorder backdrop-blur-md px-1 py-2 flex justify-around">
+<nav class="fixed bottom-0 left-0 right-0 z-40 bg-inkDark/95 border-t border-inkBorder px-1 pt-2 flex justify-around" style="padding-bottom:calc(env(safe-area-inset-bottom,0px) + .5rem)">
  <button onclick="go('play')" class="nb flex flex-col items-center text-gray-400" data-g="play"><i class="fa-solid fa-gamepad"></i><span class="text-[9px] font-semibold mt-0.5" data-t="Гра|Play"></span></button>
  <button onclick="go('shop')" class="nb flex flex-col items-center text-gray-400" data-g="shop"><i class="fa-solid fa-store"></i><span class="text-[9px] font-semibold mt-0.5" data-t="Магазин|Shop"></span></button>
  <button onclick="go('chests')" class="nb flex flex-col items-center text-gray-400" data-g="chests"><i class="fa-solid fa-box-open"></i><span class="text-[9px] font-semibold mt-0.5" data-t="Сундуки|Chests"></span></button>
@@ -142,95 +169,85 @@ canvas{touch-action:none}
 
 <script type="module">
 /* ══════════════════════════════════════════════════════════════════════════
-   INKAI by YYOKAI — ЯК ЦЕ УСТРОЄНО (читай спочатку)
-   Усі місця, які ти змінюватимеш, позначені «🔧 ЗМІНИТИ».
-   Структура файлу:  0 Налаштування → 1 Firebase → 2 Допоміжне → 3 Дані гравця → 4 Каталоги (клинки, фони,
-   покращення, сундуки) → 5 Звук → 6 Навігація → 7 Заставка → 8 Головна → 9 Ігровий рух → 10 Результат і реклама →
-   11 Магазин → 12 Сундуки → 13 Друзі → 14 Рейтинг → 15 Нагороди → 16 Профіль і адмінка → 17 Вхід → 18 Старт.
+   INKAI by YYOKAI v6.  Місця для змін позначено «🔧».
+   Нове: 4 валюти, 60 катан зі своїми ефектами, 100 фонів, свитки-«бомби», 3 промахи/3 свитки = кінець,
+   3 таймерні сундуки (срібний/золотий/діамантовий), ціни ×2, без зуму, оптимізація canvas.
 
-   ПРАВИЛА FIRESTORE (Firebase → Firestore → Rules). Встав це, заміни ADMIN_UID на свій UID:
+   ПРАВИЛА FIRESTORE (замінити ADMIN_UID):
      rules_version='2'; service cloud.firestore { match /databases/{d}/documents {
        function admin(){ return request.auth.uid in ['ADMIN_UID']; }
        match /users/{u}   { allow read: if request.auth.uid==u || admin(); allow write: if request.auth.uid==u; }
        match /public/{u}  { allow read: if request.auth!=null; allow write: if request.auth.uid==u; }
        match /referrals/{u}{ allow read: if request.auth!=null; allow create: if request.auth.uid==u; }
-       match /daylog/{x}  { allow create: if request.auth.uid==request.resource.data.uid && request.resource.data.ts==request.time;
-                            allow read: if admin(); }
+       match /daylog/{x}  { allow create: if request.auth.uid==request.resource.data.uid && request.resource.data.ts==request.time; allow read: if admin(); }
        match /submissions/{s}{ allow read: if request.auth!=null && (resource.data.uid==request.auth.uid || admin());
-                            allow create: if request.auth.uid==request.resource.data.uid && request.resource.data.status=='pending';
-                            allow update: if admin(); }
+                            allow create: if request.auth.uid==request.resource.data.uid && request.resource.data.status=='pending'; allow update: if admin(); }
        match /claims/{c}  { allow create: if request.auth!=null; allow read, update: if admin(); }
        match /adEvents/{a}{ allow create: if request.auth!=null; }
        match /offers/{o}  { allow read: if true; allow write: if admin(); }
      }}
-   ВАЖЛИВО: гра рахує монети/XP у браузері гравця, тому технічно підкований гравець може їх підробити.
-   Надійні лише серверні дані: час реєстрації, час останнього візиту і журнал днів (daylog). Перед видачею
-   тату завжди перевіряй заявку в адмінці (там видно і серверні, і клієнтські дані).
+   ВАЖЛИВО: монети/XP/таймери сундуків живуть у браузері гравця — їх можна підробити. Перед видачею тату перевіряй заявку в адмінці.
    ══════════════════════════════════════════════════════════════════════════ */
 
 // ═══ 0. НАЛАШТУВАННЯ ═══
-// 🔧 ЗМІНИТИ: ключі Firebase (Firebase → Project settings → Your apps → Web app).
-//    Поки стоять PASTE_..., гра працює локально (вхід = гість, без збереження в хмарі).
-//    Також: Authentication → Sign-in method → увімкни Google та Apple; Authentication → Settings → Authorized domains → додай свій домен.
 const firebaseConfig={apiKey:"PASTE_API_KEY",authDomain:"PASTE_PROJECT_ID.firebaseapp.com",projectId:"PASTE_PROJECT_ID",storageBucket:"PASTE_PROJECT_ID.appspot.com",messagingSenderId:"PASTE_SENDER_ID",appId:"PASTE_APP_ID"};
 const CFG={
- hero:{name:"ТВОЄ ІМ'Я",quote:"Кожна лінія — це історія. Кожен ёкай — частина мене.|Every line tells a story. Every yokai is a part of me."}, // 🔧 ЗМІНИТИ: ім'я і цитата на заставці
- promo:{text:"Підпишись на Instagram YYOKAI|Follow YYOKAI on Instagram",url:"https://instagram.com/yyokai.tattoo"},          // 🔧 ЗМІНИТИ: посилання з реклами
- adEvery:3,                       // 🔧 обов'язкова реклама після кожного N-го раунду
- roundSec:60,                     // 🔧 тривалість раунду (секунди)
- offerReward:1000,                // 🔧 нагорода монетами за партнерське завдання
- offlineBaseMin:120,              // 🔧 скільки хвилин приносять «духи» поки тебе нема (без покращення «Нічний дозор»)
- adminHash:"__HASH__"             // SHA-256 пароля адмінки (сам пароль у коді не зберігається). Змінити: порахуй SHA-256 нового пароля.
+ hero:{name:"ТВОЄ ІМ'Я",quote:"Кожна лінія — це історія. Кожен ёкай — частина мене.|Every line tells a story. Every yokai is a part of me."}, // 🔧
+ promo:{text:"Підпишись на Instagram YYOKAI|Follow YYOKAI on Instagram",url:"https://instagram.com/yyokai.tattoo"},          // 🔧
+ adEvery:3,            // 🔧 обов'язкова реклама після кожного N-го раунду
+ offerReward:1000,     // 🔧 нагорода монетами за партнерське завдання
+ offlineBaseMin:120,
+ adminHash:"__HASH__"
 };
 window.CFG=CFG;
 
-// ═══ 1. FIREBASE (вантажиться у фоні, гра його не чекає) ═══
+// ═══ 1. FIREBASE ═══
 let FB={},app,auth,db,FBOK=false,authReady;const authReadyP=new Promise(r=>authReady=r);
 (async()=>{try{
  const B="https://www.gstatic.com/firebasejs/10.8.0/";
  const m=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-auth.js"),import(B+"firebase-firestore.js")]);
  FB=Object.assign({},...m);app=FB.initializeApp(firebaseConfig);auth=FB.getAuth(app);db=FB.getFirestore(app);
- FBOK=!firebaseConfig.apiKey.startsWith("PASTE");   // false = ключі ще не вставлені
+ FBOK=!firebaseConfig.apiKey.startsWith("PASTE");
  if(FBOK)initAuth();else authReady();
 }catch(e){authReady()}})();
 
 // ═══ 2. ДОПОМІЖНЕ ═══
 const $=i=>document.getElementById(i),R=Math.random,today=()=>new Date().toISOString().slice(0,10),sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const fmt=n=>Math.floor(n).toLocaleString();
-// esc() — ОБОВ'ЯЗКОВО для будь-якого тексту від гравців (нік тощо), інакше можна підсунути код у сторінку
+// Компактні великі числа: 1.2M, 3.4B, 5.6T…
+const fmt=n=>{n=Math.floor(n);if(n<1e6)return n.toLocaleString();let i=0;while(n>=1000&&i<5){n/=1000;i++}return(n<100?n.toFixed(1):Math.floor(n))+["","K","M","B","T","Q"][i]};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-// t("укр|eng") — переклад: ліва частина українською, права англійською. Новий текст пиши так само.
 let lang=localStorage.ink_lang||"ua";const t=s=>{const a=String(s).split("|");return lang=="ua"?a[0]:a[1]||a[0]};
 async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
 function toast(m){const e=$("toast");e.textContent=m;e.classList.remove("hidden");setTimeout(()=>e.classList.add("hidden"),4500)}
-const inApp=/Instagram|FBAN|FBAV|Telegram|TikTok|Line\//i.test(navigator.userAgent); // вбудований браузер → Google вхід заблокований
+const inApp=/Instagram|FBAN|FBAV|Telegram|TikTok|Line\//i.test(navigator.userAgent);
+// Забороняємо зум жестами (iOS ігнорує user-scalable=no)
+["gesturestart","gesturechange","gestureend"].forEach(n=>document.addEventListener(n,e=>e.preventDefault(),{passive:false}));
+document.addEventListener("touchmove",e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
+// Рухомі приглушені демони на фоні (CSS-transform, майже без навантаження)
+function mkAmb(el,n){const E=["🦊","👹","👺","🐸","💀","🐉"],N=["fox","oni","tengu","kappa","skull","dragon"];el.innerHTML=Array.from({length:n},(_,i)=>{const k=i%6,s=46+R()*50;return `<div class="fl" style="--x0:${R()*90}vw;--x1:${R()*90}vw;--rt:${(R()-.5)*160}deg;animation-duration:${22+R()*26}s;animation-delay:-${R()*40}s;width:${s}px;height:${s}px;font-size:${s*.8}px;line-height:${s}px;text-align:center"><img src="img/yokai/${N[k]}.png" data-e="${E[k]}" onerror="this.outerHTML=this.dataset.e" style="width:100%;height:100%;object-fit:contain"></div>`}).join("")}
 
-// ═══ 3. ДАНІ ГРАВЦЯ (S) — зберігаються в браузері і (після входу) у Firestore ═══
+// ═══ 3. ДАНІ ГРАВЦЯ ═══
 const def={
- mon:500,souls:10,            // монети 文 і душі ⛩️
- xp:0,rounds:0,kills:0,ads:0, // XP — головний показник для нагород і рейтингу
- days:1,streak:1,best:1,last:today(),dl:"", // days — усього днів у грі; streak — днів підряд; dl — коли востаннє писали у серверний журнал
- seen:Date.now(),             // коли гравець востаннє був у грі (для офлайн-доходу)
- nick:"",av:"fox",            // нік (обов'язковий) і аватар
- blade:0,bg:0,blades:[0],bgs:[0],   // обраний/придбані клинки та фони
- up:{},                       // рівні покращень { id: рівень }
- c:{x2:0,x3:0,plus:0,fz:0,chg:0},   // одноразові бустери (скільки штук/раундів)
- ch:[1,0,0,0],                // скільки сундуків кожного виду (бамбук, золото, легенда, міф)
- cp:[],                       // купони з сундуків (знижки/тату), що чекають заявки
- claimed:[],friends:0,offers:{}
+ mon:500,souls:10,jade:0,jd:0,ln:3,   // 4 валюти: 文 монети, ⛩️ душі, 💎 нефрит (jd), 🏮 ліхтарі (ln)
+ xp:0,rounds:0,kills:0,ads:0,
+ days:1,streak:1,best:1,last:today(),dl:"",
+ seen:Date.now(),nick:"",av:"fox",
+ blade:0,bg:0,blades:[0],bgs:[0],up:{},
+ c:{x2:0,x3:0,plus:0,fz:0,chg:0},
+ ck:{s:0,sn:0,sd:"",g:0,d:0},   // таймери сундуків: срібний (час, відкрито сьогодні, дата), золотий, діамантовий
+ bp:{},bpd:"",                  // скільки разів куплено бустер сьогодні (ціна ×2 за кожну покупку)
+ cp:[],claimed:[],friends:0,offers:{}
 };
-let S={...def,...JSON.parse(localStorage.ink_s5||"{}")};S.c={...def.c,...S.c};
-let user=null,mode="reg",cur="play",shopT="b",bm=1,OFFERS=[],FR=[],opening=0,adminOK=false,guestMode=false,splashDone=false,PL=[];
-const refId=new URLSearchParams(location.search).get("ref")||localStorage.ink_ref||""; // реферальний код з посилання
+delete def.jade;
+let S={...def,...JSON.parse(localStorage.ink_s5||"{}")};S.c={...def.c,...S.c};S.ck={...def.ck,...S.ck};S.bp=S.bp||{};
+let user=null,mode="reg",cur="play",shopT="b",bm=1,bgN=20,OFFERS=[],FR=[],opening=0,adminOK=false,guestMode=false,splashDone=false,PL=[];
+const refId=new URLSearchParams(location.search).get("ref")||localStorage.ink_ref||"";
 if(new URLSearchParams(location.search).get("ref"))localStorage.ink_ref=refId;
-const isReal=()=>FBOK&&user&&user.uid!="local_guest";   // справжній акаунт (не гість)
-const lvl=x=>1+Math.floor(Math.sqrt(x/300));            // 🔧 формула рівня від XP
-const U=k=>S.up[k]||0;                                  // поточний рівень покращення
+const isReal=()=>FBOK&&user&&user.uid!="local_guest";
+const lvl=x=>1+Math.floor(Math.sqrt(x/300));
+const U=k=>S.up[k]||0;
 function save(){localStorage.ink_s5=JSON.stringify(S)}
-// Нова доба: рахуємо дні і серію «підряд»
-(function newDay(){const d=today();if(S.last!==d){const y=new Date(Date.now()-864e5).toISOString().slice(0,10);S.streak=S.last===y?S.streak+1:1;S.best=Math.max(S.best,S.streak);S.days++;S.last=d}})();
-
-// Запис профілю у хмару: users (приватне, бачить адмін) + public (для рейтингу ТОП-100)
+(function newDay(){const d=today();if(S.last!==d){const y=new Date(Date.now()-864e5).toISOString().slice(0,10);S.streak=S.last===y?S.streak+1:1;S.best=Math.max(S.best,S.streak);S.days++;S.last=d}if(S.bpd!==d){S.bpd=d;S.bp={}}})();
 async function push(){
  if(!isReal()||!S.nick)return;
  const{offers,friends,...r}=S;
@@ -239,91 +256,97 @@ async function push(){
   await FB.setDoc(FB.doc(db,"public",user.uid),{nick:S.nick,nickLc:S.nick.toLowerCase(),av:S.av,xp:S.xp,lvl:lvl(S.xp),days:S.days,coins:S.mon,ts:FB.serverTimestamp()},{merge:true});
  }catch(e){}
 }
-// Серверний журнал днів (час ставить сервер → підробити минулі дні неможливо) — адмінка по ньому рахує «дні підряд»
 async function logDay(){if(!isReal()||S.dl===today())return;S.dl=today();try{await FB.addDoc(FB.collection(db,"daylog"),{uid:user.uid,ts:FB.serverTimestamp()})}catch(e){}}
-setInterval(()=>{S.seen=Date.now();save();push()},15000);          // автозбереження кожні 15 с
+setInterval(()=>{S.seen=Date.now();save();push()},20000);
 addEventListener("visibilitychange",()=>{if(document.hidden){S.seen=Date.now();save();push()}});
 
 // ═══ 4. КАТАЛОГИ ═══
-/* 4.1 КЛИНКИ: 50 штук = 10 «стилів дихання» × 5 «форм». Імена натхненні клинками й техніками аніме про вбивць демонів
-   (стихії: вода, полум'я, грім, вітер, камінь, туман, кохання, змія, місяць, сонце). Це власні назви, не точні офіційні:
-   точні назви техніки з аніме — чужа інтелектуальна власність, з ними гру з призами можуть заблокувати.
-   🔧 ЗМІНИТИ: назви — у масивах STY і FRM (укр|eng). Ціна — у формулі price. */
-const STY=["Води|Water","Полум'я|Flame","Грому|Thunder","Вітру|Wind","Каменю|Stone","Туману|Mist","Кохання|Love","Змії|Serpent","Місяця|Moon","Сонця|Sun"];
-const FRM=["Перша форма: Світанок|Form I: Dawn","Друга форма: Хвиля|Form II: Wave","Третя форма: Вихор|Form III: Vortex","Четверта форма: Танець|Form IV: Dance","П'ята форма: Фінальний удар|Form V: Final Strike"];
-const BL=[];
-STY.forEach((p,a)=>FRM.forEach((f,b)=>{
- const i=a*5+b, hue=(a*36+b*7)%360;
- BL.push({i,hue,w:3+a*.8+b*.4,                                  // w — товщина сліду
-  price:i===0?0:Math.round(300*1.32**i/10)*10,                  // 🔧 ціна клинка (перший безкоштовний)
-  sc:1+i*.03,                                                   // 🔧 множник очків: +3% за кожен наступний
-  smoke:`hsl(${hue},100%,60%)`});                               // колір сліду
-}));
-const bname=b=>t("Клинок|Blade")+" "+t(STY[b.i/5|0])+" · "+t(FRM[b.i%5]);
+// Зображення (до заставки!): ёкаї, свиток
+const YK=["🦊","👹","👺","🐸","💀","🐉"];
+const YIMG={};[["🦊","fox"],["👹","oni"],["👺","tengu"],["🐸","kappa"],["💀","skull"],["🐉","dragon"],["📜","scroll"]].forEach(([e,n])=>{const i=new Image();i.src="img/yokai/"+n+".png";YIMG[e]=i});
+const BGI={},bgImg=i=>BGI[i]||(BGI[i]=Object.assign(new Image(),{src:"img/bg/"+i+".png"})),rdy=i=>i&&i.complete&&i.naturalWidth;
 
-/* 4.2 ФОНИ (епохи Японії). Формат: [назва, опис, [колір зверху, колір знизу], емодзі, ціна]. PNG-фон: img/bg/0.png … 7.png */
-const BG=[
- ["Асука|Asuka","Спокій і ясність старих храмів|Calm of old temples",["#1e3a5f","#0a1624"],"🏯",0],
- ["Нара|Nara","Перша столиця: олені та монети|First capital: deer & coins",["#14532d","#052e16"],"🦌",2500],
- ["Хэйан|Heian","Епоха нічних духів|Age of night spirits",["#4c1d95","#1a0b2e"],"🌙",8000],
- ["Камакура|Kamakura","Самураї та Дзен: сила у тиші|Samurai & Zen: strength in silence",["#7f1d1d","#2a0a0a"],"⚔️",22000],
- ["Муроматі|Muromachi","Сад каміння та театр Но|Rock gardens & Noh theatre",["#374151","#0b0f14"],"🎭",55000],
- ["Сенгоку|Sengoku","Війна країн: вогонь і замки|Warring States: fire & castles",["#9a3412","#240a02"],"🔥",120000],
- ["Едо|Edo","Мир Токугава: сакура і місто|Tokugawa peace: sakura & city",["#9d174d","#2a0516"],"🌸",280000],
- ["Мейдзі|Meiji","Нова ера: неон і залізо|New era: neon & iron",["#0e7490","#04161c"],"🏮",600000]
+/* 4.1 КЛИНКИ (60). [назва укр|eng, колір1, колір2, ефект]. Ефекти: n звичайний, gold золото з іскрами, void «чорна діра»,
+   rb веселка, fire вогонь, ice лід, bolt блискавка, blood кров, jade нефрит, sakura пелюстки, neon неон, star зорі.
+   Ціна: перші 10 — рівно ×2 кожна наступна, далі ×1.5 (інакше на 60-й катані було б 10^20). 🔧 Змінюй тут. */
+const BLD=[
+["Сталь Асука|Asuka Steel","#cfd8e3","#8fa3b8","n"],["Бронза Нари|Nara Bronze","#cd7f32","#7a4a1c","n"],["Червона Хурма|Crimson Persimmon","#ff3b30","#7a0f0a","n"],
+["Смарагд Бамбука|Bamboo Emerald","#2ecc71","#0b6b3a","n"],["Лазур Хвилі|Wave Azure","#1e90ff","#0a2f6b","n"],["Фіалка Тенгу|Tengu Violet","#9b5cff","#3b1a8a","n"],
+["Золото Імператора|Emperor Gold","#ffd24a","#b8860b","gold"],["Чорна діра|Black Hole","#000000","#8b5cf6","void"],["Веселка Кіцуне|Kitsune Rainbow","#fff","#fff","rb"],
+["Полум'я Они|Oni Flame","#ff7a00","#ff1a00","fire"],["Лід Юкі-онни|Yuki-onna Ice","#bff3ff","#3aa0ff","ice"],["Грім Райдзіна|Raijin Thunder","#fff176","#2979ff","bolt"],
+["Кров Сьогуна|Shogun Blood","#b30000","#3a0000","blood"],["Нефрит Дракона|Dragon Jade","#00c9a7","#006b5a","jade"],["Сакура Едо|Edo Sakura","#ffb7d5","#ff5c99","sakura"],
+["Неон Мейдзі|Meiji Neon","#00f0ff","#ff00e5","neon"],["Зоряний Шлях|Milky Way","#ffffff","#4b3fd1","star"],["Срібло Місяця|Moon Silver","#e8eef7","#9aa7ba","n"],
+["Мідь Каппи|Kappa Copper","#e07b39","#3e2a14","n"],["Отрута Змії|Serpent Venom","#b6ff00","#3d6b00","n"],["Іржавий Ронін|Rusty Ronin","#8c4a2f","#3a1d10","n"],
+["Пурпур Хэйан|Heian Purple","#c026d3","#4a044e","n"],["Рожевий кварц|Rose Quartz","#ffc4d6","#f06292","n"],["Бірюза Моря|Sea Turquoise","#40e0d0","#0e6b6b","n"],
+["Чорнильний туман|Ink Mist","#222233","#9a9ab8","void"],["Сонце Аматерасу|Amaterasu Sun","#fff3b0","#ff9f1c","gold"],["Тінь Цукуйомі|Tsukuyomi Shadow","#0b0b1a","#6a5acd","void"],
+["Магма Асо|Aso Magma","#ff4500","#5a0f00","fire"],["Крижаний Дракон|Frost Dragon","#e0ffff","#00bfff","ice"],["Зелений Грім|Green Lightning","#b6ff6a","#00ff9d","bolt"],
+["Червона Лілія|Red Spider Lily","#ff0044","#ffffff","n"],["Аметист|Amethyst Crystal","#d9b3ff","#7c3aed","n"],["Оніксова Ніч|Onyx Night","#111111","#ff2a5f","void"],
+["Платина Сьогуна|Shogun Platinum","#f5f5ff","#b0b0d0","star"],["Бурштин Лиса|Fox Amber","#ffbf00","#a65c00","gold"],["Золота Мозаїка|Gold Mosaic","#ffd700","#fff3a0","gold"],
+["Пекельний Вогонь|Hell Fire","#ff0000","#ffcc00","fire"],["Лазурний Грім|Azure Thunder","#7df9ff","#0033ff","bolt"],["Криваво-місячний|Blood Moon","#ff3355","#1a0010","blood"],
+["Нефритовий Імператор|Jade Emperor","#7dffb2","#00a86b","jade"],["Лотос|Lotus Bloom","#ffd1f0","#ff7ac8","sakura"],["Кібер-Ронін|Cyber Ronin","#39ff14","#ff00aa","neon"],
+["Галактика Они|Oni Galaxy","#8a2be2","#00ffff","star"],["Окис Міді|Verdigris","#43b3ae","#7a4f2a","n"],["Дим Вулкана|Volcano Smoke","#4a4a4a","#ff6a00","fire"],
+["Райдужний Дракон|Rainbow Dragon","#fff","#fff","rb"],["Чорне Золото|Black Gold","#1a1a1a","#ffd700","void"],["Біла Лисиця|White Fox","#ffffff","#ffd9a8","star"],
+["Синій Ронін|Blue Ronin","#3d5afe","#1a237e","n"],["Цитрус Каппи|Kappa Citrus","#c6ff00","#ff9100","n"],["Фіолетова Блискавка|Violet Lightning","#e040fb","#536dfe","bolt"],
+["Червоний Нефрит|Red Jade","#ff5252","#7f0000","jade"],["Снігова Сакура|Snow Sakura","#ffffff","#ffc0e0","sakura"],["Чорний Дракон|Black Dragon","#000000","#00e5ff","void"],
+["Дзеркало Безодні|Abyss Mirror","#0f2027","#5eead4","void"],["Золотий Дракон|Golden Dragon","#ffea00","#ff6d00","gold"],["Нічне Пекло|Night Inferno","#2b0057","#ff2d00","fire"],
+["Космічна Сакура|Cosmic Sakura","#ff8ad8","#5b2cff","sakura"],["Бог Блискавок|Thunder God","#ffffff","#ffee00","bolt"],["Абсолют|The Absolute","#fff","#fff","rb"]
 ];
+const FXI={n:"",gold:"✨",void:"🕳",rb:"🌈",fire:"🔥",ice:"❄️",bolt:"⚡",blood:"🩸",jade:"💠",sakura:"🌸",neon:"🔮",star:"⭐"};
+const BL=BLD.map((d,i)=>({i,nm:d[0],c1:d[1],c2:d[2],fx:d[3],w:3+Math.min(i,40)*.07,price:i==0?0:Math.round(i<=10?250*2**(i-1):128000*1.5**(i-10)),sc:1+i*.04}));
+const bname=b=>t(b.nm);
+const bcss=b=>b.fx=="rb"?"linear-gradient(90deg,#f00,#fa0,#ff0,#0f0,#0ff,#00f,#f0f)":b.fx=="void"?`linear-gradient(90deg,#000 30%,${b.c2})`:`linear-gradient(90deg,${b.c1},${b.c2})`;
+const bar=b=>`<div class="h-3 rounded-full" style="background:${bcss(b)};box-shadow:0 0 10px ${b.fx=="rb"?"#f0f":b.c2};${b.fx=="void"?"border:1px solid "+b.c2:""}"></div>`;
 
-/* 4.3 АВАТАРИ (вибираються в профілі, видно в рейтингу). Емодзі працюють одразу; свої PNG кладеш як img/av/<id>.png (fox.png, oni.png ...) */
+/* 4.2 ФОНИ (100) = 20 локацій × 5 станів. Ціна: перші 8 — ×2, далі ×1.2. PNG-фон: img/bg/<номер>.png (підтягується лише для обраного) */
+const LOC=[["Храм Асука|Asuka Temple","🏯"],["Ліс Нари|Nara Forest","🦌"],["Бамбуковий гай|Bamboo Grove","🎋"],["Гора Фудзі|Mount Fuji","🗻"],["Ісукусіма|Itsukushima","⛩️"],["Місто Едо|Edo City","🏮"],["Замок Хімедзі|Himeji Castle","🏰"],["Сад каміння|Rock Garden","🪨"],["Водоспад|Waterfall","🌊"],["Алея сакур|Sakura Alley","🌸"],["Цвинтар ёкаїв|Yokai Graveyard","💀"],["Лисячі врата|Fox Gates","🦊"],["Печера Они|Oni Cave","👹"],["Небо дракона|Dragon Sky","🐉"],["Острів Рюгу|Ryugu Isle","🐚"],["Пік Тенгу|Tengu Peak","👺"],["Нічний ринок|Night Market","🍜"],["Сніжне село|Snow Village","❄️"],["Вулкан Асо|Mount Aso","🌋"],["Місячний палац|Moon Palace","🌙"]];
+const VAR=["Світанок|Dawn","День|Day","Захід|Sunset","Ніч|Night","Туман|Mist"];
+const BG=Array.from({length:100},(_,i)=>{const l=i%20,v=i/20|0,h=(l*18+v*7)%360,P=[[h+20,70,38,60,12],[h,60,40,50,14],[(h+340)%360,80,42,55,10],[(h+220)%360,60,24,60,6],[h,15,34,25,12]][v],[a,b]=LOC[l][0].split("|"),[c,d]=VAR[v].split("|");
+ return[a+" · "+c+"|"+b+" · "+d,VAR[v],[`hsl(${P[0]},${P[1]}%,${P[2]}%)`,`hsl(${(P[0]+25)%360},${P[3]}%,${P[4]}%)`],LOC[l][1],i==0?0:Math.round(2000*(i<=8?2**(i-1):128*1.2**(i-8)))]});
+
 const AVS=[["fox","🦊"],["oni","👹"],["tengu","👺"],["kappa","🐸"],["skull","💀"],["dragon","🐉"],["cat","🐱"],["sakura","🌸"],["katana","⚔️"],["torii","⛩️"],["mask","🎭"],["ninja","🥷"]];
 const avHTML=id=>{const a=AVS.find(x=>x[0]==id)||AVS[0];return `<img src="img/av/${a[0]}.png" data-e="${a[1]}" onerror="this.outerHTML=this.dataset.e" class="w-full h-full object-cover">`};
 
-/* 4.4 ПОКРАЩЕННЯ (постійні, як у кліку́ері). Формат: [id, іконка, назва, опис ефекту НА РІВЕНЬ, базова ціна, множник ціни, макс. рівень, (дохід 文/с за рівень — тільки для «духів»)].
-   Ціна рівня = базова × множник^рівень. 🔧 ЗМІНИТИ: балансуй ціни/макс. рівень тут. Сам ефект кожного id прописаний у розділі 9 (шукай U("id")). */
+/* 4.3 ПОКРАЩЕННЯ. Ціна рівня = база × 2^рівень (як просив). Через це максимум рівнів скорочено (див. рядок нижче). */
 const UP=[
- ["s1","👻","Дух-помічник|Helper spirit","+1 文/с, працює і коли ти не граєш|+1 coin/s, works while you're away",100,1.18,100,1],
- ["s2","🐸","Каппа-торговець|Kappa merchant","+5 文/с|+5 coins/s",1500,1.2,80,5],
- ["s3","🦊","Лисиця-касир|Fox cashier","+25 文/с|+25 coins/s",12000,1.22,60,25],
- ["s4","👹","Они-коваль|Oni smith","+120 文/с|+120 coins/s",90000,1.24,50,120],
- ["s5","🐉","Дракон-скарбник|Dragon treasurer","+700 文/с|+700 coins/s",600000,1.26,40,700],
- ["coin","💰","Золота кисть|Golden brush","+10% монет за розріз|+10% coins per cut",150,1.45,40],
- ["combo","🔗","Ланцюг комбо|Combo chain","+0.02 до множника комбо|+0.02 combo multiplier",200,1.5,30],
- ["cwin","⏳","Вікно комбо|Combo window","+40 мс на комбо|+40ms combo window",180,1.45,20],
- ["crit","💥","Критичний розріз|Critical slash","+3% шанс подвійної сили (×3)|+3% chance of ×3 hit",300,1.5,25],
- ["critm","🔥","Сила крита|Crit power","+0.2 до множника крита|+0.2 crit multiplier",500,1.55,25],
- ["x2","🎲","Подвійна монета|Double coin","+2% шанс ×2 монет за розріз|+2% chance of ×2 coins per cut",400,1.5,25],
- ["time","⏱","Довгий раунд|Longer round","+2 с до раунду|+2s round time",400,1.6,15],
- ["frz","⚡","Тривале шаленство|Long frenzy","+0.5 с шаленства|+0.5s frenzy",350,1.5,20],
- ["frth","🌀","Швидке шаленство|Quick frenzy","−1 комбо до шаленства кожні 3 рівні|−1 combo to frenzy every 3 levels",600,1.8,12],
- ["boss","👑","Вбивця босів|Boss slayer","+5% шанс подвійного удару по босу|+5% double hit on boss",450,1.55,20],
- ["bossr","🏆","Трофей боса|Boss trophy","+10% очок за боса|+10% boss points",500,1.5,25],
- ["soul","⛩️","Збирач душ|Soul collector","+1 душа за боса|+1 soul per boss",700,1.6,15],
- ["hit","🎯","Широке лезо|Wide blade","+3% радіус ураження|+3% hit radius",250,1.45,20],
- ["spawn","🌪","Потік ёкаїв|Yokai flow","+4% швидше з'являються|+4% faster spawn",300,1.5,20],
- ["slow","🕰","Час Тэнгу|Tengu time","+2% повільніше падіння|+2% slower fall",350,1.5,15],
- ["start","🚀","Швидкий старт|Fast start","+30 очок на старті раунду|+30 starting points",250,1.5,30],
- ["end","🎁","Фінальний бонус|End bonus","+3% монет за раунд|+3% round coins",300,1.5,40],
- ["chest","📦","Нюх на сундуки|Chest sense","−2% до порогів сундуків|−2% chest score thresholds",800,1.7,15],
- ["off","😴","Нічний дозор|Night watch","+15 хв офлайн-доходу|+15 min offline income",500,1.6,16]
+ ["s1","👻","Дух-помічник|Helper spirit","+1 文/с, працює й офлайн|+1 coin/s, works offline",100,2,20,1],
+ ["s2","🐸","Каппа-торговець|Kappa merchant","+5 文/с|+5 coins/s",1500,2,20,5],
+ ["s3","🦊","Лисиця-касир|Fox cashier","+25 文/с|+25 coins/s",12000,2,20,25],
+ ["s4","👹","Они-коваль|Oni smith","+120 文/с|+120 coins/s",90000,2,20,120],
+ ["s5","🐉","Дракон-скарбник|Dragon treasurer","+700 文/с|+700 coins/s",600000,2,20,700],
+ ["coin","💰","Золота кисть|Golden brush","+10% монет за розріз|+10% coins per cut",150,2,12],
+ ["combo","🔗","Ланцюг комбо|Combo chain","+0.02 до множника комбо|+0.02 combo multiplier",200,2,12],
+ ["cwin","⏳","Вікно комбо|Combo window","+40 мс на комбо|+40ms combo window",180,2,12],
+ ["crit","💥","Критичний розріз|Critical slash","+3% шанс ×3|+3% chance of ×3 hit",300,2,12],
+ ["critm","🔥","Сила крита|Crit power","+0.2 до множника крита|+0.2 crit multiplier",500,2,12],
+ ["x2","🎲","Подвійна монета|Double coin","+2% шанс ×2 за розріз|+2% chance of ×2 per cut",400,2,12],
+ ["time","🛡","Міцне серце|Tough heart","+1 життя кожні 5 рівнів|+1 life every 5 levels",800,2,10],
+ ["frz","⚡","Тривале шаленство|Long frenzy","+0.5 с шаленства|+0.5s frenzy",350,2,12],
+ ["frth","🌀","Швидке шаленство|Quick frenzy","−1 комбо до шаленства кожні 3 рівні|−1 combo to frenzy every 3 levels",600,2,9],
+ ["boss","👑","Вбивця босів|Boss slayer","+5% подвійного удару по босу|+5% double hit on boss",450,2,12],
+ ["bossr","🏆","Трофей боса|Boss trophy","+10% очок за боса|+10% boss points",500,2,12],
+ ["soul","⛩️","Збирач душ|Soul collector","+1 душа за боса|+1 soul per boss",700,2,10],
+ ["hit","🎯","Широке лезо|Wide blade","+3% радіус ураження|+3% hit radius",250,2,12],
+ ["spawn","🌪","Потік ёкаїв|Yokai flow","+4% частіше з'являються|+4% faster spawn",300,2,12],
+ ["slow","🕰","Час Тенгу|Tengu time","+2% повільніше падіння|+2% slower fall",350,2,12],
+ ["start","🚀","Швидкий старт|Fast start","+30 очок на старті|+30 starting points",250,2,12],
+ ["end","🎁","Фінальний бонус|End bonus","+3% монет за раунд|+3% round coins",300,2,12],
+ ["chest","📦","Скарбничка|Treasury","+3% монет із сундуків|+3% chest coins",800,2,12],
+ ["off","😴","Нічний дозор|Night watch","+15 хв офлайн-доходу|+15 min offline income",500,2,12]
 ];
-const upCost=(u,l)=>Math.floor(u[4]*u[5]**l);
-const mile=l=>2**[10,25,50,100].filter(x=>l>=x).length;           // як у клікерах: ×2 дохід на 10/25/50/100 рівнях
+const upCost=(u,l)=>Math.floor(u[4]*2**l);
+const mile=l=>2**[5,10,15,20].filter(x=>l>=x).length;
 const idleRate=()=>UP.filter(u=>u[7]).reduce((s,u)=>s+U(u[0])*u[7]*mile(U(u[0])),0);
-/* 4.5 ОДНОРАЗОВІ БУСТЕРИ: [id, іконка, назва, ціна, скільки додає]. 🔧 ЗМІНИТИ ціни тут. */
+/* 4.4 БУСТЕРИ: [id, іконка, назва, ціна, кількість]. Ціна ×2 за кожну покупку протягом дня. */
 const BS=[
  ["x2","✖️2","Подвоєння монет на 3 раунди|Double coins for 3 rounds",1200,3],
  ["x3","✖️3","Ярість Они: ×3 монет у наступному раунді|Oni rage: ×3 coins next round",4000,1],
- ["plus","⏱+15","+15 секунд у наступному раунді|+15s next round",800,1],
+ ["plus","🛡","Додаткове життя: 4 промахи замість 3|Extra life: 4 misses instead of 3",800,1],
  ["fz","⚡","Старт раунду з 8 с шаленства|Start with 8s frenzy",1000,1],
- ["chg","🎁","Гарантований бамбуковий сундук після раунду|Guaranteed bamboo chest after the round",1500,1]
+ ["chg","⏭","Скинути таймер срібного сундука|Reset silver chest timer",1500,1]
 ];
-/* 4.6 СУНДУКИ: [іконка, назва, ціна монет, очки в раунді для отримання, колір рідкості (індекс RAR), ціна в душах]. PNG: img/chest/bamboo|gold|legend|mythic.png */
-const CHT=[["🎋","Бамбуковий|Bamboo",800,300,0,8],["📦","Золотий|Gold",3500,800,2,25],["🐲","Легендарний|Legendary",15000,1600,3,100],["⛩️","Міфічний|Mythic",60000,2600,4,300]];
-const CHF=["bamboo","gold","legend","mythic"],RAR=["#6b7280","#3b82f6","#a855f7","#ffb703","#ff2a5f"];
-const thr=k=>Math.round(CHT[k][3]*(1-.02*U("chest")));            // поріг очків з урахуванням покращення
-const YK=["🦊","👹","👺","🐸","💀","🐉"];                           // ёкаї, що літають. PNG: img/yokai/fox|oni|tengu|kappa|skull|dragon.png
+const bsCost=b=>b[3]*2**(S.bp[b[0]]||0);
 
 // ═══ 5. ЗВУК ═══
-// 🔧 ЗМІНИТИ: шляхи до твоїх файлів. Нема файлу → грає тихий синтез, гра не ламається.
 const MUS={menu:"music/menu.mp3",battle:"music/battle.mp3"},PENT=[0,2,4,7,9];
 let music=localStorage.ink_mus!=0,mTrack="menu",mStarted=0,synthT=null;const mA={};
 Object.keys(MUS).forEach(k=>{const a=new Audio(MUS[k]);a.loop=true;a.volume=0;a.preload="auto";a.onerror=()=>{a.bad=1};mA[k]=a});
@@ -333,9 +356,7 @@ function fade(a,to,done){const s0=a.volume,t0=performance.now(),f=n=>{const p=Ma
 function synth(k){let n=0;synthT=setInterval(()=>{if(!music)return;if(k=="menu")tone(220*2**(PENT[R()*5|0]/12)*(R()<.5?1:2),2.2,"sine",.05);else{n++;if(n%4==1)tone(70,.25,"sine",.18);tone(110*2**([0,3,5,7,10][n%5]/12),.2,"sawtooth",.04)}},k=="menu"?1300:260)}
 function setMusic(k){mTrack=k;if(!mStarted)return;clearInterval(synthT);Object.keys(mA).forEach(n=>{const a=mA[n];if(n==k&&music){a.play().catch(()=>{});fade(a,.5)}else fade(a,0,()=>a.pause())});if(music&&mA[k].bad)synth(k)}
 function toggleMusic(){music=!music;localStorage.ink_mus=music?1:0;$("musBtn").textContent=music?"🔊":"🔇";setMusic(mTrack)}
-// Браузер дозволяє звук лише після першого дотику — тому музика стартує від першого тапу будь-де
 addEventListener("pointerdown",()=>{if(mStarted)return;mStarted=1;Object.values(SA).forEach(a=>a.load());try{window.AC=window.AC||new (window.AudioContext||window.webkitAudioContext)();AC.resume()}catch(e){}setMusic(mTrack)},{capture:true});
-// Звуки ефектів: slash — розріз, boss — удар по босу, tick — клац рулетки, reveal — відкриття призу
 const SFXF={slash:"sfx/slash.mp3",boss:"sfx/boss.mp3",tick:"sfx/tick.mp3",reveal:"sfx/reveal.mp3"},SA={};
 Object.keys(SFXF).forEach(k=>{const a=new Audio(SFXF[k]);a.preload="auto";a.onerror=()=>{a.bad=1};SA[k]=a});
 function sfx(k,fb){const a=SA[k];if(a&&!a.bad){const c=a.cloneNode();c.volume=.8;c.play().catch(()=>{a.bad=1;fb&&fb()})}else if(fb)fb()}
@@ -343,33 +364,30 @@ function testSnd(k){const a=SA[k]||mA[k];if(!a)return;const c=a.cloneNode();c.vo
 const sndStat=()=>Object.entries({...SFXF,...MUS}).map(([k,u])=>{const a=SA[k]||mA[k];return `<div class="flex justify-between text-[11px]"><span>${u}</span><span>${a.bad?"❌":"✅"} <button class="underline ml-2" onclick="testSnd('${k}')">▶</button></span></div>`}).join("");
 
 // ═══ 6. НАВІГАЦІЯ І МОВА ═══
-// Кожна вкладка = функція, що малює її вміст. Додаєш нову вкладку: <section id="view-xxx"> + рядок тут + кнопка в <nav>.
 const RV={play:rPlay,shop:rShop,chests:rChests,friends:rFriends,rewards:rRewards,rating:rRating,profile:rProfile,admin:rAdmin,auth:()=>{}};
-function hdr(){$("hCoins").textContent=fmt(S.mon);$("hSouls").textContent=fmt(S.souls)}
-function rend(){hdr();const f=RV[cur];if(f&&!(cur=="chests"&&opening))f()}   // під час прокрутки сундука не перемальовуємо
-function go(v){cur=v;document.querySelectorAll(".view").forEach(e=>e.classList.add("hidden"));const el=$("view-"+v);if(el)el.classList.remove("hidden");document.querySelectorAll(".nb").forEach(b=>{const a=b.dataset.g==v;b.classList.toggle("text-crimsonRed",a);b.classList.toggle("text-gray-400",!a)});rend()}
-function tr(){document.querySelectorAll("[data-t]").forEach(e=>e.textContent=t(e.dataset.t));document.querySelectorAll("[data-p]").forEach(e=>e.placeholder=t(e.dataset.p));$("langBtn").textContent=lang=="ua"?"🇺🇦 UA":"🇬🇧 EN";authMode(mode);if(!splashDone)$("spQ").textContent=t(CFG.hero.quote)}
+function hdr(){$("hCoins").textContent=fmt(S.mon);$("hSouls").textContent=fmt(S.souls);$("hJade").textContent=fmt(S.jd);$("hLan").textContent=fmt(S.ln)}
+function rend(){hdr();const f=RV[cur];if(f&&!(cur=="chests"&&opening))f()}
+function go(v){cur=v;document.querySelectorAll(".view").forEach(e=>e.classList.add("hidden"));const el=$("view-"+v);if(el)el.classList.remove("hidden");document.querySelectorAll(".nb").forEach(b=>{const a=b.dataset.g==v;b.classList.toggle("text-crimsonRed",a);b.classList.toggle("text-gray-400",!a)});$("amb").style.display=v=="play"?"block":"none";window.scrollTo(0,0);rend()}
+function tr(){document.querySelectorAll("[data-t]").forEach(e=>e.textContent=t(e.dataset.t));document.querySelectorAll("[data-p]").forEach(e=>e.placeholder=t(e.dataset.p));$("langBtn").textContent=lang=="ua"?"🇺🇦":"🇬🇧";authMode(mode);if(!splashDone)$("spQ").textContent=t(CFG.hero.quote)}
 function toggleLanguage(){lang=lang=="ua"?"en":"ua";localStorage.ink_lang=lang;tr();rend()}
-const bar=b=>`<div class="h-2 rounded-full" style="background:linear-gradient(90deg,${b.smoke},#fff);box-shadow:0 0 8px ${b.smoke}"></div>`;
 
-// ═══ 7. ЗАСТАВКА: сама вантажить, сама веде далі (кнопки нема) ═══
+// ═══ 7. ЗАСТАВКА ═══
+const CHF=["silver","gold","diamond"];
 (function splash(){
  $("spName").textContent=CFG.hero.name;
- for(let i=0;i<18;i++){const e=document.createElement("i");e.className="ember";e.style.cssText=`left:${R()*100}%;--dx:${(R()-.5)*120}px;animation-duration:${3+R()*4}s;animation-delay:${R()*4}s`;$("splash").appendChild(e)}
- // Що чекаємо: усі PNG (ёкаї, фони, сундуки) + готовність входу Firebase (макс. 4 с)
- const imgs=[...Object.values(YIMG),...BGI,...CHF.map(n=>{const i=new Image();i.src="img/chest/"+n+".png";return i})];
+ for(let i=0;i<14;i++){const e=document.createElement("i");e.className="ember";e.style.cssText=`left:${R()*100}%;--dx:${(R()-.5)*120}px;animation-duration:${3+R()*4}s;animation-delay:${R()*4}s`;$("splash").appendChild(e)}
+ const imgs=[...Object.values(YIMG),...CHF.map(n=>{const i=new Image();i.src="img/chest/"+n+".png";return i})];
  let loaded=0,authOk=false;imgs.forEach(i=>{if(i.complete)loaded++;else i.onload=i.onerror=()=>loaded++});
  authReadyP.then(()=>authOk=true);setTimeout(()=>authOk=true,4000);
  const t0=performance.now();
  const iv=setInterval(()=>{
   const el=performance.now()-t0,real=loaded/imgs.length*.8+(authOk?.2:0);
-  const sh=Math.min(1,real,el/2600);                     // 🔧 2600 = мінімальний час заставки в мс
+  const sh=Math.min(1,real,el/2600);
   $("spBar").style.width=Math.max(8,sh*100)+"%";$("spV").style.height=sh*100+"%";$("spPct").textContent=Math.round(sh*100)+"%";
   $("spTxt").textContent=sh>=1?t("Готово|Ready"):sh<.4?t("Малюємо ёкаїв…|Drawing yokai…"):sh<.8?t("Куємо клинки…|Forging blades…"):t("Відкриваємо врата…|Opening the gate…");
   if(sh>=1||el>7000){clearInterval(iv);setTimeout(()=>{$("splash").style.opacity=0;setTimeout(()=>{$("splash").remove();splashDone=true;route()},700)},350)}
  },100);
 })();
-// Куди йти після заставки / входу: нік обов'язковий → потім гра; нема входу → екран реєстрації
 function route(){
  if(!splashDone)return;
  if(user&&!S.nick){showNick();return}
@@ -382,264 +400,351 @@ function route(){
 function rPlay(){
  const b=BL[S.blade],g=BG[S.bg],left=CFG.adEvery-S.rounds%CFG.adEvery,rate=idleRate();
  $("view-play").innerHTML=`
- <div class="relative card overflow-hidden !p-6 space-y-3 text-center border-crimsonRed/40">
-  <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none"><source src="video/main_bg.mp4" type="video/mp4"></video>
+ <div class="grid grid-cols-2 gap-3">
+  <button onclick="startRound(1)" class="btng py-4 text-sm shadow-[0_0_24px_rgba(255,183,3,.3)]">⚔️ ${t("ГРАТИ|PLAY")}</button>
+  <button onclick="startRound(2)" class="btn py-4 text-sm shadow-[0_0_24px_rgba(255,42,95,.3)]">👥 ${t("ГРАТИ ВДВОХ|PLAY DUO")}</button>
+ </div>
+ <div class="relative card overflow-hidden !p-6 space-y-3 text-center border-crimsonRed/40" style="background:rgba(19,17,24,.82)">
   <div class="relative z-10 space-y-2">
    <div class="w-20 h-20 mx-auto rounded-2xl overflow-hidden flex items-center justify-center text-5xl glow" style="border:2px solid #ffb703">${avHTML(S.av)}</div>
    <div class="font-black">${esc(S.nick||t("Гість|Guest"))} · Lv ${lvl(S.xp)}</div>
-   <div class="text-[11px] text-gray-200">${t(g[0])} · ${bname(b)}</div>${bar(b)}
+   <div class="text-[11px] text-gray-200">${t(g[0])} · ${FXI[b.fx]} ${bname(b)}</div>${bar(b)}
   </div>
   <div class="relative z-10 flex justify-center gap-2 flex-wrap">
-   ${S.c.x2?`<span class="chip text-neonGold">✖️2 ×${S.c.x2}</span>`:""}${S.c.x3?`<span class="chip text-neonGold">✖️3 ×${S.c.x3}</span>`:""}${S.c.plus?`<span class="chip">⏱+15 ×${S.c.plus}</span>`:""}${S.c.fz?`<span class="chip">⚡ ×${S.c.fz}</span>`:""}
+   ${S.c.x2?`<span class="chip text-neonGold">✖️2 ×${S.c.x2}</span>`:""}${S.c.x3?`<span class="chip text-neonGold">✖️3 ×${S.c.x3}</span>`:""}${S.c.plus?`<span class="chip">🛡 ×${S.c.plus}</span>`:""}${S.c.fz?`<span class="chip">⚡ ×${S.c.fz}</span>`:""}
    ${rate?`<span class="chip text-emerald-400">💤 +${fmt(rate)} 文/${t("с|s")}</span>`:""}
   </div>
  </div>
- <button onclick="startRound(1)" class="btng w-full py-4 text-base shadow-[0_0_20px_rgba(255,183,3,.3)]">⚔️ ${t("СОЛО · 1 хвилина|SOLO · 1 minute")}</button>
- <button onclick="startRound(2)" class="btn w-full py-3 text-sm">👥 ${t("ДУО · 2 гравці на одному екрані|DUO · 2 players, one screen")}</button>
- <div class="card text-xs text-gray-300 space-y-1">
-  <div>🎯 ${t("Сундуки за очки в раунді|Chests by round score")}: ${CHT.map((c,k)=>`${thr(k)} → ${c[0]}`).join(" · ")}</div>
+ <div class="card text-xs text-gray-300 space-y-1" style="background:rgba(19,17,24,.82)">
+  <div>❌ ${t("3 пропущені ёкаї — кінець гри|3 missed yokai — game over")}</div>
+  <div>📜 ${t("Не ріж свитки! 3 свитки — кінець гри|Don't cut the scrolls! 3 scrolls — game over")}</div>
   <div>📣 ${t("Реклама через раундів|Ad in rounds")}: <b>${left}</b></div>
  </div>`;
 }
 
 // ═══ 9. ІГРОВИЙ РУХ (canvas) ═══
-const cv=$("cv"),cx=cv.getContext("2d");let W,H,D=1,G={on:0},ptr={};
-function rs(){D=Math.min(3,devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*D;cv.height=H*D;cx.setTransform(D,0,0,D,0,0)}
+const cv=$("cv"),cx=cv.getContext("2d",{alpha:false});let W,H,D=1,SAT=0,G={on:0},ptr={},bgC=null;
+function rs(){D=Math.min(2,devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*D;cv.height=H*D;cx.setTransform(D,0,0,D,0,0);SAT=$("sat").offsetHeight;bgC=null}
 addEventListener("resize",()=>{if(!$("gm").classList.contains("hidden"))rs()});
-// «Поле» гравця: ox/w — зсув і ширина (у режимі ДУО екран ділиться на два поля)
-const mkF=(ox,w)=>({ox,w,fx:[],e:[],h:[],p:[],x:[],tr:[],sc:30*U("start"),cb:0,cT:0,cuts:0,nb:12,bo:null,sp:.4,fz:0,cr:[],fp:0,sl:0,st:0,fr:0,sh:0,fl:0,ts:1,kills:0});
+const GR=()=>H*1.05*(1-.02*U("slow"));                               // 🔧 гравітація: менше число = повільніше летять
+const ambient=w=>Array.from({length:7},()=>({y:YK[R()*6|0],r:30+R()*40,x:R()*w,py:R()*H,vx:(R()-.5)*14,vy:-(6+R()*14),rot:R()*6,vr:(R()-.5)*.4}));
+const mkF=(ox,w)=>({ox,w,fx:[],e:[],h:[],p:[],x:[],tr:[],sc:30*U("start"),cb:0,cT:0,cuts:0,nb:12,bo:null,sp:1,fz:0,cr:[],fp:0,sl:0,st:0,fr:0,sh:0,fl:0,ts:1,kills:0,
+ ms:0,sk:0,mx:3+(U("time")/5|0)+(S.c.plus>0?1:0),dead:0,why:"",bl:[],dr:[],bc:0,am:ambient(w)});
 function startRound(m){
  if(G.on)return;
  $("gm").classList.remove("hidden");$("res").classList.replace("flex","hidden");rs();
- const n=m||1,fw=W/n,T=CFG.roundSec+2*U("time")+(S.c.plus>0?15:0);          // час = база + покращення «Довгий раунд» + бустер
- G={on:1,m:n,t:T,f:[...Array(n)].map((_,i)=>mkF(i*fw,fw)),l:performance.now()};
+ const n=m||1,fw=W/n;
+ G={on:1,m:n,el:0,fin:0,f:[...Array(n)].map((_,i)=>mkF(i*fw,fw)),l:performance.now()};
  if(S.c.plus>0)S.c.plus--;
- if(S.c.fz>0){S.c.fz--;G.f.forEach(f=>f.fr=performance.now()+8000)}           // бустер «старт із шаленством»
+ if(S.c.fz>0){S.c.fz--;G.f.forEach(f=>f.fr=performance.now()+8000)}
  save();snd(300,.2);setMusic("battle");requestAnimationFrame(frame);
 }
 function quitRound(){G.on=0;ptr={};setMusic("menu");$("gm").classList.add("hidden");rend()}
-
-// PNG ёкаїв: положи img/yokai/fox.png ... (прозорий фон). Нема PNG → малюється емодзі. Різання працює однаково.
-const YIMG={};[["🦊","fox"],["👹","oni"],["👺","tengu"],["🐸","kappa"],["💀","skull"],["🐉","dragon"]].forEach(([e,n])=>{const i=new Image();i.src="img/yokai/"+n+".png";YIMG[e]=i});
-const BGI=BG.map((g,i)=>{const im=new Image();im.src="img/bg/"+i+".png";return im}),rdy=i=>i&&i.complete&&i.naturalWidth;
-function sp(c,y,r){ // малює одного ёкая (PNG або емодзі) в центрі (0,0) з «радіусом» r
+function sp(c,y,r){
  const i=YIMG[y];
- if(rdy(i)){c.imageSmoothingEnabled=true;c.imageSmoothingQuality="high";const k=Math.min(2*r/i.naturalWidth,2*r/i.naturalHeight)*1.15,w=i.naturalWidth*k,h=i.naturalHeight*k;c.drawImage(i,-w/2,-h/2,w,h)}
+ if(rdy(i)){const k=Math.min(2*r/i.naturalWidth,2*r/i.naturalHeight)*1.15,w=i.naturalWidth*k,h=i.naturalHeight*k;c.drawImage(i,-w/2,-h/2,w,h)}
  else{c.font=r*1.7+"px serif";c.textAlign="center";c.textBaseline="middle";c.fillText(y,0,r*.08)}
 }
-function drawBG(w){ // фон раунду: PNG купленого фону або градієнт епохи — міняється одразу після вибору у Магазині
- const bi=BGI[S.bg];
- if(rdy(bi)){const k=Math.max(w/bi.naturalWidth,H/bi.naturalHeight);cx.imageSmoothingQuality="high";cx.drawImage(bi,(w-bi.naturalWidth*k)/2,(H-bi.naturalHeight*k)/2,bi.naturalWidth*k,bi.naturalHeight*k);cx.fillStyle="rgba(0,0,0,.3)";cx.fillRect(0,0,w,H);return}
- const g=BG[S.bg],gr=cx.createLinearGradient(0,0,0,H);gr.addColorStop(0,g[2][0]);gr.addColorStop(1,g[2][1]);cx.fillStyle=gr;cx.fillRect(0,0,w,H);
- cx.globalAlpha=.16;cx.font=Math.min(w,H)*.5+"px serif";cx.textAlign="center";cx.fillStyle="#fff";cx.fillText(g[3],w*.7,H*.3);cx.globalAlpha=1;
+function drawBG(w){ // фон кешується в окремий canvas — малюється одним drawImage
+ const bi=bgImg(S.bg),k=S.bg+"_"+w+"_"+H+"_"+(rdy(bi)?1:0);
+ if(!bgC||bgC.k!=k){
+  const c=document.createElement("canvas");c.width=w*D;c.height=H*D;const x=c.getContext("2d");x.scale(D,D);
+  if(rdy(bi)){const s=Math.max(w/bi.naturalWidth,H/bi.naturalHeight);x.drawImage(bi,(w-bi.naturalWidth*s)/2,(H-bi.naturalHeight*s)/2,bi.naturalWidth*s,bi.naturalHeight*s);x.fillStyle="rgba(0,0,0,.3)";x.fillRect(0,0,w,H)}
+  else{const g=BG[S.bg],gr=x.createLinearGradient(0,0,0,H);gr.addColorStop(0,g[2][0]);gr.addColorStop(1,g[2][1]);x.fillStyle=gr;x.fillRect(0,0,w,H);x.globalAlpha=.16;x.font=Math.min(w,H)*.5+"px serif";x.textAlign="center";x.fillStyle="#fff";x.fillText(g[3],w*.7,H*.3)}
+  c.k=k;bgC=c;
+ }
+ cx.drawImage(bgC,0,0,w,H);
 }
-function burst(f,x,y,n,c){for(let i=0;i<n;i++){const a=R()*6.283,s=120+R()*380;f.p.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:1,c:c||(R()<.5?"#ffb703":"#ff2a5f")})}}
+function burst(f,x,y,n,c){if(f.p.length>140)return;for(let i=0;i<n;i++){const a=R()*6.283,s=120+R()*380;f.p.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:1,c:c||(R()<.5?"#ffb703":"#ff2a5f")})}}
 const pop=(f,x,y,s,big)=>f.x.push({x,y,s,l:1,big});
-function spawn(f,st){ // новий ёкай летить знизу вгору
- const r=34+R()*16,x=f.w*(.15+R()*.7),h=H*(.55+R()*.3),g=H*1.6*(1-.02*U("slow"));
- f.e.push({y:YK[R()*6|0],r,x,py:H+r,vx:(f.w/2-x)*(.2+R()*.4),vy:-Math.sqrt(2*g*h)*(st?1.1:1),rot:0,vr:(R()-.5)*6,cut:0});
+function spawn(f,st){
+ const sc=R()<Math.min(.2,.06+G.el/800),r=34+R()*16,x=f.w*(.15+R()*.7),h=H*(.5+R()*.25),g=GR();
+ f.e.push({y:sc?"📜":YK[R()*6|0],sc,r,x,py:H+r,vx:(f.w/2-x)*(.15+R()*.3),vy:-Math.sqrt(2*g*h)*(st?1.1:1),rot:0,vr:(R()-.5)*4,cut:0});
 }
-// ★ Підрахунок очок за розріз — тут працюють покращення: coin, combo, crit, critm, x2 і множник клинка
 function score(f,base,now){
  const b=BL[S.blade];let m=(1+f.cb*(.2+.02*U("combo")))*b.sc*(1+.1*U("coin"))*(now<f.fr?2:1)*(now<f.sl?2:1)*(now<f.st?1.5:1);
- if(R()<.03*U("crit"))m*=3+.2*U("critm");           // критичний розріз
- if(R()<.02*U("x2"))m*=2;                            // подвійна монета
+ if(R()<.03*U("crit"))m*=3+.2*U("critm");
+ if(R()<.02*U("x2"))m*=2;
  const p=Math.round(base*m);f.sc+=p;return p;
 }
-function cut(f,e,ang,now){
- e.cut=1;f.fx.push({x:e.x,y:e.py,a:ang,l:1});
- for(const s of[1,-1])f.h.push({y:e.y,r:e.r,x:e.x,py:e.py,vx:e.vx-Math.sin(ang)*s*190,vy:e.vy*.4+Math.cos(ang)*s*190,rot:e.rot,vr:e.vr+s*3,cl:ang-e.rot,s,l:1.4}); // дві половинки
- f.cb=now-f.cT<700+40*U("cwin")?f.cb+1:1;f.cT=now;                                    // вікно комбо
- if(f.cb>=Math.max(3,8-(U("frth")/3|0))&&now>f.fr)f.fr=now+4000+500*U("frz");         // шаленство
- const p=score(f,10,now);pop(f,e.x,e.py,"+"+p);burst(f,e.x,e.py,12);f.sh=6;f.cuts++;
- navigator.vibrate&&navigator.vibrate(10);sfx("slash",()=>snd(500+f.cb*25));
- if(f.cuts>=f.nb&&!f.bo)mkBoss(f,now);                                               // 🔧 f.nb = кожні скільки розрізів з'являється бос
+function die(f,why){
+ f.dead=1;f.why=why;f.e=[];f.bo=null;f.fz=0;
+ if(G.f.every(x=>x.dead)&&!G.fin){G.fin=1;setTimeout(overScreen,why=="sk"?1000:600)}
 }
-function mkBoss(f,now){ // 3 види босів: frz — заморожує екран, slo — сповільнює час (більше очок), sto — шторм
+function missed(f,x){f.ms++;f.cb=0;snd(160,.2,.15);pop(f,Math.max(40,Math.min(f.w-40,x)),H-70,"✖ "+f.ms+"/"+f.mx,1);f.sh=6;navigator.vibrate&&navigator.vibrate(30);if(f.ms>=f.mx)die(f,"ms")}
+// Кров: 1-й свиток — один прозорий мазок, 2-й — більше плям, 3-й — повністю червоний екран
+function bloodAdd(f,x,y){const s=f.sk,n=s==1?1:s==2?3:6;
+ for(let k=0;k<n;k++){const bx=k?R()*f.w:x,by=k?R()*H:y,r=f.w*(s==1?.3:.26)*(.6+R()*.6);
+  f.bl.push({x:bx,y:by,a:s==1?.34:.42,q:Array.from({length:6},()=>[(R()-.5)*r*1.3,(R()-.5)*r*1.3,r*(.25+R()*.4)])});
+  for(let d=0;d<3+s*2;d++)f.dr.push({x:bx+(R()-.5)*r,y:by+(R()-.5)*r*.4,l:0,m:30+R()*H*.18,w:3+R()*6,v:25+R()*45})}}
+function hitScroll(f,e,ang,now){
+ e.cut=1;f.cb=0;f.sk++;f.sh=14;f.fl=.3;burst(f,e.x,e.py,18,"#e8dcc0");f.fx.push({x:e.x,y:e.py,a:ang,l:1});
+ bloodAdd(f,e.x,e.py);sfx("boss",()=>snd(110,.35,.25));navigator.vibrate&&navigator.vibrate([40,30,60]);
+ pop(f,e.x,e.py,"📜 "+f.sk+"/3",1);
+ if(f.sk>=3)die(f,"sk");
+}
+function cut(f,e,ang,now){
+ if(e.sc)return hitScroll(f,e,ang,now);
+ e.cut=1;f.fx.push({x:e.x,y:e.py,a:ang,l:1});
+ for(const s of[1,-1])f.h.push({y:e.y,r:e.r,x:e.x,py:e.py,vx:e.vx-Math.sin(ang)*s*190,vy:e.vy*.4+Math.cos(ang)*s*190,rot:e.rot,vr:e.vr+s*3,cl:ang-e.rot,s,l:1.4});
+ f.cb=now-f.cT<700+40*U("cwin")?f.cb+1:1;f.cT=now;
+ if(f.cb>=Math.max(3,8-(U("frth")/3|0))&&now>f.fr)f.fr=now+4000+500*U("frz");
+ const p=score(f,10,now);pop(f,e.x,e.py,"+"+p);burst(f,e.x,e.py,10);f.sh=6;f.cuts++;
+ navigator.vibrate&&navigator.vibrate(10);sfx("slash",()=>snd(500+f.cb*25));
+ if(f.cuts>=f.nb&&!f.bo)mkBoss(f,now);
+}
+function mkBoss(f,now){
  const ty=["frz","slo","sto"][R()*3|0];
- f.bo={y:YK[R()*6|0],ty,hp:10,t:0,hit:0,last:0,r:Math.min(f.w,H)*.15,nf:now+9000};   // hp:10 — 10 ударів на боса
- pop(f,f.w/2,H*.22,"BOSS!",1);f.fl=.6;snd(120,.4,.2);
+ f.bo={y:YK[R()*6|0],ty,hp:10,t:0,hit:0,last:0,r:Math.min(f.w,H)*.14,nf:now+9000};
+ pop(f,f.w/2,H*.3,"BOSS!",1);f.fl=.4;snd(120,.4,.2);
  if(ty=="frz")frz(f);if(ty=="slo")f.sl=now+7000;if(ty=="sto")f.st=now+8000;
 }
-function frz(f){f.fz=1;f.cr=[];f.fp=0}                   // лід: треба 5 довгих свайпів, щоб розбити
+function frz(f){f.fz=1;f.cr=[];f.fp=0}
 const fOf=x=>G.m==2?G.f[x<W/2?0:1]:G.f[0];
 const dseg=(px,py,ax,ay,bx,by)=>{const dx=bx-ax,dy=by-ay,l=dx*dx+dy*dy||1;let u=((px-ax)*dx+(py-ay)*dy)/l;u=Math.max(0,Math.min(1,u));return Math.hypot(px-ax-u*dx,py-ay-u*dy)};
-cv.addEventListener("pointerdown",e=>{if(!G.on)return;const f=fOf(e.clientX);ptr[e.pointerId]={f,x:e.clientX-f.ox,y:e.clientY};f.tr.push({x:e.clientX-f.ox,y:e.clientY,t:performance.now()})});
+cv.addEventListener("pointerdown",e=>{if(!G.on)return;const f=fOf(e.clientX);if(f.dead)return;ptr[e.pointerId]={f,x:e.clientX-f.ox,y:e.clientY};f.tr.push({x:e.clientX-f.ox,y:e.clientY,t:performance.now()})});
 cv.addEventListener("pointermove",e=>{
- const p=ptr[e.pointerId];if(!p||!G.on)return;const f=p.f,x=e.clientX-f.ox,y=e.clientY,now=performance.now();if(x<0||x>f.w)return;
+ const p=ptr[e.pointerId];if(!p||!G.on)return;const f=p.f;if(f.dead)return;const x=e.clientX-f.ox,y=e.clientY,now=performance.now();if(x<0||x>f.w)return;
  f.tr.push({x,y,t:now});const d=Math.hypot(x-p.x,y-p.y);if(d<4)return;const ang=Math.atan2(y-p.y,x-p.x);
- if(f.fz){ // заморожено: рубати ёкаїв не можна, треба розбити лід
-  f.fp+=d;if(f.fp>180){f.fp=0;f.cr.push([R()*f.w,R()*H*.7]);f.sh=8;snd(700,.05,.1);if(f.cr.length>=5){f.fz=0;f.fl=.5;burst(f,x,y,40,"#7dd3fc");pop(f,f.w/2,H*.4,"💥",1);if(f.bo)f.bo.nf=now+9000}}
+ if(f.fz){
+  f.fp+=d;if(f.fp>180){f.fp=0;f.cr.push([R()*f.w,R()*H*.7]);f.sh=8;snd(700,.05,.1);if(f.cr.length>=5){f.fz=0;f.fl=.4;burst(f,x,y,30,"#7dd3fc");pop(f,f.w/2,H*.4,"💥",1);if(f.bo)f.bo.nf=now+9000}}
   p.x=x;p.y=y;return;
  }
- const hr=1+.03*U("hit");                                            // покращення «Широке лезо»
+ const hr=1+.03*U("hit");
  for(const en of f.e)if(!en.cut&&dseg(en.x,en.py,p.x,p.y,x,y)<en.r*hr)cut(f,en,ang,now);
  if(f.bo&&dseg(f.bx,f.by,p.x,p.y,x,y)<f.bo.r){
   const b=f.bo;
   if(now-b.last>=120){
-   b.last=now;f.fx.push({x:f.bx,y:f.by,a:ang,l:1});b.hp-=R()<.05*U("boss")?2:1;b.hit=1;f.sh=10;burst(f,f.bx,f.by,14,"#fff");sfx("boss",()=>snd(260,.12,.18));
-   if(b.hp<=0){const pt=score(f,300*(1+.1*U("bossr")),now);pop(f,f.bx,f.by,"+"+pt+" 👑",1);burst(f,f.bx,f.by,70);f.kills++;S.kills++;S.souls+=5+U("soul");save();f.bo=null;f.fz=0;f.nb=f.cuts+14}
+   b.last=now;f.fx.push({x:f.bx,y:f.by,a:ang,l:1});b.hp-=R()<.05*U("boss")?2:1;b.hit=1;f.sh=8;burst(f,f.bx,f.by,10,"#fff");sfx("boss",()=>snd(260,.12,.18));
+   if(b.hp<=0){const pt=score(f,300*(1+.1*U("bossr")),now);pop(f,f.bx,f.by,"+"+pt+" 👑",1);burst(f,f.bx,f.by,50);f.kills++;S.kills++;S.souls+=5+U("soul");S.ln++;if(R()<.25){S.jd++;pop(f,f.bx,f.by-40,"+1 💎",1)}save();f.bo=null;f.fz=0;f.nb=f.cuts+14}
   }
  }
  p.x=x;p.y=y;
 });
 ["pointerup","pointercancel"].forEach(n=>cv.addEventListener(n,e=>{delete ptr[e.pointerId]}));
-function upd(f,raw,now){ // один кадр одного поля: логіка + малювання
+// Частинки «характеру» катани біля кінчика сліду
+function fxPart(f,bl,q){if(f.p.length>140)return;const a=R()*6.283;let c=bl.c2,vx=Math.cos(a)*40,vy=Math.sin(a)*40-20;
+ switch(bl.fx){case"gold":case"star":c=R()<.5?"#fff6a8":bl.c1==="#ffffff"?"#fff":bl.c1;break;case"fire":c=R()<.5?"#ffb703":bl.c2;vy=-90-R()*60;break;case"ice":c="#e8fbff";vy=50;break;case"blood":c="#8b0000";vy=90+R()*60;break;case"sakura":c=R()<.5?"#ffc0e0":"#ff8ab5";vx=60;vy=30;break;case"bolt":c="#fff";vx*=3;vy*=3;break;case"void":c=R()<.5?"#c4b5fd":"#000";break;case"rb":c="hsl("+(R()*360|0)+",100%,60%)";break;default:c=bl.c1}
+ f.p.push({x:q.x,y:q.y,vx,vy,l:.8,c})}
+function trailFill(f,bl,P,Lh,Rh,now){
+ const nn=P.length;cx.beginPath();Lh.forEach((q,i)=>i?cx.lineTo(q[0],q[1]):cx.moveTo(q[0],q[1]));for(let i=nn-1;i>=0;i--)cx.lineTo(Rh[i][0],Rh[i][1]);cx.closePath();
+ let fs,sc=bl.c2;
+ if(bl.fx=="rb"){sc=fs=`hsl(${now/3%360|0},100%,60%)`}else if(bl.fx=="void")fs="#000";
+ else{const g=cx.createLinearGradient(P[0].x,P[0].y,P[nn-1].x,P[nn-1].y);g.addColorStop(0,bl.c2);g.addColorStop(1,bl.c1);fs=g}
+ cx.fillStyle=fs;cx.shadowColor=sc;cx.shadowBlur=bl.fx=="void"?20:11;cx.fill();
+ if(bl.fx=="void"){cx.shadowBlur=0;cx.strokeStyle=bl.c2;cx.lineWidth=1.6;cx.stroke()}
+ if(bl.fx=="bolt"){cx.shadowBlur=0;cx.strokeStyle="#fff";cx.lineWidth=1.4;cx.beginPath();P.forEach((q,i)=>{const jx=q.x+(R()-.5)*9,jy=q.y+(R()-.5)*9;i?cx.lineTo(jx,jy):cx.moveTo(jx,jy)});cx.stroke()}
+ cx.shadowBlur=0;
+}
+function upd(f,raw,now){
  const slow=now<f.sl,storm=now<f.st,fren=now<f.fr;f.ts+=((slow?.4:1)-f.ts)*.15;
- const dt=raw*f.ts,ed=dt*(storm?1.3:1),g=H*1.6*(1-.02*U("slow"));
- cx.save();cx.beginPath();cx.rect(f.ox,0,f.w,H);cx.clip();cx.translate(f.ox+(R()-.5)*f.sh,(R()-.5)*f.sh);f.sh*=.85;drawBG(f.w);
- f.sp-=dt;if(f.sp<=0){const n=1+(R()*3|0);for(let i=0;i<n;i++)setTimeout(()=>G.on&&spawn(f,storm),i*160);f.sp=(.85+R()*.6)/(storm?2:1)/(slow?1.8:1)/(fren?1.5:1)/(1+.04*U("spawn"))}
+ const dt=raw*f.ts,ed=dt*(storm?1.25:1),g=GR(),pace=1+Math.min(.5,G.el/180),TOP=SAT+10;
+ cx.save();cx.beginPath();cx.rect(f.ox,0,f.w,H);cx.clip();cx.translate(f.ox+(R()-.5)*f.sh,(R()-.5)*f.sh);f.sh*=.85;
+ drawBG(f.w);
+ // приглушені демони на фоні (прозорість .13)
+ cx.globalAlpha=.13;
+ for(const a of f.am){a.x+=a.vx*dt;a.py+=a.vy*dt;a.rot+=a.vr*dt;if(a.py<-90){a.py=H+90;a.x=R()*f.w}if(a.x<-90)a.x=f.w+90;if(a.x>f.w+90)a.x=-90;cx.save();cx.translate(a.x,a.py);cx.rotate(a.rot);sp(cx,a.y,a.r);cx.restore()}
+ cx.globalAlpha=1;
+ if(f.fz){cx.fillStyle="rgba(160,220,255,.22)";cx.fillRect(0,0,f.w,H)}      // лід — під босом, не перекриває його
+ f.sp-=dt;
+ if(f.sp<=0&&!f.dead){const n=Math.min(3,1+(R()*(2+G.el/60)|0));for(let i=0;i<n;i++)setTimeout(()=>G.on&&!f.dead&&spawn(f,storm),i*240);f.sp=(1.5+R()*.9)/pace/(storm?1.6:1)/(slow?1.6:1)/(fren?1.3:1)/(1+.04*U("spawn"))}
  if(f.bo&&f.bo.ty=="frz"&&!f.fz&&now>f.bo.nf)frz(f);
- f.e.forEach(e=>{e.vy+=g*ed;e.x+=e.vx*ed;e.py+=e.vy*ed;e.rot+=e.vr*ed;cx.save();cx.translate(e.x,e.py);cx.rotate(e.rot);sp(cx,e.y,e.r);cx.restore()});
- f.e=f.e.filter(e=>!e.cut&&!(e.vy>0&&e.py>H+120));
- f.h.forEach(h=>{h.vy+=g*dt;h.x+=h.vx*dt;h.py+=h.vy*dt;h.rot+=h.vr*dt;h.l-=dt;cx.save();cx.globalAlpha=Math.max(0,Math.min(1,h.l));cx.translate(h.x,h.py);cx.rotate(h.rot);cx.rotate(h.cl);cx.beginPath();cx.rect(-h.r*2,h.s>0?0:-h.r*2,h.r*4,h.r*2);cx.clip();cx.rotate(-h.cl);sp(cx,h.y,h.r);cx.restore()});
- f.h=f.h.filter(h=>h.l>0&&h.py<H+200);
+ const ne=[];
+ for(const e of f.e){e.vy+=g*ed;e.x+=e.vx*ed;e.py+=e.vy*ed;e.rot+=e.vr*ed;cx.save();cx.translate(e.x,e.py);cx.rotate(e.rot);sp(cx,e.y,e.r);cx.restore();
+  if(e.cut)continue;
+  if(e.vy>0&&e.py>H+110){if(!e.sc&&!f.fz&&!f.dead)missed(f,e.x);continue}
+  ne.push(e)}
+ f.e=ne;
+ f.h=f.h.filter(h=>{h.vy+=g*dt;h.x+=h.vx*dt;h.py+=h.vy*dt;h.rot+=h.vr*dt;h.l-=dt;if(h.l<=0||h.py>H+200)return false;cx.save();cx.globalAlpha=Math.min(1,h.l);cx.translate(h.x,h.py);cx.rotate(h.rot);cx.rotate(h.cl);cx.beginPath();cx.rect(-h.r*2,h.s>0?0:-h.r*2,h.r*4,h.r*2);cx.clip();cx.rotate(-h.cl);sp(cx,h.y,h.r);cx.restore();return true});
  const b=f.bo;
- if(b){ // бос: аура кольору здібності + HP-бар
-  b.t+=dt;f.bx=f.w/2+Math.sin(b.t*1.3)*f.w*.18;f.by=H*.38+Math.sin(b.t*2)*12;
-  const C={frz:"#7dd3fc",slo:"#c084fc",sto:"#fb923c"}[b.ty];
-  cx.save();cx.translate(f.bx,f.by);const ag=cx.createRadialGradient(0,0,b.r*.5,0,0,b.r*1.8);ag.addColorStop(0,C+"99");ag.addColorStop(1,C+"00");cx.fillStyle=ag;cx.beginPath();cx.arc(0,0,b.r*1.8,0,6.3);cx.fill();
-  if(b.hit>0){cx.shadowColor="#fff";cx.shadowBlur=30*b.hit;b.hit-=dt*5}sp(cx,b.y,b.r);cx.restore();
-  const bw=f.w*.6,bx=(f.w-bw)/2,by=H*.12+40;cx.fillStyle="#272235";cx.fillRect(bx,by,bw,10);cx.fillStyle=C;cx.fillRect(bx,by,bw*Math.max(0,b.hp)/10,10);
-  cx.fillStyle="#fff";cx.font="bold 12px system-ui";cx.textAlign="center";cx.fillText({frz:"❄️ "+t("ЗАМОРОЖУЄ|FREEZES"),slo:"⏳ "+t("СПОВІЛЬНЮЄ ЧАС|SLOWS TIME"),sto:"🌪 "+t("ШТОРМ|STORM")}[b.ty]+" "+Math.max(0,b.hp)+"/10",f.w/2,by+26);
+ if(b){ // бос: м'який ареол ПОЗАДУ спрайта — PNG нічим не перекривається
+  b.t+=dt;f.bx=f.w/2+Math.sin(b.t*1.3)*f.w*.2;f.by=Math.max(H*.4,TOP+190)+Math.sin(b.t*2)*10;
+  const C={frz:"#7dd3fc",slo:"#c084fc",sto:"#fb923c"}[b.ty],pu=1+Math.sin(b.t*3)*.06;
+  cx.save();cx.translate(f.bx,f.by);const ag=cx.createRadialGradient(0,0,b.r*.3,0,0,b.r*2.3*pu);ag.addColorStop(0,C+"66");ag.addColorStop(.5,C+"26");ag.addColorStop(1,C+"00");cx.fillStyle=ag;cx.beginPath();cx.arc(0,0,b.r*2.3*pu,0,6.3);cx.fill();
+  if(b.hit>0){b.hit-=dt*5;cx.globalAlpha=Math.max(0,b.hit)*.5;cx.fillStyle="#fff";cx.beginPath();cx.arc(0,0,b.r*1.15,0,6.3);cx.fill();cx.globalAlpha=1}
+  sp(cx,b.y,b.r);cx.restore();
  }
- f.p.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=500*dt;p.l-=dt*1.6;cx.globalAlpha=Math.max(0,p.l);cx.fillStyle=p.c;cx.beginPath();cx.arc(p.x,p.y,3,0,6.3);cx.fill()});cx.globalAlpha=1;f.p=f.p.filter(p=>p.l>0);
- f.x.forEach(q=>{q.y-=50*dt;q.l-=dt*1.2;cx.globalAlpha=Math.max(0,Math.min(1,q.l));cx.fillStyle="#ffb703";cx.font=`800 ${q.big?34:20}px system-ui`;cx.textAlign="center";cx.fillText(q.s,q.x,q.y)});cx.globalAlpha=1;f.x=f.x.filter(q=>q.l>0);
- // Слід катани (колір = колір купленого клинка) + спалах лінії розрізу
+ for(const p of f.p){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=400*dt;p.l-=dt*1.6}
+ f.p=f.p.filter(p=>p.l>0);
+ for(const p of f.p){cx.globalAlpha=Math.min(1,p.l);cx.fillStyle=p.c;cx.fillRect(p.x-1.5,p.y-1.5,3,3)}cx.globalAlpha=1;
+ f.x=f.x.filter(q=>{q.y-=50*dt;q.l-=dt*1.2;if(q.l<=0)return false;cx.globalAlpha=Math.min(1,q.l);cx.fillStyle="#ffb703";cx.font=`800 ${q.big?30:19}px system-ui`;cx.textAlign="center";cx.fillText(q.s,q.x,q.y);return true});cx.globalAlpha=1;
+ // Слід катани
  const bl=BL[S.blade];f.tr=f.tr.filter(p=>now-p.t<200);
- f.fx.forEach(q=>{q.l-=dt*4.5;const L=80+bl.w*14;cx.save();cx.translate(q.x,q.y);cx.rotate(q.a);cx.globalAlpha=Math.max(0,q.l);const gr=cx.createLinearGradient(-L,0,L,0);gr.addColorStop(0,"#fff0");gr.addColorStop(.5,"#fff");gr.addColorStop(1,"#fff0");cx.strokeStyle=gr;cx.lineWidth=2+3*q.l;cx.shadowColor=bl.smoke;cx.shadowBlur=20;cx.beginPath();cx.moveTo(-L,0);cx.lineTo(L,0);cx.stroke();cx.restore()});
- f.fx=f.fx.filter(q=>q.l>0);
+ f.fx=f.fx.filter(q=>{q.l-=dt*4.5;if(q.l<=0)return false;const L=80+bl.w*14;cx.save();cx.translate(q.x,q.y);cx.rotate(q.a);cx.globalAlpha=q.l;cx.strokeStyle="#fff";cx.lineWidth=2+3*q.l;cx.shadowColor=bl.fx=="rb"?"#f0f":bl.c2;cx.shadowBlur=12;cx.beginPath();cx.moveTo(-L,0);cx.lineTo(L,0);cx.stroke();cx.restore();return true});
  const nn=f.tr.length;
- if(nn>2){const P=f.tr,Lh=[],Rh=[];
+ if(nn>2&&!f.dead){const P=f.tr,Lh=[],Rh=[];
   for(let i=0;i<nn;i++){const a0=P[Math.max(0,i-1)],b0=P[Math.min(nn-1,i+1)];let dx=b0.x-a0.x,dy=b0.y-a0.y;const l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;const wd=bl.w*2.2*Math.sin(Math.PI*i/(nn-1))*Math.max(0,1-(now-P[i].t)/200)+.4;Lh.push([P[i].x-dy*wd,P[i].y+dx*wd]);Rh.push([P[i].x+dy*wd,P[i].y-dx*wd])}
-  cx.beginPath();Lh.forEach((q,i)=>i?cx.lineTo(q[0],q[1]):cx.moveTo(q[0],q[1]));for(let i=Rh.length-1;i>=0;i--)cx.lineTo(Rh[i][0],Rh[i][1]);cx.closePath();
-  cx.fillStyle=bl.smoke;cx.shadowColor=bl.smoke;cx.shadowBlur=18;cx.fill();cx.shadowBlur=0}
- if(slow){const v=cx.createRadialGradient(f.w/2,H/2,H*.2,f.w/2,H/2,H*.8);v.addColorStop(0,"#0000");v.addColorStop(1,"rgba(120,60,220,.45)");cx.fillStyle=v;cx.fillRect(0,0,f.w,H)}
- if(f.fz){cx.fillStyle="rgba(160,220,255,.4)";cx.fillRect(0,0,f.w,H);cx.strokeStyle="#fff";cx.lineWidth=3;f.cr.forEach(c=>{cx.beginPath();cx.moveTo(c[0],c[1]);cx.lineTo(c[0]+60,c[1]+90);cx.lineTo(c[0]-20,c[1]+160);cx.stroke()});cx.fillStyle="#0b3a5a";cx.font="900 22px system-ui";cx.textAlign="center";cx.fillText("❄️ "+t("РОЗБИЙ ЛІД! Свайпай|BREAK THE ICE! Swipe")+" "+f.cr.length+"/5",f.w/2,H*.55)}
- cx.fillStyle="#fff";cx.textAlign="center";cx.font="900 40px system-ui";cx.fillText(fmt(f.sc),f.w/2,92);
- const st=[f.cb>2?"COMBO ×"+f.cb:"",slow?"⏳ SLOW ×2":"",fren?"⚡ FRENZY ×2":"",storm?"🌪 STORM":""].filter(Boolean).join("  ");cx.fillStyle="#ff2a5f";cx.font="800 15px system-ui";cx.fillText(st,f.w/2,116);
- if(G.m==2){cx.font="800 14px system-ui";cx.fillStyle="#9ca3af";cx.fillText("P"+(G.f.indexOf(f)+1),f.w/2,64)}
- if(f.fl>0){cx.fillStyle="rgba(255,255,255,"+f.fl*.5+")";cx.fillRect(-20,-20,f.w+40,H+40);f.fl-=raw*3}
+  trailFill(f,bl,P,Lh,Rh,now);if(R()<.6)fxPart(f,bl,P[nn-1]);
+ }
+ if(slow){const v=cx.createRadialGradient(f.w/2,H/2,H*.25,f.w/2,H/2,H*.8);v.addColorStop(0,"#0000");v.addColorStop(1,"rgba(120,60,220,.4)");cx.fillStyle=v;cx.fillRect(0,0,f.w,H)}
+ if(f.fz){cx.strokeStyle="#fff";cx.lineWidth=3;f.cr.forEach(c=>{cx.beginPath();cx.moveTo(c[0],c[1]);cx.lineTo(c[0]+60,c[1]+90);cx.lineTo(c[0]-20,c[1]+160);cx.stroke()})}
+ // Кров на екрані
+ if(f.bl.length){cx.fillStyle="rgba(150,0,16,.34)";
+  for(const o of f.bl){cx.globalAlpha=o.a/.34*.34;for(const q of o.q){cx.beginPath();cx.arc(o.x+q[0],o.y+q[1],q[2],0,6.3);cx.fill()}}cx.globalAlpha=1;
+  cx.strokeStyle="rgba(120,0,12,.5)";cx.lineCap="round";
+  for(const d of f.dr){if(d.l<d.m)d.l+=d.v*dt;cx.lineWidth=d.w;cx.beginPath();cx.moveTo(d.x,d.y);cx.lineTo(d.x,d.y+d.l);cx.stroke()}
+  if(f.sk>=3){f.bc=Math.min(.88,f.bc+dt*1.3);cx.fillStyle=`rgba(105,0,10,${f.bc})`;cx.fillRect(0,0,f.w,H)}}
+ // HUD
+ const fs=f.w<300?27:38,ls=f.w<300?15:19;
+ cx.fillStyle="#fff";cx.textAlign="center";cx.font=`900 ${fs}px system-ui`;cx.fillText(fmt(f.sc),f.w/2,TOP+44);
+ const ly=TOP+74;cx.font=`800 ${ls}px system-ui`;
+ for(let i=0;i<f.mx;i++){cx.globalAlpha=i<f.ms?1:.3;cx.fillStyle=i<f.ms?"#ff2a5f":"#fff";cx.fillText("✖",f.w/2-14-(f.mx-1-i)*(ls+3),ly)}
+ for(let i=0;i<3;i++){cx.globalAlpha=i<f.sk?1:.3;cx.fillText("📜",f.w/2+16+i*(ls+5),ly)}
+ cx.globalAlpha=1;
+ const st=[f.cb>2?"COMBO ×"+f.cb:"",slow?"⏳ SLOW ×2":"",fren?"⚡ FRENZY ×2":"",storm?"🌪 STORM":"",f.fz?"❄️ "+t("РОЗБИЙ ЛІД! Свайпай|BREAK THE ICE! Swipe")+" "+f.cr.length+"/5":""].filter(Boolean).join("  ");
+ cx.fillStyle="#ff2a5f";cx.font="800 13px system-ui";cx.fillText(st,f.w/2,TOP+98);
+ if(b){const bw=f.w*.6,bx=(f.w-bw)/2,by=TOP+112,C={frz:"#7dd3fc",slo:"#c084fc",sto:"#fb923c"}[b.ty];cx.fillStyle="#272235";cx.fillRect(bx,by,bw,8);cx.fillStyle=C;cx.fillRect(bx,by,bw*Math.max(0,b.hp)/10,8);
+  cx.fillStyle="#fff";cx.font="bold 11px system-ui";cx.fillText({frz:"❄️ "+t("ЗАМОРОЖУЄ|FREEZES"),slo:"⏳ "+t("СПОВІЛЬНЮЄ ЧАС|SLOWS TIME"),sto:"🌪 "+t("ШТОРМ|STORM")}[b.ty]+" "+Math.max(0,b.hp)+"/10",f.w/2,by+24)}
+ if(G.m==2){cx.font="800 12px system-ui";cx.fillStyle="#9ca3af";cx.fillText("P"+(G.f.indexOf(f)+1),f.w/2,TOP+10)}
+ if(f.dead&&G.m==2){cx.fillStyle="rgba(0,0,0,.5)";cx.fillRect(0,0,f.w,H);cx.fillStyle="#ff2a5f";cx.font="900 32px system-ui";cx.fillText("K.O.",f.w/2,H/2)}
+ if(f.fl>0){cx.fillStyle="rgba(255,255,255,"+f.fl*.4+")";cx.fillRect(-20,-20,f.w+40,H+40);f.fl-=raw*3}
  cx.restore();
 }
-function frame(now){if(!G.on)return;const raw=Math.min(.033,(now-G.l)/1000);G.l=now;G.t-=raw;$("tm").textContent=Math.max(0,Math.ceil(G.t));cx.clearRect(0,0,W,H);G.f.forEach(f=>upd(f,raw,now));if(G.t<=0)return endRound();requestAnimationFrame(frame)}
+function frame(now){if(!G.on)return;const raw=Math.min(.033,(now-G.l)/1000);G.l=now;if(!G.fin)G.el+=raw;G.f.forEach(f=>upd(f,raw,now));requestAnimationFrame(frame)}
 
-// ═══ 10. РЕЗУЛЬТАТ РАУНДУ І РЕКЛАМА ═══
-function endRound(){
- G.on=0;ptr={};setMusic("menu");
+// ═══ 10. КІНЕЦЬ ГРИ, ПРОДОВЖЕННЯ, РЕКЛАМА ═══
+function overScreen(){
+ if(!G.on)return;
+ const sc=G.f.map(f=>f.sc),solo=G.m==1,why=G.f[0].why;
+ const w=solo?t("Кінець гри|Game over"):sc[0]==sc[1]?t("Нічия!|Draw!"):`🏆 P${sc[0]>sc[1]?1:2} ${t("перемагає|wins")}`;
+ $("res").innerHTML=`<h2 class="text-3xl font-black text-neonGold" style="animation:pop .4s">${w}</h2><div class="text-5xl font-black font-mono">${sc.map(fmt).join(" : ")}</div>${solo?`<div class="text-sm text-gray-200">${why=="sk"?"📜 "+t("3 свитки розрізано|3 scrolls cut"):"✖ "+t("Пропущено ёкаїв|Yokai missed")}</div>`:""}
+ ${solo?`<button onclick="cont()" ${S.souls>=1?"":"disabled"} class="btng w-full max-w-xs py-3">⛩️ ${t("Продовжити · 1 душа|Continue · 1 soul")}</button>`:""}
+ <button onclick="fin(2)" class="btng w-full max-w-xs py-3">📺 ${t("Реклама: ×2 монет|Ad: ×2 coins")}</button>
+ <button onclick="fin(1)" class="btn w-full max-w-xs py-3">${t("Завершити|Finish")}</button>`;
+ $("res").classList.replace("hidden","flex");
+}
+function cont(){
+ if(S.souls<1||!G.on)return;S.souls--;const f=G.f[0];
+ if(f.why=="sk"){f.sk=0;f.bl=[];f.dr=[];f.bc=0}else f.ms=0;
+ f.dead=0;f.why="";f.e=[];f.sp=1.5;G.fin=0;save();hdr();$("res").classList.replace("flex","hidden");
+}
+function fin(m){if(m==2)ad(CFG.promo.text,()=>endRound(2),"×2 文");else endRound(1)}
+function endRound(mult){
+ G.on=0;ptr={};setMusic("menu");$("res").classList.replace("flex","hidden");
  const sc=G.f.map(f=>f.sc),best=Math.max(...sc);S.rounds++;
- let m=1;if(S.c.x2>0){m*=2;S.c.x2--}if(S.c.x3>0){m*=3;S.c.x3--}                 // бустери ×2/×3 на раунд
- const coins=Math.round(best*(1+.03*U("end")))*m;                                 // монети = очки × бонуси (🔧 формула тут)
- let tier=-1;CHT.forEach((c,i)=>{if(best>=thr(i))tier=i});                        // який сундук заробив
- if(tier>=0)S.ch[tier]++;if(S.c.chg>0){S.c.chg--;S.ch[0]++}
- S.mon+=coins;S.xp+=best;save();push();
- G.res={sc,coins,tier,m};
- if(S.rounds%CFG.adEvery==0)ad(CFG.promo.text,showRes,"",1);else showRes();       // обов'язкова реклама кожні N раундів
+ let m=mult||1;if(S.c.x2>0){m*=2;S.c.x2--}if(S.c.x3>0){m*=3;S.c.x3--}
+ const coins=Math.round(best*(1+.03*U("end")))*m;
+ S.mon+=coins;S.xp+=best;S.ln++;save();push();
+ G.res={sc,coins,m};
+ if(S.rounds%CFG.adEvery==0)ad(CFG.promo.text,showRes,"",1);else showRes();
 }
 function showRes(){
- const{sc,coins,tier,m}=G.res;
- const w=G.m==2?(sc[0]==sc[1]?t("Нічия!|Draw!"):`🏆 P${sc[0]>sc[1]?1:2} ${t("перемагає|wins")}`):t("Раунд завершено|Round over");
- $("res").innerHTML=`<h2 class="text-3xl font-black text-neonGold" style="animation:pop .4s">${w}</h2><div class="text-5xl font-black font-mono">${sc.map(fmt).join(" : ")}</div><div class="text-xl">+${fmt(coins)} 文 ${m>1?"(×"+m+")":""}</div>${tier>=0?`<div class="text-xl">${CHT[tier][0]} ${t("Сундук|Chest")} +1</div>`:""}<button id="dblB" onclick="dbl(${coins})" class="btng w-full max-w-xs py-3">📺 ${t("Подвоїти монети|Double coins")}</button><button onclick="startRound(${G.m})" class="btn w-full max-w-xs py-3">${t("Ще раз|Again")}</button><button onclick="quitRound()" class="text-xs text-gray-400">${t("Закрити|Close")}</button>`;
+ const{sc,coins,m}=G.res;
+ $("res").innerHTML=`<h2 class="text-3xl font-black text-neonGold" style="animation:pop .4s">${t("Раунд завершено|Round over")}</h2><div class="text-5xl font-black font-mono">${sc.map(fmt).join(" : ")}</div><div class="text-xl">+${fmt(coins)} 文 ${m>1?"(×"+m+")":""}</div><div class="text-sm text-gray-300">+1 🏮</div><button onclick="startRound(${G.m})" class="btng w-full max-w-xs py-3">${t("Ще раз|Again")}</button><button onclick="quitRound()" class="btn w-full max-w-xs py-3">${t("Закрити|Close")}</button>`;
  $("res").classList.replace("hidden","flex");hdr();
 }
-function dbl(c){ad(CFG.promo.text,()=>{S.mon+=c;$("dblB").disabled=true;save();hdr()},"+"+fmt(c)+" 文")}
-// Реклама: зараз це заглушка з таймером 5 с. Для реальної мережі виклич її SDK тут і виконуй cb лише після підтвердження перегляду.
 let adCb=null,adTm=null;
 function ad(txt,cbk,rw,forced){adCb=cbk;$("adText").textContent=t(txt);$("adOv").classList.replace("hidden","flex");$("adX").classList.toggle("hidden",!!forced);const b=$("adBtn");b.disabled=true;let n=5;clearTimeout(adTm);const tick=()=>{b.textContent=n>0?`${t("Зачекай|Wait")} ${n}s`:`${t("Забрати|Continue")} ${rw||""}`;if(n--<=0)b.disabled=false;else adTm=setTimeout(tick,1000)};tick()}
 function adClose(){$("adOv").classList.replace("flex","hidden")}
 function adClaim(){adClose();S.ads++;if(isReal())FB.addDoc(FB.collection(db,"adEvents"),{uid:user.uid,ts:FB.serverTimestamp()}).catch(()=>{});if(adCb)adCb();adCb=null;save();rend()}
 
-// ═══ 11. МАГАЗИН: клинки / фони / покращення / одноразові бустери ═══
-function eq(k,i){S[k]=i;save();rend()}                                              // обрати придбане
-function buy(k,i){const arr={blade:"blades",bg:"bgs"}[k],p=k=="blade"?BL[i].price:BG[i][4];if(S.mon<p||S[arr].includes(i))return;S.mon-=p;S[arr].push(i);S[k]=i;save();push();rend()}
-function buyB(id){const b=BS.find(x=>x[0]==id);if(S.mon<b[3])return;S.mon-=b[3];S.c[id]+=b[4];save();rend()}
+// ═══ 11. МАГАЗИН (ціни ×2) ═══
+function eq(k,i){S[k]=i;bgC=null;save();rend()}
+function buy(k,i){const arr={blade:"blades",bg:"bgs"}[k],p=k=="blade"?BL[i].price:BG[i][4];if(S.mon<p||S[arr].includes(i))return;S.mon-=p;S[arr].push(i);S[k]=i;bgC=null;save();push();rend()}
+function buyB(id){const b=BS.find(x=>x[0]==id),c=bsCost(b);if(S.mon<c)return;S.mon-=c;S.bp[id]=(S.bp[id]||0)+1;if(id=="chg")S.ck.s=0;else S.c[id]+=b[4];save();rend()}
 function buyUp(id){const u=UP.find(x=>x[0]==id);let n=bm=="max"?999:bm,done=0;while(n-->0&&U(id)<u[6]){const c=upCost(u,U(id));if(S.mon<c)break;S.mon-=c;S.up[id]=U(id)+1;done++}if(done){save();rend()}}
-function setBm(){bm=bm==1?10:bm==10?"max":1;rend()}                                 // кнопка «купити ×1/×10/макс»
+function setBm(){bm=bm==1?10:bm==10?"max":1;rend()}
 function shopTab(x){shopT=x;rShop()}
+function moreBg(){bgN+=20;rShop()}
 function rShop(){
  const tb=[["b",t("🗡 Клинки|🗡 Blades")],["g",t("🖼 Фони|🖼 Backgrounds")],["u",t("📈 Покращення|📈 Upgrades")],["c",t("⚡ Бустери|⚡ Boosts")]];
  let h=`<div class="grid grid-cols-4 gap-1.5 text-[11px] font-bold">${tb.map(([k,l])=>`<button onclick="shopTab('${k}')" class="py-2 rounded-xl ${shopT==k?"bg-crimsonRed":"bg-inkCard border border-inkBorder"}">${l}</button>`).join("")}</div>`;
- if(shopT=="b")h+=`<div class="grid grid-cols-2 gap-3">`+BL.map(b=>{const o=S.blades.includes(b.i),e=S.blade==b.i;return `<div class="card !p-3 space-y-2 ${e?"!border-neonGold":""}">${bar(b)}<b class="block text-[10px] leading-tight">${bname(b)}</b><div class="text-[10px] text-gray-400">×${b.sc.toFixed(2)} ${t("очок|score")}</div>${o?`<button class="btn w-full ${e?"!bg-emerald-600":""}" onclick="eq('blade',${b.i})">${e?"✓":t("Обрати|Equip")}</button>`:`<button class="btng w-full" ${S.mon>=b.price?"":"disabled"} onclick="buy('blade',${b.i})">${fmt(b.price)} 文</button>`}</div>`}).join("")+`</div>`;
- if(shopT=="g")h+=BG.map((g,i)=>{const o=S.bgs.includes(i),e=S.bg==i;return `<div class="card !p-0 overflow-hidden ${e?"!border-neonGold":""}"><div class="p-3 flex items-center gap-3" style="background:url(img/bg/${i}.png) center/cover,linear-gradient(135deg,${g[2][0]},${g[2][1]})"><span class="text-4xl">${g[3]}</span><div class="flex-1"><b class="text-sm">${t(g[0])}</b><div class="text-[11px] text-gray-200">${t(g[1])}</div></div>${o?`<button class="btn ${e?"!bg-emerald-600":""}" onclick="eq('bg',${i})">${e?"✓":t("Обрати|Equip")}</button>`:`<button class="btng" ${S.mon>=g[4]?"":"disabled"} onclick="buy('bg',${i})">${fmt(g[4])} 文</button>`}</div></div>`}).join("");
+ if(shopT=="b")h+=`<div class="grid grid-cols-2 gap-3">`+BL.map(b=>{const o=S.blades.includes(b.i),e=S.blade==b.i;return `<div class="card !p-3 space-y-2 ${e?"!border-neonGold":""}">${bar(b)}<b class="block text-[10px] leading-tight">${FXI[b.fx]} ${bname(b)}</b><div class="text-[10px] text-gray-400">×${b.sc.toFixed(2)} ${t("очок|score")}</div>${o?`<button class="btn w-full ${e?"!bg-emerald-600":""}" onclick="eq('blade',${b.i})">${e?"✓":t("Обрати|Equip")}</button>`:`<button class="btng w-full" ${S.mon>=b.price?"":"disabled"} onclick="buy('blade',${b.i})">${fmt(b.price)} 文</button>`}</div>`}).join("")+`</div>`;
+ if(shopT=="g"){h+=BG.slice(0,bgN).map((g,i)=>{const o=S.bgs.includes(i),e=S.bg==i;return `<div class="card !p-0 overflow-hidden ${e?"!border-neonGold":""}"><div class="p-3 flex items-center gap-3" style="background:linear-gradient(135deg,${g[2][0]},${g[2][1]})"><span class="text-3xl">${g[3]}</span><div class="flex-1 min-w-0"><b class="text-xs">${t(g[0])}</b></div>${o?`<button class="btn ${e?"!bg-emerald-600":""}" onclick="eq('bg',${i})">${e?"✓":t("Обрати|Equip")}</button>`:`<button class="btng" ${S.mon>=g[4]?"":"disabled"} onclick="buy('bg',${i})">${fmt(g[4])} 文</button>`}</div></div>`}).join("");
+  if(bgN<BG.length)h+=`<button class="btn w-full py-3" onclick="moreBg()">${t("Показати ще|Show more")} (${BG.length-bgN})</button>`}
  if(shopT=="u"){
   h+=`<div class="card !p-3 flex items-center justify-between text-xs"><span>💤 ${t("Пасивний дохід|Passive income")}: <b class="text-emerald-400">${fmt(idleRate())} 文/${t("с|s")}</b></span><button class="btn" onclick="setBm()">${t("Купити|Buy")} ×${bm}</button></div>`;
   h+=[...UP].sort((a,b)=>!!b[7]-!!a[7]).map(u=>{const l=U(u[0]),mx=l>=u[6],c=upCost(u,l);return `<div class="card !p-3 space-y-1"><div class="flex items-center justify-between gap-2"><div class="flex items-center gap-2"><span class="text-2xl">${u[1]}</span><div><b class="text-xs">${t(u[2])}</b><div class="text-[10px] text-gray-400">${t(u[3])}</div></div></div><button class="btng shrink-0" ${mx||S.mon<c?"disabled":""} onclick="buyUp('${u[0]}')">${mx?"MAX":fmt(c)+" 文"}</button></div><div class="flex justify-between text-[10px]"><span class="text-neonGold">Lv ${l}/${u[6]}</span><span class="text-emerald-400">${u[7]?fmt(l*u[7]*mile(l))+" 文/"+t("с|s")+(mile(l)>1?" ×"+mile(l):""):""}</span></div><div class="h-1 bg-inkDark rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-neonGold to-crimsonRed" style="width:${l/u[6]*100}%"></div></div></div>`}).join("");
  }
- if(shopT=="c")h+=BS.map(b=>`<div class="card flex items-center justify-between"><div class="flex items-center gap-3"><span class="text-2xl">${b[1]}</span><div><b class="text-sm">${t(b[2])}</b><div class="text-[11px] text-gray-400">${t("В запасі|Owned")}: ${S.c[b[0]]}</div></div></div><button class="btng" ${S.mon>=b[3]?"":"disabled"} onclick="buyB('${b[0]}')">${fmt(b[3])} 文</button></div>`).join("");
+ if(shopT=="c")h+=`<p class="text-[11px] text-gray-400">${t("Ціна подвоюється після кожної покупки (оновлюється щодня).|Price doubles after each purchase (resets daily).")}</p>`+BS.map(b=>{const c=bsCost(b);return `<div class="card flex items-center justify-between"><div class="flex items-center gap-3"><span class="text-2xl">${b[1]}</span><div><b class="text-sm">${t(b[2])}</b><div class="text-[11px] text-gray-400">${t("В запасі|Owned")}: ${b[0]=="chg"?"—":S.c[b[0]]}</div></div></div><button class="btng" ${S.mon>=c?"":"disabled"} onclick="buyB('${b[0]}')">${fmt(c)} 文</button></div>`}).join("");
  $("view-shop").innerHTML=h;
 }
-// Пасивний дохід «духів»: щосекунди + офлайн (до ліміту). Нагородні умови (XP/дні/друзі) від пасивного доходу НЕ залежать.
-setInterval(()=>{const r=idleRate();if(r){S.mon+=r;hdr();if(cur=="shop"&&shopT=="u"&&Date.now()%3<1)rShop()}},1000);
+let idleTick=0;
+setInterval(()=>{const r=idleRate();if(r){S.mon+=r;hdr();if(cur=="shop"&&shopT=="u"&&++idleTick%3==0)rShop()}},1000);
 (function offline(){const cap=(CFG.offlineBaseMin+15*U("off"))*60,away=Math.min((Date.now()-S.seen)/1000,cap),g=Math.floor(away*idleRate());if(away>60&&g>0){S.mon+=g;setTimeout(()=>toast("💤 "+t("Поки тебе не було, духи принесли|While you were away, spirits earned")+" +"+fmt(g)+" 文"),3500)}S.seen=Date.now()})();
 
-// ═══ 12. СУНДУКИ: рулетка вбік зі звуком (як у CS) ═══
-/* Що випадає (ваги: монети, бустер, клинок, фон, знижка, тату). 🔧 ЗМІНИТИ шанси тут: більше число = частіше.
-   Знижки 10–40% випадають із золотого й вище; ТАТУ — лише з легендарного й міфічного, дуже рідко (0.4% і 1%). */
-const DROP=[[55,25,10,10,0,0],[40,20,15,15,10,0],[25,15,20,20,19.6,.4],[15,10,25,25,24,1]];
-const DISC=[[],[[10,80],[20,20]],[[10,50],[20,35],[30,15]],[[20,50],[30,35],[40,15]]];   // [% знижки, вага] по сундуках
-const wp=a=>{let x=R()*a.reduce((s,v)=>s+v,0),i=0;for(;i<a.length-1;i++){x-=a[i];if(x<0)break}return i};
-function rollItem(k){
- const ty=wp(DROP[k]);
- if(ty==1){const b=BS[R()*BS.length|0];return{ty:"u",id:b[0],ic:b[1],lb:t(b[2]).split(":")[0].slice(0,26),r:1}}
- if(ty==2){const l=BL.filter(b=>!S.blades.includes(b.i)&&b.i<[15,30,45,50][k]);if(l.length){const b=l[R()*l.length|0];return{ty:"b",i:b.i,ic:"⚔️",lb:bname(b),r:Math.min(4,b.i/10|0)}}}
- if(ty==3){const l=BG.map((g,i)=>i).filter(i=>!S.bgs.includes(i)&&i<[3,5,7,8][k]);if(l.length){const i=l[R()*l.length|0];return{ty:"g",i,ic:BG[i][3],lb:t("Фон|Background")+" "+t(BG[i][0]),r:Math.min(4,1+(i/2|0))}}}
- if(ty==4){const d=DISC[k],v=d[wp(d.map(x=>x[1]))][0];return{ty:"d",v,ic:"🏷",lb:t("Знижка|Discount")+" "+v+"%",r:v>=30?3:2}}
- if(ty==5){const big=k==3&&R()<.15;return{ty:"t",v:big?"tat2":"tat1",ic:"🎟",lb:big?t("Тату до 3500 грн|Tattoo up to 3500 UAH"):t("Міні-тату до 1500 грн|Mini tattoo up to 1500 UAH"),r:4}}
- return{ty:"c",a:Math.round([300,1500,6000,25000][k]*(.5+R()*1.5)),ic:"🪙",r:0}            // монети (і запасний варіант)
-}
-const lab=it=>it.ty=="c"?fmt(it.a)+" 文":it.lb;
-function apply(it){
- if(it.ty=="c")S.mon+=it.a;else if(it.ty=="u")S.c[it.id]+=BS.find(b=>b[0]==it.id)[4];
- else if(it.ty=="b")S.blades.push(it.i);else if(it.ty=="g")S.bgs.push(it.i);
- else S.cp.push({code:Date.now().toString(36)+R().toString(36).slice(2,6),type:it.ty=="d"?"d"+it.v:it.v,lb:it.lb,used:0}); // купон → вкладка «Нагороди»
- save();push();
-}
+// ═══ 12. СУНДУКИ: 3 штуки з таймерами, рулетка посеред екрана ═══
+/* [ключ, іконка, назва, перезарядка мс, колір, ціна пропуску, валюта пропуску]. 🔧 Змінюй тут. */
+const CK=[["s","🥈","Срібний|Silver",600000,"#9ca3af",5,"ln"],["g","🥇","Золотий|Gold",259200000,"#ffb703",12,"jd"],["d","💎","Діамантовий|Diamond",604800000,"#22d3ee",30,"jd"]];
+const CKI=["Кожні 10 хв · до 3 на день: дрібні нагороди й бустери|Every 10 min · up to 3/day: small rewards & boosts","Раз на 3 дні: більше монет, душі, нефрит, знижки|Once per 3 days: more coins, souls, jade, discounts","Раз на тиждень: найкращі нагороди, шанс на тату|Once a week: best rewards, tattoo chance"];
+const CUR={ln:"🏮",jd:"💎"},RAR=["#6b7280","#3b82f6","#a855f7","#ffb703","#ff2a5f"];
+const tm=ms=>{const s=Math.ceil(ms/1000),d=s/86400|0,h=s%86400/3600|0,m=s%3600/60|0;return d?`${d}${t("д|d")} ${h}${t("г|h")}`:h?`${h}:${String(m).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`:`${m}:${String(s%60).padStart(2,"0")}`};
+function chSt(k){const n=Date.now(),c=S.ck;
+ if(k==0){if(c.sd!==today()){c.sn=0;c.sd=today()}const left=Math.max(0,c.s+CK[0][3]-n),lim=c.sn>=3;return{ok:!lim&&!left,left,lim,info:t("Сьогодні|Today")+" "+c.sn+"/3"}}
+ const left=Math.max(0,c[CK[k][0]]+CK[k][3]-n);return{ok:!left,left,lim:0,info:""}}
 const IMG=(s,e,c)=>`<img src="${s}" data-e="${e}" onerror="this.outerHTML=this.dataset.e" class="${c}">`;
 function rChests(){
- $("view-chests").innerHTML=`<h2 class="text-xl font-black uppercase">${t("Сундуки INKAI|INKAI chests")}</h2><p class="text-xs text-gray-400">${t("Торкнись сундука, щоб відкрити. З нього випадають монети, бустери, клинки, фони і купони: знижки 10–40% (з золотого), тату — дуже рідко (з легендарного й міфічного).|Tap a chest to open it. Drops: coins, boosts, blades, backgrounds and coupons: 10–40% discounts (gold and above), tattoos — very rarely (legendary and mythic).")}</p><div class="grid grid-cols-2 gap-3">`+CHT.map((c,k)=>`<div class="card !p-2 text-center space-y-1" style="border-color:${RAR[c[4]]};box-shadow:0 0 14px ${RAR[c[4]]}55"><button onclick="tapChest(${k})" class="block w-full active:scale-95 transition"><div class="text-6xl h-24 flex items-center justify-center">${IMG("img/chest/"+CHF[k]+".png",c[0],"h-24 w-auto")}</div><b class="text-[11px]">${t(c[1])}</b><div class="text-[10px] text-gray-400">${t("Є|Owned")}: ${S.ch[k]}</div></button><div class="flex gap-1"><button class="btn flex-1 !px-1" ${S.mon>=c[2]?"":"disabled"} onclick="openChest(${k},1)">${fmt(c[2])} 文</button><button class="btn flex-1 !px-1 !bg-deepPurple" ${S.souls>=c[5]?"":"disabled"} onclick="openChest(${k},2)">${c[5]} ⛩️</button></div></div>`).join("")+`</div>`;
+ $("view-chests").innerHTML=`<h2 class="text-xl font-black uppercase">${t("Сундуки INKAI|INKAI chests")}</h2><p class="text-[11px] text-gray-400">${t("Нагороди залежать від рівня твоєї катани: чим сильніша катана, тим більше в сундуках.|Rewards scale with your blade level: the stronger the blade, the better the loot.")}</p>`+
+ CK.map((c,k)=>`<div class="card space-y-3" style="border-color:${c[4]};box-shadow:0 0 16px ${c[4]}44"><div class="flex items-center gap-3"><div class="h-20 w-20 shrink-0 flex items-center justify-center text-6xl">${IMG("img/chest/"+CHF[k]+".png",c[1],"h-20 w-auto")}</div><div class="flex-1"><b>${t(c[2])} ${t("сундук|chest")}</b><div class="text-[10px] text-gray-400 leading-snug">${t(CKI[k])}</div><div id="ct${k}" class="font-mono text-xs text-neonGold mt-1"></div></div></div>
+ <div class="flex gap-2"><button id="co${k}" class="btng flex-1" onclick="openChest(${k},0)">${t("Відкрити|Open")}</button><button id="cs${k}" class="btn flex-1 !bg-deepPurple" onclick="openChest(${k},1)">⏭ ${c[5]} ${CUR[c[6]]}</button></div></div>`).join("");
+ tickCh();
 }
-function tapChest(k){if(!opening&&S.ch[k])openChest(k,0)}
-// how: 0 — з наявних, 1 — купити за монети, 2 — купити за душі
-async function openChest(k,how){
- if(opening)return;
- if(how==0){if(!S.ch[k])return;S.ch[k]--}else if(how==1){if(S.mon<CHT[k][2])return;S.mon-=CHT[k][2]}else{if(S.souls<CHT[k][5])return;S.souls-=CHT[k][5]}
- opening=1;hdr();const it=rollItem(k),N=46,X=40,strip=[...Array(N)].map((_,i)=>i==X?it:rollItem(k));   // X — позиція призу в стрічці
- $("view-chests").innerHTML=`<div class="text-center space-y-3 pt-6"><div class="text-8xl h-40 flex items-center justify-center shk" style="filter:drop-shadow(0 0 25px ${RAR[CHT[k][4]]})">${IMG("img/chest/"+CHF[k]+".png",CHT[k][0],"h-40 w-auto")}</div><b class="text-neonGold">${t("Відкриваємо…|Opening…")}</b></div>`;
- for(let i=0;i<10;i++){tone(80+i*20,.12,"sine",.2);await sleep(130)}                                   // нарощуваний гуркіт
- $("view-chests").innerHTML=`<h2 class="text-center font-black text-neonGold">${CHT[k][0]} ${t(CHT[k][1])}</h2><div class="relative overflow-hidden rounded-2xl border border-neonGold/50 bg-black/60" id="rbox"><div id="rmark" class="absolute left-1/2 top-0 bottom-0 w-1 -ml-0.5 bg-neonGold z-10 shadow-[0_0_14px_#ffb703] transition-transform"></div><div id="rstrip" class="flex gap-1 p-2" style="width:max-content">${strip.map(s=>`<div class="w-20 h-24 shrink-0 rounded-xl flex flex-col items-center justify-center text-center text-[9px] bg-inkCard" style="border:2px solid ${RAR[s.r]};box-shadow:0 0 8px ${RAR[s.r]}66"><span class="text-3xl">${s.ic}</span><span class="px-1 leading-tight">${esc(lab(s))}</span></div>`).join("")}</div></div>`;
- const st=$("rstrip"),mk=$("rmark"),bw=$("rbox").clientWidth,target=X*84+8+40-bw/2+(R()-.5)*40;       // 84 = ширина картки 80 + проміжок 4
+function tickCh(){if(cur!="chests"||opening)return;CK.forEach((c,k)=>{const s=chSt(k),a=$("ct"+k);if(!a)return;a.textContent=s.ok?t("Готовий!|Ready!"):s.lim?t("Ліміт на сьогодні — до завтра|Daily limit — back tomorrow"):"⏳ "+tm(s.left);if(k==0&&!s.ok&&!s.lim)a.textContent+=" · "+s.info;else if(k==0&&s.ok)a.textContent+=" · "+s.info;$("co"+k).disabled=!s.ok;$("cs"+k).disabled=s.ok||s.lim||S[c[6]]<c[5]})}
+setInterval(tickCh,1000);
+// Ваги випадіння: [монети, бустер, душі, ліхтарі, нефрит, знижка, тату] для срібного/золотого/діамантового
+const DROP=[[52,34,6,8,0,0,0],[40,26,12,10,6,6,0],[26,22,14,12,15,10,1]];
+const DISC=[[],[[10,80],[20,20]],[[20,50],[30,35],[40,15]]];
+const wp=a=>{let x=R()*a.reduce((s,v)=>s+v,0),i=0;for(;i<a.length-1;i++){x-=a[i];if(x<0)break}return i};
+const rr=(a,b)=>a+(R()*(b+1)|0);
+function rollItem(k){
+ const ty=wp(DROP[k]),sc=1+S.blade*.05;                                  // множник від рівня катани: +5% за катану (макс ×4)
+ if(ty==1){const b=BS[R()*4|0];return{ty:"u",id:b[0],ic:b[1],lb:t(b[2]).split(":")[0].slice(0,26),r:1}}
+ if(ty==2)return{ty:"s",a:rr([1,3,8][k],[2,4,8][k]),ic:"⛩️",r:2}
+ if(ty==3)return{ty:"l",a:rr([2,5,12][k],[3,5,8][k]),ic:"🏮",r:1}
+ if(ty==4)return{ty:"j",a:rr([1,2,5][k],[1,3,8][k]),ic:"💎",r:3}
+ if(ty==5){const d=DISC[k],v=d[wp(d.map(x=>x[1]))][0];return{ty:"d",v,ic:"🏷",lb:t("Знижка|Discount")+" "+v+"%",r:v>=30?4:3}}
+ if(ty==6){const big=R()<.15;return{ty:"t",v:big?"tat2":"tat1",ic:"🎟",lb:big?t("Тату до 3500 грн|Tattoo up to 3500 UAH"):t("Міні-тату до 1500 грн|Mini tattoo up to 1500 UAH"),r:4}}
+ return{ty:"c",a:Math.round([350,2800,14000][k]*(.6+R()*.8)*sc*(1+.03*U("chest"))),ic:"🪙",r:k}
+}
+const lab=it=>it.ty=="c"?fmt(it.a)+" 文":it.ty=="s"?"+"+it.a+" ⛩️":it.ty=="l"?"+"+it.a+" 🏮":it.ty=="j"?"+"+it.a+" 💎":it.lb;
+function apply(it){
+ if(it.ty=="c")S.mon+=it.a;else if(it.ty=="u")S.c[it.id]+=BS.find(b=>b[0]==it.id)[4];
+ else if(it.ty=="s")S.souls+=it.a;else if(it.ty=="l")S.ln+=it.a;else if(it.ty=="j")S.jd+=it.a;
+ else S.cp.push({code:Date.now().toString(36)+R().toString(36).slice(2,6),type:it.ty=="d"?"d"+it.v:it.v,lb:it.lb,used:0});
+ save();push();
+}
+async function openChest(k,skip){
+ if(opening)return;const s=chSt(k),c=CK[k];
+ if(skip){if(s.ok||s.lim||S[c[6]]<c[5])return;S[c[6]]-=c[5]}else if(!s.ok)return;
+ if(k==0){S.ck.s=Date.now();S.ck.sn++}else S.ck[c[0]]=Date.now();
+ save();opening=1;hdr();
+ const it=rollItem(k),N=46,X=40,strip=[...Array(N)].map((_,i)=>i==X?it:rollItem(k)),ro=$("ro");
+ ro.innerHTML=`<div class="text-center space-y-3"><div class="text-8xl h-40 flex items-center justify-center shk" style="filter:drop-shadow(0 0 25px ${c[4]})">${IMG("img/chest/"+CHF[k]+".png",c[1],"h-40 w-auto")}</div><b class="text-neonGold">${t("Відкриваємо…|Opening…")}</b></div>`;
+ ro.classList.replace("hidden","flex");
+ for(let i=0;i<8;i++){tone(80+i*20,.12,"sine",.2);await sleep(130)}
+ ro.innerHTML=`<div class="w-full max-w-md space-y-3"><h2 class="text-center font-black text-neonGold">${c[1]} ${t(c[2])}</h2><div class="relative overflow-hidden rounded-2xl border border-neonGold/50 bg-black/60" id="rbox"><div id="rmark" class="absolute left-1/2 top-0 bottom-0 w-1 -ml-0.5 bg-neonGold z-10 shadow-[0_0_14px_#ffb703] transition-transform"></div><div id="rstrip" class="flex gap-1 p-2" style="width:max-content">${strip.map(q=>`<div class="w-20 h-24 shrink-0 rounded-xl flex flex-col items-center justify-center text-center text-[9px] bg-inkCard" style="border:2px solid ${RAR[q.r]};box-shadow:0 0 8px ${RAR[q.r]}66"><span class="text-3xl">${q.ic}</span><span class="px-1 leading-tight">${esc(lab(q))}</span></div>`).join("")}</div></div></div>`;
+ const st=$("rstrip"),mk=$("rmark"),bw=$("rbox").clientWidth,target=X*84+8+40-bw/2+(R()-.5)*40;
  st.style.transition="none";st.style.transform="translateX(0)";st.offsetHeight;st.style.transition="transform 5.2s cubic-bezier(.1,.75,.12,1)";st.style.transform=`translateX(-${target}px)`;
- await new Promise(res=>{let last=-1;const t0=performance.now(),lp=()=>{const m=new DOMMatrix(getComputedStyle(st).transform),idx=Math.floor((-m.m41+bw/2-8)/84);   // звук на КОЖНІЙ картці, що проїхала під маркером
+ await new Promise(res=>{let last=-1;const t0=performance.now(),lp=()=>{const m=new DOMMatrix(getComputedStyle(st).transform),idx=Math.floor((-m.m41+bw/2-8)/84);
   if(idx!=last){last=idx;sfx("tick",()=>tone(1300,.04,"square",.07));mk.style.transform="scaleY(1.3)";setTimeout(()=>mk.style.transform="",60)}
   if(performance.now()-t0<5400)requestAnimationFrame(lp);else res()};requestAnimationFrame(lp)});
  apply(it);reveal(it);
 }
-function reveal(it){ // епічне відкриття: промені кольору рідкості, акорд, дощ монет
+function reveal(it){
  const c=RAR[it.r],ov=$("rev"),isC=it.ty=="d"||it.ty=="t";
  ov.innerHTML=`<div class="absolute inset-0 opacity-70" style="background:conic-gradient(${c}00,${c}99,${c}00,${c}99,${c}00,${c}99,${c}00);animation:spinR 7s linear infinite;-webkit-mask:radial-gradient(circle,#000 15%,transparent 70%);mask:radial-gradient(circle,#000 15%,transparent 70%)"></div><div class="relative space-y-3 px-6"><div class="text-xs font-black tracking-[.3em]" style="color:${c}">${t(["ЗВИЧАЙНИЙ|COMMON","РІДКІСНИЙ|RARE","ЕПІЧНИЙ|EPIC","ЛЕГЕНДАРНИЙ|LEGENDARY","МІФІЧНИЙ|MYTHIC"][it.r])}</div><div class="text-8xl" style="animation:pop .5s;filter:drop-shadow(0 0 30px ${c})">${it.ic}</div><div class="text-2xl font-black" style="color:${c}">${esc(lab(it))}</div>${isC?`<div class="text-xs text-gray-300">${t("Купон збережено у вкладці «Нагороди»|Coupon saved in the Rewards tab")}</div>`:""}<button class="btng px-10 py-3" onclick="closeRev()">OK</button></div>`;
  ov.classList.replace("hidden","flex");sfx("reveal",()=>[0,4,7,12].slice(0,2+it.r).forEach((s,i)=>setTimeout(()=>tone(330*2**(s/12),.7,"triangle",.14),i*140)));
- if(it.r>=2)for(let i=0;i<30+it.r*15;i++){const e=document.createElement("span");e.textContent="🪙";e.style.cssText=`position:fixed;top:-30px;left:${R()*100}%;font-size:${16+R()*20}px;animation:fall ${1.2+R()}s ${R()*.8}s ease-in forwards;pointer-events:none`;ov.appendChild(e);setTimeout(()=>e.remove(),3200)}
+ if(it.r>=2)for(let i=0;i<20+it.r*8;i++){const e=document.createElement("span");e.textContent="🪙";e.style.cssText=`position:fixed;top:-30px;left:${R()*100}%;font-size:${16+R()*20}px;animation:fall ${1.2+R()}s ${R()*.8}s ease-in forwards;pointer-events:none`;ov.appendChild(e);setTimeout(()=>e.remove(),3200)}
 }
-function closeRev(){$("rev").classList.replace("flex","hidden");opening=0;rend()}
+function closeRev(){$("rev").classList.replace("flex","hidden");$("ro").classList.replace("flex","hidden");opening=0;rend()}
 
 // ═══ 13. ДРУЗІ І ПАРТНЕРСЬКІ ЗАВДАННЯ ═══
 function copyRef(){const i=$("refIn");i.select();navigator.clipboard.writeText(i.value);toast(t("Скопійовано!|Copied!"))}
-async function loadFriends(){ // друзі = ті, хто зареєструвався за твоїм посиланням; «зарахований» — дійшов до 3-го рівня
+async function loadFriends(){
  FR=[];
  try{const q=await FB.getDocs(FB.query(FB.collection(db,"referrals"),FB.where("by","==",user.uid)));
   for(const d of q.docs){try{const u=await FB.getDoc(FB.doc(db,"public",d.id));if(u.exists()){const x=u.data();FR.push({n:x.nick||"?",av:x.av||"fox",m:x.coins||0,l:lvl(x.xp||0)})}}catch(e){}}}catch(e){}
  S.friends=FR.filter(f=>f.l>=3).length;
 }
-// Завдання партнерів. 🔧 ЗМІНИТИ: список нижче (або додавай у Firestore колекцію «offers»: title, url).
 const SAMPLE=[["ig","Підпишись на Instagram YYOKAI|Follow YYOKAI on Instagram","https://instagram.com/yyokai.tattoo"],["tt","Підпишись на TikTok|Follow on TikTok","https://tiktok.com/@yyokai"],["yt","Підпишись на YouTube|Subscribe on YouTube","https://youtube.com/@yyokai"],["tc","Telegram-канал|Telegram channel","https://t.me/yyokai"],["tg","Запусти Telegram-бота|Start the Telegram bot","https://t.me/YyokaiInkBot"],["pt","Партнерський бонус|Partner bonus","https://instagram.com/yyokai.tattoo"]].map(([id,title,url])=>({id,title,url}));
 OFFERS=[...SAMPLE];
-async function doOffer(id){ // монети — одразу один раз; «зарахування» до нагород — після твоєї перевірки (submissions → status ok)
+async function doOffer(id){
  if(S.offers[id])return;const o=OFFERS.find(x=>x.id==id);if(!o)return;
  window.open(o.url,"_blank");S.offers[id]="done";S.mon+=CFG.offerReward;save();
  if(isReal())try{await FB.setDoc(FB.doc(db,"submissions",user.uid+"_"+id),{uid:user.uid,offer:id,status:"pending"})}catch(e){}
  rend();
 }
-const tasksOk=()=>Object.values(S.offers).filter(v=>v=="ok").length;       // кількість ПІДТВЕРДЖЕНИХ завдань (став status="ok" у Firestore)
+const tasksOk=()=>Object.values(S.offers).filter(v=>v=="ok").length;
 function rFriends(){
  const link=location.origin+location.pathname+"?ref="+(isReal()?user.uid:"");
  $("view-friends").innerHTML=`<h2 class="text-xl font-black uppercase text-neonGold">👥 ${t("Запроси друга в INKAI|Invite a friend to INKAI")}</h2>
@@ -650,7 +755,7 @@ function rFriends(){
  OFFERS.map(o=>`<div class="card flex items-center justify-between"><div><b class="text-sm">${esc(t(o.title))}</b><div class="text-[10px] text-crimsonRed">+${fmt(CFG.offerReward)} 文</div></div><button ${S.offers[o.id]?"disabled":""} onclick="doOffer('${esc(o.id)}')" class="btn ${S.offers[o.id]?"!bg-emerald-600":""}">${S.offers[o.id]?"✓":"START"}</button></div>`).join("");
 }
 
-// ═══ 14. РЕЙТИНГ ТОП-100 (+ картка гравця) ═══
+// ═══ 14. РЕЙТИНГ ═══
 async function rRating(){
  let L=[];
  if(FBOK&&db){try{const q=await FB.getDocs(FB.query(FB.collection(db,"public"),FB.orderBy("xp","desc"),FB.limit(100)));q.forEach(d=>{const x=d.data();L.push({id:d.id,nick:x.nick||"?",av:x.av||"fox",xp:x.xp||0,days:x.days||1})})}catch(e){}}
@@ -661,21 +766,18 @@ async function rRating(){
 }
 function showPl(i){const u=PL[i];if(!u)return;const p=$("pc");p.innerHTML=`<div class="card rounded-3xl text-center space-y-2 w-full max-w-xs"><div class="w-24 h-24 mx-auto rounded-3xl overflow-hidden flex items-center justify-center text-6xl glow" style="border:2px solid #ffb703">${avHTML(u.av)}</div><div class="text-xl font-black">${esc(u.nick)}</div><div class="text-xs text-gray-300">#${i+1} · Lv ${lvl(u.xp)} · ${fmt(u.xp)} XP</div><div class="text-[11px] text-gray-400">${t("Днів у грі|Days played")}: ${u.days}</div></div>`;p.classList.replace("hidden","flex")}
 
-// ═══ 15. НАГОРОДИ: прості і зрозумілі умови ═══
-/* Як отримати тату/знижку (це видно гравцю у вкладці). 🔧 ЗМІНИТИ: числа в масивах нижче.
-   Формат пункту: [текст, поточне значення, потрібне значення]. Заявка = запис у Firestore «claims»; ти перевіряєш її в адмінці. */
+// ═══ 15. НАГОРОДИ ═══
 const need=(k)=>{
  const F=["Друзів, що дійшли до 3-го рівня|Friends who reached level 3",S.friends],D=["Днів у грі (різних)|Different days played",S.days],X=["Очки XP (за раунди)|XP points (from rounds)",S.xp],T=["Підтверджені завдання партнерів|Verified partner tasks",tasksOk()];
  return {
-  d10:[[...F,1],[...D,3]],                                             // знижка 10%: 1 друг + 3 дні
-  d20:[[...F,2],[...D,3]],d30:[[...F,3],[...D,5]],d40:[[...F,4],[...D,7]],
-  mini:[[...X,60000],[...D,14],[...T,3],[...F,1]],                     // міні-тату
-  big:[[...X,250000],[...D,30],[...T,7],[...F,5],["Реклам переглянуто|Ads watched",S.ads,30],["Босів переможено|Bosses defeated",S.kills,10]]  // велике тату
+  d10:[[...F,1],[...D,3]],d20:[[...F,2],[...D,3]],d30:[[...F,3],[...D,5]],d40:[[...F,4],[...D,7]],
+  mini:[[...X,60000],[...D,14],[...T,3],[...F,1]],
+  big:[[...X,250000],[...D,30],[...T,7],[...F,5],["Реклам переглянуто|Ads watched",S.ads,30],["Босів переможено|Bosses defeated",S.kills,10]]
  }[k];
 };
 const NAMES={d10:"🏷 Знижка 10% на тату|🏷 10% tattoo discount",d20:"🏷 Знижка 20%|🏷 20% discount",d30:"🏷 Знижка 30%|🏷 30% discount",d40:"🏷 Знижка 40%|🏷 40% discount",mini:"🎁 Міні-тату (до 1500 грн)|🎁 Mini tattoo (up to 1500 UAH)",big:"👑 Велике тату (7000 грн)|👑 Big tattoo (7000 UAH)"};
 const rows=r=>r.map(x=>`<div><div class="flex justify-between text-[11px]"><span class="text-gray-300">${t(x[0])}</span><span class="font-mono ${x[1]>=x[2]?"text-emerald-400":"text-neonGold"}">${fmt(Math.min(x[1],x[2]))}/${fmt(x[2])}</span></div><div class="h-1.5 bg-inkDark rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-neonGold to-crimsonRed" style="width:${Math.min(100,x[1]/x[2]*100)}%"></div></div></div>`).join("");
-async function claim(id,code){ // id — «d10…big» або тип купона; code — код купона з сундука
+async function claim(id,code){
  if(code?S.cp.find(c=>c.code==code&&c.used):S.claimed.includes(id))return;
  if(!isReal()){alert(t("Щоб подати заявку, увійди через Google/Apple.|Sign in with Google/Apple to claim."));authMode("reg");go("auth");return}
  try{await FB.addDoc(FB.collection(db,"claims"),{uid:user.uid,email:user.email||"",nick:S.nick,tier:id,code:code||"",xp:S.xp,days:S.days,streak:S.streak,friends:S.friends,tasks:tasksOk(),ads:S.ads,kills:S.kills,ts:FB.serverTimestamp()});
@@ -695,7 +797,7 @@ function rRewards(){
  ["d10","d20","d30","d40","mini","big"].map(card).join("");
 }
 
-// ═══ 16. ПРОФІЛЬ (аватар) і ПРИХОВАНА АДМІНКА ═══
+// ═══ 16. ПРОФІЛЬ І АДМІНКА ═══
 function pickAv(id){S.av=id;save();push();rProfile()}
 function rProfile(){
  $("view-profile").innerHTML=`
@@ -704,16 +806,13 @@ function rProfile(){
  <div class="card text-xs text-gray-300 grid grid-cols-2 gap-1"><div>${t("Раундів|Rounds")}: <b>${S.rounds}</b></div><div>${t("Босів|Bosses")}: <b>${S.kills}</b></div><div>${t("Днів|Days")}: <b>${S.days}</b></div><div>${t("Серія підряд|Streak")}: <b>${S.streak}</b></div></div>
  <div class="card space-y-1"><h4 class="text-xs font-bold text-neonGold uppercase">🔊 ${t("Перевірка звуків і файлів|Sound & file check")}</h4>${sndStat()}</div>
  ${isReal()?`<button onclick="logout()" class="w-full py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 font-bold text-sm">${t("Вийти з акаунта|Logout")}</button>`:`<button onclick="authMode('reg');go('auth')" class="w-full py-3 rounded-xl bg-neonGold/10 border border-neonGold/40 text-neonGold font-bold text-sm">${t("Увійти через Google/Apple|Sign in with Google/Apple")}</button>`}
- <!-- прихована кнопка адмінки: майже непомітна крапка внизу -->
  <div class="pt-16 text-center"><button onclick="adminOpen()" class="text-[9px] text-inkBorder opacity-30 px-6 py-2">·</button></div>`;
 }
-async function adminOpen(){ // пароль → хеш → порівняння (пароль у коді не зберігається)
+async function adminOpen(){
  const pw=prompt(t("Пароль адміна|Admin password"));if(!pw)return;
  if(await sha(pw)!==CFG.adminHash){alert("✗");return}
  adminOK=true;go("admin");
 }
-// ⚠️ Пароль — лише «замок на дверях». Реальний захист даних = правила Firestore (admin() за твоїм UID, див. коментар угорі).
-// Щоб адмінка показувала дані, увійди в гру саме акаунтом адміна (Google, чий UID вписано в правила).
 function rAdmin(){
  if(!adminOK){go("profile");return}
  $("view-admin").innerHTML=`<div class="flex justify-between"><h2 class="text-xl font-black uppercase text-crimsonRed">Admin</h2><button onclick="adminOK=false;go('profile')" class="text-xs text-gray-400">✕</button></div>
@@ -726,7 +825,7 @@ async function admSearch(){
  catch(e){box.innerHTML=`<div class="text-xs text-crimsonRed">${esc(e.message)}<br>${t("Увійди акаунтом адміна й перевір правила Firestore.|Sign in as admin and check Firestore rules.")}</div>`}
 }
 const dstr=ts=>ts&&ts.toDate?ts.toDate().toLocaleString():"—";
-function streaks(dates){ // рахує серії по СЕРВЕРНИХ датах: поточна, найдовша, усього різних днів
+function streaks(dates){
  const s=[...new Set(dates)].sort();let best=0,run=0,prev=null;
  for(const d of s){run=prev&&(new Date(d)-new Date(prev))==864e5?run+1:1;best=Math.max(best,run);prev=d}
  let cur=0;const last=s[s.length-1],y=new Date(Date.now()-864e5).toISOString().slice(0,10);
@@ -759,7 +858,6 @@ async function admClaims(){
 function authMode(m){mode=m;const r=m=="reg";$("aBtn").textContent=r?t("Створити акаунт|Create account"):t("Увійти|Sign in");$("aTog").textContent=r?t("Вже є акаунт? Увійти|Have an account? Sign in"):t("Немає акаунта? Реєстрація|No account? Register")}
 function toggleAuth(){authMode(mode=="reg"?"login":"reg")}
 function guest(){guestMode=true;user={uid:"local_guest",email:""};S.nick=S.nick||"Guest";save();go("play")}
-// Google/Apple: спочатку спливаюче вікно; якщо браузер його заблокував — перенаправлення. Сесія запам'ятовується надовго (setPersistence).
 async function social(k){
  if(!FBOK){alert(t("Спершу встав ключі Firebase у файлі (розділ 0).|Paste your Firebase keys first (section 0)."));return}
  if(inApp){$("inApp").classList.remove("hidden");return}
@@ -771,13 +869,12 @@ async function social(k){
   else if(!["auth/popup-closed-by-user","auth/cancelled-popup-request"].includes(e.code))alert(e.code+"\n"+e.message);
  }
 }
-async function authSubmit(e){ // запасний вхід email+пароль (за бажанням)
+async function authSubmit(e){
  e.preventDefault();if(!FBOK){alert("Firebase keys?");return}
  const em=$("aEmail").value.trim(),pw=$("aPass").value;
  try{mode=="reg"?await FB.createUserWithEmailAndPassword(auth,em,pw):await FB.signInWithEmailAndPassword(auth,em,pw)}catch(x){alert(x.message)}
 }
 async function logout(){if(FBOK&&auth)try{await FB.signOut(auth)}catch(e){}user=null;guestMode=false;FR=[];route()}
-// Нікнейм обов'язковий і унікальний. Форма: літери/цифри/_ , 3–16 символів.
 function showNick(){
  $("nickAv").innerHTML=AVS.map(a=>`<button type="button" onclick="S.av='${a[0]}';showNick()" class="aspect-square rounded-xl overflow-hidden flex items-center justify-center text-xl ${S.av==a[0]?"ring-2 ring-neonGold":"opacity-60"}">${avHTML(a[0])}</button>`).join("");
  $("nickov").classList.remove("hidden");
@@ -788,7 +885,6 @@ async function saveNick(){
  try{const q=await FB.getDocs(FB.query(FB.collection(db,"public"),FB.where("nickLc","==",lc),FB.limit(1)));if(!q.empty&&q.docs[0].id!=user.uid){err.textContent=t("Цей нік зайнятий|This nickname is taken");return}}catch(e){}
  S.nick=v;save();await push();$("nickov").classList.add("hidden");route();
 }
-// Слухач входу: спрацьовує при кожному запуску — якщо людина вже входила, пароль/кнопки не потрібні
 function initAuth(){
  FB.setPersistence(auth,FB.browserLocalPersistence).catch(()=>{});
  FB.getRedirectResult(auth).catch(e=>{if(e&&e.code&&e.code!="auth/no-auth-event")alert(e.message)});
@@ -796,8 +892,8 @@ function initAuth(){
   if(!u){user=null;authReady();return}
   user=u;let fresh=0;
   try{const r=await FB.getDoc(FB.doc(db,"users",u.uid));
-   if(r.exists()){const{offers,ts,lastSeen,regAt,...x}=r.data();if((x.xp||0)>=S.xp)S={...S,...x,c:{...def.c,...x.c},up:{...x.up}}}else fresh=1}catch(e){}
-  if(fresh){ // перший вхід: фіксуємо дату реєстрації (час сервера) і реферала
+   if(r.exists()){const{offers,ts,lastSeen,regAt,...x}=r.data();if((x.xp||0)>=S.xp){S={...S,...x,c:{...def.c,...x.c},up:{...x.up},ck:{...def.ck,...x.ck},bp:x.bp||{}};S.jd=S.jd||0;S.ln=S.ln??3}}else fresh=1}catch(e){}
+  if(fresh){
    try{await FB.setDoc(FB.doc(db,"users",u.uid),{regAt:FB.serverTimestamp()},{merge:true})}catch(e){}
    if(refId&&refId!=u.uid){S.mon+=500;try{await FB.setDoc(FB.doc(db,"referrals",u.uid),{by:refId,ts:FB.serverTimestamp()})}catch(e){}}
   }
@@ -811,10 +907,10 @@ function initAuth(){
 }
 
 // ═══ 18. СТАРТ ═══
-// Усі функції, що викликаються з HTML (onclick=...), мають бути на window — це список. Додав нову кнопку → додай її сюди.
-Object.assign(window,{go,toggleMusic,toggleLanguage,social,authSubmit,toggleAuth,authMode,guest,saveNick,startRound,quitRound,dbl,adClose,adClaim,
- eq,buy,buyB,buyUp,setBm,shopTab,tapChest,openChest,closeRev,copyRef,doOffer,claim,pickAv,adminOpen,admSearch,admView,admClaims,showPl,logout,testSnd,
+Object.assign(window,{go,toggleMusic,toggleLanguage,social,authSubmit,toggleAuth,authMode,guest,saveNick,startRound,quitRound,cont,fin,adClose,adClaim,
+ eq,buy,buyB,buyUp,setBm,shopTab,moreBg,openChest,closeRev,copyRef,doOffer,claim,pickAv,adminOpen,admSearch,admView,admClaims,showPl,logout,testSnd,
  S,adminOK:undefined,CFG});
-Object.defineProperty(window,"adminOK",{get:()=>adminOK,set:v=>{adminOK=v}});   // щоб кнопка «✕» в адмінці могла вимкнути доступ
+Object.defineProperty(window,"adminOK",{get:()=>adminOK,set:v=>{adminOK=v}});
+mkAmb($("amb"),9);mkAmb($("ambA"),10);
 tr();$("musBtn").textContent=music?"🔊":"🔇";hdr();
 </script></body></html>
