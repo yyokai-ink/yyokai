@@ -382,7 +382,7 @@ const CHF=["silver","gold","diamond"];
  const t0=performance.now();
  const iv=setInterval(()=>{
   const el=performance.now()-t0,real=loaded/imgs.length*.8+(authOk?.2:0);
-  const sh=Math.min(1,real,el/5000);
+  const sh=Math.min(1,real,el/6000);
   $("spBar").style.width=Math.max(8,sh*100)+"%";$("spV").style.height=sh*100+"%";$("spPct").textContent=Math.round(sh*100)+"%";
   $("spTxt").textContent=sh>=1?t("Готово|Ready"):sh<.4?t("Малюємо ёкаїв…|Drawing yokai…"):sh<.8?t("Куємо клинки…|Forging blades…"):t("Відкриваємо врата…|Opening the gate…");
   if(sh>=1||el>7000){clearInterval(iv);setTimeout(()=>{$("splash").style.opacity=0;setTimeout(()=>{$("splash").remove();splashDone=true;route()},700)},350)}
