@@ -382,7 +382,7 @@ const CHF=["silver","gold","diamond"];
  const t0=performance.now();
  const iv=setInterval(()=>{
   const el=performance.now()-t0,real=loaded/imgs.length*.8+(authOk?.2:0);
-  const sh=Math.min(1,real,el/7000);
+  const sh=Math.min(1,real,el/6000);
   $("spBar").style.width=Math.max(8,sh*100)+"%";$("spV").style.height=sh*100+"%";$("spPct").textContent=Math.round(sh*100)+"%";
   $("spTxt").textContent=sh>=1?t("Готово|Ready"):sh<.4?t("Малюємо ёкаїв…|Drawing yokai…"):sh<.8?t("Куємо клинки…|Forging blades…"):t("Відкриваємо врата…|Opening the gate…");
   if(sh>=1||el>7000){clearInterval(iv);setTimeout(()=>{$("splash").style.opacity=0;setTimeout(()=>{$("splash").remove();splashDone=true;route()},700)},350)}
@@ -541,8 +541,8 @@ function upd(f,raw,now){
  const dt=raw*f.ts,ed=dt*(storm?1.25:1),g=GR(),pace=1+Math.min(.5,G.el/180),TOP=SAT+10;
  cx.save();cx.beginPath();cx.rect(f.ox,0,f.w,H);cx.clip();cx.translate(f.ox+(R()-.5)*f.sh,(R()-.5)*f.sh);f.sh*=.85;
  drawBG(f.w);
- // приглушені демони на фоні (прозорість .13)
- cx.globalAlpha=.13;
+ // приглушені демони на фоні (прозорість .4)
+ cx.globalAlpha=.4;
  for(const a of f.am){a.x+=a.vx*dt;a.py+=a.vy*dt;a.rot+=a.vr*dt;if(a.py<-90){a.py=H+90;a.x=R()*f.w}if(a.x<-90)a.x=f.w+90;if(a.x>f.w+90)a.x=-90;cx.save();cx.translate(a.x,a.py);cx.rotate(a.rot);sp(cx,a.y,a.r);cx.restore()}
  cx.globalAlpha=1;
  if(f.fz){cx.fillStyle="rgba(160,220,255,.22)";cx.fillRect(0,0,f.w,H)}      // лід — під босом, не перекриває його
