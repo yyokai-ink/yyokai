@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
 <style type="text/tailwindcss">
-.card{@apply bg-inkCard border border-inkBorder rounded-2xl p-4}
+.card{@apply bg-inkCard/85 backdrop-blur-sm border border-inkBorder rounded-2xl p-4}
 .btn{@apply px-4 py-2 rounded-xl text-xs font-bold bg-crimsonRed text-white active:scale-95 transition disabled:opacity-40}
 .btng{@apply px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-neonGold to-crimsonRed active:scale-95 transition disabled:opacity-40}
 .inp{@apply w-full bg-inkDark border border-inkBorder rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-crimsonRed}
@@ -29,6 +29,10 @@ canvas{touch-action:none}
 @keyframes rise{from{transform:translateY(0);opacity:0}15%{opacity:1}to{transform:translateY(-75vh) translateX(var(--dx));opacity:0}}
 @keyframes drift{from{transform:translate3d(var(--x0),108vh,0) rotate(0)}to{transform:translate3d(var(--x1),-20vh,0) rotate(var(--rt))}}
 .glow{animation:pulse-glow 3s infinite}
+html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .8s ease}body.rd{opacity:1}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes glowIn{from{opacity:0;transform:scale(.55)}to{opacity:1;transform:scale(1)}}
+@keyframes cardIn{from{opacity:0;transform:translateY(24px) scale(.85)}to{opacity:1;transform:none}}
 .shk{animation:shakeC .22s infinite}
 .dia{position:absolute;width:8px;height:8px;background:#a8854a;transform:rotate(45deg);left:-3.5px}
 .dia-r{left:auto;right:-4px;top:-3px;background:#8b1a2b;box-shadow:0 0 8px #ff2a5f}
@@ -46,19 +50,17 @@ canvas{touch-action:none}
 <body class="bg-inkDark text-white font-sans antialiased min-h-screen flex flex-col select-none">
 
 <div id="sat" style="position:fixed;left:0;top:0;width:0;visibility:hidden;padding-top:env(safe-area-inset-top,0px)"></div>
-<div id="amb" class="amb"></div>
+<div id="amb" style="position:fixed;inset:0;z-index:0;pointer-events:none;background:#0a090d url(img/app_bg.png) center/cover no-repeat"><div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,9,13,.5),rgba(10,9,13,.82))"></div></div>
 
 <!-- ═════ ЗАСТАВКА: після завантаження лого стоїть по центру між верхом і смужками ═════ -->
 <div id="splash" class="fixed inset-0 z-[120] overflow-hidden transition-opacity duration-700" style="background:linear-gradient(135deg,#efe3cf,#e2d2b8);font-family:Georgia,serif">
- <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover"><source src="bar2.mp4" type="video/mp4"></video>
+ <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover"><source src="maska.MP4" type="video/mp4"></video>
  <div class="absolute inset-0" style="background:linear-gradient(90deg,rgba(236,222,200,.95) 0,rgba(236,222,200,.72) 45%,rgba(236,222,200,0) 80%)"></div>
  <img src="hero.png" onerror="this.remove()" class="absolute bottom-0 right-[-10%] h-[88%] w-auto max-w-none" style="filter:drop-shadow(0 0 30px rgba(0,0,0,.35))">
  <div class="absolute left-5 top-[5%] bottom-[5%] w-px" style="background:rgba(168,133,74,.55)"><div id="spV" class="absolute left-0 top-0 w-px" style="height:0;background:#8b1a2b;box-shadow:0 0 6px #8b1a2b"></div><i class="dia" style="top:-4px"></i><i class="dia" style="bottom:-4px"></i></div>
 
  <div id="spLogo" class="absolute left-0 right-0 top-0 flex flex-col items-center justify-center gap-4 px-6 opacity-0 pointer-events-none transition-opacity duration-700" style="height:40%">
   <div class="logoD">INKAI</div>
-  <button class="inst px-7 py-3 rounded-xl font-bold text-sm text-white" style="background:#8b1a2b;box-shadow:0 6px 20px rgba(139,26,43,.4)" data-t="📲 Встановити гру|📲 Install game"></button>
-  <button id="enterBtn" class="px-9 py-2.5 rounded-xl text-xs font-bold tracking-[.3em] uppercase" style="border:1px solid #8b1a2b;color:#8b1a2b;background:rgba(255,255,255,.35)" data-t="Увійти в гру|Enter"></button>
  </div>
 
  <div id="spBlk" class="absolute left-[11%] right-[34%] bottom-[7%]" style="color:#8b1a2b">
@@ -112,13 +114,13 @@ canvas{touch-action:none}
   <video autoplay muted loop playsinline class="fixed inset-0 w-full h-full object-cover opacity-30 pointer-events-none"><source src="video/auth_bg.mp4" type="video/mp4"></video>
   <div class="fixed inset-0 pointer-events-none" style="background:radial-gradient(ellipse at 50% 0%,rgba(255,42,95,.22),transparent 60%),radial-gradient(ellipse at 50% 100%,rgba(59,7,100,.5),transparent 60%),linear-gradient(180deg,rgba(10,9,13,.4),rgba(10,9,13,.85))"></div>
   <div id="ambA" class="amb"></div>
-  <div class="relative z-10 min-h-full flex flex-col items-center justify-between px-6 pb-8" style="padding-top:calc(env(safe-area-inset-top,0px) + 3rem)">
+  <div class="relative z-10 min-h-full flex flex-col items-center justify-center gap-6 px-6 py-8" style="padding-top:calc(env(safe-area-inset-top,0px) + 2rem)">
    <div class="text-center w-full">
     <div class="logo">INKAI</div>
     <div class="flex items-center justify-center gap-3 mt-4"><span class="sline w-10"></span><span class="text-[10px] tracking-[.5em] text-gray-400 uppercase pl-[.5em]">by YYOKAI</span><span class="sline w-10"></span></div>
     <button class="inst mt-4 px-5 py-2 rounded-xl text-xs font-bold border border-neonGold/50 text-neonGold" data-t="📲 Встановити гру|📲 Install game"></button>
    </div>
-   <div class="glass w-full max-w-sm space-y-3 my-8">
+   <div class="glass w-full max-w-sm space-y-3">
     <div id="refBanner" class="hidden text-xs text-center bg-neonGold/10 border border-neonGold/30 text-neonGold rounded-xl py-2" data-t="🎁 Тебе запросив друг — бонус після реєстрації|🎁 A friend invited you — bonus after sign-up"></div>
     <div id="inApp" class="hidden text-xs bg-crimsonRed/10 border border-crimsonRed/40 text-crimsonRed rounded-xl p-3" data-t="⚠️ Ти у вбудованому браузері (Instagram/Telegram). Google блокує там вхід. Натисни «⋯» → «Відкрити в Safari/Chrome».|⚠️ You're in an in-app browser (Instagram/Telegram). Google blocks sign-in there. Tap “⋯” → “Open in Safari/Chrome”."></div>
     <div class="text-center"><h2 class="text-lg font-black uppercase tracking-[.2em]" data-t="Увійти|Sign in"></h2><p class="text-[11px] text-gray-400 mt-1" data-t="Один дотик — і гра запам'ятає тебе|One tap and the game remembers you"></p></div>
