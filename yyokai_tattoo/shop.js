@@ -5,7 +5,7 @@ const YK=["🦊","👹","👺","🐸","💀","🐉"];
 const YIMG={};[["🦊","fox"],["👹","oni"],["👺","tengu"],["🐸","kappa"],["💀","skull"],["🐉","dragon"],["📜","scroll"]].forEach(([e,n])=>{const i=new Image();i.src="img/yokai/"+n+".png";YIMG[e]=i});
 const BGI={},bgImg=i=>BGI[i]||(BGI[i]=Object.assign(new Image(),{src:"img/bg/"+i+".png"})),rdy=i=>i&&i.complete&&i.naturalWidth;
 const RN=[["Звичайний|Common","#9ca3af"],["Рідкісний|Rare","#3b82f6"],["Епічний|Epic","#a855f7"],["Легендарний|Legendary","#ffb703"],["Міфічний|Mythic","#ff2a5f"]];
-const RC=["mon","mon","mon","jd","ln"],CI={mon:"文",jd:"💎",ln:"🏮"};
+const RC=["mon","mon","mon","jd","ln"],CI={mon:ico("coin","文"),jd:ico("jade","💎"),ln:ico("lantern","🏮")};   // свої PNG: img/ico/coin|jade|lantern.png
 const rbadge=r=>`<span class="text-[9px] font-black uppercase tracking-wider" style="color:${RN[r][1]}">${t(RN[r][0])}</span>`;
 
 /* КЛИНКИ (60): [назва, колір1, колір2, ефект]. Ефекти: n gold void rb fire ice bolt blood jade sakura neon star */
@@ -29,12 +29,52 @@ const BLD=[
 ["Синій Ронін|Blue Ronin","#3d5afe","#1a237e","n"],["Цитрус Каппи|Kappa Citrus","#c6ff00","#ff9100","n"],["Фіолетова Блискавка|Violet Lightning","#e040fb","#536dfe","bolt"],
 ["Червоний Нефрит|Red Jade","#ff5252","#7f0000","jade"],["Снігова Сакура|Snow Sakura","#ffffff","#ffc0e0","sakura"],["Чорний Дракон|Black Dragon","#000000","#00e5ff","void"],
 ["Дзеркало Безодні|Abyss Mirror","#0f2027","#5eead4","void"],["Золотий Дракон|Golden Dragon","#ffea00","#ff6d00","gold"],["Нічне Пекло|Night Inferno","#2b0057","#ff2d00","fire"],
-["Космічна Сакура|Cosmic Sakura","#ff8ad8","#5b2cff","sakura"],["Бог Блискавок|Thunder God","#ffffff","#ffee00","bolt"],["Абсолют|The Absolute","#fff","#fff","rb"]
-];
-const FXI={n:"",gold:"✨",void:"🕳",rb:"🌈",fire:"🔥",ice:"❄️",bolt:"⚡",blood:"🩸",jade:"💠",sakura:"🌸",neon:"🔮",star:"⭐"};
-const BT=[0,14,30,44,54];           // з якого номера починається кожна рідкість: 14 зв · 16 рід · 14 епіч · 10 легенд · 6 міф
-const BL=BLD.map((d,i)=>{const r=i<14?0:i<30?1:i<44?2:i<54?3:4,k=i-BT[r];
- return{i,nm:d[0],c1:d[1],c2:d[2],fx:d[3],w:3+Math.min(i,40)*.07,sc:1+i*.04,r,cur:RC[r],price:Math.round([i?250*2**k:0,3e6*1.5**k,2e9*1.5**k,15+k*9,40+k*18][r])}});   // 🔧 ціни
+["Космічна Сакура|Cosmic Sakura","#ff8ad8","#5b2cff","sakura"],["Бог Блискавок|Thunder God","#ffffff","#ffee00","bolt"],["Абсолют|The Absolute","#fff","#fff","rb"],
+["Дощ Кіото|Kyoto Rain","#9ad0ff","#2b5a99","rain",0],
+["Вітер Хоккайдо|Hokkaido Wind","#e0f7ff","#7fb2c9","wind",0],
+["Папір Орігамі|Origami Paper","#fff7e0","#e0c9a0","paper",0],
+["Лис Інарі|Inari Fox","#ffb067","#c4561c","koi",0],
+["Нота Сямісена|Shamisen Note","#e6d3ff","#7a5cc2","music",0],
+["Руна Айну|Ainu Rune","#cdb892","#6e5a3a","rune",0],
+["Пікселі Ретро|Retro Pixels","#7dff7d","#1a6b1a","glitch",0],
+["Місячний серп|Crescent","#f0f0ff","#8a8ab8","moon",0],
+["Лава Саку|Sakura Lava","#ff6a2b","#8a1100","lava",1],
+["Аврора Едо|Edo Aurora","#6dffb0","#7c3aed","aurora",1],
+["Короп Кої|Koi Carp","#ff9a3d","#ffffff","koi",1],
+["Токсин Дзюбей|Toxic Jubei","#9dff3a","#2f7a00","toxic",1],
+["Кристал Лотоса|Lotus Crystal","#bff4ff","#6a7cff","crystal",1],
+["Привид Туману|Mist Ghost","#e8f0ff","#6c7aa8","ghost",1],
+["Комета Хоші|Hoshi Comet","#fff3c2","#ffb36b","comet",1],
+["Бурі Райко|Raiko Storm","#d0e4ff","#3366ff","rain",1],
+["Сонячний Дракон|Sun Dragon","#ffe27a","#ff6a00","sun",2],
+["Рунічний Сьогун|Runic Shogun","#9be7ff","#2a4fff","rune",2],
+["Галактика Кіцуне|Kitsune Galaxy","#c6a3ff","#ff7ad9","galaxy",2],
+["Глюк Мейдзі|Meiji Glitch","#00ffd5","#ff0066","glitch",2],
+["Вогняний Фенікс|Fire Phoenix","#ffd36b","#ff2a00","lava",2],
+["Шторм Цунамі|Tsunami Storm","#7fd6ff","#0a4cff","wind",2],
+["Золоте Кої|Golden Koi","#ffe066","#ff8a00","koi",2],
+["Пісня Сакури|Sakura Song","#ffc2dd","#d6338a","music",2],
+["Місяць Яо|Yao Moon","#e0e6ff","#5b6cff","moon",2],
+["Кристал Они|Oni Crystal","#ff9ad5","#5b2cff","crystal",2],
+["Небесний Грім|Heavenly Thunder","#ffffff","#5aa7ff","bolt",3],
+["Орлан Тенгу|Tengu Raptor","#ffd8a8","#ff5c2a","comet",3],
+["Лотос Нірвани|Nirvana Lotus","#ffd1f0","#9b5cff","sakura",3],
+["Імператор Місяця|Moon Emperor","#fffbe0","#7a8cff","moon",3],
+["Дракон Бурі|Storm Dragon","#7dffee","#006dff","wind",3],
+["Золото Безодні|Abyss Gold","#ffd700","#1a0033","gold",3],
+["Аврора Богів|Gods Aurora","#7dffc8","#ff5cf0","aurora",3],
+["Сяйво Аматерасу|Amaterasu Radiance","#fffbe6","#ffb300","sun",3],
+["Космічна Кагуя|Cosmic Kaguya","#ffffff","#7b5cff","galaxy",4],
+["Серце Дракона|Dragon Heart","#ff3b3b","#ffd54a","dragon",4],
+["Король Привидів|Ghost King","#ffffff","#6c00ff","ghost",4],
+["Райдужний Фенікс|Rainbow Phoenix","#fff","#fff","rb",4],
+["Руна Вічності|Eternity Rune","#ffe9a8","#ff2a5f","rune",4],
+["INKAI Абсолют II|INKAI Absolute II","#fff","#fff","galaxy",4]
+];   // 100 катан: перші 60 + 40 нових (5-й елемент = рідкість)
+const FXI={n:"",gold:"✨",void:"🕳",rb:"🌈",fire:"🔥",ice:"❄️",bolt:"⚡",blood:"🩸",jade:"💠",sakura:"🌸",neon:"🔮",star:"⭐",rain:"🌧",wind:"🌬",paper:"📄",koi:"🐟",music:"🎵",rune:"ᚠ",glitch:"👾",moon:"🌙",lava:"🌋",aurora:"🌌",toxic:"☣️",crystal:"💎",ghost:"👻",comet:"☄️",sun:"☀️",galaxy:"🌠",dragon:"🐲"};
+const _k=[0,0,0,0,0];       // 22 зв · 24 рід · 24 епіч · 18 легенд · 12 міф. Ціна росте за номером усередині рідкості. ch=1 → лише з сундуків
+const BL=BLD.map((d,i)=>{const r=d[4]!=null?d[4]:i<14?0:i<30?1:i<44?2:i<54?3:4,k=_k[r]++;
+ return{i,nm:d[0],c1:d[1],c2:d[2],fx:d[3],w:3+Math.min(i,60)*.05,sc:1+i*.04,r,cur:RC[r],price:Math.round([i?250*1.7**k:0,2e6*1.35**k,5e8*1.3**k,15+k*8,40+k*15][r])}});   // 🔧 ціни
 const bname=b=>t(b.nm);
 const bcss=b=>b.fx=="rb"?"linear-gradient(90deg,#f00,#fa0,#ff0,#0f0,#0ff,#00f,#f0f)":b.fx=="void"?`linear-gradient(90deg,#000 30%,${b.c2})`:`linear-gradient(90deg,${b.c1},${b.c2})`;
 const bar=b=>`<div class="h-3 rounded-full" style="background:${bcss(b)};box-shadow:0 0 10px ${b.fx=="rb"?"#f0f":b.c2};${b.fx=="void"?"border:1px solid "+b.c2:""}"></div>`;
@@ -97,21 +137,30 @@ const BS=[
  ["sx","⛩️","+1 душа в кінці раунду|+1 soul at round end",1500,1],
  ["chg","⏭","Скинути таймер срібного сундука|Reset silver chest timer",1500,1],
  ["m10","⏱","×2 монет перші 10 с раунду|×2 coins for first 10s",0,1,1],
- ["m30","⏱","×2 монет перші 30 с раунду|×2 coins for first 30s",0,1,1]
+ ["m30","⏱","×2 монет перші 30 с раунду|×2 coins for first 30s",0,1,1],
+ // ЕКСКЛЮЗИВИ: [id, іконка, назва, 0, к-сть, 0, ключ сундука] — випадають ЛИШЕ з цього сундука
+ ["mx5","💫","×5 монет у раунді|×5 coins this round",0,1,0,"edo"],
+ ["hrt","💗","+3 життя в раунді|+3 lives this round",0,1,0,"sengoku"],
+ ["fz15","🔥","Старт з 15 с шаленства|Start with 15s frenzy",0,1,0,"showa"],
+ ["nsc","🚫","Раунд без свитків|A round without scrolls",0,1,0,"kitsune"],
+ ["bhf","🗡","Усі боси мають удвічі менше HP|All bosses have half HP",0,1,0,"ryujin"],
+ ["sc2","✨","Усі очки ×2 на раунд|All score ×2 this round",0,1,0,"cosmic"],
+ ["lck","🍀","Удача: +20% до сундука-знахідки|Luck: +20% bonus chest chance",0,1,0,"imperial"]
 ];
 const bsCost=b=>b[3]*2**(S.bp[b[0]]||0);
 
 // ═══ МАГАЗИН ═══
 let shopT="b",shopR=-1,bm=1,bgN=20;
 function eq(k,i){S[k]=i;bgC=null;save();rend()}
-function buy(k,i){const it=k=="blade"?BL[i]:BG[i],arr=k=="blade"?"blades":"bgs";if(S[arr].includes(i)||S[it.cur]<it.price)return;S[it.cur]-=it.price;S[arr].push(i);S[k]=i;bgC=null;save();push();rend()}
-function buyB(id){const b=BS.find(x=>x[0]==id),c=bsCost(b);if(b[5]||S.mon<c)return;S.mon-=c;S.bp[id]=(S.bp[id]||0)+1;if(id=="chg")S.ck.s=0;else S.c[id]+=b[4];save();rend()}
-function buyUp(id){const u=UP.find(x=>x[0]==id);let n=bm=="max"?999:bm,done=0;while(n-->0&&U(id)<u[6]){const c=upCost(u,U(id));if(S.mon<c)break;S.mon-=c;S.up[id]=U(id)+1;done++}if(done){save();rend()}}
+function buy(k,i){sync();const it=k=="blade"?BL[i]:BG[i],arr=k=="blade"?"blades":"bgs";if(it.ex||S[arr].includes(i)||S[it.cur]<it.price)return;S[it.cur]-=it.price;S[arr].push(i);S[k]=i;bgC=null;save();push();rend()}
+function buyB(id){sync();const b=BS.find(x=>x[0]==id),c=bsCost(b);if(b[5]||b[6]||S.mon<c)return;S.mon-=c;S.bp[id]=(S.bp[id]||0)+1;if(id=="chg")S.ck.s=0;else S.c[id]+=b[4];save();rend()}
+function buyUp(id){sync();const u=UP.find(x=>x[0]==id);let n=bm=="max"?999:bm,done=0;while(n-->0&&U(id)<u[6]){const c=upCost(u,U(id));if(S.mon<c)break;S.mon-=c;S.up[id]=U(id)+1;done++}if(done){save();rend()}}
 function setBm(){bm=bm==1?10:bm==10?"max":1;rend()}
 function shopTab(x){shopT=x;shopR=-1;bgN=20;rShop()}
 function shopRar(r){shopR=r;bgN=20;rShop()}
 function moreBg(){bgN+=20;rShop()}
-const buyBtn=(k,it,o,cls)=>o?"":`<button class="btng ${cls||"w-full"}" ${S[it.cur]>=it.price?"":"disabled"} onclick="buy('${k}',${it.i})">${it.price?fmt(it.price)+" "+CI[it.cur]:t("Безкоштовно|Free")}</button>`;
+const exName=k=>{const e=EC.find(x=>x[0]==k);return e?t(e[2]):k};     // ex = лише з цього сундука
+const buyBtn=(k,it,o,cls)=>o?"":it.ex?`<span class="chip ${cls||"w-full text-center"} !border-neonGold/50 text-neonGold leading-tight">🎁 ${t("лише з сундука|only from chest")} «${exName(it.ex)}»</span>`:`<button class="btng ${cls||"w-full"}" ${S[it.cur]>=it.price?"":"disabled"} onclick="buy('${k}',${it.i})">${it.price?fmt(it.price)+" "+CI[it.cur]:t("Безкоштовно|Free")}</button>`;
 function rShop(){
  const tb=[["b",t("🗡 Клинки|🗡 Blades")],["g",t("🖼 Фони|🖼 Backgrounds")],["u",t("📈 Покращення|📈 Upgrades")],["c",t("⚡ Бустери|⚡ Boosts")]];
  let h=`<div class="grid grid-cols-4 gap-1.5 text-[11px] font-bold">${tb.map(([k,l])=>`<button onclick="shopTab('${k}')" class="py-2 rounded-xl ${shopT==k?"bg-crimsonRed":"bg-inkCard border border-inkBorder"}">${l}</button>`).join("")}</div>`;
@@ -119,13 +168,13 @@ function rShop(){
   h+=`<div class="flex gap-1.5 overflow-x-auto pb-1"><button onclick="shopRar(-1)" class="chip shrink-0 ${shopR<0?"!border-white":""}">${t("Усі|All")}</button>${RN.map((r,i)=>`<button onclick="shopRar(${i})" class="chip shrink-0" style="color:${r[1]};${shopR==i?"border-color:"+r[1]:""}">${t(r[0])}</button>`).join("")}</div><div class="text-[10px] text-gray-500">${t("Легендарні — за 💎 (боси, сундуки). Міфічні — за 🏮 (реклама, сундуки).|Legendary — 💎 (bosses, chests). Mythic — 🏮 (ads, chests).")}</div>`}
  if(shopT=="b")h+=`<div class="grid grid-cols-2 gap-3">`+BL.filter(b=>shopR<0||b.r==shopR).map(b=>{const o=S.blades.includes(b.i),e=S.blade==b.i;return `<div class="card !p-3 space-y-2" style="border-color:${e?"#ffb703":RN[b.r][1]+"88"}">${bar(b)}${rbadge(b.r)}<b class="block text-[10px] leading-tight">${FXI[b.fx]} ${bname(b)}</b><div class="text-[10px] text-gray-400">×${b.sc.toFixed(2)} ${t("очок|score")}</div>${o?`<button class="btn w-full ${e?"!bg-emerald-600":""}" onclick="eq('blade',${b.i})">${e?"✓":t("Обрати|Equip")}</button>`:buyBtn("blade",b)}</div>`}).join("")+`</div>`;
  if(shopT=="g"){const L=BG.filter(g=>shopR<0||g.r==shopR);
-  h+=L.slice(0,bgN).map(g=>{const o=S.bgs.includes(g.i),e=S.bg==g.i;return `<div class="card !p-0 overflow-hidden" style="border-color:${e?"#ffb703":RN[g.r][1]+"88"}"><div class="p-3 flex items-center gap-3" style="background:linear-gradient(135deg,${g.g[0]},${g.g[1]})"><span class="text-3xl">${g.ic}</span><div class="flex-1 min-w-0"><b class="text-xs block">${t(g.nm)}</b>${rbadge(g.r)}</div>${o?`<button class="btn ${e?"!bg-emerald-600":""}" onclick="eq('bg',${g.i})">${e?"✓":t("Обрати|Equip")}</button>`:buyBtn("bg",g,0,"shrink-0 whitespace-nowrap")}</div></div>`}).join("");
+  h+=L.slice(0,bgN).map(g=>{const o=S.bgs.includes(g.i),e=S.bg==g.i;return `<div class="card !p-0 overflow-hidden" style="border-color:${e?"#ffb703":RN[g.r][1]+"88"}"><div class="p-3 flex items-center gap-3" style="background:linear-gradient(135deg,${g.g[0]},${g.g[1]})"><span class="text-3xl">${g.ic}</span><div class="flex-1 min-w-0"><b class="text-xs block">${t(g.nm)}</b>${rbadge(g.r)}</div>${o?`<button class="btn ${e?"!bg-emerald-600":""}" onclick="eq('bg',${g.i})">${e?"✓":t("Обрати|Equip")}</button>`:buyBtn("bg",g,0,"shrink-0 max-w-[45%] text-center")}</div></div>`}).join("");
   if(bgN<L.length)h+=`<button class="btn w-full py-3" onclick="moreBg()">${t("Показати ще|Show more")} (${L.length-bgN})</button>`}
  if(shopT=="u"){
   h+=`<div class="card !p-3 flex items-center justify-between text-xs"><span>💤 ${t("Пасивний дохід|Passive income")}: <b class="text-emerald-400">${fmt(idleRate())} 文/${t("с|s")}</b></span><button class="btn" onclick="setBm()">${t("Купити|Buy")} ×${bm}</button></div>`;
-  h+=[...UP].sort((a,b)=>!!b[7]-!!a[7]).map(u=>{const l=U(u[0]),mx=l>=u[6],c=upCost(u,l);return `<div class="card !p-3 space-y-1"><div class="flex items-center justify-between gap-2"><div class="flex items-center gap-2"><span class="text-2xl">${u[1]}</span><div><b class="text-xs">${t(u[2])}</b><div class="text-[10px] text-gray-400">${t(u[3])}</div></div></div><button class="btng shrink-0" ${mx||S.mon<c?"disabled":""} onclick="buyUp('${u[0]}')">${mx?"MAX":fmt(c)+" 文"}</button></div><div class="flex justify-between text-[10px]"><span class="text-neonGold">Lv ${l}/${u[6]}</span><span class="text-emerald-400">${u[7]?fmt(l*u[7]*mile(l))+" 文/"+t("с|s")+(mile(l)>1?" ×"+mile(l):""):""}</span></div><div class="h-1 bg-inkDark rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-neonGold to-crimsonRed" style="width:${l/u[6]*100}%"></div></div></div>`}).join("");
+  h+=[...UP].sort((a,b)=>!!b[7]-!!a[7]).map(u=>{const l=U(u[0]),mx=l>=u[6],c=upCost(u,l);return `<div class="card !p-3 space-y-1"><div class="flex items-center justify-between gap-2"><div class="flex items-center gap-2"><span class="text-2xl">${ico("u_"+u[0],u[1],"h-9 w-9 object-contain")}</span><div><b class="text-xs">${t(u[2])}</b><div class="text-[10px] text-gray-400">${t(u[3])}</div></div></div><button class="btng shrink-0" ${mx||S.mon<c?"disabled":""} onclick="buyUp('${u[0]}')">${mx?"MAX":fmt(c)+" "+CI.mon}</button></div><div class="flex justify-between text-[10px]"><span class="text-neonGold">Lv ${l}/${u[6]}</span><span class="text-emerald-400">${u[7]?fmt(l*u[7]*mile(l))+" 文/"+t("с|s")+(mile(l)>1?" ×"+mile(l):""):""}</span></div><div class="h-1 bg-inkDark rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-neonGold to-crimsonRed" style="width:${l/u[6]*100}%"></div></div></div>`}).join("");
  }
- if(shopT=="c")h+=`<p class="text-[11px] text-gray-400">${t("Бустери зберігаються й витрачаються на старті раунду. Ціна подвоюється після кожної покупки (оновлюється щодня).|Boosts are kept and spent at round start. Price doubles after each purchase (resets daily).")}</p>`+BS.map(b=>{const c=bsCost(b);return `<div class="card flex items-center justify-between gap-2"><div class="flex items-center gap-3"><span class="text-2xl">${b[1]}</span><div><b class="text-xs">${t(b[2])}</b><div class="text-[11px] text-gray-400">${t("В запасі|Owned")}: ${b[0]=="chg"?"—":S.c[b[0]]||0}</div></div></div>${b[5]?`<span class="chip">📺 ${t("реклама|ads")}</span>`:`<button class="btng shrink-0" ${S.mon>=c?"":"disabled"} onclick="buyB('${b[0]}')">${fmt(c)} 文</button>`}</div>`}).join("");
+ if(shopT=="c")h+=`<p class="text-[11px] text-gray-400">${t("Бустери зберігаються й витрачаються на старті раунду. Ціна подвоюється після кожної покупки (оновлюється щодня).|Boosts are kept and spent at round start. Price doubles after each purchase (resets daily).")}</p>`+BS.map(b=>{const c=bsCost(b);return `<div class="card flex items-center justify-between gap-2"><div class="flex items-center gap-3"><span class="text-2xl">${ico("b_"+b[0],b[1],"h-9 w-9 object-contain")}</span><div><b class="text-xs">${t(b[2])}</b><div class="text-[11px] text-gray-400">${t("В запасі|Owned")}: ${b[0]=="chg"?"—":S.c[b[0]]||0}</div></div></div>${b[5]?`<span class="chip">📺 ${t("реклама|ads")}</span>`:b[6]?`<span class="chip !border-neonGold/50 text-neonGold">🎁 ${exName(b[6])}</span>`:`<button class="btng shrink-0" ${S.mon>=c?"":"disabled"} onclick="buyB('${b[0]}')">${fmt(c)} ${CI.mon}</button>`}</div>`}).join("");
  $("view-shop").innerHTML=h;
 }
 let idleTick=0;
