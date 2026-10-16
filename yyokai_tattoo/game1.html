@@ -9,7 +9,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{inkDark:'#0a090d',inkCard:'#131118',inkBorder:'#272235',crimsonRed:'#ff2a5f',neonGold:'#ffb703',deepPurple:'#3b0764',cyberBlue:'#00f0ff'}}}}</script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lilita+One&display=swap" rel="stylesheet">
 <style type="text/tailwindcss">
 .card{@apply bg-inkCard/85 backdrop-blur-sm border border-inkBorder rounded-2xl p-4}
 .btn{@apply px-4 py-2 rounded-xl text-xs font-bold bg-crimsonRed text-white active:scale-95 transition disabled:opacity-40}
@@ -39,9 +39,11 @@ html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .8s 
 .ember{position:fixed;bottom:-10px;width:5px;height:5px;border-radius:50%;background:#ffb703;box-shadow:0 0 8px #ff2a5f;animation:rise linear infinite;pointer-events:none}
 .amb{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .fl{position:absolute;left:0;top:0;animation:drift linear infinite;will-change:transform;opacity:.13;filter:saturate(.8)}
-.logo{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:clamp(46px,15vw,66px);letter-spacing:.34em;padding-left:.34em;line-height:1;background:linear-gradient(180deg,#fff 25%,#ffd27a 70%,#ff2a5f 130%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 22px rgba(255,42,95,.35))}
-.logoD{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:clamp(50px,17vw,76px);letter-spacing:.34em;padding-left:.34em;line-height:1;color:#8b1a2b;text-shadow:0 0 22px rgba(168,133,74,.55)}
-.logo-s{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:20px;letter-spacing:.3em;background:linear-gradient(180deg,#fff,#ffd27a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo{font-family:'Lilita One','Cormorant Garamond',Georgia,serif;font-size:clamp(58px,20vw,88px);letter-spacing:.08em;line-height:1;background:linear-gradient(100deg,#fff6d6 0%,#ffd45a 28%,#ff6a2b 52%,#ff2a5f 76%,#fff6d6 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:2.5px #2a0612;animation:shineL 4s linear infinite;filter:drop-shadow(0 3px 0 #7a0f2a) drop-shadow(0 6px 0 #3a0a14) drop-shadow(0 14px 14px rgba(0,0,0,.65)) drop-shadow(0 0 22px rgba(255,42,95,.55))}
+.logo-blade{height:5px;width:62%;margin:12px auto 0;border-radius:5px;background:linear-gradient(90deg,transparent,#fff,#ffb703,#ff2a5f,transparent);box-shadow:0 0 16px #ff2a5f;transform:skewX(-30deg)}
+.logo-s{font-family:'Lilita One',Georgia,serif;font-size:22px;letter-spacing:.12em;background:linear-gradient(180deg,#fff,#ffc94d,#ff5c3a);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:.6px #2a0612}
+.emj{height:1.15em;width:1.15em;display:inline-block;vertical-align:-.2em;object-fit:contain}
+@keyframes shineL{to{background-position:220% 0}}
 .glass{background:linear-gradient(160deg,rgba(28,23,40,.8),rgba(11,9,17,.9));border:1px solid rgba(255,183,3,.2);border-radius:26px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.07);backdrop-filter:blur(12px)}
 .sbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border-radius:14px;font-weight:700;font-size:14px;transition:transform .15s}
 .sbtn:active{transform:scale(.97)}
@@ -59,9 +61,6 @@ html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .8s 
  <img src="hero.png" onerror="this.remove()" class="absolute bottom-0 right-[-10%] h-[88%] w-auto max-w-none" style="filter:drop-shadow(0 0 30px rgba(0,0,0,.35))">
  <div class="absolute left-5 top-[5%] bottom-[5%] w-px" style="background:rgba(168,133,74,.55)"><div id="spV" class="absolute left-0 top-0 w-px" style="height:0;background:#8b1a2b;box-shadow:0 0 6px #8b1a2b"></div><i class="dia" style="top:-4px"></i><i class="dia" style="bottom:-4px"></i></div>
 
- <div id="spLogo" class="absolute left-0 right-0 top-0 flex flex-col items-center justify-center gap-4 px-6 opacity-0 pointer-events-none transition-opacity duration-700" style="height:40%">
-  <div class="logoD">INKAI</div>
- </div>
 
  <div id="spBlk" class="absolute left-[11%] right-[34%] bottom-[7%]" style="color:#8b1a2b">
   <svg viewBox="0 0 24 24" width="30" height="30" class="mb-2"><path d="M12 2c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-6 1-9z" fill="#8b1a2b"/></svg>
@@ -90,10 +89,10 @@ html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .8s 
  <span class="logo-s">INKAI</span>
  <div class="flex items-center gap-1.5">
   <div class="flex items-center bg-inkCard border border-inkBorder px-2 py-1 rounded-full text-[11px] font-bold gap-1">
-   <span class="text-neonGold">文</span><span id="hCoins" class="font-mono">0</span>
-   <span class="ml-1">⛩️</span><span id="hSouls" class="font-mono">0</span>
-   <span class="ml-1">💎</span><span id="hJade" class="font-mono">0</span>
-   <span class="ml-1">🏮</span><span id="hLan" class="font-mono">0</span></div>
+   <span id="iCoin" class="text-neonGold"></span><span id="hCoins" class="font-mono">0</span>
+   <span id="iSoul" class="ml-1"></span><span id="hSouls" class="font-mono">0</span>
+   <span id="iJade" class="ml-1"></span><span id="hJade" class="font-mono">0</span>
+   <span id="iLan" class="ml-1"></span><span id="hLan" class="font-mono">0</span></div>
   <button onclick="toggleMusic()" id="musBtn" class="px-2 py-1 rounded-lg bg-inkCard border border-inkBorder text-xs">🔊</button>
   <button onclick="toggleLanguage()" id="langBtn" class="px-2 py-1 rounded-lg bg-inkCard border border-inkBorder text-[11px] font-bold text-gray-300">🇺🇦</button>
  </div>
@@ -116,7 +115,7 @@ html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .8s 
   <div id="ambA" class="amb"></div>
   <div class="relative z-10 min-h-full flex flex-col items-center justify-center gap-6 px-6 py-8" style="padding-top:calc(env(safe-area-inset-top,0px) + 2rem)">
    <div class="text-center w-full">
-    <div class="logo">INKAI</div>
+    <div class="logo">INKAI</div><div class="logo-blade"></div>
     <div class="flex items-center justify-center gap-3 mt-4"><span class="sline w-10"></span><span class="text-[10px] tracking-[.5em] text-gray-400 uppercase pl-[.5em]">by YYOKAI</span><span class="sline w-10"></span></div>
     <button class="inst mt-4 px-5 py-2 rounded-xl text-xs font-bold border border-neonGold/50 text-neonGold" data-t="📲 Встановити гру|📲 Install game"></button>
    </div>
@@ -167,13 +166,13 @@ html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .8s 
 <div id="toast" class="hidden fixed left-4 right-4 top-16 z-[97] card !border-neonGold/50 text-xs text-center"></div>
 
 <nav id="nav" class="fixed bottom-0 left-0 right-0 z-40 bg-inkDark/95 border-t border-inkBorder px-1 pt-2 flex justify-around" style="padding-bottom:calc(env(safe-area-inset-bottom,0px) + .5rem)">
- <button onclick="go('play')" class="nb flex flex-col items-center text-gray-400" data-g="play"><i class="fa-solid fa-gamepad"></i><span class="text-[9px] font-semibold mt-0.5" data-t="Гра|Play"></span></button>
- <button onclick="go('shop')" class="nb flex flex-col items-center text-gray-400" data-g="shop"><i class="fa-solid fa-store"></i><span class="text-[9px] font-semibold mt-0.5" data-t="Магазин|Shop"></span></button>
- <button onclick="go('chests')" class="nb flex flex-col items-center text-gray-400" data-g="chests"><i class="fa-solid fa-box-open"></i><span class="text-[9px] font-semibold mt-0.5" data-t="Сундуки|Chests"></span></button>
- <button onclick="go('friends')" class="nb flex flex-col items-center text-gray-400" data-g="friends"><i class="fa-solid fa-user-plus"></i><span class="text-[9px] font-semibold mt-0.5" data-t="Друзі|Friends"></span></button>
- <button onclick="go('rewards')" class="nb flex flex-col items-center text-gray-400" data-g="rewards"><i class="fa-solid fa-gift"></i><span class="text-[9px] font-semibold mt-0.5" data-t="Нагороди|Rewards"></span></button>
- <button onclick="go('rating')" class="nb flex flex-col items-center text-gray-400" data-g="rating"><i class="fa-solid fa-trophy"></i><span class="text-[9px] font-semibold mt-0.5" data-t="Рейтинг|Rating"></span></button>
- <button onclick="go('profile')" class="nb flex flex-col items-center text-gray-400" data-g="profile"><i class="fa-solid fa-user"></i><span class="text-[9px] font-semibold mt-0.5" data-t="Профіль|Profile"></span></button>
+ <button onclick="go('play')" class="nb flex flex-col items-center text-gray-400" data-g="play"><span class="nv" data-n="play" data-fa="gamepad"></span><span class="text-[9px] font-semibold mt-0.5" data-t="Гра|Play"></span></button>
+ <button onclick="go('shop')" class="nb flex flex-col items-center text-gray-400" data-g="shop"><span class="nv" data-n="shop" data-fa="store"></span><span class="text-[9px] font-semibold mt-0.5" data-t="Магазин|Shop"></span></button>
+ <button onclick="go('chests')" class="nb flex flex-col items-center text-gray-400" data-g="chests"><span class="nv" data-n="chests" data-fa="box-open"></span><span class="text-[9px] font-semibold mt-0.5" data-t="Сундуки|Chests"></span></button>
+ <button onclick="go('friends')" class="nb flex flex-col items-center text-gray-400" data-g="friends"><span class="nv" data-n="friends" data-fa="user-plus"></span><span class="text-[9px] font-semibold mt-0.5" data-t="Друзі|Friends"></span></button>
+ <button onclick="go('rewards')" class="nb flex flex-col items-center text-gray-400" data-g="rewards"><span class="nv" data-n="rewards" data-fa="gift"></span><span class="text-[9px] font-semibold mt-0.5" data-t="Нагороди|Rewards"></span></button>
+ <button onclick="go('rating')" class="nb flex flex-col items-center text-gray-400" data-g="rating"><span class="nv" data-n="rating" data-fa="trophy"></span><span class="text-[9px] font-semibold mt-0.5" data-t="Рейтинг|Rating"></span></button>
+ <button onclick="go('profile')" class="nb flex flex-col items-center text-gray-400" data-g="profile"><span class="nv" data-n="profile" data-fa="user"></span><span class="text-[9px] font-semibold mt-0.5" data-t="Профіль|Profile"></span></button>
 </nav>
 
 <!-- Порядок важливий. Усі файли — звичайні скрипти зі спільними глобальними змінними -->
