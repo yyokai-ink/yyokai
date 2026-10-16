@@ -94,7 +94,7 @@ function hdr(){$("hCoins").textContent=fmt(S.mon);$("hSouls").textContent=fmt(S.
 function rend(){hdr();const f=RV[cur];if(f&&!(cur=="chests"&&opening))f()}
 function go(v){cur=v;document.querySelectorAll(".view").forEach(e=>e.classList.add("hidden"));const el=$("view-"+v);if(el)el.classList.remove("hidden");
  document.querySelectorAll(".nb").forEach(b=>{const a=b.dataset.g==v;b.classList.toggle("text-crimsonRed",a);b.classList.toggle("text-gray-400",!a)});
- $("hdr").style.display=$("nav").style.display=v=="auth"?"none":"";$("amb").style.display=v=="play"?"block":"none";window.scrollTo(0,0);rend();adTick()}
+ $("hdr").style.display=$("nav").style.display=v=="auth"?"none":"";$("amb").style.display=v=="auth"?"none":"block";window.scrollTo(0,0);rend();adTick()}
 function tr(){document.querySelectorAll("[data-t]").forEach(e=>e.textContent=t(e.dataset.t));document.querySelectorAll("[data-p]").forEach(e=>e.placeholder=t(e.dataset.p));$("langBtn").textContent=lang=="ua"?"🇺🇦":"🇬🇧";authMode(mode);if(!splashDone)$("spQ").textContent=t(CFG.hero.quote)}
 function toggleLanguage(){lang=lang=="ua"?"en":"ua";localStorage.ink_lang=lang;tr();rend()}
 function route(){
@@ -126,8 +126,8 @@ function splash(){
   $("spBar").style.width=Math.max(8,sh*100)+"%";$("spV").style.height=sh*100+"%";$("spPct").textContent=Math.round(sh*100)+"%";
   $("spTxt").textContent=sh>=1?t("Готово|Ready"):sh<.4?t("Малюємо ёкаїв…|Drawing yokai…"):sh<.8?t("Куємо клинки…|Forging blades…"):t("Відкриваємо врата…|Opening the gate…");
   if(sh>=1||el>7000){clearInterval(iv);
-   const lg=$("spLogo");lg.style.height=$("spBlk").offsetTop+"px";lg.style.opacity=1;lg.style.pointerEvents="auto";   // центр між верхом і смужками
-   $("enterBtn").onclick=()=>{$("splash").style.opacity=0;setTimeout(()=>{$("splash").remove();splashDone=true;route();adTick()},700)};
+   const lg=$("spLogo");lg.style.height=$("spBlk").offsetTop+"px";lg.style.opacity=1;        // лого по центру між верхом і смужками
+   setTimeout(()=>{$("splash").style.opacity=0;setTimeout(()=>{$("splash").remove();splashDone=true;route();adTick()},700)},900);   // і одразу на реєстрацію
   }
  },100);
 }
@@ -158,7 +158,9 @@ function adwReward(){const w=wp([36,22,14,18,10]);let m;      // монети ·
 // ═══ 9. ОФЛАЙН-ДОХІД І СТАРТ ═══
 function offline(){const cap=(CFG.offlineBaseMin+15*U("off"))*60,away=Math.min((Date.now()-S.seen)/1000,cap),g=Math.floor(away*idleRate());if(away>60&&g>0){S.mon+=g;setTimeout(()=>toast("💤 "+t("Поки тебе не було, духи принесли|While you were away, spirits earned")+" +"+fmt(g)+" 文"),3500)}S.seen=Date.now()}
 function boot(){
- mkAmb($("amb"),9);mkAmb($("ambA"),10);mkAdw();
+ mkAmb($("ambA"),10);mkAdw();
  document.querySelectorAll(".inst").forEach(b=>{b.onclick=install;if(matchMedia("(display-mode: standalone)").matches)b.style.display="none"});
- tr();$("musBtn").textContent=music?"🔊":"🔇";hdr();offline();splash();fbInit();setInterval(adTick,1000);
+ tr();$("musBtn").textContent=music?"🔊":"🔇";hdr();offline();splash();fbInit();
+ const show=()=>document.body.classList.add("rd");(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>requestAnimationFrame(()=>requestAnimationFrame(show)));setTimeout(show,1500);   // м'яке з'явлення без смикання
+setInterval(adTick,1000);
 }
