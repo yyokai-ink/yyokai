@@ -15,10 +15,27 @@
      }}
    Монети/XP живуть у браузері — їх можна підробити. Тому в умовах тату головні: серверні дні, друзі, підтверджені завдання. Перед тату перевіряй заявку в адмінці. */
 
-// ═══ АВАТАРИ ═══
-const AVS=[["fox","🦊"],["oni","👹"],["tengu","👺"],["kappa","🐸"],["skull","💀"],["dragon","🐉"],["cat","🐱"],["sakura","🌸"],["katana","⚔️"],["torii","⛩️"],["mask","🎭"],["ninja","🥷"]];
-const avHTML=id=>{const a=AVS.find(x=>x[0]==id)||AVS[0];return `<img src="img/av/${a[0]}.png" data-e="${a[1]}" onerror="this.outerHTML=this.dataset.e" class="w-full h-full object-cover">`};
-function pickAv(id){S.av=id;save();push();rProfile()}
+// ═══ АВАТАРИ: каталог береться з data/avatars.json (твій файл — діє для всіх гравців); PNG: img/av/<id>.png ═══
+// поля: id, e (емодзі-запас), nm "укр|eng", r (рідкість 0-4), src: free | buy | chest | ad, cur (mon|jd|ln) і price для buy
+const _AVF=[["fox","🦊"],["oni","👹"],["tengu","👺"],["kappa","🐸"],["skull","💀"],["dragon","🐉"],["cat","🐱"],["sakura","🌸"],["katana","⚔️"],["torii","⛩️"],["mask","🎭"],["ninja","🥷"]];
+let AV=[..._AVF.map(a=>({id:a[0],e:a[1],nm:a[0]+"|"+a[0],r:0,src:"free"})),...Array.from({length:100},(_,i)=>{const n=i+1,r=n<=40?0:n<=65?1:n<=82?2:n<=95?3:4,src=n%4==0?"chest":n%7==0?"ad":"buy";
+ return{id:"a"+String(n).padStart(3,"0"),e:"🎭",nm:"Аватар "+n+"|Avatar "+n,r,src,cur:["mon","mon","mon","jd","ln"][r],price:Math.round([5e4,5e5,5e6,25,60][r]*(1+(n%10)*.3))}})];
+async function loadAv(){try{const r=await fetch("data/avatars.json?v="+Date.now());if(r.ok){const j=await r.json();if(Array.isArray(j)&&j.length)AV=j}}catch(e){}}
+const ownAv=id=>{const a=AV.find(x=>x.id==id);return!a||a.src=="free"||S.avs.includes(id)};
+const avHTML=id=>{const a=AV.find(x=>x.id==id)||AV[0];return `<img src="img/av/${a.id}.png" data-e="${a.e||"🎭"}" onerror="this.outerHTML=this.dataset.e" class="w-full h-full object-cover">`};
+function pickAv(id){if(!ownAv(id))return;S.av=id;save();push();rProfile()}
+let avR=-1,avN=24;
+function avF(r){avR=r;avN=24;rProfile()}function avMore(){avN+=24;rProfile()}
+function avAct(id){const a=AV.find(x=>x.id==id);if(!a)return;
+ if(ownAv(id))return pickAv(id);
+ if(a.src=="buy"){sync();if(S[a.cur]<a.price){toast(t("Не вистачає валюти|Not enough currency"));return}S[a.cur]-=a.price;S.avs.push(id);S.av=id;save();push();rProfile();hdr()}
+ else if(a.src=="ad")ad("📺 "+t("Аватар за рекламу|Avatar for an ad"),()=>{S.avs.push(id);S.av=id;save();push();rProfile()},"🎁",0);
+ else toast(t("Випадає лише з сундуків|Chests only"))}
+function avPicker(){const L=AV.filter(a=>avR<0||a.r==avR);
+ return `<div class="card space-y-2"><h4 class="text-xs font-bold text-neonGold uppercase">${t("Мій аватар|My avatar")} · ${AV.filter(a=>ownAv(a.id)).length}/${AV.length}</h4>
+ <div class="flex gap-1.5 overflow-x-auto pb-1"><button onclick="avF(-1)" class="chip shrink-0">${t("Усі|All")}</button>${RN.map((r,i)=>`<button onclick="avF(${i})" class="chip shrink-0" style="color:${r[1]}">${t(r[0])}</button>`).join("")}</div>
+ <div class="grid grid-cols-4 gap-2">${L.slice(0,avN).map(a=>{const o=ownAv(a.id),e=S.av==a.id;return `<button onclick="avAct('${a.id}')" class="rounded-xl p-1 text-center space-y-1" style="border:2px solid ${e?"#ffb703":RN[a.r][1]+"88"};background:#0a090d"><div class="aspect-square rounded-lg overflow-hidden flex items-center justify-center text-3xl ${o?"":"opacity-40"}">${avHTML(a.id)}</div><div class="text-[9px] leading-tight">${e?"✓":o?t("Одягнути|Wear"):a.src=="buy"?fmt(a.price)+" "+CI[a.cur]:a.src=="ad"?"📺":"🎁"}</div></button>`}).join("")}</div>
+ ${avN<L.length?`<button class="btn w-full" onclick="avMore()">${t("Показати ще|Show more")} (${L.length-avN})</button>`:""}</div>`}
 
 // ═══ ВХІД ═══
 function authMode(m){mode=m;const r=m=="reg";$("aBtn").textContent=r?t("Створити акаунт|Create account"):t("Увійти|Sign in");$("aTog").textContent=r?t("Вже є акаунт? Увійти|Have an account? Sign in"):t("Немає акаунта? Реєстрація|No account? Register")}
@@ -42,7 +59,7 @@ async function authSubmit(e){
 }
 async function logout(){if(FBOK&&auth)try{await FB.signOut(auth)}catch(e){}user=null;guestMode=false;FR=[];route()}
 function showNick(){
- $("nickAv").innerHTML=AVS.map(a=>`<button type="button" onclick="S.av='${a[0]}';showNick()" class="aspect-square rounded-xl overflow-hidden flex items-center justify-center text-xl ${S.av==a[0]?"ring-2 ring-neonGold":"opacity-60"}">${avHTML(a[0])}</button>`).join("");
+ $("nickAv").innerHTML=AV.filter(a=>a.src=="free").map(a=>`<button type="button" onclick="S.av='${a.id}';showNick()" class="aspect-square rounded-xl overflow-hidden flex items-center justify-center text-xl ${S.av==a.id?"ring-2 ring-neonGold":"opacity-60"}">${avHTML(a.id)}</button>`).join("");
  $("nickov").classList.remove("hidden");
 }
 async function saveNick(){
@@ -116,14 +133,14 @@ async function loadSD(){if(!isReal()||Date.now()-SDt<60000)return;SDt=Date.now()
 const need=k=>{
  const F=["Друзів, що дійшли до 3-го рівня|Friends who reached level 3",S.friends],D=["Різних днів у грі (за даними сервера)|Different days played (server-verified)",isReal()?SD:0],
   X=["Очки XP (за раунди)|XP points (from rounds)",S.xp],T=["Підтверджені завдання партнерів|Verified partner tasks",tasksOk()],
-  B=["Босів переможено|Bosses defeated",S.kills],K=["Клинків у колекції|Blades collected",S.blades.length],G2=["Фонів у колекції|Backgrounds collected",S.bgs.length],A=["Реклам переглянуто|Ads watched",S.ads];
+  B=["Босів переможено|Bosses defeated",S.kills],K=["Клинків у колекції|Blades collected",S.blades.length],G2=["Фонів у колекції|Backgrounds collected",S.bgs.length],A=["Реклам переглянуто|Ads watched",S.ads],C=["Накопичено монет за весь час|Total coins earned",S.tot||0];
  return {
-  d10:[[...F,1],[...D,4],[...X,20000]],
-  d20:[[...F,2],[...D,6],[...X,60000],[...B,5]],
-  d30:[[...F,3],[...D,9],[...X,150000],[...B,12],[...T,2]],
-  d40:[[...F,4],[...D,12],[...X,300000],[...B,25],[...T,4]],
-  mini:[[...F,2],[...D,20],[...X,600000],[...B,40],[...T,4],[...K,12]],
-  big:[[...F,6],[...D,45],[...X,2500000],[...B,100],[...T,8],[...K,30],[...G2,25],[...A,40]]
+  d10:[[...F,1],[...D,4],[...C,1e7],[...X,20000]],
+  d20:[[...F,2],[...D,6],[...C,3e7],[...X,60000],[...B,5]],
+  d30:[[...F,3],[...D,9],[...C,8e7],[...X,150000],[...B,12],[...T,2]],
+  d40:[[...F,4],[...D,12],[...C,2e8],[...X,300000],[...B,25],[...T,4]],
+  mini:[[...F,2],[...D,20],[...C,1e9],[...X,600000],[...B,40],[...T,4],[...K,12]],
+  big:[[...F,6],[...D,45],[...C,1e10],[...X,2500000],[...B,100],[...T,8],[...K,30],[...G2,25],[...A,40]]
  }[k];
 };
 const NAMES={d10:"🏷 Знижка 10% на тату|🏷 10% tattoo discount",d20:"🏷 Знижка 20%|🏷 20% discount",d30:"🏷 Знижка 30%|🏷 30% discount",d40:"🏷 Знижка 40%|🏷 40% discount",mini:"🎁 Міні-тату (до 1500 грн)|🎁 Mini tattoo (up to 1500 UAH)",big:"👑 Велике тату (7000 грн)|👑 Big tattoo (7000 UAH)"};
@@ -131,7 +148,7 @@ const rows=r=>r.map(x=>`<div><div class="flex justify-between text-[11px]"><span
 async function claim(id,code){
  if(code?S.cp.find(c=>c.code==code&&c.used):S.claimed.includes(id))return;
  if(!isReal()){alert(t("Щоб подати заявку, увійди через Google/Apple.|Sign in with Google/Apple to claim."));authMode("reg");go("auth");return}
- try{await FB.addDoc(FB.collection(db,"claims"),{uid:user.uid,email:user.email||"",nick:S.nick,tier:id,code:code||"",xp:S.xp,days:S.days,serverDays:SD,streak:S.streak,friends:S.friends,tasks:tasksOk(),ads:S.ads,kills:S.kills,blades:S.blades.length,bgs:S.bgs.length,ts:FB.serverTimestamp()});
+ try{await FB.addDoc(FB.collection(db,"claims"),{uid:user.uid,email:user.email||"",nick:S.nick,tier:id,code:code||"",xp:S.xp,tot:S.tot||0,days:S.days,serverDays:SD,streak:S.streak,friends:S.friends,tasks:tasksOk(),ads:S.ads,kills:S.kills,blades:S.blades.length,bgs:S.bgs.length,ts:FB.serverTimestamp()});
   if(code){S.cp.find(c=>c.code==code).used=1}else S.claimed.push(id);save();rend();alert(t("Заявку надіслано в студію YYOKAI! Ми перевіримо умови й напишемо тобі.|Request sent to YYOKAI studio! We'll verify and contact you."))}catch(e){alert(e.message)}
 }
 function rRewards(){
@@ -144,7 +161,7 @@ function rRewards(){
   <div>2️⃣ ${t("Запрошуй друзів: кожен, хто дійшов до 3-го рівня, зараховується.|Invite friends: each one reaching level 3 counts.")}</div>
   <div>3️⃣ ${t("Перемагай босів, збирай клинки й фони, виконуй завдання партнерів.|Beat bosses, collect blades & backgrounds, do partner tasks.")}</div>
   <div>4️⃣ ${t("Коли всі смужки заповнені — «Подати заявку». Студія перевіряє й домовляється про сеанс.|When all bars are full — “Claim”. The studio verifies and books your session.")}</div>
-  <div class="text-gray-500">${t("Монети й пасивний дохід не враховуються. Купони із сундуків теж проходять перевірку.|Coins and passive income don't count. Chest coupons are verified too.")}</div></div>`+
+  <div class="text-gray-500">${t("Рахуються всі зароблені монети за весь час, а не поточний баланс. Купони із сундуків теж перевіряються.|All coins ever earned count, not your balance. Chest coupons are verified too.")}</div></div>`+
  (cps.length?`<h3 class="text-sm font-black uppercase">${t("Мої купони із сундуків|My chest coupons")}</h3>`+cps.map(c=>`<div class="card flex items-center justify-between"><div><b class="text-sm">${esc(c.lb)}</b><div class="text-[10px] text-gray-400">#${esc(c.code)}</div></div><button class="btng" onclick="claim('${esc(c.type)}','${esc(c.code)}')">${t("Забрати|Claim")}</button></div>`).join(""):"")+
  ["d10","d20","d30","d40","mini","big"].map(card).join("");
 }
@@ -153,7 +170,7 @@ function rRewards(){
 function rProfile(){
  $("view-profile").innerHTML=`
  <div class="card flex items-center gap-4"><div class="w-16 h-16 rounded-2xl overflow-hidden flex items-center justify-center text-4xl" style="border:2px solid #ffb703">${avHTML(S.av)}</div><div><h3 class="font-bold text-sm">${esc(S.nick||t("Гість|Guest"))}</h3><span class="inline-block mt-1 px-2 py-0.5 bg-crimsonRed/20 border border-crimsonRed/40 text-crimsonRed text-[10px] font-bold rounded-full">Lv ${lvl(S.xp)} · ${fmt(S.xp)} XP</span></div></div>
- <div class="card space-y-2"><h4 class="text-xs font-bold text-neonGold uppercase">${t("Мій аватар (видно іншим у рейтингу)|My avatar (visible in the rating)")}</h4><div class="grid grid-cols-6 gap-2">${AVS.map(a=>`<button onclick="pickAv('${a[0]}')" class="aspect-square rounded-xl overflow-hidden flex items-center justify-center text-2xl ${S.av==a[0]?"ring-2 ring-neonGold":"opacity-70"}" style="background:#0a090d">${avHTML(a[0])}</button>`).join("")}</div></div>
+ ${avPicker()}
  <div class="card text-xs text-gray-300 grid grid-cols-2 gap-1"><div>${t("Раундів|Rounds")}: <b>${S.rounds}</b></div><div>${t("Босів|Bosses")}: <b>${S.kills}</b></div><div>${t("Днів|Days")}: <b>${S.days}</b></div><div>${t("Серія підряд|Streak")}: <b>${S.streak}</b></div></div>
  <div class="card space-y-1"><h4 class="text-xs font-bold text-neonGold uppercase">🔊 ${t("Перевірка звуків і файлів|Sound & file check")}</h4>${sndStat()}</div>
  ${matchMedia("(display-mode: standalone)").matches?"":`<button onclick="install()" class="w-full py-3 rounded-xl bg-neonGold/10 border border-neonGold/40 text-neonGold font-bold text-sm">${t("📲 Встановити гру|📲 Install game")}</button>`}
