@@ -1,0 +1,986 @@
+[
+ {
+  "id": "fox",
+  "e": "🦊",
+  "nm": "fox|fox",
+  "r": 0,
+  "src": "free"
+ },
+ {
+  "id": "oni",
+  "e": "👹",
+  "nm": "oni|oni",
+  "r": 0,
+  "src": "free"
+ },
+ {
+  "id": "tengu",
+  "e": "👺",
+  "nm": "tengu|tengu",
+  "r": 0,
+  "src": "free"
+ },
+ {
+  "id": "kappa",
+  "e": "🐸",
+  "nm": "kappa|kappa",
+  "r": 0,
+  "src": "free"
+ },
+ {
+  "id": "skull",
+  "e": "💀",
+  "nm": "skull|skull",
+  "r": 0,
+  "src": "free"
+ },
+ {
+  "id": "dragon",
+  "e": "🐉",
+  "nm": "dragon|dragon",
+  "r": 0,
+  "src": "free"
+ },
+ {
+  "id": "cat",
+  "e": "🐱",
+  "nm": "cat|cat",
+  "r": 0,
+  "src": "free"
+ },
+ {
+  "id": "sakura",
+  "e": "🌸",
+  "nm": "sakura|sakura",
+  "r": 0,
+  "src": "free"
+ },
+ {
+  "id": "katana",
+  "e": "⚔️",
+  "nm": "katana|katana",
+  "r": 0,
+  "src": "free"
+ },
+ {
+  "id": "torii",
+  "e": "⛩️",
+  "nm": "torii|torii",
+  "r": 0,
+  "src": "free"
+ },
+ {
+  "id": "mask",
+  "e": "🎭",
+  "nm": "mask|mask",
+  "r": 0,
+  "src": "free"
+ },
+ {
+  "id": "ninja",
+  "e": "🥷",
+  "nm": "ninja|ninja",
+  "r": 0,
+  "src": "free"
+ },
+ {
+  "id": "a001",
+  "e": "🎭",
+  "nm": "Аватар 1|Avatar 1",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 65000
+ },
+ {
+  "id": "a002",
+  "e": "🎭",
+  "nm": "Аватар 2|Avatar 2",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 80000
+ },
+ {
+  "id": "a003",
+  "e": "🎭",
+  "nm": "Аватар 3|Avatar 3",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 95000
+ },
+ {
+  "id": "a004",
+  "e": "🎭",
+  "nm": "Аватар 4|Avatar 4",
+  "r": 0,
+  "src": "chest",
+  "cur": "mon",
+  "price": 110000
+ },
+ {
+  "id": "a005",
+  "e": "🎭",
+  "nm": "Аватар 5|Avatar 5",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 125000
+ },
+ {
+  "id": "a006",
+  "e": "🎭",
+  "nm": "Аватар 6|Avatar 6",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 140000
+ },
+ {
+  "id": "a007",
+  "e": "🎭",
+  "nm": "Аватар 7|Avatar 7",
+  "r": 0,
+  "src": "ad",
+  "cur": "mon",
+  "price": 155000
+ },
+ {
+  "id": "a008",
+  "e": "🎭",
+  "nm": "Аватар 8|Avatar 8",
+  "r": 0,
+  "src": "chest",
+  "cur": "mon",
+  "price": 170000
+ },
+ {
+  "id": "a009",
+  "e": "🎭",
+  "nm": "Аватар 9|Avatar 9",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 185000
+ },
+ {
+  "id": "a010",
+  "e": "🎭",
+  "nm": "Аватар 10|Avatar 10",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 50000
+ },
+ {
+  "id": "a011",
+  "e": "🎭",
+  "nm": "Аватар 11|Avatar 11",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 65000
+ },
+ {
+  "id": "a012",
+  "e": "🎭",
+  "nm": "Аватар 12|Avatar 12",
+  "r": 0,
+  "src": "chest",
+  "cur": "mon",
+  "price": 80000
+ },
+ {
+  "id": "a013",
+  "e": "🎭",
+  "nm": "Аватар 13|Avatar 13",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 95000
+ },
+ {
+  "id": "a014",
+  "e": "🎭",
+  "nm": "Аватар 14|Avatar 14",
+  "r": 0,
+  "src": "ad",
+  "cur": "mon",
+  "price": 110000
+ },
+ {
+  "id": "a015",
+  "e": "🎭",
+  "nm": "Аватар 15|Avatar 15",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 125000
+ },
+ {
+  "id": "a016",
+  "e": "🎭",
+  "nm": "Аватар 16|Avatar 16",
+  "r": 0,
+  "src": "chest",
+  "cur": "mon",
+  "price": 140000
+ },
+ {
+  "id": "a017",
+  "e": "🎭",
+  "nm": "Аватар 17|Avatar 17",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 155000
+ },
+ {
+  "id": "a018",
+  "e": "🎭",
+  "nm": "Аватар 18|Avatar 18",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 170000
+ },
+ {
+  "id": "a019",
+  "e": "🎭",
+  "nm": "Аватар 19|Avatar 19",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 185000
+ },
+ {
+  "id": "a020",
+  "e": "🎭",
+  "nm": "Аватар 20|Avatar 20",
+  "r": 0,
+  "src": "chest",
+  "cur": "mon",
+  "price": 50000
+ },
+ {
+  "id": "a021",
+  "e": "🎭",
+  "nm": "Аватар 21|Avatar 21",
+  "r": 0,
+  "src": "ad",
+  "cur": "mon",
+  "price": 65000
+ },
+ {
+  "id": "a022",
+  "e": "🎭",
+  "nm": "Аватар 22|Avatar 22",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 80000
+ },
+ {
+  "id": "a023",
+  "e": "🎭",
+  "nm": "Аватар 23|Avatar 23",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 95000
+ },
+ {
+  "id": "a024",
+  "e": "🎭",
+  "nm": "Аватар 24|Avatar 24",
+  "r": 0,
+  "src": "chest",
+  "cur": "mon",
+  "price": 110000
+ },
+ {
+  "id": "a025",
+  "e": "🎭",
+  "nm": "Аватар 25|Avatar 25",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 125000
+ },
+ {
+  "id": "a026",
+  "e": "🎭",
+  "nm": "Аватар 26|Avatar 26",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 140000
+ },
+ {
+  "id": "a027",
+  "e": "🎭",
+  "nm": "Аватар 27|Avatar 27",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 155000
+ },
+ {
+  "id": "a028",
+  "e": "🎭",
+  "nm": "Аватар 28|Avatar 28",
+  "r": 0,
+  "src": "chest",
+  "cur": "mon",
+  "price": 170000
+ },
+ {
+  "id": "a029",
+  "e": "🎭",
+  "nm": "Аватар 29|Avatar 29",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 185000
+ },
+ {
+  "id": "a030",
+  "e": "🎭",
+  "nm": "Аватар 30|Avatar 30",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 50000
+ },
+ {
+  "id": "a031",
+  "e": "🎭",
+  "nm": "Аватар 31|Avatar 31",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 65000
+ },
+ {
+  "id": "a032",
+  "e": "🎭",
+  "nm": "Аватар 32|Avatar 32",
+  "r": 0,
+  "src": "chest",
+  "cur": "mon",
+  "price": 80000
+ },
+ {
+  "id": "a033",
+  "e": "🎭",
+  "nm": "Аватар 33|Avatar 33",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 95000
+ },
+ {
+  "id": "a034",
+  "e": "🎭",
+  "nm": "Аватар 34|Avatar 34",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 110000
+ },
+ {
+  "id": "a035",
+  "e": "🎭",
+  "nm": "Аватар 35|Avatar 35",
+  "r": 0,
+  "src": "ad",
+  "cur": "mon",
+  "price": 125000
+ },
+ {
+  "id": "a036",
+  "e": "🎭",
+  "nm": "Аватар 36|Avatar 36",
+  "r": 0,
+  "src": "chest",
+  "cur": "mon",
+  "price": 140000
+ },
+ {
+  "id": "a037",
+  "e": "🎭",
+  "nm": "Аватар 37|Avatar 37",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 155000
+ },
+ {
+  "id": "a038",
+  "e": "🎭",
+  "nm": "Аватар 38|Avatar 38",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 170000
+ },
+ {
+  "id": "a039",
+  "e": "🎭",
+  "nm": "Аватар 39|Avatar 39",
+  "r": 0,
+  "src": "buy",
+  "cur": "mon",
+  "price": 185000
+ },
+ {
+  "id": "a040",
+  "e": "🎭",
+  "nm": "Аватар 40|Avatar 40",
+  "r": 0,
+  "src": "chest",
+  "cur": "mon",
+  "price": 50000
+ },
+ {
+  "id": "a041",
+  "e": "🎭",
+  "nm": "Аватар 41|Avatar 41",
+  "r": 1,
+  "src": "buy",
+  "cur": "mon",
+  "price": 650000
+ },
+ {
+  "id": "a042",
+  "e": "🎭",
+  "nm": "Аватар 42|Avatar 42",
+  "r": 1,
+  "src": "ad",
+  "cur": "mon",
+  "price": 800000
+ },
+ {
+  "id": "a043",
+  "e": "🎭",
+  "nm": "Аватар 43|Avatar 43",
+  "r": 1,
+  "src": "buy",
+  "cur": "mon",
+  "price": 950000
+ },
+ {
+  "id": "a044",
+  "e": "🎭",
+  "nm": "Аватар 44|Avatar 44",
+  "r": 1,
+  "src": "chest",
+  "cur": "mon",
+  "price": 1100000
+ },
+ {
+  "id": "a045",
+  "e": "🎭",
+  "nm": "Аватар 45|Avatar 45",
+  "r": 1,
+  "src": "buy",
+  "cur": "mon",
+  "price": 1250000
+ },
+ {
+  "id": "a046",
+  "e": "🎭",
+  "nm": "Аватар 46|Avatar 46",
+  "r": 1,
+  "src": "buy",
+  "cur": "mon",
+  "price": 1400000
+ },
+ {
+  "id": "a047",
+  "e": "🎭",
+  "nm": "Аватар 47|Avatar 47",
+  "r": 1,
+  "src": "buy",
+  "cur": "mon",
+  "price": 1550000
+ },
+ {
+  "id": "a048",
+  "e": "🎭",
+  "nm": "Аватар 48|Avatar 48",
+  "r": 1,
+  "src": "chest",
+  "cur": "mon",
+  "price": 1700000
+ },
+ {
+  "id": "a049",
+  "e": "🎭",
+  "nm": "Аватар 49|Avatar 49",
+  "r": 1,
+  "src": "ad",
+  "cur": "mon",
+  "price": 1850000
+ },
+ {
+  "id": "a050",
+  "e": "🎭",
+  "nm": "Аватар 50|Avatar 50",
+  "r": 1,
+  "src": "buy",
+  "cur": "mon",
+  "price": 500000
+ },
+ {
+  "id": "a051",
+  "e": "🎭",
+  "nm": "Аватар 51|Avatar 51",
+  "r": 1,
+  "src": "buy",
+  "cur": "mon",
+  "price": 650000
+ },
+ {
+  "id": "a052",
+  "e": "🎭",
+  "nm": "Аватар 52|Avatar 52",
+  "r": 1,
+  "src": "chest",
+  "cur": "mon",
+  "price": 800000
+ },
+ {
+  "id": "a053",
+  "e": "🎭",
+  "nm": "Аватар 53|Avatar 53",
+  "r": 1,
+  "src": "buy",
+  "cur": "mon",
+  "price": 950000
+ },
+ {
+  "id": "a054",
+  "e": "🎭",
+  "nm": "Аватар 54|Avatar 54",
+  "r": 1,
+  "src": "buy",
+  "cur": "mon",
+  "price": 1100000
+ },
+ {
+  "id": "a055",
+  "e": "🎭",
+  "nm": "Аватар 55|Avatar 55",
+  "r": 1,
+  "src": "buy",
+  "cur": "mon",
+  "price": 1250000
+ },
+ {
+  "id": "a056",
+  "e": "🎭",
+  "nm": "Аватар 56|Avatar 56",
+  "r": 1,
+  "src": "chest",
+  "cur": "mon",
+  "price": 1400000
+ },
+ {
+  "id": "a057",
+  "e": "🎭",
+  "nm": "Аватар 57|Avatar 57",
+  "r": 1,
+  "src": "buy",
+  "cur": "mon",
+  "price": 1550000
+ },
+ {
+  "id": "a058",
+  "e": "🎭",
+  "nm": "Аватар 58|Avatar 58",
+  "r": 1,
+  "src": "buy",
+  "cur": "mon",
+  "price": 1700000
+ },
+ {
+  "id": "a059",
+  "e": "🎭",
+  "nm": "Аватар 59|Avatar 59",
+  "r": 1,
+  "src": "buy",
+  "cur": "mon",
+  "price": 1850000
+ },
+ {
+  "id": "a060",
+  "e": "🎭",
+  "nm": "Аватар 60|Avatar 60",
+  "r": 1,
+  "src": "chest",
+  "cur": "mon",
+  "price": 500000
+ },
+ {
+  "id": "a061",
+  "e": "🎭",
+  "nm": "Аватар 61|Avatar 61",
+  "r": 1,
+  "src": "buy",
+  "cur": "mon",
+  "price": 650000
+ },
+ {
+  "id": "a062",
+  "e": "🎭",
+  "nm": "Аватар 62|Avatar 62",
+  "r": 1,
+  "src": "buy",
+  "cur": "mon",
+  "price": 800000
+ },
+ {
+  "id": "a063",
+  "e": "🎭",
+  "nm": "Аватар 63|Avatar 63",
+  "r": 1,
+  "src": "ad",
+  "cur": "mon",
+  "price": 950000
+ },
+ {
+  "id": "a064",
+  "e": "🎭",
+  "nm": "Аватар 64|Avatar 64",
+  "r": 1,
+  "src": "chest",
+  "cur": "mon",
+  "price": 1100000
+ },
+ {
+  "id": "a065",
+  "e": "🎭",
+  "nm": "Аватар 65|Avatar 65",
+  "r": 1,
+  "src": "buy",
+  "cur": "mon",
+  "price": 1250000
+ },
+ {
+  "id": "a066",
+  "e": "🎭",
+  "nm": "Аватар 66|Avatar 66",
+  "r": 2,
+  "src": "buy",
+  "cur": "mon",
+  "price": 14000000
+ },
+ {
+  "id": "a067",
+  "e": "🎭",
+  "nm": "Аватар 67|Avatar 67",
+  "r": 2,
+  "src": "buy",
+  "cur": "mon",
+  "price": 15500000
+ },
+ {
+  "id": "a068",
+  "e": "🎭",
+  "nm": "Аватар 68|Avatar 68",
+  "r": 2,
+  "src": "chest",
+  "cur": "mon",
+  "price": 17000000
+ },
+ {
+  "id": "a069",
+  "e": "🎭",
+  "nm": "Аватар 69|Avatar 69",
+  "r": 2,
+  "src": "buy",
+  "cur": "mon",
+  "price": 18500000
+ },
+ {
+  "id": "a070",
+  "e": "🎭",
+  "nm": "Аватар 70|Avatar 70",
+  "r": 2,
+  "src": "ad",
+  "cur": "mon",
+  "price": 5000000
+ },
+ {
+  "id": "a071",
+  "e": "🎭",
+  "nm": "Аватар 71|Avatar 71",
+  "r": 2,
+  "src": "buy",
+  "cur": "mon",
+  "price": 6500000
+ },
+ {
+  "id": "a072",
+  "e": "🎭",
+  "nm": "Аватар 72|Avatar 72",
+  "r": 2,
+  "src": "chest",
+  "cur": "mon",
+  "price": 8000000
+ },
+ {
+  "id": "a073",
+  "e": "🎭",
+  "nm": "Аватар 73|Avatar 73",
+  "r": 2,
+  "src": "buy",
+  "cur": "mon",
+  "price": 9500000
+ },
+ {
+  "id": "a074",
+  "e": "🎭",
+  "nm": "Аватар 74|Avatar 74",
+  "r": 2,
+  "src": "buy",
+  "cur": "mon",
+  "price": 11000000
+ },
+ {
+  "id": "a075",
+  "e": "🎭",
+  "nm": "Аватар 75|Avatar 75",
+  "r": 2,
+  "src": "buy",
+  "cur": "mon",
+  "price": 12500000
+ },
+ {
+  "id": "a076",
+  "e": "🎭",
+  "nm": "Аватар 76|Avatar 76",
+  "r": 2,
+  "src": "chest",
+  "cur": "mon",
+  "price": 14000000
+ },
+ {
+  "id": "a077",
+  "e": "🎭",
+  "nm": "Аватар 77|Avatar 77",
+  "r": 2,
+  "src": "ad",
+  "cur": "mon",
+  "price": 15500000
+ },
+ {
+  "id": "a078",
+  "e": "🎭",
+  "nm": "Аватар 78|Avatar 78",
+  "r": 2,
+  "src": "buy",
+  "cur": "mon",
+  "price": 17000000
+ },
+ {
+  "id": "a079",
+  "e": "🎭",
+  "nm": "Аватар 79|Avatar 79",
+  "r": 2,
+  "src": "buy",
+  "cur": "mon",
+  "price": 18500000
+ },
+ {
+  "id": "a080",
+  "e": "🎭",
+  "nm": "Аватар 80|Avatar 80",
+  "r": 2,
+  "src": "chest",
+  "cur": "mon",
+  "price": 5000000
+ },
+ {
+  "id": "a081",
+  "e": "🎭",
+  "nm": "Аватар 81|Avatar 81",
+  "r": 2,
+  "src": "buy",
+  "cur": "mon",
+  "price": 6500000
+ },
+ {
+  "id": "a082",
+  "e": "🎭",
+  "nm": "Аватар 82|Avatar 82",
+  "r": 2,
+  "src": "buy",
+  "cur": "mon",
+  "price": 8000000
+ },
+ {
+  "id": "a083",
+  "e": "🎭",
+  "nm": "Аватар 83|Avatar 83",
+  "r": 3,
+  "src": "buy",
+  "cur": "jd",
+  "price": 48
+ },
+ {
+  "id": "a084",
+  "e": "🎭",
+  "nm": "Аватар 84|Avatar 84",
+  "r": 3,
+  "src": "chest",
+  "cur": "jd",
+  "price": 55
+ },
+ {
+  "id": "a085",
+  "e": "🎭",
+  "nm": "Аватар 85|Avatar 85",
+  "r": 3,
+  "src": "buy",
+  "cur": "jd",
+  "price": 63
+ },
+ {
+  "id": "a086",
+  "e": "🎭",
+  "nm": "Аватар 86|Avatar 86",
+  "r": 3,
+  "src": "buy",
+  "cur": "jd",
+  "price": 70
+ },
+ {
+  "id": "a087",
+  "e": "🎭",
+  "nm": "Аватар 87|Avatar 87",
+  "r": 3,
+  "src": "buy",
+  "cur": "jd",
+  "price": 78
+ },
+ {
+  "id": "a088",
+  "e": "🎭",
+  "nm": "Аватар 88|Avatar 88",
+  "r": 3,
+  "src": "chest",
+  "cur": "jd",
+  "price": 85
+ },
+ {
+  "id": "a089",
+  "e": "🎭",
+  "nm": "Аватар 89|Avatar 89",
+  "r": 3,
+  "src": "buy",
+  "cur": "jd",
+  "price": 93
+ },
+ {
+  "id": "a090",
+  "e": "🎭",
+  "nm": "Аватар 90|Avatar 90",
+  "r": 3,
+  "src": "buy",
+  "cur": "jd",
+  "price": 25
+ },
+ {
+  "id": "a091",
+  "e": "🎭",
+  "nm": "Аватар 91|Avatar 91",
+  "r": 3,
+  "src": "ad",
+  "cur": "jd",
+  "price": 33
+ },
+ {
+  "id": "a092",
+  "e": "🎭",
+  "nm": "Аватар 92|Avatar 92",
+  "r": 3,
+  "src": "chest",
+  "cur": "jd",
+  "price": 40
+ },
+ {
+  "id": "a093",
+  "e": "🎭",
+  "nm": "Аватар 93|Avatar 93",
+  "r": 3,
+  "src": "buy",
+  "cur": "jd",
+  "price": 48
+ },
+ {
+  "id": "a094",
+  "e": "🎭",
+  "nm": "Аватар 94|Avatar 94",
+  "r": 3,
+  "src": "buy",
+  "cur": "jd",
+  "price": 55
+ },
+ {
+  "id": "a095",
+  "e": "🎭",
+  "nm": "Аватар 95|Avatar 95",
+  "r": 3,
+  "src": "buy",
+  "cur": "jd",
+  "price": 63
+ },
+ {
+  "id": "a096",
+  "e": "🎭",
+  "nm": "Аватар 96|Avatar 96",
+  "r": 4,
+  "src": "chest",
+  "cur": "ln",
+  "price": 168
+ },
+ {
+  "id": "a097",
+  "e": "🎭",
+  "nm": "Аватар 97|Avatar 97",
+  "r": 4,
+  "src": "buy",
+  "cur": "ln",
+  "price": 186
+ },
+ {
+  "id": "a098",
+  "e": "🎭",
+  "nm": "Аватар 98|Avatar 98",
+  "r": 4,
+  "src": "ad",
+  "cur": "ln",
+  "price": 204
+ },
+ {
+  "id": "a099",
+  "e": "🎭",
+  "nm": "Аватар 99|Avatar 99",
+  "r": 4,
+  "src": "buy",
+  "cur": "ln",
+  "price": 222
+ },
+ {
+  "id": "a100",
+  "e": "🎭",
+  "nm": "Аватар 100|Avatar 100",
+  "r": 4,
+  "src": "chest",
+  "cur": "ln",
+  "price": 60
+ }
+]
