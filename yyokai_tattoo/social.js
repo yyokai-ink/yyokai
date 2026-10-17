@@ -1,19 +1,23 @@
-/* INKAI social.js — вхід, нік, друзі й завдання, рейтинг, нагороди (тату), профіль, адмінка
-   ПРАВИЛА FIRESTORE (замінити ADMIN_UID):
-     rules_version='2'; service cloud.firestore { match /databases/{d}/documents {
-       function admin(){ return request.auth.uid in ['ADMIN_UID']; }
-       match /users/{u}   { allow read: if request.auth.uid==u || admin(); allow write: if request.auth.uid==u; }
-       match /public/{u}  { allow read: if request.auth!=null; allow write: if request.auth.uid==u; }
-       match /referrals/{u}{ allow read: if request.auth!=null; allow create: if request.auth.uid==u; }
-       match /daylog/{x}  { allow create: if request.auth.uid==request.resource.data.uid && request.resource.data.ts==request.time;
-                            allow read: if admin() || resource.data.uid==request.auth.uid; }   // ← НОВЕ: гравець бачить свої дні
-       match /submissions/{s}{ allow read: if request.auth!=null && (resource.data.uid==request.auth.uid || admin());
-                            allow create: if request.auth.uid==request.resource.data.uid && request.resource.data.status=='pending'; allow update: if admin(); }
-       match /claims/{c}  { allow create: if request.auth!=null; allow read, update: if admin(); }
-       match /adEvents/{a}{ allow create: if request.auth!=null; }
-       match /offers/{o}  { allow read: if true; allow write: if admin(); }
-     }}
-   Монети/XP живуть у браузері — їх можна підробити. Тому в умовах тату головні: серверні дні, друзі, підтверджені завдання. Перед тату перевіряй заявку в адмінці. */
+/* INKAI social.js — вхід, нік, майстри, друзі, рейтинг, нагороди (тату), профіль, адмінка
+   ПРАВИЛА FIRESTORE — той самий текст лежить у файлі firestore.rules (вставити в Firebase Console → Firestore → Rules, замінити ADMIN_UID):
+rules_version='2'; service cloud.firestore { match /databases/{d}/documents {
+  function admin(){ return request.auth.uid in ['ADMIN_UID']; }
+  function masterOn(m){ return get(/databases/$(database)/documents/masters/$(m)).data.paidUntil > request.time; }   // майстер оплатив — інакше заявка неможлива
+  match /users/{u}   { allow read: if request.auth.uid==u || admin(); allow write: if request.auth.uid==u; }
+  match /public/{u}  { allow read: if request.auth!=null; allow write: if request.auth.uid==u; }
+  match /referrals/{u}{ allow read: if request.auth!=null; allow create: if request.auth.uid==u; }
+  match /daylog/{x}  { allow create: if request.auth.uid==request.resource.data.uid && request.resource.data.ts==request.time;
+                       allow read: if admin() || resource.data.uid==request.auth.uid; }
+  match /submissions/{s}{ allow read: if request.auth!=null && (resource.data.uid==request.auth.uid || admin());
+                       allow create: if request.auth.uid==request.resource.data.uid && request.resource.data.status=='pending'; allow update: if admin(); }
+  match /masters/{m} { allow read: if request.auth!=null; allow write: if admin(); }                 // список майстрів бачать усі гравці, редагує лише адмін
+  match /clients/{c} { allow create: if request.auth.uid==request.resource.data.uid && masterOn(request.resource.data.master); allow read: if admin(); }
+  match /claims/{c}  { allow create: if request.auth.uid==request.resource.data.uid && masterOn(request.resource.data.master);   // id заявки фіксований → подати вдруге неможливо
+                       allow read, update: if admin(); }
+  match /adEvents/{a}{ allow create: if request.auth!=null; }
+  match /offers/{o}  { allow read: if true; allow write: if admin(); }
+}}
+   ЗАХИСТ МАЙСТРІВ: знижки/купони прив'язані до майстра; заявка має фіксований id (знижка — 1 на місяць, малий і великий тату — по 1 разу в житті, тату-купон з сундука — 1 раз) і створюється лише поки майстер оплачений. */
 
 // ═══ АВАТАРИ: каталог береться з data/avatars.json (твій файл — діє для всіх гравців); PNG: img/av/<id>.png ═══
 // поля: id, e (емодзі-запас), nm "укр|eng", r (рідкість 0-4), src: free | buy | chest | ad, cur (mon|jd|ln) і price для buy
@@ -62,12 +66,13 @@ function showNick(){
  $("nickAv").innerHTML=AV.filter(a=>a.src=="free").map(a=>`<button type="button" onclick="S.av='${a.id}';showNick()" class="aspect-square rounded-xl overflow-hidden flex items-center justify-center text-xl ${S.av==a.id?"ring-2 ring-neonGold":"opacity-60"}">${avHTML(a.id)}</button>`).join("");
  $("nickov").classList.remove("hidden");
 }
-async function saveNick(){
- const v=$("nickIn").value.trim(),lc=v.toLowerCase(),err=$("nickErr");
- if(!/^[\p{L}0-9_]{3,16}$/u.test(v)){err.textContent=t("3–16 символів: літери, цифри, _|3–16 chars: letters, digits, _");return}
- try{const q=await FB.getDocs(FB.query(FB.collection(db,"public"),FB.where("nickLc","==",lc),FB.limit(1)));if(!q.empty&&q.docs[0].id!=user.uid){err.textContent=t("Цей нік зайнятий|This nickname is taken");return}}catch(e){}
- S.nick=v;save();await push();$("nickov").classList.add("hidden");route();
-}
+async function nickCheck(v){
+ if(!/^[\p{L}0-9_]{3,16}$/u.test(v))return t("3–16 символів: літери, цифри, _|3–16 chars: letters, digits, _");
+ if(isReal()){try{const q=await FB.getDocs(FB.query(FB.collection(db,"public"),FB.where("nickLc","==",v.toLowerCase()),FB.limit(1)));if(!q.empty&&q.docs[0].id!=user.uid)return t("Цей нік зайнятий|This nickname is taken")}catch(e){}}
+ return""}
+async function saveNick(){const v=$("nickIn").value.trim(),err=$("nickErr"),e=await nickCheck(v);if(e){err.textContent=e;return}S.nick=v;save();await push();$("nickov").classList.add("hidden");route()}
+async function changeNick(){const v=($("nickNew").value||"").trim(),box=$("nickMsg"),e=await nickCheck(v);if(e){box.textContent=e;return}if(v==S.nick)return;
+ S.nick=v;save();await push();toast(t("Нік змінено й збережено|Nickname changed and saved"));rProfile()}   // push() записує нік у users і public у Firebase
 function initAuth(){
  FB.setPersistence(auth,FB.browserLocalPersistence).catch(()=>{});
  FB.getRedirectResult(auth).catch(e=>{if(e&&e.code&&e.code!="auth/no-auth-event")alert(e.message)});
@@ -80,7 +85,7 @@ function initAuth(){
    try{await FB.setDoc(FB.doc(db,"users",u.uid),{regAt:FB.serverTimestamp()},{merge:true})}catch(e){}
    if(refId&&refId!=u.uid){S.mon+=500;try{await FB.setDoc(FB.doc(db,"referrals",u.uid),{by:refId,ts:FB.serverTimestamp()})}catch(e){}}
   }
-  await loadFriends();
+  await loadFriends();loadMasters(1);
   try{(await FB.getDocs(FB.query(FB.collection(db,"submissions"),FB.where("uid","==",u.uid)))).forEach(d=>{S.offers[d.data().offer]=d.data().status})}catch(e){}
   try{const o=[];(await FB.getDocs(FB.collection(db,"offers"))).forEach(d=>o.push({id:d.id,...d.data()}));if(o.length)OFFERS=o}catch(e){}
   save();if(S.nick){await push();logDay()}
@@ -126,6 +131,34 @@ async function rRating(){
 }
 function showPl(i){const u=PL[i];if(!u)return;const p=$("pc");p.innerHTML=`<div class="card rounded-3xl text-center space-y-2 w-full max-w-xs"><div class="w-24 h-24 mx-auto rounded-3xl overflow-hidden flex items-center justify-center text-6xl glow" style="border:2px solid #ffb703">${avHTML(u.av)}</div><div class="text-xl font-black">${esc(u.nick)}</div><div class="text-xs text-gray-300">#${i+1} · Lv ${lvl(u.xp)} · ${fmt(u.xp)} XP</div><div class="text-[11px] text-gray-400">${t("Днів у грі|Days played")}: ${u.days}</div></div>`;p.classList.replace("hidden","flex")}
 
+// ═══ МАЙСТРИ-СПОНСОРИ: список для всіх гравців; гравець обирає, у кого робитиме тату — усі знижки й купони йдуть саме цьому майстру ═══
+let MS=[],msT=0;
+async function loadMasters(force){if(!FBOK||!db)return;if(!force&&Date.now()-msT<60000)return;msT=Date.now();
+ try{const q=await FB.getDocs(FB.collection(db,"masters"));
+  MS=q.docs.map(d=>{const x=d.data();return{id:d.id,nm:x.name||"?",city:x.city||"",photo:x.photo||"",pu:x.paidUntil&&x.paidUntil.toMillis?x.paidUntil.toMillis():0}}).filter(m=>m.pu>Date.now());   // не оплатив — одразу зникає зі списку
+ }catch(e){}
+ if(cur=="rewards")rRewards()}
+const masterOf=id=>MS.find(m=>m.id==id);
+function masterCard(){const cm=S.master&&masterOf(S.master.id),can=!S.master||!cm||Date.now()-(S.masterAt||0)>CFG.masterSwitchDays*864e5;
+ return `<div class="card space-y-2"><h3 class="font-black text-sm">🥷 ${t("Мій майстер|My tattoo master")}</h3>
+ ${cm?`<div class="flex items-center gap-3"><div class="w-12 h-12 rounded-xl overflow-hidden bg-inkDark flex items-center justify-center text-2xl">${cm.photo?`<img src="${esc(cm.photo)}" class="w-full h-full object-cover">`:"🥷"}</div><div class="flex-1"><b>${esc(cm.nm)}</b><div class="text-[11px] text-gray-400">${esc(cm.city)}</div></div></div>`:S.master?`<div class="text-xs text-crimsonRed">${t("Твій майстер зараз недоступний — обери нового. Купони колишнього майстра чекатимуть на нього.|Your master is unavailable — pick a new one. Coupons from the old master wait for him.")}</div>`:`<div class="text-xs text-gray-300">${t("Обери майстра, у якого хочеш зробити тату: усі знижки й купони з сундуків діятимуть саме в нього. Без майстра знижки з сундуків не випадають.|Pick the master you want your tattoo from: all discounts and chest coupons apply to him. Without a master, discounts do not drop.")}</div>`}
+ ${can?"":`<div class="text-[10px] text-gray-500">${t("Змінити майстра можна раз на|You can change master once every")} ${CFG.masterSwitchDays} ${t("днів|days")}</div>`}
+ <button onclick="masterList()" ${can?"":"disabled"} class="btng w-full py-2.5">${cm?t("Змінити майстра|Change master"):t("Обрати майстра|Choose master")}</button></div>`}
+async function masterList(){
+ if(!isReal()){alert(t("Щоб обрати майстра, увійди через Google/Apple.|Sign in with Google/Apple to choose a master."));return}
+ await loadMasters(1);const p=$("pc");
+ p.innerHTML=`<div class="card rounded-3xl w-full max-w-sm max-h-[80vh] overflow-y-auto space-y-2" onclick="event.stopPropagation()"><h3 class="font-black">${t("Майстри-партнери|Partner masters")}</h3>`+
+ (MS.length?MS.map(m=>`<button onclick="pickMaster('${esc(m.id)}')" class="card !p-3 w-full flex items-center gap-3 text-left"><div class="w-11 h-11 rounded-xl overflow-hidden bg-inkDark flex items-center justify-center text-xl shrink-0">${m.photo?`<img src="${esc(m.photo)}" class="w-full h-full object-cover">`:"🥷"}</div><div class="flex-1 min-w-0"><b class="text-sm block truncate">${esc(m.nm)}</b><div class="text-[11px] text-gray-400">${esc(m.city)}</div></div><span class="btn">${t("Обрати|Choose")}</span></button>`).join(""):`<p class="text-xs text-gray-400">${t("Поки немає активних майстрів.|No active masters yet.")}</p>`)+
+ `<button class="btn w-full !bg-inkDark border border-inkBorder" onclick="$('pc').classList.replace('flex','hidden')">${t("Закрити|Close")}</button></div>`;p.classList.replace("hidden","flex")}
+async function pickMaster(id){
+ const m=masterOf(id);if(!m||!isReal())return;
+ if(S.master&&S.master.id==id){$("pc").classList.replace("flex","hidden");return}
+ const cm=S.master&&masterOf(S.master.id);
+ if(cm&&Date.now()-(S.masterAt||0)<CFG.masterSwitchDays*864e5){toast(t("Майстра можна міняти раз на 30 днів|You can change master once per 30 days"));return}
+ S.master={id:m.id,nm:m.nm,city:m.city};S.masterAt=Date.now();save();push();
+ try{await FB.setDoc(FB.doc(db,"clients",m.id+"_"+user.uid),{uid:user.uid,master:m.id,nick:S.nick,ts:FB.serverTimestamp()})}catch(e){}   // сервер надішле майстру повідомлення
+ $("pc").classList.replace("flex","hidden");toast(t("Майстра обрано: |Master chosen: ")+m.nm);rRewards()}
+
 // ═══ НАГОРОДИ: складніші умови. Дні беруться з СЕРВЕРНОГО логу (SD), а не з телефона ═══
 let SD=0,SDt=0;
 async function loadSD(){if(!isReal()||Date.now()-SDt<60000)return;SDt=Date.now();
@@ -139,30 +172,36 @@ const need=k=>{
   d20:[[...F,2],[...D,6],[...C,3e7],[...X,60000],[...B,5]],
   d30:[[...F,3],[...D,9],[...C,8e7],[...X,150000],[...B,12],[...T,2]],
   d40:[[...F,4],[...D,12],[...C,2e8],[...X,300000],[...B,25],[...T,4]],
-  mini:[[...F,2],[...D,20],[...C,1e9],[...X,600000],[...B,40],[...T,4],[...K,12]],
-  big:[[...F,6],[...D,45],[...C,1e10],[...X,2500000],[...B,100],[...T,8],[...K,30],[...G2,25],[...A,40]]
+  mini:[[...F,3],[...D,30],[...C,1.5e9],[...X,900000],[...B,60],[...T,6],[...K,15]],
+  big:[[...F,8],[...D,60],[...C,1.2e10],[...X,4000000],[...B,150],[...T,10],[...K,40],[...G2,35],[...A,60]]
  }[k];
 };
-const NAMES={d10:"🏷 Знижка 10% на тату|🏷 10% tattoo discount",d20:"🏷 Знижка 20%|🏷 20% discount",d30:"🏷 Знижка 30%|🏷 30% discount",d40:"🏷 Знижка 40%|🏷 40% discount",mini:"🎁 Міні-тату (до 1500 грн)|🎁 Mini tattoo (up to 1500 UAH)",big:"👑 Велике тату (7000 грн)|👑 Big tattoo (7000 UAH)"};
+const NAMES={d10:"🏷 Знижка 10% на тату|🏷 10% tattoo discount",d20:"🏷 Знижка 20%|🏷 20% discount",d30:"🏷 Знижка 30%|🏷 30% discount",d40:"🏷 Знижка 40%|🏷 40% discount",mini:"🎁 Міні-тату (до 1500 грн) · 1 раз|🎁 Mini tattoo (up to 1500 UAH) · once",big:"👑 Велике тату (7000 грн) · лише 1 раз|👑 Big tattoo (7000 UAH) · only once"};
 const rows=r=>r.map(x=>`<div><div class="flex justify-between text-[11px]"><span class="text-gray-300">${t(x[0])}</span><span class="font-mono ${x[1]>=x[2]?"text-emerald-400":"text-neonGold"}">${fmt(Math.min(x[1],x[2]))}/${fmt(x[2])}</span></div><div class="h-1.5 bg-inkDark rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-neonGold to-crimsonRed" style="width:${Math.min(100,x[1]/x[2]*100)}%"></div></div></div>`).join("");
 async function claim(id,code){
- if(code?S.cp.find(c=>c.code==code&&c.used):S.claimed.includes(id))return;
+ const cp=code?S.cp.find(c=>c.code==code):null;
+ if(cp?cp.used:S.claimed.includes(id))return;
  if(!isReal()){alert(t("Щоб подати заявку, увійди через Google/Apple.|Sign in with Google/Apple to claim."));authMode("reg");go("auth");return}
- try{await FB.addDoc(FB.collection(db,"claims"),{uid:user.uid,email:user.email||"",nick:S.nick,tier:id,code:code||"",xp:S.xp,tot:S.tot||0,days:S.days,serverDays:SD,streak:S.streak,friends:S.friends,tasks:tasksOk(),ads:S.ads,kills:S.kills,blades:S.blades.length,bgs:S.bgs.length,ts:FB.serverTimestamp()});
-  if(code){S.cp.find(c=>c.code==code).used=1}else S.claimed.push(id);save();rend();alert(t("Заявку надіслано в студію YYOKAI! Ми перевіримо умови й напишемо тобі.|Request sent to YYOKAI studio! We'll verify and contact you."))}catch(e){alert(e.message)}
+ const mid=cp?(cp.m||(S.master&&S.master.id)):(S.master&&S.master.id),m=mid&&masterOf(mid);
+ if(!m){alert(t("Обери майстра зі списку активних партнерів (вкладка «Нагороди»).|Pick a master from the active partners list (Rewards tab)."));return}
+ const ty=cp?cp.type:id,tat=ty=="mini"||ty=="big"||ty.startsWith("tat"),ym=today().slice(0,7);
+ const docId=user.uid+"_"+(ty=="big"?"tat_big":ty=="mini"?"tat_mini":ty.startsWith("tat")?"tat_coupon":"disc_"+ym);   // знижка — 1 на місяць, тату — 1 раз
+ try{await FB.setDoc(FB.doc(db,"claims",docId),{uid:user.uid,master:m.id,masterName:m.nm,email:user.email||"",nick:S.nick,tier:id,code:code||"",kind:tat?"tattoo":"discount",xp:S.xp,tot:S.tot||0,days:S.days,serverDays:SD,streak:S.streak,friends:S.friends,tasks:tasksOk(),ads:S.ads,kills:S.kills,blades:S.blades.length,bgs:S.bgs.length,ts:FB.serverTimestamp(),status:"new"});
+  if(cp)cp.used=1;else S.claimed.push(id);save();rend();alert(t("Заявку надіслано майстру «|Request sent to master “")+m.nm+t("» і студії YYOKAI. Ми перевіримо умови й напишемо тобі.|” and YYOKAI studio. We will verify and contact you."))}
+ catch(e){alert(e.code=="permission-denied"?t("Така заявка вже подавалась (знижка — раз на місяць, кожне тату — раз у житті) або майстер більше не активний.|Such a claim was already sent (one discount per month, each tattoo once per lifetime) or the master is no longer active."):e.message)}
 }
 function rRewards(){
- loadSD();
+ loadSD();loadMasters(0);
  const card=id=>{const r=need(id),all=r.every(x=>x[1]>=x[2]),cl=S.claimed.includes(id);return `<div class="card space-y-3"><h3 class="font-black text-sm">${t(NAMES[id])}</h3>${rows(r)}<button onclick="claim('${id}')" ${all&&!cl?"":"disabled"} class="btng w-full py-2.5 ${all&&!cl?"":"!from-gray-800 !to-gray-800 !text-gray-500"}">${cl?t("Заявку подано|Request sent"):all?t("Подати заявку|Claim"):t("Умови не виконано|Conditions not met")}</button></div>`};
  const cps=S.cp.filter(c=>!c.used);
- $("view-rewards").innerHTML=`<h2 class="text-xl font-black uppercase">${t("Нагороди студії YYOKAI|YYOKAI studio rewards")}</h2>
+ $("view-rewards").innerHTML=`<h2 class="text-xl font-black uppercase">${t("Нагороди студії YYOKAI|YYOKAI studio rewards")}</h2>${masterCard()}
  <div class="card text-xs text-gray-300 space-y-1"><b class="text-neonGold">${t("Як отримати нагороду|How to get a reward")}</b>
   <div>1️⃣ ${t("Грай у різні дні — лічильник днів іде з сервера, його не обдурити.|Play on different days — the day counter comes from the server.")}</div>
   <div>2️⃣ ${t("Запрошуй друзів: кожен, хто дійшов до 3-го рівня, зараховується.|Invite friends: each one reaching level 3 counts.")}</div>
   <div>3️⃣ ${t("Перемагай босів, збирай клинки й фони, виконуй завдання партнерів.|Beat bosses, collect blades & backgrounds, do partner tasks.")}</div>
   <div>4️⃣ ${t("Коли всі смужки заповнені — «Подати заявку». Студія перевіряє й домовляється про сеанс.|When all bars are full — “Claim”. The studio verifies and books your session.")}</div>
   <div class="text-gray-500">${t("Рахуються всі зароблені монети за весь час, а не поточний баланс. Купони із сундуків теж перевіряються.|All coins ever earned count, not your balance. Chest coupons are verified too.")}</div></div>`+
- (cps.length?`<h3 class="text-sm font-black uppercase">${t("Мої купони із сундуків|My chest coupons")}</h3>`+cps.map(c=>`<div class="card flex items-center justify-between"><div><b class="text-sm">${esc(c.lb)}</b><div class="text-[10px] text-gray-400">#${esc(c.code)}</div></div><button class="btng" onclick="claim('${esc(c.type)}','${esc(c.code)}')">${t("Забрати|Claim")}</button></div>`).join(""):"")+
+ (cps.length?`<h3 class="text-sm font-black uppercase">${t("Мої купони із сундуків|My chest coupons")}</h3>`+cps.map(c=>{const mm=masterOf(c.m||(S.master&&S.master.id)),ok=!!mm;return `<div class="card flex items-center justify-between gap-2"><div><b class="text-sm">${esc(c.lb)}</b><div class="text-[10px] text-gray-400">#${esc(c.code)} · ${esc(c.mn||(mm?mm.nm:"—"))}${ok?"":" · ⛔"}</div></div><button class="btng shrink-0" ${ok?"":"disabled"} onclick="claim('${esc(c.type)}','${esc(c.code)}')">${t("Забрати|Claim")}</button></div>`}).join(""):"")+
  ["d10","d20","d30","d40","mini","big"].map(card).join("");
 }
 
@@ -170,6 +209,8 @@ function rRewards(){
 function rProfile(){
  $("view-profile").innerHTML=`
  <div class="card flex items-center gap-4"><div class="w-16 h-16 rounded-2xl overflow-hidden flex items-center justify-center text-4xl" style="border:2px solid #ffb703">${avHTML(S.av)}</div><div><h3 class="font-bold text-sm">${esc(S.nick||t("Гість|Guest"))}</h3><span class="inline-block mt-1 px-2 py-0.5 bg-crimsonRed/20 border border-crimsonRed/40 text-crimsonRed text-[10px] font-bold rounded-full">Lv ${lvl(S.xp)} · ${fmt(S.xp)} XP</span></div></div>
+ <div class="card space-y-2"><h4 class="text-xs font-bold text-neonGold uppercase">${t("Мій нік|My nickname")}</h4><div class="flex gap-2"><input id="nickNew" maxlength="16" value="${esc(S.nick||"")}" class="inp !py-2.5"><button onclick="changeNick()" class="btn">${t("Змінити|Change")}</button></div><div id="nickMsg" class="text-xs text-crimsonRed min-h-[14px]"></div></div>
+ <button onclick="enablePush()" class="w-full py-3 rounded-xl bg-neonGold/10 border border-neonGold/40 text-neonGold font-bold text-sm">${S.fcm?t("🔔 Сповіщення увімкнено (оновити)|🔔 Notifications on (refresh)"):t("🔔 Увімкнути сповіщення|🔔 Enable notifications")}</button>
  ${avPicker()}
  <div class="card text-xs text-gray-300 grid grid-cols-2 gap-1"><div>${t("Раундів|Rounds")}: <b>${S.rounds}</b></div><div>${t("Босів|Bosses")}: <b>${S.kills}</b></div><div>${t("Днів|Days")}: <b>${S.days}</b></div><div>${t("Серія підряд|Streak")}: <b>${S.streak}</b></div></div>
  <div class="card space-y-1"><h4 class="text-xs font-bold text-neonGold uppercase">🔊 ${t("Перевірка звуків і файлів|Sound & file check")}</h4>${sndStat()}</div>
@@ -183,7 +224,7 @@ async function adminOpen(){const pw=prompt(t("Пароль адміна|Admin pa
 function rAdmin(){
  if(!adminOK){go("profile");return}
  $("view-admin").innerHTML=`<div class="flex justify-between"><h2 class="text-xl font-black uppercase text-crimsonRed">Admin</h2><button onclick="adminOK=false;go('profile')" class="text-xs text-gray-400">✕</button></div>
- <div class="card space-y-2"><div class="flex gap-2"><input id="admQ" class="inp !py-2.5" placeholder="${t("Нік гравця (початок)|Player nick (prefix)")}"><button class="btn" onclick="admSearch()">🔍</button></div><button class="btn w-full !bg-inkDark border border-inkBorder" onclick="admClaims()">${t("Останні заявки|Latest claims")}</button></div><div id="admRes" class="space-y-2"></div>`;
+ <div class="card space-y-2"><div class="flex gap-2"><input id="admQ" class="inp !py-2.5" placeholder="${t("Нік гравця (початок)|Player nick (prefix)")}"><button class="btn" onclick="admSearch()">🔍</button></div><button class="btn w-full !bg-inkDark border border-inkBorder" onclick="admClaims()">${t("Останні заявки|Latest claims")}</button><button class="btn w-full !bg-inkDark border border-inkBorder" onclick="admMasters()">🥷 ${t("Майстри-спонсори|Sponsor masters")}</button></div><div id="admRes" class="space-y-2"></div>`;
 }
 async function admSearch(){
  const q=$("admQ").value.trim().toLowerCase(),box=$("admRes");if(!q)return;box.innerHTML="…";
@@ -220,3 +261,20 @@ async function admClaims(){
   box.innerHTML=s.empty?`<div class="text-xs text-gray-500">—</div>`:s.docs.map(d=>{const c=d.data();return `<div class="card !p-3 text-xs space-y-0.5"><b>${esc(c.nick||"?")}</b> → <span class="text-neonGold">${esc(c.tier)}</span> ${c.code?"#"+esc(c.code):""}<div class="text-[10px] text-gray-400">XP ${fmt(c.xp||0)} · ${t("дні сервер|server days")} ${c.serverDays??"—"} (${t("в додатку|app")} ${c.days}) · ${t("серія|streak")} ${c.streak} · ${t("друзів|friends")} ${c.friends} · ${t("завдань|tasks")} ${c.tasks} · ${t("босів|bosses")} ${c.kills||0} · ${t("клинків|blades")} ${c.blades||0} · ${t("реклам|ads")} ${c.ads} · ${dstr(c.ts)}</div></div>`}).join("")}
  catch(e){box.innerHTML=`<div class="text-xs text-crimsonRed">${esc(e.message)}</div>`}
 }
+
+// ═══ АДМІНКА: майстри (оплата = paidUntil). Неоплачений майстер миттєво зникає зі списку гравців ═══
+async function admMasters(){const box=$("admRes");box.innerHTML="…";
+ try{const q=await FB.getDocs(FB.collection(db,"masters"));
+  box.innerHTML=`<div class="card space-y-2"><b class="text-xs">${t("Новий майстер|New master")}</b><input id="mN" class="inp !py-2" placeholder="Ім'я / студія"><input id="mC" class="inp !py-2" placeholder="Місто"><input id="mT" class="inp !py-2" placeholder="Telegram chat id (для сповіщень майстру)"><input id="mP" class="inp !py-2" placeholder="URL фото (необов'язково)"><button class="btn w-full" onclick="admAddMaster()">+ ${t("Додати на 30 днів|Add for 30 days")}</button></div>`+
+  q.docs.map(d=>{const x=d.data(),pu=x.paidUntil&&x.paidUntil.toMillis?x.paidUntil.toMillis():0,on=pu>Date.now();
+   return `<div class="card !p-3 text-xs space-y-2"><div><b>${esc(x.name||"?")}</b> · ${esc(x.city||"")} <span class="${on?"text-emerald-400":"text-crimsonRed"}">${on?"✅ "+t("до|until")+" "+new Date(pu).toLocaleDateString():"⛔ "+t("не оплачено|unpaid")}</span></div><div class="flex gap-2 flex-wrap"><button class="btn" onclick="admMasterPay('${esc(d.id)}',30)">+30 ${t("днів|days")}</button><button class="btn !bg-red-700" onclick="admMasterPay('${esc(d.id)}',0)">${t("Вимкнути|Disable")}</button><button class="btn !bg-inkDark border border-inkBorder" onclick="admClients('${esc(d.id)}')">${t("Клієнти|Clients")}</button></div></div>`}).join("")}
+ catch(e){box.innerHTML=`<div class="text-xs text-crimsonRed">${esc(e.message)}</div>`}}
+async function admAddMaster(){const v=i=>($(i).value||"").trim();if(!v("mN"))return;
+ try{await FB.addDoc(FB.collection(db,"masters"),{name:v("mN"),city:v("mC"),tg:v("mT"),photo:v("mP"),paidUntil:FB.Timestamp.fromMillis(Date.now()+30*864e5)});admMasters()}catch(e){alert(e.message)}}
+async function admMasterPay(id,days){
+ try{const ref=FB.doc(db,"masters",id),r=await FB.getDoc(ref),cur=r.data().paidUntil&&r.data().paidUntil.toMillis?r.data().paidUntil.toMillis():0;
+  await FB.updateDoc(ref,{paidUntil:FB.Timestamp.fromMillis(days?Math.max(cur,Date.now())+days*864e5:Date.now()-1000)});admMasters()}catch(e){alert(e.message)}}
+async function admClients(id){const box=$("admRes");box.innerHTML="…";
+ try{const q=await FB.getDocs(FB.query(FB.collection(db,"clients"),FB.where("master","==",id),FB.limit(100)));
+  box.innerHTML=`<button class="btn w-full" onclick="admMasters()">← ${t("Назад|Back")}</button>`+(q.empty?`<div class="text-xs text-gray-500">—</div>`:q.docs.map(d=>d.data()).sort((a,b)=>(b.ts&&b.ts.seconds||0)-(a.ts&&a.ts.seconds||0)).map(c=>`<div class="card !p-3 text-xs"><b>${esc(c.nick||"?")}</b> <span class="text-gray-400">${dstr(c.ts)}</span></div>`).join(""))}
+ catch(e){box.innerHTML=`<div class="text-xs text-crimsonRed">${esc(e.message)}</div>`}}
