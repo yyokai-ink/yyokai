@@ -3,10 +3,14 @@
 // ═══ 0. НАЛАШТУВАННЯ 🔧 ═══
 const firebaseConfig={apiKey:"PASTE_API_KEY",authDomain:"PASTE_PROJECT_ID.firebaseapp.com",projectId:"PASTE_PROJECT_ID",storageBucket:"PASTE_PROJECT_ID.appspot.com",messagingSenderId:"PASTE_SENDER_ID",appId:"PASTE_APP_ID"};
 const CFG={
- hero:{name:"ТВОЄ ІМ'Я",quote:"Кожна лінія — це історія. Кожен ёкай — частина мене.|Every line tells a story. Every yokai is a part of me."},
+ hero:{name:"INKAI",quote:"Кожна лінія — це історія. Кожен йокай — частина мене.|Every line tells a story. Every yokai is a part of me."},
  promo:{text:"Підпишись на Instagram YYOKAI|Follow YYOKAI on Instagram",url:"https://instagram.com/yyokai.tattoo"},
  adEvery:3,offerReward:1000,offlineBaseMin:120,adminHash:"__HASH__",
  adw:{max:3,gap:600000},
+ vapidKey:"PASTE_VAPID_KEY",   // Firebase → Project settings → Cloud Messaging → Web push certificates
+ shogun:{day:6,from:20,to:23},   // «Ніч Сьогуна»: субота 20:00–23:00 за часом гравця, монети ×2
+ masterSwitchDays:30,           // як часто можна міняти майстра
+
  vol:{menu:.4,battle:.15}   // гучність музики: меню 40%, у грі 15% (щоб не перебивала звук розрізу)   // стрілка-реклама: 3 рази на день, пауза 10 хв
 };
 
@@ -28,7 +32,7 @@ const icoH=(n,h,c)=>`<img src="img/ico/${n}.png" data-h="${h.replace(/"/g,"&quot
 /* ── УНІВЕРСАЛЬНА ЗАМІНА ЕМОДЗІ НА PNG ──
    Поклади img/emoji/<код>.png (код = кодпоінт у hex, напр. 🎁 → 1f381.png, ⛩️ → 26e9.png). Гра сама знайде файл і замінить цей емодзі
    в усіх текстах, кнопках, нагородах і на canvas. Список кодів, які є в грі, — EMALL нижче й у inkai-assets.md */
-const EMALL=["1f3ad","1f48e","1f3ee","1f381","26e9","1f3f7","1f98a","1f479","1f409","1f4dc","1f527","1f47a","1f438","1f4fa","26a1","2744","1f480","1f451","23f3","1f5e1","2694","2716","1f338","1f977","1f525","1f573","1f50a","1f465","1f4f2","1fa99","1f47b","1f517","1f32a","2705","1f4a4","1faa8","1f4b0","1f49a","1f9db","2728","2764","1f507","274c","1f1fa-1f1e6","1f431","1f308","1f319","1f30b","1f30c","1f432","1f3ef","1f98c","1f3f0","1f4a5","1f6e1","1f300","1f3c6","1f3af","1f570","1f680","23ed","23f1","1f5bc","1f4c8","1f4e3","1f31f","1f54a","1fa9e","1f41d","1f388","1f9ec","1f343","1f98e","26a0","2600","2601","2604","2623","25b6","1f1ec-1f1e7","1f50d","1f4e7","1f5d3","1f7e2","1fa78","1f4a0","1f52e","2b50","1f327","1f32c","1f4c4","1f41f","1f3b5","1f47e","1f320","1f38b","1f5fb","1f30a","1f41a","1f35c","1f3b2","1f4e6","1f634","1f9ff","1f4ab","1f497","1f6ab","1f340","1f948","1f947","1f3fa","1f33e","26f0","1faad","1f375","1f38e","1f33a","1f38c","1f682","1f4fc","1fab7","1f303","1f916","1f985","1f39f","1f987"];
+const EMALL=["1f3ad","1f3ee","1f48e","1f381","26e9","1f98a","1f479","1f409","1f977","1f3f7","1f47a","1f438","1f4dc","2744","1f527","1f480","1f4fa","26a1","1f514","1f451","23f3","2694","2716","1f338","1f525","1f573","1f319","2705","1f50a","1f465","1f4f2","1fa99","1f47b","1f517","1f32a","1f5e1","1f49a","1f4a4","1faa8","1f4b0","1f9db","2600","2728","2764","1f507","274c","1f1fa-1f1e6","1f431","26d4","1f308","1f30b","1f30c","1f432","1f3ef","1f98c","1f3f0","1f4a5","1f6e1","1f300","1f3c6","1f3af","1f570","1f680","23ed","23f1","1f5bc","1f4c8","1f4e3","1f31f","1f54a","1fa9e","1f41d","1f388","1f9ec","1f343","1f98e","26a0","2601","2604","2623","2668","25b6","1f1ec-1f1e7","1f50d","1f4e7","1f5d3","1f7e2","1fa78","1f4a0","1f52e","2b50","1f327","1f32c","1f4c4","1f41f","1f3b5","1f47e","1f320","1f38b","1f5fb","1f30a","1f41a","1f35c","1f3b2","1f4e6","1f634","1f9ff","1f4ab","1f497","1f6ab","1f340","1f948","1f947","1f3fa","1f33e","26f0","1faad","1f375","1f38e","1f33a","1f38c","1f682","1f4fc","1fab7","1f303","1f916","1f985","1f39f","1f987"];
 let EMJ=new Set();const EIM={};
 const EMRX=/(?:\p{Regional_Indicator}{2}|\p{Extended_Pictographic}(?:\uFE0F|\p{Emoji_Modifier})?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F|\p{Emoji_Modifier})?)*)/gu;
 const emCode=s=>[...s].map(c=>c.codePointAt(0).toString(16)).filter(h=>h!="fe0f").join("-");
@@ -74,7 +78,7 @@ const def={
  c:{x2:0,x3:0,plus:0,fz:0,chg:0,br:0,mb:0,sl0:0,bh0:0,shd:0,st:0,cmb:0,bos:0,wide:0,slw:0,lx:0,sx:0,m10:0,m30:0,mx5:0,hrt:0,fz15:0,nsc:0,bhf:0,sc2:0,lck:0},
  ck:{s:0,sn:0,sd:"",g:0,d:0},bp:{},bpd:"",
  adw:{n:0,d:"",t:0},                        // стрілка-реклама
- avs:[],tot:0,lm:0,bossWins:0,                       // для складніших умов тату (див. social.js)
+ avs:[],tot:0,lm:0,master:null,masterAt:0,tatGot:0,pt:0,wk:"",pw:[0,0],fcm:"",bossWins:0,                       // для складніших умов тату (див. social.js)
  cp:[],claimed:[],friends:0,offers:{}
 };
 let S={...def,...JSON.parse(localStorage.ink_s5||"{}")};S.c={...def.c,...S.c};S.ck={...def.ck,...S.ck};S.adw={...def.adw,...S.adw};S.bp=S.bp||{};
@@ -85,6 +89,18 @@ const isReal=()=>FBOK&&user&&user.uid!="local_guest";
 const lvl=x=>1+Math.floor(Math.sqrt(x/300));
 const U=k=>S.up[k]||0;
 const playing=()=>typeof G!="undefined"&&G.on;
+const shogunNight=()=>{const d=new Date(),h=d.getHours(),z=CFG.shogun;return d.getDay()==z.day&&h>=z.from&&h<z.to};
+function addPlay(sec){if(!(sec>0))return;const d=new Date(),j=new Date(d.getFullYear(),0,1),w=d.getFullYear()+"-"+Math.ceil(((d-j)/864e5+j.getDay()+1)/7);   // час у грі: усього й по тижнях (для пушів «ми сумуємо»)
+ if(S.wk!==w){S.pw=[0,S.wk?S.pw[0]:0];S.wk=w}S.pt=(S.pt||0)+sec;S.pw[0]+=sec}
+async function enablePush(){
+ if(!isReal()){toast(t("Спершу увійди через Google/Apple|Sign in with Google/Apple first"));return}
+ if(!("Notification" in window)||!("serviceWorker" in navigator)){toast(t("Цей браузер не підтримує сповіщення (на iPhone спершу встанови гру на екран)|This browser has no notifications (on iPhone install the game first)"));return}
+ try{const p=await Notification.requestPermission();if(p!="granted"){toast(t("Сповіщення вимкнені в налаштуваннях браузера|Notifications are blocked in browser settings"));return}
+  const M=await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js"),reg=await navigator.serviceWorker.register("firebase-messaging-sw.js");
+  S.fcm=await M.getToken(M.getMessaging(app),{vapidKey:CFG.vapidKey,serviceWorkerRegistration:reg});save();push();toast(t("🔔 Сповіщення увімкнено|🔔 Notifications enabled"));if(cur=="profile")rProfile()}
+ catch(e){alert(e.message)}}
+let KATL=new Set();      // номери катан, для яких є свій PNG (img/katana/<номер>.png); список — у data/katana.json
+async function loadKat(){try{const r=await fetch("data/katana.json?v="+Date.now());if(r.ok){const j=await r.json();if(Array.isArray(j))KATL=new Set(j.map(Number))}}catch(e){}}
 function sync(){if(S.mon>(S.lm||0))S.tot=(S.tot||0)+S.mon-(S.lm||0);S.lm=S.mon}   // «усього зароблено монет» для умов тату
 function save(){sync();localStorage.ink_s5=JSON.stringify(S)}
 (function newDay(){const d=today();if(S.last!==d){const y=new Date(Date.now()-864e5).toISOString().slice(0,10);S.streak=S.last===y?S.streak+1:1;S.best=Math.max(S.best,S.streak);S.days++;S.last=d}if(S.bpd!==d){S.bpd=d;S.bp={}}})();
@@ -153,7 +169,7 @@ function splash(){
  const iv=setInterval(()=>{
   const el=performance.now()-t0,real=loaded/imgs.length*.8+(authOk?.2:0),sh=Math.min(1,real,el/6000);
   $("spBar").style.width=Math.max(8,sh*100)+"%";$("spV").style.height=sh*100+"%";$("spPct").textContent=Math.round(sh*100)+"%";
-  $("spTxt").textContent=sh>=1?t("Готово|Ready"):sh<.4?t("Малюємо ёкаїв…|Drawing yokai…"):sh<.8?t("Куємо клинки…|Forging blades…"):t("Відкриваємо врата…|Opening the gate…");
+  $("spTxt").textContent=sh>=1?t("Готово|Ready"):sh<.4?t("Малюємо йокаїв…|Drawing yokai…"):sh<.8?t("Куємо клинки…|Forging blades…"):t("Відкриваємо врата…|Opening the gate…");
   if(sh>=1||el>9000){clearInterval(iv);
    setTimeout(()=>{$("splash").style.opacity=0;setTimeout(()=>{$("splash").remove();splashDone=true;route();adTick()},700)},250);   // 6 с — і одразу на реєстрацію
   }
@@ -189,7 +205,7 @@ function offline(){const cap=(CFG.offlineBaseMin+15*U("off"))*60,away=Math.min((
 function boot(){
  mkAmb($("ambA"),10);mkAdw();
  document.querySelectorAll(".inst").forEach(b=>{b.onclick=install;if(matchMedia("(display-mode: standalone)").matches)b.style.display="none"});
- tr();$("iCoin").innerHTML=ico("coin","文");$("iSoul").innerHTML=ico("soul","⛩️");$("iJade").innerHTML=ico("jade","💎");$("iLan").innerHTML=ico("lantern","🏮");loadAv().then(()=>rend());$("musBtn").textContent=music?"🔊":"🔇";hdr();offline();splash();fbInit();
+ tr();$("iCoin").innerHTML=ico("coin","文");$("iSoul").innerHTML=ico("soul","⛩️");$("iJade").innerHTML=ico("jade","💎");$("iLan").innerHTML=ico("lantern","🏮");loadAv().then(()=>rend());loadKat().then(()=>rend());$("musBtn").textContent=music?"🔊":"🔇";hdr();offline();splash();fbInit();
  startEmoji();navIcons();
  const show=()=>document.body.classList.add("rd");(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>requestAnimationFrame(()=>requestAnimationFrame(show)));setTimeout(show,1500);   // м'яке з'явлення без смикання
 setInterval(adTick,1000);
