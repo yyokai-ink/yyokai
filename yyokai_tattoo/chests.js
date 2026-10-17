@@ -31,23 +31,25 @@ const RAR=["#6b7280","#3b82f6","#a855f7","#ffb703","#ff2a5f"];
 const IMG=(s,e,c)=>`<img src="${s}" data-e="${e}" onerror="this.outerHTML=this.dataset.e" class="${c}">`;
 
 function rollGear(p,key){      // клинок, фон або аватар; ексклюзиви — лише зі свого сундука
- if(key&&R()<.3){const ex=[...BL.filter(b=>b.ex==key&&!S.blades.includes(b.i)).map(x=>({ty:"bl",i:x.i,ic:"🗡",lb:bname(x),r:x.r})),...BG.filter(g=>g.ex==key&&!S.bgs.includes(g.i)).map(x=>({ty:"bg",i:x.i,ic:x.ic,lb:t(x.nm),r:x.r}))];if(ex.length)return ex[R()*ex.length|0]}
+ if(key&&R()<.3){const ex=[...BL.filter(b=>b.ex==key&&!S.blades.includes(b.i)).map(x=>({ty:"bl",i:x.i,ic:katI(x),lb:bname(x),r:x.r})),...BG.filter(g=>g.ex==key&&!S.bgs.includes(g.i)).map(x=>({ty:"bg",i:x.i,ic:x.ic,lb:t(x.nm),r:x.r}))];if(ex.length)return ex[R()*ex.length|0]}
  let r=wp(RW[p]);
  for(;r>=0;r--){const cats=[0,1,2].sort(()=>R()-.5);
   for(const c of cats){
    if(c==2){const pl=AV.filter(a=>a.r==r&&a.src!="free"&&!ownAv(a.id));if(pl.length){const x=pl[R()*pl.length|0];return{ty:"av",id:x.id,ic:`<span class="inline-block w-16 h-16 rounded-2xl overflow-hidden align-middle">${avHTML(x.id)}</span>`,lb:t(x.nm),r:x.r}}continue}
    const pool=c?BG.filter(g=>g.r==r&&!g.ex&&!S.bgs.includes(g.i)):BL.filter(b=>b.r==r&&!b.ex&&!S.blades.includes(b.i));
-   if(pool.length){const x=pool[R()*pool.length|0];return c?{ty:"bg",i:x.i,ic:x.ic,lb:t(x.nm),r:x.r}:{ty:"bl",i:x.i,ic:"🗡",lb:bname(x),r:x.r}}}}
+   if(pool.length){const x=pool[R()*pool.length|0];return c?{ty:"bg",i:x.i,ic:x.ic,lb:t(x.nm),r:x.r}:{ty:"bl",i:x.i,ic:katI(x),lb:bname(x),r:x.r}}}}
  return null}
 function rollItem(p,key){
  const exb=key?BS.filter(b=>b[6]==key):[];if(exb.length&&R()<.12){const b=exb[0];return{ty:"u",id:b[0],ic:b[1],lb:t(b[2]).split(":")[0].slice(0,28),r:4}}
- const ty=wp(LOOT[p]),sc=1+S.blade*.05;
+ let ty=wp(LOOT[p]);const sc=1+S.blade*.05;
+ if((ty==5||ty==6)&&!S.master)ty=0;          // знижки прив'язані до майстра
+ if(ty==6&&S.tatGot)ty=0;                       // тату-купон із сундука — лише один за весь час
  if(ty==1){const pl=BS.filter(b=>!b[5]&&!b[6]&&b[0]!="chg"),b=pl[R()*pl.length|0];return{ty:"u",id:b[0],ic:b[1],lb:t(b[2]).split(":")[0].slice(0,24),r:p>3?2:1}}
  if(ty==2)return{ty:"s",a:rr(...SR[p]),ic:"⛩️",r:2}
  if(ty==3)return{ty:"l",a:rr(...LR[p]),ic:"🏮",r:2}
  if(ty==4)return{ty:"j",a:rr(...JR[p]),ic:"💎",r:3}
  if(ty==5){const v=DISC[p][R()*DISC[p].length|0];return{ty:"d",v,ic:"🏷",lb:t("Знижка|Discount")+" "+v+"%",r:v>=30?4:3}}
- if(ty==6){const big=R()<.15;return{ty:"t",v:big?"tat2":"tat1",ic:"🎟",lb:big?t("Тату до 3500 грн|Tattoo up to 3500 UAH"):t("Міні-тату до 1500 грн|Mini tattoo up to 1500 UAH"),r:4}}
+ if(ty==6)return{ty:"t",v:"tat1",ic:"🎟",lb:t("Міні-тату до 1500 грн|Mini tattoo up to 1500 UAH"),r:4}
  if(ty==7){const g=rollGear(p,key);if(g)return g}
  return{ty:"c",a:Math.round(CB[p]*(.6+R()*.8)*sc*(1+.03*U("chest"))),ic:"🪙",r:[0,1,2,1,2,3][p]}
 }
@@ -56,7 +58,7 @@ function apply(it){
  if(it.ty=="c")S.mon+=it.a;else if(it.ty=="u")S.c[it.id]=(S.c[it.id]||0)+BS.find(b=>b[0]==it.id)[4];
  else if(it.ty=="bl"){if(!S.blades.includes(it.i))S.blades.push(it.i)}else if(it.ty=="bg"){if(!S.bgs.includes(it.i))S.bgs.push(it.i)}
  else if(it.ty=="av"){if(!S.avs.includes(it.id))S.avs.push(it.id)}else if(it.ty=="s")S.souls+=it.a;else if(it.ty=="l")S.ln+=it.a;else if(it.ty=="j")S.jd+=it.a;
- else S.cp.push({code:Date.now().toString(36)+R().toString(36).slice(2,6),type:it.ty=="d"?"d"+it.v:it.v,lb:it.lb,used:0});
+ else{if(it.ty=="t")S.tatGot=1;S.cp.push({code:Date.now().toString(36)+R().toString(36).slice(2,6),type:it.ty=="d"?"d"+it.v:it.v,lb:it.lb+(S.master?" · "+S.master.nm:""),m:S.master?S.master.id:"",mn:S.master?S.master.nm:"",used:0})}
  save();push();
 }
 
@@ -86,16 +88,31 @@ function openChest(k,skip){
 function openEpoch(i){if(opening)return;sync();const e=EC[i];if(S[e[3]]<e[4])return;S[e[3]]-=e[4];save();runChest([e[0],e[1],e[2],0,e[5]],e[6],"img/chest/e_"+e[0]+".png")}
 let afterRev=null;
 function bonus(){G.res.bc=0;$("res").classList.replace("flex","hidden");afterRev=showRes;runChest(["bonus","🎁","Сундук-знахідка|Found chest",0,"#ffb703"],R()<.25?2:1,"img/chest/bonus.png")}
+function fxShoot(par,n,cols){for(let i=0;i<n;i++){const e=document.createElement("span"),a=R()*6.283,d=90+R()*190,z=7+R()*12;
+ e.style.cssText=`position:absolute;left:50%;top:50%;width:${z}px;height:${z}px;margin:-${z/2}px;border-radius:${R()<.5?"50%":"2px"};background:radial-gradient(circle,${cols[R()*cols.length|0]},transparent 75%);--dx:${Math.cos(a)*d}px;--ux:${Math.cos(a)*d*.6}px;--uy:${Math.sin(a)*d*.6-60-R()*60}px;--dy:${Math.sin(a)*d+160+R()*80}px;--rt:${(R()-.5)*720}deg;animation:shoot ${1.1+R()*.8}s ${R()*.15}s cubic-bezier(.2,.7,.4,1) forwards;pointer-events:none;opacity:0`;par.appendChild(e);setTimeout(()=>e.remove(),2400)}}
+function fxSplat(par,col,n){for(let i=0;i<n;i++){const e=document.createElement("span"),a=R()*6.283,d=70+R()*140,z=10+R()*26;     // бризки соку, як у Fruit Ninja
+ e.style.cssText=`position:absolute;left:50%;top:50%;width:${z}px;height:${z*(.7+R()*.5)}px;margin:-${z/2}px;border-radius:50% 40% 55% 45%;background:${R()<.7?col:"#fff"};--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d}px;animation:splatOut ${.7+R()*.6}s ease-out forwards;pointer-events:none;opacity:0`;par.appendChild(e);setTimeout(()=>e.remove(),1600)}}
 async function runChest(c,p,im){
  opening=1;hdr();
  const it=rollItem(p,c[0]),N=46,X=40,strip=[...Array(N)].map((_,i)=>i==X?it:rollItem(p,c[0])),ro=$("ro"),col=c[4];
- // фон плавно переходить у твоє фото: img/chest/open_bg.png
- ro.innerHTML=`<div id="robg" class="absolute inset-0" style="opacity:0;transition:opacity 1.8s ease;background:linear-gradient(180deg,rgba(5,4,10,.5),rgba(5,4,10,.78)),url(img/chest/bg_${c[0]}.png) center/cover no-repeat,url(img/chest/open_bg.png) center/cover no-repeat"></div><div id="rcont" class="relative w-full max-w-md flex justify-center"></div>`;
- $("rcont").innerHTML=`<div class="text-center space-y-3"><div class="relative mx-auto" style="width:210px;height:210px"><div style="position:absolute;inset:-40px;border-radius:50%;background:radial-gradient(circle,${col}88,${col}00 68%);filter:blur(10px);animation:pulse-glow 1.2s infinite"></div><div class="relative h-full flex items-center justify-center text-8xl shk" style="filter:drop-shadow(0 0 25px ${col})">${IMG(im,c[1],"h-44 w-auto")}</div></div><b class="text-neonGold tracking-[.3em] text-xs uppercase">${t("Відкриваємо…|Opening…")}</b></div>`;
+ // фон плавно переходить у твоє фото: img/chest/bg_<ключ>.png або спільне open_bg.png
+ ro.innerHTML=`<div id="robg" class="absolute inset-0" style="opacity:0;transition:opacity 1.8s ease;background:linear-gradient(180deg,rgba(5,4,10,.5),rgba(5,4,10,.78)),url(img/chest/bg_${c[0]}.png) center/cover no-repeat,url(img/chest/open_bg.png) center/cover no-repeat"></div><div id="rcont" class="relative w-full max-w-md h-full flex items-center justify-center overflow-hidden"></div>`;
+ const rc=$("rcont");
+ // 1) скриня гойдається дедалі сильніше, світло просочується крізь щілини
+ rc.innerHTML=`<div id="chw" class="relative" style="width:230px;height:230px"><div id="chh" style="position:absolute;inset:-60px;border-radius:50%;background:radial-gradient(circle,${col}aa,${col}00 66%);filter:blur(12px);opacity:.35;transition:opacity 1.4s,transform 1.4s"></div><div id="chi" class="relative h-full flex items-center justify-center text-8xl" style="animation:chestWob 1.5s ease-in forwards;filter:drop-shadow(0 8px 18px #000a) drop-shadow(0 0 22px ${col})">${IMG(im,c[1],"h-52 w-auto")}</div></div>`;
  ro.classList.replace("hidden","flex");
- requestAnimationFrame(()=>requestAnimationFrame(()=>{const b=$("robg");if(b)b.style.opacity=1}));
- for(let i=0;i<8;i++){tone(80+i*20,.12,"sine",.2);await sleep(130)}
- $("rcont").innerHTML=`<div class="w-full space-y-4"><h2 class="text-center font-black text-neonGold tracking-[.25em] uppercase text-sm">${c[1]} ${t(c[2])}</h2>
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{const b=$("robg"),h=$("chh");if(b)b.style.opacity=1;if(h){h.style.opacity=1;h.style.transform="scale(1.5)"}}));
+ for(let i=0;i<10;i++){tone(70+i*28,.12,"sine",.16+i*.012);navigator.vibrate&&navigator.vibrate(12+i*3);await sleep(150)}
+ // 2) ВИБУХ: спалах, ударні кільця, промінь, діагональний «розріз» блиском, конфеті дугами
+ rc.insertAdjacentHTML("beforeend",`<div style="position:absolute;inset:0;background:#fff;animation:flashOut .55s ease-out forwards;pointer-events:none"></div>
+  <div style="position:absolute;left:50%;top:50%;width:200px;height:200px;margin:-100px;border-radius:50%;border:6px solid ${col};animation:ringOut .8s ease-out forwards;pointer-events:none"></div>
+  <div style="position:absolute;left:50%;top:50%;width:150px;height:150px;margin:-75px;border-radius:50%;border:3px solid #fff;animation:ringOut .8s .12s ease-out forwards;pointer-events:none"></div>
+  <div style="position:absolute;left:calc(50% - 40px);bottom:50%;width:80px;height:70vh;transform-origin:bottom;background:linear-gradient(0deg,${col},#fff8,transparent);filter:blur(6px);animation:beamUp .9s ease-out forwards;pointer-events:none"></div>
+  <div style="position:absolute;left:-20%;top:46%;width:140%;height:10px;background:linear-gradient(90deg,transparent,#fff,transparent);box-shadow:0 0 24px #fff,0 0 50px ${col};animation:slashWipe .55s ease-out forwards;pointer-events:none"></div>`);
+ $("chi").style.animation="chestPop .6s ease-out forwards";fxShoot(rc,34,[col,"#ffd24a","#fff","#ff2a5f"]);sfx("boss",()=>tone(140,.4,"sawtooth",.22));navigator.vibrate&&navigator.vibrate([30,20,60]);
+ await sleep(650);
+ // 3) рулетка з'являється плавно
+ rc.innerHTML=`<div class="w-full space-y-4 px-2" style="animation:stripIn .6s ease-out both"><h2 class="text-center font-black text-neonGold tracking-[.25em] uppercase text-sm">${c[1]} ${t(c[2])}</h2>
  <div id="rbox" class="relative rounded-3xl py-3" style="background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(8px);-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)">
  <div id="rmark" class="absolute left-1/2 top-1 bottom-1 w-[3px] -ml-[1.5px] z-10 rounded-full transition-transform" style="background:linear-gradient(180deg,transparent,#ffd27a,transparent);box-shadow:0 0 18px #ffb703"></div>
  <div id="rstrip" class="flex gap-1 px-2" style="width:max-content">${strip.map(q=>`<div class="w-20 h-28 shrink-0 rounded-2xl flex flex-col items-center justify-center text-center text-[9px]" style="background:radial-gradient(circle at 50% 30%,${RAR[q.r]}38,rgba(19,17,24,.72));border:1px solid ${RAR[q.r]}88;box-shadow:0 0 14px ${RAR[q.r]}33"><span class="text-3xl" style="filter:drop-shadow(0 0 8px ${RAR[q.r]})">${q.ic}</span><span class="px-1 mt-1 leading-tight">${esc(lab(q))}</span></div>`).join("")}</div></div></div>`;
@@ -106,19 +123,20 @@ async function runChest(c,p,im){
   if(performance.now()-t0<5400)requestAnimationFrame(lp);else res()};requestAnimationFrame(lp)});
  apply(it);reveal(it);
 }
-// Нагорода: м'яке сяйво (opacity + blur), без різких країв; фон-фото лишається видимим під скляним шаром
+// Нагорода: м'які промені (opacity + маска), картка падає з відскоком, діагональний «розріз» і бризки в кольорі рідкості
 function reveal(it){
  const c=RAR[it.r],ov=$("rev"),isC=it.ty=="d"||it.ty=="t",rn=["bl","bg","av"].includes(it.ty)?RN[it.r][0]:["ЗВИЧАЙНИЙ|COMMON","РІДКІСНИЙ|RARE","ЕПІЧНИЙ|EPIC","ЛЕГЕНДАРНИЙ|LEGENDARY","МІФІЧНИЙ|MYTHIC"][it.r];
  ov.style.background="rgba(5,4,10,.5)";ov.style.backdropFilter="blur(6px)";ov.style.webkitBackdropFilter="blur(6px)";
- ov.innerHTML=`<div class="absolute inset-0 flex items-center justify-center pointer-events-none"><div style="width:140vmin;height:140vmin;border-radius:50%;background:radial-gradient(circle,${c}55 0%,${c}22 35%,${c}00 68%);filter:blur(18px);animation:glowIn 1.2s ease-out both,pulse-glow 3s 1.2s infinite"></div></div>
- <div class="relative px-6 space-y-3" style="animation:cardIn .9s cubic-bezier(.2,.8,.2,1) both">
-  <div class="text-[11px] font-black tracking-[.35em] uppercase" style="color:${c}">${t(rn)}</div>
-  <div class="mx-auto flex items-center justify-center" style="width:150px;height:150px;border-radius:2rem;background:radial-gradient(circle at 50% 35%,${c}44,rgba(10,9,14,.55));border:1px solid ${c}88;box-shadow:0 0 50px ${c}66,inset 0 0 30px ${c}22;backdrop-filter:blur(6px)"><span class="text-7xl" style="filter:drop-shadow(0 0 22px ${c})">${it.ic}</span></div>
-  <div class="text-2xl font-black" style="color:${c};text-shadow:0 0 22px ${c}88">${esc(lab(it))}</div>
+ ov.innerHTML=`<div class="absolute inset-0 flex items-center justify-center pointer-events-none"><div style="width:150vmin;height:150vmin;border-radius:50%;background:radial-gradient(circle,${c}55 0%,${c}22 35%,${c}00 68%);filter:blur(18px);animation:glowIn 1.2s ease-out both,pulse-glow 3s 1.2s infinite"></div></div>
+ <div class="absolute inset-0 flex items-center justify-center pointer-events-none"><div style="width:170vmin;height:170vmin;background:repeating-conic-gradient(${c}44 0 7deg,transparent 7deg 22deg);-webkit-mask-image:radial-gradient(circle,#000 5%,transparent 62%);mask-image:radial-gradient(circle,#000 5%,transparent 62%);animation:raysSpin 16s linear infinite;opacity:.75"></div></div>
+ <div id="rcard" class="relative px-6 space-y-3"><div class="text-[11px] font-black tracking-[.35em] uppercase" style="color:${c};animation:cardIn .6s .5s both">${t(rn)}</div>
+  <div class="relative mx-auto flex items-center justify-center overflow-hidden" style="width:160px;height:160px;border-radius:2rem;background:radial-gradient(circle at 50% 35%,${c}44,rgba(10,9,14,.55));border:1px solid ${c}88;box-shadow:0 0 50px ${c}66,inset 0 0 30px ${c}22;backdrop-filter:blur(6px);animation:dropBounce .95s cubic-bezier(.3,1.2,.4,1) both"><span class="text-7xl" style="filter:drop-shadow(0 0 22px ${c})">${it.ic}</span>
+   <div style="position:absolute;left:-30%;top:46%;width:160%;height:6px;background:linear-gradient(90deg,transparent,#fff,transparent);box-shadow:0 0 18px #fff;animation:slashWipe .6s .75s ease-out both"></div></div>
+  <div class="text-2xl font-black" style="color:${c};text-shadow:0 0 22px ${c}88;animation:cardIn .6s .7s both">${esc(lab(it))}</div>
   ${isC?`<div class="text-xs text-gray-300">${t("Купон збережено у вкладці «Нагороди»|Coupon saved in the Rewards tab")}</div>`:""}${["bl","bg","av"].includes(it.ty)?`<div class="text-xs text-gray-300">${t("Додано й уже доступне в магазині/профілі|Added — already available in the Shop/Profile")}</div>`:""}
-  ${["bl","bg","av"].includes(it.ty)?`<button class="btn px-8 py-3 mt-2 mr-2" onclick="wearDrop('${it.ty}','${it.i??it.id}')">${t("Одягнути зараз|Equip now")}</button>`:""}<button class="btng px-10 py-3 mt-2" onclick="closeRev()">OK</button></div>`;
+  <div style="animation:cardIn .6s 1s both">${["bl","bg","av"].includes(it.ty)?`<button class="btn px-8 py-3 mt-2 mr-2" onclick="wearDrop('${it.ty}','${it.i??it.id}')">${t("Одягнути зараз|Equip now")}</button>`:""}<button class="btng px-10 py-3 mt-2" onclick="closeRev()">OK</button></div></div>`;
  ov.classList.replace("hidden","flex");sfx("reveal",()=>[0,4,7,12].slice(0,2+Math.min(2,it.r)).forEach((s,i)=>setTimeout(()=>tone(330*2**(s/12),.7,"triangle",.14),i*140)));
- for(let i=0;i<14+it.r*8;i++){const e=document.createElement("span"),z=8+R()*14;e.style.cssText=`position:fixed;bottom:-20px;left:${R()*100}%;width:${z}px;height:${z}px;border-radius:50%;background:radial-gradient(circle,${c},${c}00 70%);--dx:${(R()-.5)*80}px;animation:rise ${2.4+R()*2}s ${R()*1.2}s ease-out forwards;pointer-events:none;opacity:0`;ov.appendChild(e);setTimeout(()=>e.remove(),6500)}
+ const cc=$("rcard");setTimeout(()=>{fxSplat(cc,c,16+it.r*4);fxShoot(cc,20+it.r*10,[c,"#fff","#ffd24a"])},700);navigator.vibrate&&setTimeout(()=>navigator.vibrate([20,30,40]),700);
 }
 function wearDrop(ty,id){if(ty=="bl"){S.blade=+id}else if(ty=="bg"){S.bg=+id;bgC=null}else S.av=id;save();push();closeRev()}
 function closeRev(){$("rev").classList.replace("flex","hidden");$("ro").classList.replace("flex","hidden");$("ro").innerHTML="";opening=0;if(afterRev){const f=afterRev;afterRev=null;f()}else rend()}
