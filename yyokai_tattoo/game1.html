@@ -43,6 +43,17 @@ html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .8s 
 .logo-blade{height:5px;width:62%;margin:12px auto 0;border-radius:5px;background:linear-gradient(90deg,transparent,#fff,#ffb703,#ff2a5f,transparent);box-shadow:0 0 16px #ff2a5f;transform:skewX(-30deg)}
 .logo-s{font-family:'Lilita One',Georgia,serif;font-size:22px;letter-spacing:.12em;background:linear-gradient(180deg,#fff,#ffc94d,#ff5c3a);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:.6px #2a0612}
 .emj{height:1.15em;width:1.15em;display:inline-block;vertical-align:-.2em;object-fit:contain}
+@keyframes chestWob{0%{transform:rotate(0) scale(1)}15%{transform:rotate(-4deg) scale(1.03,.97)}30%{transform:rotate(5deg) scale(.97,1.04)}45%{transform:rotate(-7deg) scale(1.05,.95)}60%{transform:rotate(8deg) scale(.95,1.06)}75%{transform:rotate(-10deg) scale(1.08,.93)}90%{transform:rotate(11deg) scale(1.1,.92)}100%{transform:rotate(0) scale(1.15)}}
+@keyframes chestPop{0%{transform:scale(1.15);opacity:1}40%{transform:scale(1.6);opacity:1}100%{transform:scale(2.3);opacity:0}}
+@keyframes flashOut{0%{opacity:.95}100%{opacity:0}}
+@keyframes ringOut{0%{transform:scale(.2);opacity:.9}100%{transform:scale(3.4);opacity:0}}
+@keyframes beamUp{0%{transform:scaleY(0);opacity:.95}60%{opacity:.7}100%{transform:scaleY(1);opacity:0}}
+@keyframes shoot{0%{transform:translate(0,0) rotate(0) scale(.4);opacity:0}12%{opacity:1}45%{transform:translate(calc(var(--dx)*.6),var(--uy)) rotate(calc(var(--rt)*.5)) scale(1)}100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rt)) scale(.9);opacity:0}}
+@keyframes dropBounce{0%{transform:translateY(-90vh) scale(.6) rotate(-15deg);opacity:0}55%{transform:translateY(8px) scale(1.12) rotate(4deg);opacity:1}72%{transform:translateY(-14px) scale(.96)}86%{transform:translateY(3px) scale(1.03)}100%{transform:none}}
+@keyframes slashWipe{0%{transform:translate(-130%,-130%) rotate(-35deg);opacity:0}25%{opacity:1}100%{transform:translate(130%,130%) rotate(-35deg);opacity:0}}
+@keyframes splatOut{0%{transform:translate(0,0) scale(.2);opacity:.95}100%{transform:translate(var(--dx),var(--dy)) scale(1);opacity:0}}
+@keyframes raysSpin{to{transform:rotate(360deg)}}
+@keyframes stripIn{from{opacity:0;transform:translateY(30px) scale(.94)}to{opacity:1;transform:none}}
 @keyframes shineL{to{background-position:220% 0}}
 .glass{background:linear-gradient(160deg,rgba(28,23,40,.8),rgba(11,9,17,.9));border:1px solid rgba(255,183,3,.2);border-radius:26px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.07);backdrop-filter:blur(12px)}
 .sbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border-radius:14px;font-weight:700;font-size:14px;transition:transform .15s}
@@ -65,7 +76,7 @@ html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .8s 
  <div id="spBlk" class="absolute left-[11%] right-[34%] bottom-[7%]" style="color:#8b1a2b">
   <svg viewBox="0 0 24 24" width="30" height="30" class="mb-2"><path d="M12 2c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-6 1-9z" fill="#8b1a2b"/></svg>
   <div id="spName" style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;line-height:.95;font-size:clamp(34px,12vw,64px);letter-spacing:.02em;word-break:break-word"></div>
-  <div class="mt-2 text-[11px] tracking-[.35em] uppercase" style="color:#a8854a">INKAI by YYOKAI</div>
+  <div class="mt-2 text-[11px] tracking-[.35em] uppercase" style="color:#a8854a;text-transform:lowercase">by yyokai</div>
   <div class="mt-4 relative h-[2px]" style="background:rgba(168,133,74,.5)"><div id="spBar" class="absolute left-0 top-0 h-full transition-all duration-200" style="width:8%;background:#8b1a2b;box-shadow:0 0 8px #8b1a2b"><i class="dia dia-r"></i></div></div>
   <div class="flex justify-between mt-3 text-[10px] tracking-[.25em] uppercase" style="color:#a8854a"><span id="spTxt">…</span><span id="spPct">0%</span></div>
   <div id="spQ" class="mt-4 text-[10px] leading-5 tracking-[.2em] uppercase"></div>
@@ -76,7 +87,7 @@ html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .8s 
 <div id="nickov" class="hidden fixed inset-0 z-[110] bg-inkDark/95 flex items-center justify-center p-4">
  <div class="card rounded-3xl p-6 w-full max-w-sm space-y-3">
   <h2 class="text-xl font-black uppercase text-center" data-t="Обери нікнейм|Choose a nickname"></h2>
-  <p class="text-xs text-gray-400 text-center" data-t="Його бачать інші гравці в рейтингу. Змінити пізніше не можна.|Other players see it in the rating. You can't change it later."></p>
+  <p class="text-xs text-gray-400 text-center" data-t="Його бачать інші гравці в рейтингу. Пізніше нік можна змінити в профілі.|Other players see it in the rating. You can change it later in your profile."></p>
   <div id="nickAv" class="grid grid-cols-6 gap-2"></div>
   <input id="nickIn" maxlength="16" data-p="Нікнейм (3–16 символів)|Nickname (3–16 chars)" class="inp">
   <div id="nickErr" class="text-xs text-crimsonRed min-h-[16px]"></div>
