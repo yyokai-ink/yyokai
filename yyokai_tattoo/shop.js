@@ -77,10 +77,24 @@ const BL=BLD.map((d,i)=>{const r=d[4]!=null?d[4]:i<14?0:i<30?1:i<44?2:i<54?3:4,k
  return{i,nm:d[0],c1:d[1],c2:d[2],fx:d[3],w:3+Math.min(i,60)*.05,sc:1+i*.04,r,cur:RC[r],price:Math.round([i?250*1.7**k:0,2e6*1.35**k,5e8*1.3**k,15+k*8,40+k*15][r])}});   // 🔧 ціни
 const bname=b=>t(b.nm);
 const bcss=b=>b.fx=="rb"?"linear-gradient(90deg,#f00,#fa0,#ff0,#0f0,#0ff,#00f,#f0f)":b.fx=="void"?`linear-gradient(90deg,#000 30%,${b.c2})`:`linear-gradient(90deg,${b.c1},${b.c2})`;
-const bar=b=>`<div class="h-3 rounded-full" style="background:${bcss(b)};box-shadow:0 0 10px ${b.fx=="rb"?"#f0f":b.c2};${b.fx=="void"?"border:1px solid "+b.c2:""}"></div>`;
+/* КАТАНА. Своя картинка: img/katana/<номер>.png (горизонтально, руків'я ліворуч, вістря праворуч, 512×128) + номер у data/katana.json.
+   Без PNG малюється SVG-катана: руків'я з обмоткою, золота цуба, вигнутий клинок із хамоном; колір і прикраси залежать від ефекту й рідкості */
+const KHC=["#3a3a44","#1f3b6b","#5b2a86","#8a6a00","#9b1030"],KGL={star:"✦",gold:"✧",sakura:"✿",fire:"♨",ice:"❄",bolt:"ϟ",blood:"●",jade:"◆",neon:"✺",rain:"╎",wind:"≋",paper:"▭",koi:"◖",music:"♪",rune:"ᚠ",glitch:"▚",moon:"☾",lava:"●",aurora:"✧",toxic:"◍",crystal:"◆",ghost:"○",comet:"✦",sun:"☀",galaxy:"✦",dragon:"❖"};
+let _kg=0;
+function katSVG(b,cls,style){const id="kg"+(_kg++),rc=RN[b.r][1];
+ const stops=b.fx=="rb"?'<stop offset="0" stop-color="#f00"/><stop offset=".25" stop-color="#fa0"/><stop offset=".45" stop-color="#ff0"/><stop offset=".65" stop-color="#0f0"/><stop offset=".85" stop-color="#0ff"/><stop offset="1" stop-color="#f0f"/>':b.fx=="void"?`<stop offset="0" stop-color="#000"/><stop offset=".65" stop-color="#07000f"/><stop offset="1" stop-color="${b.c2}"/>`:`<stop offset="0" stop-color="${b.c2}"/><stop offset=".55" stop-color="${b.c1}"/><stop offset="1" stop-color="${b.c1}"/>`;
+ const gl=KGL[b.fx],deco=gl?[[104,13],[140,37],[170,12],[196,30]].slice(0,2+(b.r>>1)).map(p=>`<text x="${p[0]}" y="${p[1]}" font-size="${9+b.r*2}" fill="${b.fx=="blood"?"#8b0000":b.c1=="#fff"||b.c1=="#ffffff"?"#ffe9a8":b.c1}" text-anchor="middle" opacity=".9">${gl}</text>`).join(""):"";
+ return `<svg viewBox="0 0 224 50" xmlns="http://www.w3.org/2000/svg" class="${cls||"w-full h-auto"}" style="filter:drop-shadow(0 0 ${3+b.r*2}px ${b.fx=="rb"?"#f0f":rc});${style||""}"><defs><linearGradient id="${id}" x1="0" x2="1">${stops}</linearGradient></defs>
+ <rect x="6" y="19" width="62" height="12" rx="5" fill="${KHC[b.r]}"/><path d="M14 19l8 12M26 19l8 12M38 19l8 12M50 19l8 12M22 19l-8 12M34 19l-8 12M46 19l-8 12M58 19l-8 12" stroke="rgba(255,255,255,.28)" stroke-width="1.4"/><circle cx="6" cy="25" r="6" fill="${b.r>2?"#ffd24a":"#9aa4b2"}"/>
+ <ellipse cx="72" cy="25" rx="5.5" ry="12.5" fill="${b.r>2?"#ffd24a":"#c8ced8"}" stroke="rgba(0,0,0,.4)" stroke-width="1"/><rect x="76" y="21.5" width="7" height="7" fill="#d9a441"/>
+ <path d="M83 21 Q155 15 220 11 L212 19 Q155 30 83 29 Z" fill="url(#${id})" stroke="rgba(255,255,255,.75)" stroke-width=".9"/>
+ <path d="M90 27 Q155 22 207 17" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.1"/><path d="M83 21 Q155 15 220 11" fill="none" stroke="#fff" stroke-width="1.2" opacity=".85"/>${deco}</svg>`}
+const katI=b=>kat(b,"inline-block align-middle","width:1.9em;height:.48em");
+function kat(b,cls,style){const svg=katSVG(b,cls,style);return KATL.has(b.i)?`<img src="img/katana/${b.i}.png" data-h="${svg.replace(/"/g,"&quot;")}" onerror="this.outerHTML=this.dataset.h" class="${cls||"w-full h-auto"}" style="${style||""}">`:svg}
+const bar=b=>kat(b,"w-full h-auto");
 
 /* ФОНИ (100) = 20 локацій × 5 станів; рідкість = стан: Світанок зв · День рід · Захід епіч · Ніч легенд · Туман міф. PNG: img/bg/<номер>.png */
-const LOC=[["Храм Асука|Asuka Temple","🏯"],["Ліс Нари|Nara Forest","🦌"],["Бамбуковий гай|Bamboo Grove","🎋"],["Гора Фудзі|Mount Fuji","🗻"],["Ісукусіма|Itsukushima","⛩️"],["Місто Едо|Edo City","🏮"],["Замок Хімедзі|Himeji Castle","🏰"],["Сад каміння|Rock Garden","🪨"],["Водоспад|Waterfall","🌊"],["Алея сакур|Sakura Alley","🌸"],["Цвинтар ёкаїв|Yokai Graveyard","💀"],["Лисячі врата|Fox Gates","🦊"],["Печера Они|Oni Cave","👹"],["Небо дракона|Dragon Sky","🐉"],["Острів Рюгу|Ryugu Isle","🐚"],["Пік Тенгу|Tengu Peak","👺"],["Нічний ринок|Night Market","🍜"],["Сніжне село|Snow Village","❄️"],["Вулкан Асо|Mount Aso","🌋"],["Місячний палац|Moon Palace","🌙"]];
+const LOC=[["Храм Асука|Asuka Temple","🏯"],["Ліс Нари|Nara Forest","🦌"],["Бамбуковий гай|Bamboo Grove","🎋"],["Гора Фудзі|Mount Fuji","🗻"],["Ісукусіма|Itsukushima","⛩️"],["Місто Едо|Edo City","🏮"],["Замок Хімедзі|Himeji Castle","🏰"],["Сад каміння|Rock Garden","🪨"],["Водоспад|Waterfall","🌊"],["Алея сакур|Sakura Alley","🌸"],["Цвинтар йокаїв|Yokai Graveyard","💀"],["Лисячі врата|Fox Gates","🦊"],["Печера Они|Oni Cave","👹"],["Небо дракона|Dragon Sky","🐉"],["Острів Рюгу|Ryugu Isle","🐚"],["Пік Тенгу|Tengu Peak","👺"],["Нічний ринок|Night Market","🍜"],["Сніжне село|Snow Village","❄️"],["Вулкан Асо|Mount Aso","🌋"],["Місячний палац|Moon Palace","🌙"]];
 const VAR=["Світанок|Dawn","День|Day","Захід|Sunset","Ніч|Night","Туман|Mist"];
 const BG=Array.from({length:100},(_,i)=>{const l=i%20,v=i/20|0,h=(l*18+v*7)%360,P=[[h+20,70,38,60,12],[h,60,40,50,14],[(h+340)%360,80,42,55,10],[(h+220)%360,60,24,60,6],[h,15,34,25,12]][v],[a,b]=LOC[l][0].split("|"),[c,d]=VAR[v].split("|");
  return{i,nm:a+" · "+c+"|"+b+" · "+d,r:v,cur:RC[v],ic:LOC[l][1],g:[`hsl(${P[0]},${P[1]}%,${P[2]}%)`,`hsl(${(P[0]+25)%360},${P[3]}%,${P[4]}%)`],
@@ -106,7 +120,7 @@ const UP=[
  ["bossr","🏆","Трофей боса|Boss trophy","+10% очок за боса|+10% boss points",500,2,12],
  ["soul","⛩️","Збирач душ|Soul collector","+1 душа за боса|+1 soul per boss",700,2,10],
  ["hit","🎯","Широке лезо|Wide blade","+3% радіус ураження|+3% hit radius",250,2,12],
- ["spawn","🌪","Потік ёкаїв|Yokai flow","+4% частіше з'являються|+4% faster spawn",300,2,12],
+ ["spawn","🌪","Потік йокаїв|Yokai flow","+4% частіше з'являються|+4% faster spawn",300,2,12],
  ["slow","🕰","Час Тенгу|Tengu time","+2% повільніше падіння|+2% slower fall",350,2,12],
  ["start","🚀","Швидкий старт|Fast start","+30 очок на старті|+30 starting points",250,2,12],
  ["end","🎁","Фінальний бонус|End bonus","+3% монет за раунд|+3% round coins",300,2,12],
@@ -125,7 +139,7 @@ const BS=[
  ["plus","🛡","Додаткове життя: 4 промахи замість 3|Extra life: 4 misses instead of 3",800,1],
  ["shd","🧿","Щит: ще 2 промахи прощаються|Shield: 2 extra misses forgiven",1000,1],
  ["fz","⚡","Старт з 8 с шаленства|Start with 8s frenzy",1000,1],
- ["br","🌈","Райдужний міст: ёкаї злітають аркою|Rainbow bridge: yokai rise in an arc",1800,1],
+ ["br","🌈","Райдужний міст: йокаї злітають аркою|Rainbow bridge: yokai rise in an arc",1800,1],
  ["sl0","⏳","Старт зі сповільненням часу 8 с|Start with 8s slow time",1200,1],
  ["bh0","🕳","Старт з чорною дірою 6 с|Start with a black hole 6s",2200,1],
  ["st","🚀","+300 очок на старті|+300 points at start",900,1],
