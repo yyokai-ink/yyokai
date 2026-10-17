@@ -28,7 +28,7 @@ const icoH=(n,h,c)=>`<img src="img/ico/${n}.png" data-h="${h.replace(/"/g,"&quot
 /* ── УНІВЕРСАЛЬНА ЗАМІНА ЕМОДЗІ НА PNG ──
    Поклади img/emoji/<код>.png (код = кодпоінт у hex, напр. 🎁 → 1f381.png, ⛩️ → 26e9.png). Гра сама знайде файл і замінить цей емодзі
    в усіх текстах, кнопках, нагородах і на canvas. Список кодів, які є в грі, — EMALL нижче й у inkai-assets.md */
-const EMALL=[];
+const EMALL=["1f3ad","1f48e","1f3ee","1f381","26e9","1f3f7","1f98a","1f479","1f409","1f4dc","1f527","1f47a","1f438","1f4fa","26a1","2744","1f480","1f451","23f3","1f5e1","2694","2716","1f338","1f977","1f525","1f573","1f50a","1f465","1f4f2","1fa99","1f47b","1f517","1f32a","2705","1f4a4","1faa8","1f4b0","1f49a","1f9db","2728","2764","1f507","274c","1f1fa-1f1e6","1f431","1f308","1f319","1f30b","1f30c","1f432","1f3ef","1f98c","1f3f0","1f4a5","1f6e1","1f300","1f3c6","1f3af","1f570","1f680","23ed","23f1","1f5bc","1f4c8","1f4e3","1f31f","1f54a","1fa9e","1f41d","1f388","1f9ec","1f343","1f98e","26a0","2600","2601","2604","2623","25b6","1f1ec-1f1e7","1f50d","1f4e7","1f5d3","1f7e2","1fa78","1f4a0","1f52e","2b50","1f327","1f32c","1f4c4","1f41f","1f3b5","1f47e","1f320","1f38b","1f5fb","1f30a","1f41a","1f35c","1f3b2","1f4e6","1f634","1f9ff","1f4ab","1f497","1f6ab","1f340","1f948","1f947","1f3fa","1f33e","26f0","1faad","1f375","1f38e","1f33a","1f38c","1f682","1f4fc","1fab7","1f303","1f916","1f985","1f39f","1f987"];
 let EMJ=new Set();const EIM={};
 const EMRX=/(?:\p{Regional_Indicator}{2}|\p{Extended_Pictographic}(?:\uFE0F|\p{Emoji_Modifier})?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F|\p{Emoji_Modifier})?)*)/gu;
 const emCode=s=>[...s].map(c=>c.codePointAt(0).toString(16)).filter(h=>h!="fe0f").join("-");
