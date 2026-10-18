@@ -37,7 +37,7 @@ function rPlay(){
 
 // ═══ ПОЛЕ ГРАВЦЯ ═══
 const ambient=(w,h)=>Array.from({length:6},()=>({y:YK[R()*6|0],r:30+R()*40,x:R()*w,py:R()*h,vx:(R()-.5)*14,vy:-(6+R()*14),rot:R()*6,vr:(R()-.5)*.4}));
-const mkF=(oy,h,fl)=>({oy,h,fl,w:W,fx:[],e:[],hv:[],p:[],x:[],trs:[],sq:[],zm:1,sc:30*U("start"),ex:0,cb:0,cT:0,cuts:0,nb:12,bo:null,sp:1,fz:0,cr:[],fp:0,sl:0,st:0,fr:0,sh:0,fa:0,ts:1,kills:0,
+const mkF=(oy,h,fl)=>({oy,h,fl,w:W,fx:[],e:[],hv:[],p:[],x:[],trs:[],sq:[],bs:[],zm:1,sc:30*U("start"),ex:0,cb:0,cT:0,cuts:0,nb:12,bo:null,sp:1,fz:0,cr:[],fp:0,sl:0,st:0,fr:0,sh:0,fa:0,ts:1,kills:0,
  ms:0,sk:0,mx:3+(U("time")/5|0)+(S.c.plus>0?1:0),dead:0,why:"",bl:[],dr:[],bc:0,dbl:0});
 function startRound(m){
  if(G.on)return;
@@ -89,8 +89,9 @@ function drawBG(w,h){
  cx.drawImage(bgC,0,0,w,h);
 }
 const YC={"🦊":"#ff8a2b","👹":"#e11d48","👺":"#dc2626","🐸":"#4ade80","💀":"#e5e7eb","🐉":"#facc15"};
-function splat(f,x,y,c,e){if(f.p.length>230)return;const g=GR(f);       // краплі успадковують рух йокая й падають з ним
- for(let i=0;i<12;i++){const a=R()*6.283,s=40+R()*170;f.p.push({x,y,vx:(e?e.vx*.6:0)+Math.cos(a)*s,vy:(e?e.vy*.5:0)+Math.sin(a)*s-30,l:1.9,c,s:2+R()*4,sh:"o",g:g*.9,rot:0,vr:0})}}
+function splat(f,x,y,c,e){if(f.p.length>230)return;const g=GR(f);       // кров: видовжені бризки успадковують рух йокая й падають з ним
+ for(let i=0;i<16;i++){const a=R()*6.283,s=60+R()*260,col=R()<.75?["#b91c1c","#991b1b","#dc2626","#7f1d1d"][R()*4|0]:c;
+  f.p.push({x,y,vx:(e?e.vx*.6:0)+Math.cos(a)*s,vy:(e?e.vy*.5:0)+Math.sin(a)*s-40,l:1.6,c:col,s:1.6+R()*3.4,sh:"v",g:g*.9,rot:0,vr:0})}}
 function burst(f,x,y,n,c){if(f.p.length>140)return;for(let i=0;i<n;i++){const a=R()*6.283,s=120+R()*380;f.p.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:1,c:c||(R()<.5?"#ffb703":"#ff2a5f")})}}
 const pop=(f,x,y,s,big)=>f.x.push({x,y,s,l:1,big});
 function spawn(f,st,fs){
@@ -214,10 +215,12 @@ function drawBoss(f,b,dt,now){
  cx.globalAlpha=1;cx.shadowColor=C;cx.shadowBlur=14;sprB(cx,b,sc);cx.shadowBlur=0;
  cx.restore()}
 function bossFlee(f,b){b.gone=1;pop(f,f.bx,f.by,t("Втік! 💨|Escaped! 💨"),1);burst(f,f.bx,f.by,16,"#9ca3af");f.bo=null;f.fz=0;f.nb=f.cuts+10;track("boss_flee",{boss:b.ty})}
-function bossBurst(f,b){      // бос розлітається на уламки в усі боки
- const n=9;for(let i=0;i<n;i++){const a=i/n*6.283+R()*.4,v=300+R()*420;for(const s of[1,-1]){const pa=a+Math.PI/2*s;
-  f.hv.push({y:b.y,bt:b.ty,r:b.r,x:f.bx,py:f.by,vx:Math.cos(a)*v+Math.cos(pa)*120,vy:Math.sin(a)*v+Math.sin(pa)*120-80,rot:0,vr:(R()-.5)*9,cl:a,s,l:1.7})}}
- f.sh=22;f.fa=.5;navigator.vibrate&&navigator.vibrate([40,30,80])}
+function bossBurst(f,b){      // рівно 4 уламки в 4 діагональні боки, кривава смуга за кожним
+ const n=Math.SQRT1_2;[[1,1],[1,-1],[-1,1],[-1,-1]].forEach(d=>{const qd=(d[0]>0?1:0)|(d[1]>0?2:0),v=520;
+  f.hv.push({y:b.y,bt:b.ty,r:b.r,x:f.bx,py:f.by,vx:d[0]*v*n,vy:d[1]*v*n-60,rot:0,vr:d[0]*d[1]*1.6,cl:0,qd,s:1,l:1.4});
+  f.bs.push({x:f.bx,y:f.by,a:Math.atan2(d[1],d[0]),t:0});
+  for(let k=0;k<10;k++)f.p.push({x:f.bx,y:f.by,vx:d[0]*(180+R()*380)*n+(R()-.5)*90,vy:d[1]*(180+R()*380)*n+(R()-.5)*90,l:1.5,c:["#b91c1c","#7f1d1d","#dc2626"][R()*3|0],s:2+R()*4,sh:"v",g:200,rot:0,vr:0})});
+ f.sh=22;f.fa=.45;navigator.vibrate&&navigator.vibrate([40,30,80])}
 function frz(f){f.fz=1;f.cr=[];f.fp=0;f.ice=Array.from({length:46},()=>({e:R()*4|0,p:R(),l:30+R()*90,w:10+R()*18}))}
 // Заморозка: лід росте від країв, екран світліє до крижаного, при розбитті — тане
 function frost(f,raw){f.fk=f.fz?Math.min(1,(f.fk||0)+raw*1.4):Math.max(0,(f.fk||0)-raw*2.2);const k=f.fk;if(k<=0||!f.ice)return;
@@ -348,7 +351,13 @@ function upd(f,raw,now){
   if(e.vy>0&&e.py>h+110){if(!e.sc&&!f.fz&&!f.dead)missed(f,e.x);continue}
   ne.push(e)}
  f.e=ne;
- f.hv=f.hv.filter(q=>{q.vy+=g*dt;q.x+=q.vx*dt;q.py+=q.vy*dt;q.rot+=q.vr*dt;q.l-=dt;if(q.l<=0||q.py>h+200)return false;cx.save();cx.globalAlpha=Math.min(1,q.l);cx.translate(q.x,q.py);cx.rotate(q.rot);cx.rotate(q.cl);cx.beginPath();cx.rect(-q.r*2,q.s>0?0:-q.r*2,q.r*4,q.r*2);cx.clip();cx.rotate(-q.cl);q.bt?sprB(cx,{ty:q.bt,r:q.r,y:q.y},1):sp(cx,q.y,q.r);cx.restore();return true});
+ f.hv=f.hv.filter(q=>{q.vy+=g*dt;q.x+=q.vx*dt;q.py+=q.vy*dt;q.rot+=q.vr*dt;q.l-=dt;if(q.l<=0||q.py>h+200)return false;cx.save();cx.globalAlpha=Math.min(1,q.l);cx.translate(q.x,q.py);cx.rotate(q.rot);cx.rotate(q.cl);cx.beginPath();if(q.qd!=null)cx.rect(q.qd&1?0:-q.r*2,q.qd&2?0:-q.r*2,q.r*2,q.r*2);else cx.rect(-q.r*2,q.s>0?0:-q.r*2,q.r*4,q.r*2);cx.clip();cx.rotate(-q.cl);q.bt?sprB(cx,{ty:q.bt,r:q.r,y:q.y},1):sp(cx,q.y,q.r);cx.restore();return true});
+ f.bs=f.bs.filter(s=>{s.t+=dt*1.2;if(s.t>=1)return false;const pr=Math.min(1,s.t*4),len=420*pr,w=26*(1-s.t*.85);   // кривава смуга: росте, тоншає й зникає
+  cx.save();cx.translate(s.x,s.y);cx.rotate(s.a);cx.globalAlpha=Math.max(0,1-s.t*1.1)*.9;cx.lineCap="round";
+  cx.strokeStyle="#7f1d1d";cx.lineWidth=w;cx.beginPath();cx.moveTo(0,0);cx.lineTo(len,0);cx.stroke();
+  cx.strokeStyle="#dc2626";cx.lineWidth=w*.45;cx.beginPath();cx.moveTo(0,0);cx.lineTo(len*.92,0);cx.stroke();
+  for(const o of[-1,1]){cx.lineWidth=w*.18;cx.strokeStyle="#991b1b";cx.beginPath();cx.moveTo(len*.1,o*w*.7);cx.lineTo(len*.8,o*w*.9);cx.stroke()}
+  cx.restore();return true});
  if(b){b.t+=dt;b.r=b.r0;if(!f.fz){b.tl-=raw;if(b.tl<=0&&!b.gone)bossFlee(f,b)}   // 5 секунд реального часу (під час льоду таймер стоїть)
  if(b.t>25&&!f.fz){b.dec=(b.dec||0)+dt;if(b.dec>5){b.dec=0;b.hp=Math.max(1,b.hp-1)}}
   if(b.ty=="shd"){b.tp-=dt;if(b.tp<=0){b.tp=1.1;b.tx=f.w*(.2+R()*.6);b.ty2=h*(.3+R()*.3);burst(f,f.bx,f.by,10,"#8b5cf6")}f.bx+=(b.tx-f.bx)*Math.min(1,dt*9);f.by+=(b.ty2-f.by)*Math.min(1,dt*9);
@@ -359,6 +368,7 @@ function upd(f,raw,now){
  f.p=f.p.filter(p=>p.l>0);
  for(const p of f.p){cx.globalAlpha=Math.max(0,Math.min(1,p.l));cx.fillStyle=p.c;
   if(!p.sh){cx.fillRect(p.x-1.5,p.y-1.5,3,3);continue}
+  if(p.sh=="v"){cx.strokeStyle=p.c;cx.lineCap="round";cx.lineWidth=p.s;cx.beginPath();cx.moveTo(p.x,p.y);cx.lineTo(p.x-p.vx*.05,p.y-p.vy*.05);cx.stroke();cx.fillStyle=p.c;cx.beginPath();cx.arc(p.x,p.y,p.s*.75,0,6.3);cx.fill();continue}
   const s=p.s||3;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot||0);cx.beginPath();
   if(p.sh=="s"){for(let i=0;i<10;i++){const r=i%2?s*.45:s,a=i*Math.PI/5-Math.PI/2;cx.lineTo(Math.cos(a)*r,Math.sin(a)*r)}cx.closePath();cx.fill()}
   else if(p.sh=="d"){cx.moveTo(0,-s);cx.lineTo(s*.6,0);cx.lineTo(0,s);cx.lineTo(-s*.6,0);cx.closePath();cx.fill()}
@@ -377,7 +387,7 @@ function upd(f,raw,now){
  f.trs=f.trs.filter(tr=>tr.length||Object.values(ptr).some(p=>p.tr===tr));
  for(const P of f.trs){const nn=P.length;if(nn<3||f.dead)continue;const Lh=[],Rh=[];            // окремий слід для кожного пальця (1–10)
   for(let i=0;i<nn;i++){const a0=P[Math.max(0,i-1)],b0=P[Math.min(nn-1,i+1)];let dx=b0.x-a0.x,dy=b0.y-a0.y;const l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;const wd=bl.w*2.2*Math.sin(Math.PI*i/(nn-1))*Math.max(0,1-(now-P[i].t)/200)+.4;Lh.push([P[i].x-dy*wd,P[i].y+dx*wd]);Rh.push([P[i].x+dy*wd,P[i].y-dx*wd])}
-  trailFill(f,bl,P,Lh,Rh,now);cx.globalAlpha=1;drawBlade(f,bl,P,now);if(R()<.6)fxPart(f,bl,P[nn-1]);
+  trailFill(f,bl,P,Lh,Rh,now);cx.globalAlpha=1;if(R()<.6)fxPart(f,bl,P[nn-1]);
  }
  frost(f,raw);
  if(slow){const v=cx.createRadialGradient(f.w/2,h/2,h*.25,f.w/2,h/2,h*.8);v.addColorStop(0,"#0000");v.addColorStop(1,"rgba(120,60,220,.4)");cx.fillStyle=v;cx.fillRect(0,0,f.w,h)}
@@ -435,7 +445,7 @@ function endRound(mult){
  const sc=G.f.map(f=>f.sc),bi=sc.indexOf(Math.max(...sc)),best=sc[bi],ex=G.f[bi].ex;S.rounds++;
  let m=mult||1;if(S.c.x2>0){m*=2;S.c.x2--}if(S.c.x3>0){m*=3;S.c.x3--}
  const coins=Math.round((best+ex)*COIN_K*(1+.03*U("end"))*(G.mb||1)*(shogunNight()?2:1))*m;
- const ln=G.lx?2:R()<.12?1:0;                                               // 🏮 рідко; бустер «×2 ліхтарі» гарантує 2
+ const ln=G.lx?2:R()<.03?1:0;                                               // 🏮 рідко; бустер «×2 ліхтарі» гарантує 2
  track("round_end",{score:best,sec:Math.round(G.el),mode:G.m,revives:G.rv||0,bosses:G.f.reduce((s,f)=>s+f.kills,0)});S.mon+=coins;S.xp+=best;S.ln+=ln;if(G.sx)S.souls++;save();push();
  G.res={sc,coins,m,ln,bc:R()<.05+.02*G.f.reduce((s,f)=>s+f.kills,0)+(G.lk?.2:0)};       // шанс сундука-знахідки
  if(S.rounds%CFG.adEvery==0)ad(CFG.promo.text,showRes,"",1);else showRes();
