@@ -26,7 +26,7 @@ rules_version='2'; service cloud.firestore { match /databases/{d}/documents {
 // поля: id, e (емодзі-запас), nm "укр|eng", r (рідкість 0-4), src: free | buy | chest | ad, cur (mon|jd|ln) і price для buy
 const _AVF=[["fox","🦊"],["oni","👹"],["tengu","👺"],["kappa","🐸"],["skull","💀"],["dragon","🐉"],["cat","🐱"],["sakura","🌸"],["katana","⚔️"],["torii","⛩️"],["mask","🎭"],["ninja","🥷"]];
 let AV=[..._AVF.map(a=>({id:a[0],e:a[1],nm:a[0]+"|"+a[0],r:0,src:"free"})),...Array.from({length:100},(_,i)=>{const n=i+1,r=n<=40?0:n<=65?1:n<=82?2:n<=95?3:4,src=n%4==0?"chest":n%7==0?"ad":"buy";
- return{id:"a"+String(n).padStart(3,"0"),e:"🎭",nm:"Аватар "+n+"|Avatar "+n,r,src,cur:["mon","mon","mon","jd","ln"][r],price:Math.round([5e4,5e5,5e6,25,60][r]*(1+(n%10)*.3))}})];
+ return{id:"a"+String(n).padStart(3,"0"),e:"🎭",nm:"Аватар "+n+"|Avatar "+n,r,src,cur:["mon","mon","mon","jd","ln"][r],price:Math.round([5e4,5e5,5e6,25,15][r]*(1+(n%10)*.3))}})];
 async function loadAv(){try{const r=await fetch("data/avatars.json?v="+Date.now());if(r.ok){const j=await r.json();if(Array.isArray(j)&&j.length)AV=j}}catch(e){}}
 const ownAv=id=>{const a=AV.find(x=>x.id==id);return!a||a.src=="free"||S.avs.includes(id)};
 const avHTML=id=>{const a=AV.find(x=>x.id==id)||AV[0];return `<img src="img/av/${a.id}.png" data-e="${a.e||"🎭"}" onerror="this.outerHTML=this.dataset.e" class="w-full h-full object-cover">`};
@@ -88,7 +88,7 @@ function initAuth(){
    try{await FB.setDoc(FB.doc(db,"users",u.uid),{regAt:FB.serverTimestamp()},{merge:true})}catch(e){}
    if(refId&&refId!=u.uid){S.mon+=500;try{await FB.setDoc(FB.doc(db,"referrals",u.uid),{by:refId,ts:FB.serverTimestamp()})}catch(e){}}
   }
-  await loadFriends();loadMasters(1);loadPrizes();watchRaffle();
+  await loadFriends();loadQuests();loadMasters(1);loadPrizes();watchRaffle();
   try{(await FB.getDocs(FB.query(FB.collection(db,"submissions"),FB.where("uid","==",u.uid)))).forEach(d=>{S.offers[d.data().offer]=d.data().status})}catch(e){}
   try{const o=[];(await FB.getDocs(FB.collection(db,"offers"))).forEach(d=>o.push({id:d.id,...d.data()}));if(o.length)OFFERS=o}catch(e){}
   save();if(S.nick){await push();logDay()}
@@ -103,7 +103,7 @@ async function loadFriends(){
  FR=[];
  try{const q=await FB.getDocs(FB.query(FB.collection(db,"referrals"),FB.where("by","==",user.uid)));
   for(const d of q.docs){try{const u=await FB.getDoc(FB.doc(db,"public",d.id));if(u.exists()){const x=u.data();FR.push({n:x.nick||"?",av:x.av||"fox",m:x.coins||0,l:lvl(x.xp||0)})}}catch(e){}}}catch(e){}
- S.friends=FR.filter(f=>f.l>=3).length;
+ S.friends=FR.filter(f=>f.l>=3).length;S.friends10=FR.filter(f=>f.l>=10).length;
 }
 OFFERS=[["ig","Підпишись на Instagram YYOKAI|Follow YYOKAI on Instagram","https://instagram.com/yyokai.tattoo"],["tt","Підпишись на TikTok|Follow on TikTok","https://tiktok.com/@yyokai"],["yt","Підпишись на YouTube|Subscribe on YouTube","https://youtube.com/@yyokai"],["tc","Telegram-канал|Telegram channel","https://t.me/yyokai"],["tg","Запусти Telegram-бота|Start the Telegram bot","https://t.me/YyokaiInkBot"],["pt","Партнерський бонус|Partner bonus","https://instagram.com/yyokai.tattoo"]].map(([id,title,url])=>({id,title,url}));
 async function doOffer(id){
@@ -117,10 +117,9 @@ function rFriends(){
  const link=location.origin+location.pathname+"?ref="+(isReal()?user.uid:"");
  $("view-friends").innerHTML=`<h2 class="text-xl font-black uppercase text-neonGold text-center">👥 ${t("Запроси друга в INKAI|Invite a friend to INKAI")}</h2>
  <div class="card space-y-3"><p class="text-xs text-gray-300">${t("Друг зараховується, коли зареєструється за твоїм посиланням і дійде до 3-го рівня.|A friend counts once they sign up via your link and reach level 3.")}</p>${isReal()?"":`<p class="text-[11px] text-crimsonRed">${t("Щоб посилання працювало, увійди через Google/Apple.|Sign in with Google/Apple to get a working link.")}</p>`}<div class="flex gap-2"><input id="refIn" readonly class="inp !py-2.5 text-xs font-mono text-neonGold" value="${link}"><button onclick="copyRef()" class="btn">${t("Копіювати|Copy")}</button></div></div>
- <h3 class="text-sm font-black uppercase">${t("Мої друзі|My friends")} (${S.friends} ✅)</h3>`+
- (FR.length?FR.map(f=>`<div class="card !p-3 flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center text-xl">${avHTML(f.av)}</div><div><b class="text-xs">${esc(f.n)}</b><div class="text-[10px] text-gray-400">Lv ${f.l} ${f.l>=3?"✅":""}</div></div></div><span class="font-mono text-xs text-neonGold">${fmt(f.m)} 文</span></div>`).join(""):`<p class="text-xs text-gray-500">${t("Поки нікого — поділись посиланням!|No friends yet — share your link!")}</p>`)+
- `<h3 class="text-sm font-black uppercase pt-2">${t("Партнери та завдання|Partners & tasks")}</h3>`+
- OFFERS.map(o=>`<div class="card flex items-center justify-between"><div><b class="text-sm">${esc(t(o.title))}</b><div class="text-[10px] text-crimsonRed">+${fmt(CFG.offerReward)} 文</div></div><button ${S.offers[o.id]?"disabled":""} onclick="doOffer('${esc(o.id)}')" class="btn ${S.offers[o.id]?"!bg-emerald-600":""}">${S.offers[o.id]?"✓":"START"}</button></div>`).join("");
+ <h3 class="text-sm font-black uppercase">${t("Мої друзі|My friends")} (${S.friends} ✅ · ${S.friends10} 🏅)</h3>`+
+ (FR.length?FR.map(f=>`<div class="card !p-3 flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center text-xl">${avHTML(f.av)}</div><div><b class="text-xs">${esc(f.n)}</b><div class="text-[10px] text-gray-400">Lv ${f.l} ${f.l>=10?"🏅":f.l>=3?"✅":""}</div></div></div><span class="font-mono text-xs text-neonGold">${fmt(f.m)} 文</span></div>`).join(""):`<p class="text-xs text-gray-500">${t("Поки нікого — поділись посиланням!|No friends yet — share your link!")}</p>`)+
+ questsHTML();
 }
 
 // ═══ РЕЙТИНГ ═══
@@ -247,7 +246,8 @@ async function buyMini(){
  const m=S.master&&masterOf(S.master.id);if(!m){alert(t("Спершу обери майстра зі списку.|Choose a master first."));return}
  if(SD<MINI_DAYS){toast(t("Потрібно більше різних днів у грі|You need more different days played"));return}
  if(S.mon<MINI_PRICE){toast(t("Не вистачає монет|Not enough coins"));return}
- try{await FB.setDoc(FB.doc(db,"claims",user.uid+"_tat_mini_"+today().slice(0,7)),{uid:user.uid,master:m.id,masterName:m.nm,email:user.email||"",nick:S.nick,tier:"mini",code:"",kind:"tattoo",xp:S.xp,tot:S.tot||0,days:S.days,serverDays:SD,ts:FB.serverTimestamp(),status:"new"});
+ if(S.friends10<3){toast(t("Запроси 3 друзів, які досягли 10 рівня|Invite 3 friends who reached level 10"));return}
+ try{await FB.setDoc(FB.doc(db,"claims",user.uid+"_tat_mini_"+today().slice(0,7)),{uid:user.uid,master:m.id,masterName:m.nm,email:user.email||"",nick:S.nick,tier:"mini",code:"",kind:"tattoo",xp:S.xp,tot:S.tot||0,days:S.days,serverDays:SD,friends10:S.friends10,ts:FB.serverTimestamp(),status:"new"});
   S.mon-=MINI_PRICE;save();push();track("purchase",{kind:"mini_tattoo"});rend();alert(t("Заявку надіслано майстру «|Request sent to master “")+m.nm+t("». Монети списано.|”. Coins deducted."))}
  catch(e){alert(e.code=="permission-denied"?t("Цього місяця таку заявку вже подано, або майстер більше не активний.|You already sent such a request this month, or the master is no longer active."):e.message)}}
 async function claimPrize(pid){
@@ -258,11 +258,11 @@ async function claimPrize(pid){
  catch(e){alert(e.code=="permission-denied"?t("Цей приз уже заявлено, або майстер більше не активний.|This prize was already claimed, or the master is no longer active."):e.message)}}
 function rRewards(){
  loadSD();loadMasters(0);
- const cps=S.cp.filter(c=>!c.used),pz=PZ.filter(p=>!S.pzUsed.includes(p.id)),cm=S.master&&masterOf(S.master.id),okMini=!!cm&&SD>=MINI_DAYS&&S.mon>=MINI_PRICE;
+ const cps=S.cp.filter(c=>!c.used),pz=PZ.filter(p=>!S.pzUsed.includes(p.id)),cm=S.master&&masterOf(S.master.id),okMini=!!cm&&SD>=MINI_DAYS&&S.friends10>=3&&S.mon>=MINI_PRICE;
  $("view-rewards").innerHTML=`<h2 class="text-xl font-black uppercase text-center">${t("Нагороди студії YYOKAI|YYOKAI studio rewards")}</h2>${masterCard()}${raffleCard()}
  ${pz.length?`<h3 class="text-sm font-black uppercase text-center">${t("Мої призи розіграшу|My draw prizes")}</h3>`+pz.map(z=>`<div class="card flex items-center justify-between gap-2"><div><b class="text-sm">${z.kind=="free"?"🏆 "+t("Безкоштовний сеанс (тату до 7000 грн)|Free session (tattoo up to 7000 UAH)"):"🏷 "+t("Знижка|Discount")+" "+z.pct+"%"}</b><div class="text-[10px] text-gray-400">${esc(z.month)}</div></div><button class="btng shrink-0" ${cm?"":"disabled"} onclick="claimPrize('${esc(z.id)}')">${t("Забрати|Claim")}</button></div>`).join(""):""}
- <div class="card space-y-3"><h3 class="font-black text-sm text-center">🎁 ${t("Безкоштовний сеанс (тату до 1500 грн)|Free session (tattoo up to 1500 UAH)")}</h3><p class="text-[11px] text-gray-300 text-center">${t("Можна купити за монети — раз на місяць. Сеанс виконує обраний майстер.|Can be bought with coins — once a month. Done by your chosen master.")}</p>
-  ${rows([["Різних днів у грі (за даними сервера)|Different days played (server-verified)",isReal()?SD:0,MINI_DAYS],["Монет на балансі|Coins on balance",S.mon,MINI_PRICE]])}
+ <div class="card space-y-3"><h3 class="font-black text-sm text-center">🎁 ${t("Безкоштовний сеанс (тату до 1500 грн)|Free session (tattoo up to 1500 UAH)")}</h3><p class="text-[11px] text-gray-300 text-center">${t("Купується за монети раз на місяць. Обов'язково: запроси 3 друзів, які досягли 10 рівня. Сеанс виконує обраний майстер.|Bought with coins once a month. Required: invite 3 friends who reached level 10. Done by your chosen master.")}</p>
+  ${rows([["Різних днів у грі (за даними сервера)|Different days played (server-verified)",isReal()?SD:0,MINI_DAYS],["Друзів 10-го рівня (запроси 3)|Friends at level 10 (invite 3)",S.friends10,3],["Монет на балансі|Coins on balance",S.mon,MINI_PRICE]])}
   <button onclick="buyMini()" ${okMini?"":"disabled"} class="btng w-full py-2.5 ${okMini?"":"!from-gray-800 !to-gray-800 !text-gray-500"}">${t("Купити за|Buy for")} ${fmt(MINI_PRICE)} ${CI.mon}</button></div>
  ${cps.length?`<h3 class="text-sm font-black uppercase text-center">${t("Мої купони зі скринь|My chest coupons")}</h3>`+cps.map(c=>{const mm=masterOf(c.m||(S.master&&S.master.id)),ok=!!mm;return `<div class="card flex items-center justify-between gap-2"><div class="min-w-0"><b class="text-sm">${esc(c.lb.split(" · ")[0])}</b><div class="font-mono text-lg tracking-widest text-neonGold">#${esc(c.code)}</div><div class="text-[11px] text-gray-300">${c.mi?"@"+esc(c.mi):esc(c.mn||(mm?mm.nm:"—"))}${ok?"":" · ⛔"}</div></div><button class="btng shrink-0" ${ok?"":"disabled"} onclick="claim('${esc(c.type)}','${esc(c.code)}')">${t("Забрати|Claim")}</button></div>`}).join(""):""}
  <div class="card text-xs text-gray-300 space-y-1"><b class="text-neonGold">${t("Як це працює|How it works")}</b>
@@ -347,3 +347,52 @@ async function admClients(id){const box=$("admRes");box.innerHTML="…";
  try{const q=await FB.getDocs(FB.query(FB.collection(db,"clients"),FB.where("master","==",id),FB.limit(100)));
   box.innerHTML=`<button class="btn w-full" onclick="admMasters()">← ${t("Назад|Back")}</button>`+(q.empty?`<div class="text-xs text-gray-500">—</div>`:q.docs.map(d=>d.data()).sort((a,b)=>(b.ts&&b.ts.seconds||0)-(a.ts&&a.ts.seconds||0)).map(c=>`<div class="card !p-3 text-xs"><b>${esc(c.nick||"?")}</b> <span class="text-gray-400">${dstr(c.ts)}</span></div>`).join(""))}
  catch(e){box.innerHTML=`<div class="text-xs text-crimsonRed">${esc(e.message)}</div>`}}
+
+// ═══ ПАРТНЕРИ ТА ЗАВДАННЯ (квести для залучення аудиторії). Список редагуєш у data/quests.json; партнерські — ще й у Firestore → offers ═══
+/* поле r (нагорода): mon монети, souls душі, jd нефрит, ln ЛІХТАРІ (найрідкісніша валюта), b {id бустера: к-сть}. k:"link" — відкрити посилання й забрати через 20 с; k:"stat" — прогрес за s (kills|rounds|days|friends|friends10|ads|blades) до n */
+const DEFQ=[
+ {id:"tg1",k:"link",ic:"✈️",nm:"Підпишись на Telegram-канал YYOKAI|Subscribe to the YYOKAI Telegram channel",url:"https://t.me/yyokai",r:{mon:5000,ln:1,b:{x2:2}}},
+ {id:"yt1",k:"link",ic:"▶️",nm:"Підпишись на YouTube YYOKAI|Subscribe to YYOKAI on YouTube",url:"https://youtube.com/@yyokai",r:{mon:8000,ln:1,b:{mb:1}}},
+ {id:"ig1",k:"link",ic:"📸",nm:"Підпишись на Instagram YYOKAI|Follow YYOKAI on Instagram",url:"https://instagram.com/yyokai.tattoo",r:{mon:4000,b:{st:2}}},
+ {id:"tt1",k:"link",ic:"🎵",nm:"Підпишись на TikTok YYOKAI|Follow YYOKAI on TikTok",url:"https://tiktok.com/@yyokai",r:{mon:4000,b:{cmb:1}}},
+ {id:"tb1",k:"link",ic:"🤖",nm:"Запусти Telegram-бота|Start the Telegram bot",url:"https://t.me/YyokaiInkBot",r:{mon:3000,b:{x2:1}}},
+ {id:"k50",k:"stat",s:"kills",n:50,ic:"👑",nm:"Переможи 50 босів|Defeat 50 bosses",r:{ln:1,mon:20000}},
+ {id:"k100",k:"stat",s:"kills",n:100,ic:"👑",nm:"Переможи 100 босів|Defeat 100 bosses",r:{ln:1,jd:1}},
+ {id:"k200",k:"stat",s:"kills",n:200,ic:"👑",nm:"Переможи 200 босів|Defeat 200 bosses",r:{ln:2,mon:100000}},
+ {id:"k500",k:"stat",s:"kills",n:500,ic:"👑",nm:"Переможи 500 босів|Defeat 500 bosses",r:{ln:3,jd:3}},
+ {id:"k1000",k:"stat",s:"kills",n:1000,ic:"👑",nm:"Переможи 1000 босів|Defeat 1000 bosses",r:{ln:5,jd:8}},
+ {id:"r25",k:"stat",s:"rounds",n:25,ic:"⚔️",nm:"Зіграй 25 раундів|Play 25 rounds",r:{b:{x3:1}}},
+ {id:"r100",k:"stat",s:"rounds",n:100,ic:"⚔️",nm:"Зіграй 100 раундів|Play 100 rounds",r:{mon:50000,b:{bos:2}}},
+ {id:"r500",k:"stat",s:"rounds",n:500,ic:"⚔️",nm:"Зіграй 500 раундів|Play 500 rounds",r:{ln:1,jd:1}},
+ {id:"d7",k:"stat",s:"days",n:7,ic:"📅",nm:"Заходь у гру 7 різних днів|Play on 7 different days",r:{ln:1}},
+ {id:"d30",k:"stat",s:"days",n:30,ic:"📅",nm:"Заходь у гру 30 різних днів|Play on 30 different days",r:{ln:2,jd:2}},
+ {id:"f1",k:"stat",s:"friends",n:1,ic:"👥",nm:"Запроси 1 друга (3-й рівень)|Invite 1 friend (level 3)",r:{mon:5000,b:{x2:2}}},
+ {id:"f3",k:"stat",s:"friends",n:3,ic:"👥",nm:"Запроси 3 друзів (3-й рівень)|Invite 3 friends (level 3)",r:{ln:1,mon:30000}},
+ {id:"f5",k:"stat",s:"friends",n:5,ic:"👥",nm:"Запроси 5 друзів (3-й рівень)|Invite 5 friends (level 3)",r:{ln:2,jd:2}},
+ {id:"f10",k:"stat",s:"friends",n:10,ic:"👥",nm:"Запроси 10 друзів (3-й рівень)|Invite 10 friends (level 3)",r:{ln:4,jd:5}},
+ {id:"g3",k:"stat",s:"friends10",n:3,ic:"🏅",nm:"3 друзі досягли 10 рівня (потрібно для тату)|3 friends reached level 10 (needed for the tattoo)",r:{ln:2,jd:3}},
+ {id:"a30",k:"stat",s:"ads",n:30,ic:"📺",nm:"Подивись 30 реклам|Watch 30 ads",r:{ln:1}}];
+let QS=[...DEFQ];
+const QSTAT={kills:()=>S.kills,rounds:()=>S.rounds,days:()=>S.days,friends:()=>S.friends,friends10:()=>S.friends10,ads:()=>S.ads,blades:()=>S.blades.length};
+async function loadQuests(){let base=DEFQ;
+ try{const r=await fetch("data/quests.json?v="+Date.now());if(r.ok){const j=await r.json();if(Array.isArray(j)&&j.length)base=j}}catch(e){}
+ let extra=[];if(isReal()){try{extra=(await FB.getDocs(FB.collection(db,"offers"))).docs.map(d=>{const x=d.data();return{id:"o_"+d.id,k:"link",ic:x.ic||"🤝",nm:x.title||x.nm||"Partner",url:x.url,r:x.r||{mon:CFG.offerReward}}})}catch(e){}}
+ QS=[...base,...extra];if(cur=="friends")rFriends()}
+function rwChips(r){const a=[];if(r.mon)a.push(`<span class="chip !py-0.5">${fmt(r.mon)} ${CI.mon}</span>`);if(r.souls)a.push(`<span class="chip !py-0.5">${r.souls} ${ico("soul","⛩️")}</span>`);if(r.jd)a.push(`<span class="chip !py-0.5">${r.jd} ${CI.jd}</span>`);if(r.ln)a.push(`<span class="chip !py-0.5 text-neonGold">${r.ln} ${CI.ln}</span>`);
+ for(const k in(r.b||{})){const b=BS.find(x=>x[0]==k);a.push(`<span class="chip !py-0.5">${ico("b_"+k,b?b[1]:"⚡","h-3.5 w-3.5 inline-block object-contain align-middle")} ×${r.b[k]}</span>`)}return a.join("")}
+function giveR(r){S.mon+=r.mon||0;S.souls+=r.souls||0;S.jd+=r.jd||0;S.ln+=r.ln||0;for(const k in(r.b||{}))S.c[k]=(S.c[k]||0)+r.b[k];save();push();hdr();toast("🎁 "+t("Нагороду отримано!|Reward received!"))}
+function qOpen(id){const q=QS.find(x=>x.id==id);if(!q||S.qd[id])return;window.open(q.url,"_blank");S.qt[id]=Date.now();save();track("quest_open",{id});rFriends();setTimeout(()=>{if(cur=="friends")rFriends()},20500)}
+function qClaim(id){const q=QS.find(x=>x.id==id);if(!q||S.qd[id])return;
+ if(q.k=="link"){if(!S.qt[id]||Date.now()-S.qt[id]<2e4){toast(t("Спершу відкрий посилання й зачекай 20 секунд|Open the link first and wait 20 seconds"));return}}
+ else if((QSTAT[q.s]?QSTAT[q.s]():0)<q.n)return;
+ S.qd[id]=1;giveR(q.r);track("quest_claim",{id});rFriends()}
+const QG={link:"🤝 Партнери (підписки)|🤝 Partners (subscriptions)",kills:"👑 Боси|👑 Bosses",rounds:"⚔️ Раунди|⚔️ Rounds",days:"📅 Дні в грі|📅 Days played",friends:"👥 Друзі|👥 Friends",ads:"📺 Реклама|📺 Ads"};
+function questCard(q){const done=!!S.qd[q.id];let prog="",btn="";
+ if(q.k=="link"){const op=S.qt[q.id],w=Math.ceil((2e4-(Date.now()-(op||0)))/1000);
+  btn=done?`<button class="btn !bg-emerald-600" disabled>✓</button>`:!op?`<button class="btng" onclick="qOpen('${esc(q.id)}')">${t("Відкрити|Open")}</button>`:w>0?`<button class="btn" disabled>⏳ ${w}${t("с|s")}</button>`:`<button class="btng" onclick="qClaim('${esc(q.id)}')">${t("Забрати|Claim")}</button>`}
+ else{const v=Math.min(QSTAT[q.s]?QSTAT[q.s]():0,q.n);prog=`<div class="h-1.5 bg-inkDark rounded-full overflow-hidden mt-1.5"><div class="h-full bg-gradient-to-r from-neonGold to-crimsonRed" style="width:${v/q.n*100}%"></div></div><div class="text-[10px] text-gray-400 text-right">${fmt(v)}/${fmt(q.n)}</div>`;
+  btn=done?`<button class="btn !bg-emerald-600" disabled>✓</button>`:v>=q.n?`<button class="btng" onclick="qClaim('${esc(q.id)}')">${t("Забрати|Claim")}</button>`:`<button class="btn" disabled>${fmt(v)}/${fmt(q.n)}</button>`}
+ return `<div class="card !p-3 flex items-center gap-3"><div class="w-10 h-10 rounded-xl bg-inkDark flex items-center justify-center text-xl shrink-0">${q.ic||"🎯"}</div><div class="flex-1 min-w-0"><b class="text-[12px] leading-tight block">${esc(t(q.nm))}</b><div class="flex flex-wrap gap-1 mt-1 text-[10px]">${rwChips(q.r||{})}</div>${prog}</div><div class="shrink-0">${btn}</div></div>`}
+function questsHTML(){const gr={};QS.forEach(q=>{const g=q.k=="link"?"link":q.s=="friends10"?"friends":q.s;(gr[g]=gr[g]||[]).push(q)});
+ return `<h3 class="text-sm font-black uppercase text-center pt-3">${t("Партнери та завдання|Partners & tasks")}</h3><p class="text-[11px] text-gray-400 text-center">${t("Виконуй завдання — отримуй бустери, монети, нефрит і рідкісні ліхтарі 🏮.|Complete tasks for boosts, coins, jade and the rare lanterns 🏮.")}</p>`+
+ Object.keys(gr).map(g=>`<h4 class="text-xs font-black uppercase text-neonGold text-center pt-2">${t(QG[g]||g)}</h4>`+gr[g].map(questCard).join("")).join("")}
