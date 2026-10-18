@@ -5,14 +5,14 @@
 const CHF=["silver","gold","emerald"];
 const CUR=CI,ECUR=CI;     // іконки валют беруться з shop.js (свої PNG в img/ico)
 /* Таймерні: [ключ, іконка, назва, перезарядка мс, колір, ціна пропуску, валюта пропуску] 🔧 */
-const CK=[["s","🥈","Срібний|Silver",600000,"#9ca3af",5,"ln"],["g","🥇","Золотий|Gold",86400000,"#ffb703",12,"jd"],["d","💚","Смарагдовий|Emerald",259200000,"#10b981",30,"jd"]];   // срібний: кожні 10 хв, до 3 на день · золотий: раз на добу · смарагдовий: раз на 3 дні
+const CK=[["s","🥈","Срібний|Silver",600000,"#9ca3af",2,"ln"],["g","🥇","Золотий|Gold",86400000,"#ffb703",12,"jd"],["d","💚","Смарагдовий|Emerald",259200000,"#10b981",30,"jd"]];   // срібний: кожні 10 хв, до 3 на день · золотий: раз на добу · смарагдовий: раз на 3 дні
 /* Епох: [ключ, іконка, назва, валюта, ціна, колір, сила p] 🔧 */
 /* 37 сундуків епох + 3 таймерні = 40. [ключ, іконка, назва, валюта, ціна, колір, сила p]. PNG: img/chest/e_<ключ>.png, фон відкриття: img/chest/bg_<ключ>.png 🔧 */
 const _C=[["jomon","🏺","Дзьомон|Jomon"],["yayoi","🌾","Яйой|Yayoi"],["kofun","⛰️","Кофун|Kofun"],["asuka","🏯","Асука|Asuka"],["nara","🦌","Нара|Nara"],["heian","🪭","Хейан|Heian"],["kamakura","⚔️","Камакура|Kamakura"],["muromachi","🍵","Муромачі|Muromachi"],["sengoku","🔥","Сенгоку|Sengoku"],["azuchi","🏰","Адзуті-Момояма|Azuchi-Momoyama"],["edo","🏮","Едо|Edo"],["meiji","🌸","Мейдзі|Meiji"],["taisho","🎎","Тайсьо|Taisho"]];
 const _L=[["tengu","👺","Тенгу|Tengu"],["kitsune","🦊","Кіцуне|Kitsune"],["oni","👹","Оні|Oni"],["kappa","🐸","Каппа|Kappa"],["yukionna","❄️","Юкі-онна|Yuki-onna"],["ryujin","🐉","Рюдзін|Ryujin"],["sakura","🌺","Сакура|Sakura"],["ninja","🥷","Ніндзя|Ninja"],["samurai","🗡️","Самурай|Samurai"],["shogun","🎌","Сьогун|Shogun"],["geisha","🎭","Гейша|Geisha"],["torii","⛩️","Торії|Torii"]];
 const _J=[["showa","🚂","Сьова|Showa"],["heisei","📼","Хейсей|Heisei"],["reiwa","🪷","Рейва|Reiwa"],["neon","🌃","Неон-Токіо|Neon Tokyo"],["cyber","🤖","Кібер-Едо|Cyber Edo"],["cosmic","🌌","Космічний|Cosmic"],["dragon","🐲","Драконів|Dragon"],["phoenix","🦅","Фенікс|Phoenix"],["heaven","☁️","Небесний|Heavenly"],["thunder","⚡","Громовий|Thunder"],["abyss","🌀","Безодня|Abyss"],["imperial","👑","Імператорський|Imperial"]];
 const EC=[..._C.map((x,i)=>[x[0],x[1],x[2],"mon",Math.round(4000*2.2**i),`hsl(${i*27},70%,60%)`,i<5?3:i<10?4:5]),
- ..._L.map((x,i)=>[x[0],x[1],x[2],"ln",10+i*8,`hsl(${200+i*13},75%,62%)`,i<4?3:i<8?4:5]),
+ ..._L.map((x,i)=>[x[0],x[1],x[2],"ln",3+i*3,`hsl(${200+i*13},75%,62%)`,i<4?3:i<8?4:5]),
  ..._J.map((x,i)=>[x[0],x[1],x[2],"jd",8+i*10,`hsl(${280+i*8},80%,64%)`,i<3?4:5])];
 
 /* ЕКСКЛЮЗИВИ: кожен сундук епохи має свій клинок і свій фон, які випадають ТІЛЬКИ з нього (в магазині їх нема);
@@ -21,11 +21,11 @@ const EC=[..._C.map((x,i)=>[x[0],x[1],x[2],"mon",Math.round(4000*2.2**i),`hsl(${
  EC.forEach(e=>{for(const r of pref[e[6]]){const b=BL.find(x=>x.i>=10&&x.r==r&&!x.ex);if(b){b.ex=e[0];break}}
   for(const r of pref[e[6]]){const g=BG.find(x=>x.i>=6&&x.r==r&&!x.ex);if(g){g.ex=e[0];break}}})})();
 // Ваги: [монети, бустер, душі, ліхтарі, нефрит, знижка, тату, клинок/фон]
-const LOOT=[[52,34,6,8,0,.1,0,0],[38,24,10,10,6,.3,0,6],[24,18,12,12,14,.8,0,11],[30,20,12,12,8,1,0,12],[18,16,12,14,14,2,0,15],[10,12,12,14,22,3,0,16]];   // 6-й елемент = шанс знижки у %, зростає з ціною сундука: срібний 0.1% … найдорожчі 3%   // знижки — лише в найдорожчих (легендарних) сундуках і дуже рідко (≈0.4%); тату-купонів із сундуків більше нема
+const LOOT=[[52,34,6,3,0,.1,0,0],[38,24,10,4,6,.3,0,6],[24,18,12,5,14,.8,0,11],[30,20,12,5,8,1,0,12],[18,16,12,6,14,2,0,15],[10,12,12,6,22,3,0,16]];   // 4-й елемент — ліхтарі (дуже рідко), 6-й — знижки   // 6-й елемент = шанс знижки у %, зростає з ціною сундука: срібний 0.1% … найдорожчі 3%   // знижки — лише в найдорожчих (легендарних) сундуках і дуже рідко (≈0.4%); тату-купонів із сундуків більше нема
 // Рідкість клинка/фона [зв, рід, епіч, легенд, міф] — легендарні (💎) і міфічні (🏮) випадають лише з дорогих сундуків
 const RW=[[0,0,0,0,0],[60,30,9,1,0],[30,35,25,9,1],[40,35,20,4,1],[15,30,35,17,3],[0,15,35,35,15]];
 const CB=[350,2800,14000,5000,40000,300000];
-const SR=[[1,2],[1,3],[2,5],[2,4],[3,6],[5,10]],LR=[[1,2],[2,4],[4,8],[3,6],[6,12],[10,20]],JR=[[1,1],[1,1],[1,3],[1,2],[2,5],[5,12]];
+const SR=[[1,2],[1,3],[2,5],[2,4],[3,6],[5,10]],LR=[[1,1],[1,2],[1,3],[1,2],[2,4],[3,6]],JR=[[1,1],[1,1],[1,3],[1,2],[2,5],[5,12]];
 const DW=[[[5],[1]],[[5,10],[70,30]],[[5,10,20],[50,30,20]],[[5,10,20,30],[40,30,20,10]],[[5,10,20,30,40],[30,30,25,10,5]],[[10,20,30,40],[20,30,30,20]]];   // які знижки й з якою вагою для кожної сили сундука
 const pickDisc=p=>DW[p][0][wp(DW[p][1])];
 const RAR=["#6b7280","#3b82f6","#a855f7","#ffb703","#ff2a5f"];
@@ -93,6 +93,18 @@ function fxShoot(par,n,cols){for(let i=0;i<n;i++){const e=document.createElement
  e.style.cssText=`position:absolute;left:50%;top:50%;width:${z}px;height:${z}px;margin:-${z/2}px;border-radius:${R()<.5?"50%":"2px"};background:radial-gradient(circle,${cols[R()*cols.length|0]},transparent 75%);--dx:${Math.cos(a)*d}px;--ux:${Math.cos(a)*d*.6}px;--uy:${Math.sin(a)*d*.6-60-R()*60}px;--dy:${Math.sin(a)*d+160+R()*80}px;--rt:${(R()-.5)*720}deg;animation:shoot ${1.1+R()*.8}s ${R()*.15}s cubic-bezier(.2,.7,.4,1) forwards;pointer-events:none;opacity:0`;par.appendChild(e);setTimeout(()=>e.remove(),2400)}}
 function fxSplat(par,col,n){for(let i=0;i<n;i++){const e=document.createElement("span"),a=R()*6.283,d=70+R()*140,z=10+R()*26;     // бризки соку, як у Fruit Ninja
  e.style.cssText=`position:absolute;left:50%;top:50%;width:${z}px;height:${z*(.7+R()*.5)}px;margin:-${z/2}px;border-radius:50% 40% 55% 45%;background:${R()<.7?col:"#fff"};--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d}px;animation:splatOut ${.7+R()*.6}s ease-out forwards;pointer-events:none;opacity:0`;par.appendChild(e);setTimeout(()=>e.remove(),1600)}}
+function swipeOpen(rc,col){return new Promise(res=>{
+ let n=0,done=0,st=null;const chi=$("chi"),hal=$("chh");rc.style.touchAction="none";
+ rc.insertAdjacentHTML("beforeend",`<div id="chp" class="absolute left-0 right-0 bottom-10 text-center pointer-events-none"><div class="text-sm font-black text-neonGold tracking-[.2em] uppercase">${t("Свайпни сундук 3 рази!|Swipe the chest 3 times!")}</div><div class="flex gap-2 justify-center mt-2">${[0,1,2].map(i=>`<span id="pp${i}" class="w-3.5 h-3.5 rounded-full" style="background:rgba(255,255,255,.25);transition:all .3s"></span>`).join("")}</div><button id="chskip" class="hidden pointer-events-auto btn mt-3 !bg-inkDark border border-inkBorder">${t("Пропустити|Skip")}</button></div>`);
+ const fin=()=>{if(done)return;done=1;rc.removeEventListener("pointerdown",dn);rc.removeEventListener("pointermove",mv);const p=$("chp");if(p)p.remove();res()};
+ const hit=()=>{if(done)return;n++;const pp=$("pp"+(n-1));if(pp){pp.style.background=col;pp.style.boxShadow="0 0 10px "+col;pp.style.transform="scale(1.3)"}
+  chi.style.setProperty("--sc",1+.2*n);chi.style.animation="none";void chi.offsetWidth;chi.style.animation="jelly .5s ease-out forwards";
+  if(hal){hal.style.opacity=Math.min(1,.4+.25*n);hal.style.transform=`scale(${1+.3*n})`}
+  tone(180+n*130,.18,"triangle",.2);navigator.vibrate&&navigator.vibrate(20+n*15);if(n>=3)setTimeout(fin,450)};
+ const dn=e=>{const r=chi.getBoundingClientRect();st=(e.clientX<r.left-30||e.clientX>r.right+30||e.clientY<r.top-30||e.clientY>r.bottom+30)?null:{x:e.clientX,y:e.clientY,ok:0}};
+ const mv=e=>{if(!st||st.ok)return;if(Math.hypot(e.clientX-st.x,e.clientY-st.y)>46){st.ok=1;hit()}};
+ rc.addEventListener("pointerdown",dn);rc.addEventListener("pointermove",mv);rc.addEventListener("pointerup",()=>{st=null});
+ setTimeout(()=>{const b=$("chskip");if(b&&!done){b.classList.remove("hidden");b.onclick=fin}},4500)})}
 async function runChest(c,p,im){
  opening=1;hdr();track("chest_open",{key:c[0]});
  const it=rollItem(p,c[0]),N=46,X=40,strip=[...Array(N)].map((_,i)=>i==X?it:rollItem(p,c[0])),ro=$("ro"),col=c[4];
@@ -100,10 +112,10 @@ async function runChest(c,p,im){
  ro.innerHTML=`<div id="robg" class="absolute inset-0" style="opacity:0;transition:opacity 1.8s ease;background:linear-gradient(180deg,rgba(5,4,10,.5),rgba(5,4,10,.78)),url(img/chest/bg_${c[0]}.png) center/cover no-repeat,url(img/chest/open_bg.png) center/cover no-repeat"></div><div id="rcont" class="relative w-full max-w-md h-full flex items-center justify-center overflow-hidden"></div>`;
  const rc=$("rcont");
  // 1) скриня гойдається дедалі сильніше, світло просочується крізь щілини
- rc.innerHTML=`<div id="chw" class="relative" style="width:230px;height:230px"><div id="chh" style="position:absolute;inset:-60px;border-radius:50%;background:radial-gradient(circle,${col}aa,${col}00 66%);filter:blur(12px);opacity:.35;transition:opacity 1.4s,transform 1.4s"></div><div id="chi" class="relative h-full flex items-center justify-center text-8xl" style="animation:chestWob 1.5s ease-in forwards;filter:drop-shadow(0 8px 18px #000a) drop-shadow(0 0 22px ${col})">${IMG(im,c[1],"h-52 w-auto")}</div></div>`;
+ rc.innerHTML=`<div id="chw" class="relative" style="width:230px;height:230px"><div id="chh" style="position:absolute;inset:-60px;border-radius:50%;background:radial-gradient(circle,${col}aa,${col}00 66%);filter:blur(12px);opacity:.35;transition:opacity 1.4s,transform 1.4s"></div><div id="chi" class="relative h-full flex items-center justify-center text-8xl" style="--sc:1;animation:floatY 2s ease-in-out infinite;filter:drop-shadow(0 8px 18px #000a) drop-shadow(0 0 22px ${col})">${IMG(im,c[1],"h-52 w-auto")}</div></div>`;
  ro.classList.replace("hidden","flex");
  requestAnimationFrame(()=>requestAnimationFrame(()=>{const b=$("robg"),h=$("chh");if(b)b.style.opacity=1;if(h){h.style.opacity=1;h.style.transform="scale(1.5)"}}));
- for(let i=0;i<10;i++){tone(70+i*28,.12,"sine",.16+i*.012);navigator.vibrate&&navigator.vibrate(12+i*3);await sleep(150)}
+ await swipeOpen(rc,col);                    // 3 свайпи по сундуку: роздувається й лопає
  // 2) ВИБУХ: спалах, ударні кільця, промінь, діагональний «розріз» блиском, конфеті дугами
  rc.insertAdjacentHTML("beforeend",`<div style="position:absolute;inset:0;background:#fff;animation:flashOut .55s ease-out forwards;pointer-events:none"></div>
   <div style="position:absolute;left:50%;top:50%;width:200px;height:200px;margin:-100px;border-radius:50%;border:6px solid ${col};animation:ringOut .8s ease-out forwards;pointer-events:none"></div>
