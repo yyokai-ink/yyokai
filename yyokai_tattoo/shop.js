@@ -83,18 +83,16 @@ const KHC=["#3a3a44","#1f3b6b","#5b2a86","#8a6a00","#9b1030"],KGL={star:"✦",go
 let _kg=0;
 function katSVG(b,cls,style){const id="kg"+(_kg++),rc=RN[b.r][1],gold=b.r>2?"#ffd24a":"#c8ced8";
  const stops=b.fx=="rb"?'<stop offset="0" stop-color="#f00"/><stop offset=".25" stop-color="#fa0"/><stop offset=".45" stop-color="#ff0"/><stop offset=".65" stop-color="#0f0"/><stop offset=".85" stop-color="#0ff"/><stop offset="1" stop-color="#f0f"/>':b.fx=="void"?`<stop offset="0" stop-color="#000"/><stop offset=".65" stop-color="#07000f"/><stop offset="1" stop-color="${b.c2}"/>`:`<stop offset="0" stop-color="${b.c2}"/><stop offset=".55" stop-color="${b.c1}"/><stop offset="1" stop-color="#fff"/>`;
- const gl=KGL[b.fx],deco=gl?[[150,18],[190,24],[225,12],[262,11]].slice(0,2+(b.r>>1)).map(p=>`<text x="${p[0]}" y="${p[1]}" font-size="${9+b.r*2}" fill="${b.fx=="blood"?"#8b0000":b.c1=="#fff"||b.c1=="#ffffff"?"#ffe9a8":b.c1}" text-anchor="middle" opacity=".9">${gl}</text>`).join(""):"";
+ const gl=KGL[b.fx],deco=gl?[[160,20],[205,24],[250,12],[290,8]].slice(0,2+(b.r>>1)).map(p=>`<text x="${p[0]}" y="${p[1]}" font-size="${9+b.r*2}" fill="${b.fx=="blood"?"#8b0000":b.c1=="#fff"||b.c1=="#ffffff"?"#ffe9a8":b.c1}" text-anchor="middle" opacity=".9">${gl}</text>`).join(""):"";
  const wrap=[...Array(6)].map((_,i)=>`M${14+i*8} 17l6 12M${20+i*8} 17l-6 12`).join("");
- const ham=`M80 24.4 q7 -3.4 14 0${" t14 0".repeat(14)}`;
- return `<svg viewBox="0 0 300 46" xmlns="http://www.w3.org/2000/svg" class="${cls||"w-full h-auto"}" style="filter:drop-shadow(0 0 ${3+b.r*2}px ${b.fx=="rb"?"#f0f":rc});transform:rotate(-8deg);${style||""}"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="0">${stops}</linearGradient><linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".8"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".4"/></linearGradient></defs>
- <rect x="8" y="17" width="54" height="12" rx="5" fill="${KHC[b.r]}"/><path d="${wrap}" stroke="rgba(255,255,255,.3)" stroke-width="1.4" fill="none"/>
- <rect x="3" y="16" width="8" height="14" rx="3" fill="${gold}"/><circle cx="35" cy="23" r="2.6" fill="${gold}"/>
- <ellipse cx="65" cy="23" rx="3.8" ry="10.5" fill="${gold}" stroke="rgba(0,0,0,.45)" stroke-width="1"/><circle cx="65" cy="23" r="1.6" fill="#2a2a33"/>
- <rect x="68" y="19" width="8" height="8" rx="1.6" fill="#d9a441"/><rect x="70" y="20" width="1.6" height="6" fill="rgba(255,255,255,.45)"/>
- <path d="M76 20 Q190 15 296 2 L299 6 Q190 27 76 26 Z" fill="url(#${id})" stroke="rgba(255,255,255,.85)" stroke-width=".9"/>
- <path d="M76 20 Q190 15 296 2 L299 6 Q190 27 76 26 Z" fill="url(#${id}s)"/>
- <path d="${ham}" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.1" transform="rotate(-3.4 80 24)"/>
- <path d="M78 22.6 Q190 17.5 294 3.5" fill="none" stroke="rgba(255,255,255,.55)" stroke-width=".9"/>${deco}</svg>`}
+ const blade="M80 20.5 Q200 14 306 2 L311 6.5 Q200 28 80 27 Z";
+ return `<svg viewBox="0 0 314 46" xmlns="http://www.w3.org/2000/svg" class="${cls||"w-full h-auto"}" style="filter:drop-shadow(0 0 ${3+b.r*2}px ${b.fx=="rb"?"#f0f":rc});transform:rotate(-8deg);${style||""}"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="0">${stops}</linearGradient><linearGradient id="${id}v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".38"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".4"/></linearGradient></defs>
+ <rect x="8" y="17" width="56" height="12" rx="5.5" fill="${KHC[b.r]}"/><path d="${wrap}" stroke="rgba(255,255,255,.32)" stroke-width="1.4" fill="none"/>
+ <rect x="3" y="16" width="8" height="14" rx="3" fill="${gold}"/><circle cx="36" cy="23" r="2.6" fill="${gold}"/>
+ <ellipse cx="68" cy="23" rx="4.2" ry="11.5" fill="${gold}" stroke="rgba(0,0,0,.5)" stroke-width="1"/><circle cx="68" cy="23" r="1.7" fill="#2a2a33"/>
+ <rect x="72" y="19" width="9" height="8" rx="1.6" fill="#d9a441"/><rect x="74" y="20" width="1.6" height="6" fill="rgba(255,255,255,.45)"/>
+ <path d="${blade}" fill="url(#${id})"/><path d="${blade}" fill="url(#${id}v)"/>
+ <path d="${blade}" fill="none" stroke="rgba(255,255,255,.85)" stroke-width=".9" stroke-linejoin="round"/>${deco}</svg>`}
 const katI=b=>kat(b,"inline-block align-middle","width:2.2em;height:.5em");
 function kat(b,cls,style){const svg=katSVG(b,cls,style);return KATL.has(b.i)?`<img src="img/katana/${b.i}.png" data-h="${svg.replace(/"/g,"&quot;")}" onerror="this.outerHTML=this.dataset.h" class="${cls||"w-full h-auto"}" style="${style||""}">`:svg}
 const bar=b=>`<div class="py-3 px-1">${kat(b,"w-full h-auto")}</div>`;
