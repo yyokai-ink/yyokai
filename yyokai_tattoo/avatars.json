@@ -945,7 +945,7 @@
   "r": 4,
   "src": "chest",
   "cur": "ln",
-  "price": 168
+  "price": 42
  },
  {
   "id": "a097",
@@ -954,7 +954,7 @@
   "r": 4,
   "src": "buy",
   "cur": "ln",
-  "price": 186
+  "price": 47
  },
  {
   "id": "a098",
@@ -963,7 +963,7 @@
   "r": 4,
   "src": "ad",
   "cur": "ln",
-  "price": 204
+  "price": 51
  },
  {
   "id": "a099",
@@ -972,7 +972,7 @@
   "r": 4,
   "src": "buy",
   "cur": "ln",
-  "price": 222
+  "price": 55
  },
  {
   "id": "a100",
@@ -981,6 +981,6 @@
   "r": 4,
   "src": "chest",
   "cur": "ln",
-  "price": 60
+  "price": 15
  }
 ]
