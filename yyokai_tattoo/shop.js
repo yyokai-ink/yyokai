@@ -74,7 +74,7 @@ const BLD=[
 const FXI={n:"",gold:"✨",void:"🕳",rb:"🌈",fire:"🔥",ice:"❄️",bolt:"⚡",blood:"🩸",jade:"💠",sakura:"🌸",neon:"🔮",star:"⭐",rain:"🌧",wind:"🌬",paper:"📄",koi:"🐟",music:"🎵",rune:"ᚠ",glitch:"👾",moon:"🌙",lava:"🌋",aurora:"🌌",toxic:"☣️",crystal:"💎",ghost:"👻",comet:"☄️",sun:"☀️",galaxy:"🌠",dragon:"🐲"};
 const _k=[0,0,0,0,0];       // 22 зв · 24 рід · 24 епіч · 18 легенд · 12 міф. Ціна росте за номером усередині рідкості. ch=1 → лише з сундуків
 const BL=BLD.map((d,i)=>{const r=d[4]!=null?d[4]:i<14?0:i<30?1:i<44?2:i<54?3:4,k=_k[r]++;
- return{i,nm:d[0],c1:d[1],c2:d[2],fx:d[3],w:3+Math.min(i,60)*.05,sc:1+i*.055,r,cur:RC[r],price:Math.round([i?250*1.7**k:0,2e6*1.35**k,5e8*1.3**k,15+k*8,40+k*15][r])}});   // 🔧 ціни
+ return{i,nm:d[0],c1:d[1],c2:d[2],fx:d[3],w:3+Math.min(i,60)*.05,sc:1+i*.055,r,cur:RC[r],price:Math.round([i?250*1.7**k:0,2e6*1.35**k,5e8*1.3**k,15+k*8,10+k*5][r])}});   // 🔧 ціни
 const bname=b=>t(b.nm);
 const bcss=b=>b.fx=="rb"?"linear-gradient(90deg,#f00,#fa0,#ff0,#0f0,#0ff,#00f,#f0f)":b.fx=="void"?`linear-gradient(90deg,#000 30%,${b.c2})`:`linear-gradient(90deg,${b.c1},${b.c2})`;
 /* КАТАНА. Своя картинка: img/katana/<номер>.png (горизонтально, руків'я ліворуч, вістря праворуч, 512×128) + номер у data/katana.json.
@@ -82,28 +82,29 @@ const bcss=b=>b.fx=="rb"?"linear-gradient(90deg,#f00,#fa0,#ff0,#0f0,#0ff,#00f,#f
 const KHC=["#3a3a44","#1f3b6b","#5b2a86","#8a6a00","#9b1030"],KGL={star:"✦",gold:"✧",sakura:"✿",fire:"♨",ice:"❄",bolt:"ϟ",blood:"●",jade:"◆",neon:"✺",rain:"╎",wind:"≋",paper:"▭",koi:"◖",music:"♪",rune:"ᚠ",glitch:"▚",moon:"☾",lava:"●",aurora:"✧",toxic:"◍",crystal:"◆",ghost:"○",comet:"✦",sun:"☀",galaxy:"✦",dragon:"❖"};
 let _kg=0;
 function katSVG(b,cls,style){const id="kg"+(_kg++),rc=RN[b.r][1],gold=b.r>2?"#ffd24a":"#c8ced8";
- const stops=b.fx=="rb"?'<stop offset="0" stop-color="#f00"/><stop offset=".25" stop-color="#fa0"/><stop offset=".45" stop-color="#ff0"/><stop offset=".65" stop-color="#0f0"/><stop offset=".85" stop-color="#0ff"/><stop offset="1" stop-color="#f0f"/>':b.fx=="void"?`<stop offset="0" stop-color="#000"/><stop offset=".65" stop-color="#07000f"/><stop offset="1" stop-color="${b.c2}"/>`:`<stop offset="0" stop-color="${b.c2}"/><stop offset=".5" stop-color="${b.c1}"/><stop offset="1" stop-color="#fff"/>`;
- const gl=KGL[b.fx],deco=gl?[[130,16],[165,44],[200,12],[232,36]].slice(0,2+(b.r>>1)).map(p=>`<text x="${p[0]}" y="${p[1]}" font-size="${9+b.r*2}" fill="${b.fx=="blood"?"#8b0000":b.c1=="#fff"||b.c1=="#ffffff"?"#ffe9a8":b.c1}" text-anchor="middle" opacity=".9">${gl}</text>`).join(""):"";
- return `<svg viewBox="0 0 270 60" xmlns="http://www.w3.org/2000/svg" class="${cls||"w-full h-auto"}" style="filter:drop-shadow(0 0 ${3+b.r*2}px ${b.fx=="rb"?"#f0f":rc});${style||""}"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="0">${stops}</linearGradient><linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></linearGradient></defs>
- <path d="M9 23 Q9 20 13 20 L80 21 Q86 21 86 25 L86 35 Q86 39 80 39 L13 40 Q9 40 9 37 Z" fill="${KHC[b.r]}"/>
- <path d="M18 21l9 18M32 21l9 18M46 21l9 18M60 21l9 18M74 21l8 17M27 21l-9 18M41 21l-9 18M55 21l-9 18M69 21l-9 18" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>
- <rect x="8" y="19" width="8" height="22" rx="3" fill="${gold}"/><circle cx="44" cy="30" r="3.4" fill="${gold}"/>
- <path d="M86 12 Q96 10 98 18 L98 42 Q96 50 86 48 Q81 30 86 12Z" fill="${gold}" stroke="rgba(0,0,0,.45)" stroke-width="1"/><circle cx="91" cy="30" r="3" fill="#2a2a33"/>
- <rect x="98" y="23" width="9" height="14" rx="2" fill="#d9a441"/><rect x="100" y="24" width="2" height="12" fill="rgba(255,255,255,.4)"/>
- <path d="M107 24 Q190 17 262 4 L267 8 Q200 38 107 37 Z" fill="url(#${id})" stroke="rgba(255,255,255,.8)" stroke-width="1"/>
- <path d="M107 24 Q190 17 262 4 L267 8 Q200 38 107 37 Z" fill="url(#${id}s)"/>
- <path d="M112 34 q9 -6 18 0 t18 0 t18 0 t18 0 t18 0 t18 0 t18 0 t18 0" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="1.3"/>
- <path d="M107 24 Q190 17 262 4" fill="none" stroke="#fff" stroke-width="1.4" opacity=".9"/>${deco}</svg>`}
+ const stops=b.fx=="rb"?'<stop offset="0" stop-color="#f00"/><stop offset=".25" stop-color="#fa0"/><stop offset=".45" stop-color="#ff0"/><stop offset=".65" stop-color="#0f0"/><stop offset=".85" stop-color="#0ff"/><stop offset="1" stop-color="#f0f"/>':b.fx=="void"?`<stop offset="0" stop-color="#000"/><stop offset=".65" stop-color="#07000f"/><stop offset="1" stop-color="${b.c2}"/>`:`<stop offset="0" stop-color="${b.c2}"/><stop offset=".55" stop-color="${b.c1}"/><stop offset="1" stop-color="#fff"/>`;
+ const gl=KGL[b.fx],deco=gl?[[150,18],[190,24],[225,12],[262,11]].slice(0,2+(b.r>>1)).map(p=>`<text x="${p[0]}" y="${p[1]}" font-size="${9+b.r*2}" fill="${b.fx=="blood"?"#8b0000":b.c1=="#fff"||b.c1=="#ffffff"?"#ffe9a8":b.c1}" text-anchor="middle" opacity=".9">${gl}</text>`).join(""):"";
+ const wrap=[...Array(6)].map((_,i)=>`M${14+i*8} 17l6 12M${20+i*8} 17l-6 12`).join("");
+ const ham=`M80 24.4 q7 -3.4 14 0${" t14 0".repeat(14)}`;
+ return `<svg viewBox="0 0 300 46" xmlns="http://www.w3.org/2000/svg" class="${cls||"w-full h-auto"}" style="filter:drop-shadow(0 0 ${3+b.r*2}px ${b.fx=="rb"?"#f0f":rc});transform:rotate(-8deg);${style||""}"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="0">${stops}</linearGradient><linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".8"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".4"/></linearGradient></defs>
+ <rect x="8" y="17" width="54" height="12" rx="5" fill="${KHC[b.r]}"/><path d="${wrap}" stroke="rgba(255,255,255,.3)" stroke-width="1.4" fill="none"/>
+ <rect x="3" y="16" width="8" height="14" rx="3" fill="${gold}"/><circle cx="35" cy="23" r="2.6" fill="${gold}"/>
+ <ellipse cx="65" cy="23" rx="3.8" ry="10.5" fill="${gold}" stroke="rgba(0,0,0,.45)" stroke-width="1"/><circle cx="65" cy="23" r="1.6" fill="#2a2a33"/>
+ <rect x="68" y="19" width="8" height="8" rx="1.6" fill="#d9a441"/><rect x="70" y="20" width="1.6" height="6" fill="rgba(255,255,255,.45)"/>
+ <path d="M76 20 Q190 15 296 2 L299 6 Q190 27 76 26 Z" fill="url(#${id})" stroke="rgba(255,255,255,.85)" stroke-width=".9"/>
+ <path d="M76 20 Q190 15 296 2 L299 6 Q190 27 76 26 Z" fill="url(#${id}s)"/>
+ <path d="${ham}" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.1" transform="rotate(-3.4 80 24)"/>
+ <path d="M78 22.6 Q190 17.5 294 3.5" fill="none" stroke="rgba(255,255,255,.55)" stroke-width=".9"/>${deco}</svg>`}
 const katI=b=>kat(b,"inline-block align-middle","width:2.2em;height:.5em");
 function kat(b,cls,style){const svg=katSVG(b,cls,style);return KATL.has(b.i)?`<img src="img/katana/${b.i}.png" data-h="${svg.replace(/"/g,"&quot;")}" onerror="this.outerHTML=this.dataset.h" class="${cls||"w-full h-auto"}" style="${style||""}">`:svg}
-const bar=b=>kat(b,"w-full h-auto");
+const bar=b=>`<div class="py-3 px-1">${kat(b,"w-full h-auto")}</div>`;
 
 /* ФОНИ (100) = 20 локацій × 5 станів; рідкість = стан: Світанок зв · День рід · Захід епіч · Ніч легенд · Туман міф. PNG: img/bg/<номер>.png */
 const LOC=[["Храм Асука|Asuka Temple","🏯"],["Ліс Нари|Nara Forest","🦌"],["Бамбуковий гай|Bamboo Grove","🎋"],["Гора Фудзі|Mount Fuji","🗻"],["Ісукусіма|Itsukushima","⛩️"],["Місто Едо|Edo City","🏮"],["Замок Хімедзі|Himeji Castle","🏰"],["Сад каміння|Rock Garden","🪨"],["Водоспад|Waterfall","🌊"],["Алея сакур|Sakura Alley","🌸"],["Цвинтар йокаїв|Yokai Graveyard","💀"],["Лисячі врата|Fox Gates","🦊"],["Печера Оні|Oni Cave","👹"],["Небо дракона|Dragon Sky","🐉"],["Острів Рюгу|Ryugu Isle","🐚"],["Пік Тенгу|Tengu Peak","👺"],["Нічний ринок|Night Market","🍜"],["Сніжне село|Snow Village","❄️"],["Вулкан Асо|Mount Aso","🌋"],["Місячний палац|Moon Palace","🌙"]];
 const VAR=["Світанок|Dawn","День|Day","Захід|Sunset","Ніч|Night","Туман|Mist"];
 const BG=Array.from({length:100},(_,i)=>{const l=i%20,v=i/20|0,h=(l*18+v*7)%360,P=[[h+20,70,38,60,12],[h,60,40,50,14],[(h+340)%360,80,42,55,10],[(h+220)%360,60,24,60,6],[h,15,34,25,12]][v],[a,b]=LOC[l][0].split("|"),[c,d]=VAR[v].split("|");
  return{i,nm:a+" · "+c+"|"+b+" · "+d,r:v,cur:RC[v],ic:LOC[l][1],g:[`hsl(${P[0]},${P[1]}%,${P[2]}%)`,`hsl(${(P[0]+25)%360},${P[3]}%,${P[4]}%)`],
-  price:Math.round([i?1500*1.5**l:0,5e6*1.35**l,3e9*1.3**l,10+l*5,30+l*10][v])}});   // 🔧 ціни
+  price:Math.round([i?1500*1.5**l:0,5e6*1.35**l,3e9*1.3**l,10+l*5,10+l*4][v])}});   // 🔧 ціни
 
 /* ПОКРАЩЕННЯ: [id, іконка, назва, опис, база, —, макс. рівень, дохід/с]. Ціна рівня = база × 2^рівень */
 const UP=[
