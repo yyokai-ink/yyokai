@@ -44,7 +44,8 @@ html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .8s 
 .logo-s{font-family:'Lilita One',Georgia,serif;font-size:22px;letter-spacing:.12em;background:linear-gradient(180deg,#fff,#ffc94d,#ff5c3a);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:.6px #2a0612}
 .emj{height:1.15em;width:1.15em;display:inline-block;vertical-align:-.2em;object-fit:contain}
 @keyframes chestWob{0%{transform:rotate(0) scale(1)}15%{transform:rotate(-4deg) scale(1.03,.97)}30%{transform:rotate(5deg) scale(.97,1.04)}45%{transform:rotate(-7deg) scale(1.05,.95)}60%{transform:rotate(8deg) scale(.95,1.06)}75%{transform:rotate(-10deg) scale(1.08,.93)}90%{transform:rotate(11deg) scale(1.1,.92)}100%{transform:rotate(0) scale(1.15)}}
-@keyframes chestPop{0%{transform:scale(1.15);opacity:1}40%{transform:scale(1.6);opacity:1}100%{transform:scale(2.3);opacity:0}}
+@keyframes chestPop{0%{transform:scale(1.6)}30%{transform:scale(1.95);opacity:1}100%{transform:scale(2.7);opacity:0}}
+@keyframes jelly{0%{transform:scale(var(--sc))}30%{transform:scale(calc(var(--sc)*1.2),calc(var(--sc)*.84))}60%{transform:scale(calc(var(--sc)*.9),calc(var(--sc)*1.12))}100%{transform:scale(var(--sc))}}
 @keyframes flashOut{0%{opacity:.95}100%{opacity:0}}
 @keyframes ringOut{0%{transform:scale(.2);opacity:.9}100%{transform:scale(3.4);opacity:0}}
 @keyframes beamUp{0%{transform:scaleY(0);opacity:.95}60%{opacity:.7}100%{transform:scaleY(1);opacity:0}}
