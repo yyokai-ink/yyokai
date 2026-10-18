@@ -89,9 +89,15 @@ function drawBG(w,h){
  cx.drawImage(bgC,0,0,w,h);
 }
 const YC={"🦊":"#ff8a2b","👹":"#e11d48","👺":"#dc2626","🐸":"#4ade80","💀":"#e5e7eb","🐉":"#facc15"};
-function splat(f,x,y,c,e){if(f.p.length>230)return;const g=GR(f);       // кров: видовжені бризки успадковують рух йокая й падають з ним
- for(let i=0;i<16;i++){const a=R()*6.283,s=60+R()*260,col=R()<.75?["#b91c1c","#991b1b","#dc2626","#7f1d1d"][R()*4|0]:c;
-  f.p.push({x,y,vx:(e?e.vx*.6:0)+Math.cos(a)*s,vy:(e?e.vy*.5:0)+Math.sin(a)*s-40,l:1.6,c:col,s:1.6+R()*3.4,sh:"v",g:g*.9,rot:0,vr:0})}}
+function splat(f,x,y,c,e,ang){if(f.p.length>200)return;const g=GR(f),ex=e?e.vx*.6:0,ey=e?e.vy*.5:0,RB=()=>["#b91c1c","#991b1b","#dc2626","#7f1d1d"][R()*4|0],perp=(ang||0)+Math.PI/2;
+ for(let i=0;i<14;i++){const a=perp+(i%2?0:Math.PI)+(R()-.5)*.8,s=220+R()*320;                 // віяла довгих бризок у обидва боки від лінії розрізу
+  f.p.push({x,y,vx:ex+Math.cos(a)*s,vy:ey+Math.sin(a)*s-30,l:1.3,c:RB(),s:1.4+R()*2.6,sh:"v",g:g*.8,rot:0,vr:0})}
+ for(let i=0;i<7;i++){const a=R()*6.283,s=70+R()*210;                                           // великі краплі-«сльози»
+  f.p.push({x,y,vx:ex+Math.cos(a)*s,vy:ey+Math.sin(a)*s-60,l:1.7,c:RB(),s:3.5+R()*4.5,sh:"b",g:g*1.1,rot:0,vr:0})}
+ for(let i=0;i<16;i++){const a=R()*6.283,s=120+R()*380;                                         // кривавий туман
+  f.p.push({x,y,vx:ex+Math.cos(a)*s,vy:ey+Math.sin(a)*s,l:.6,c:RB(),s:1+R()*1.2,sh:"o",g:0,rot:0,vr:0})}
+ for(let i=0;i<5;i++)f.p.push({x:x+(R()-.5)*18,y:y+(R()-.5)*18,vx:ex*.95+(R()-.5)*40,vy:ey*.95+(R()-.5)*40,l:2.1,c:RB(),s:2.5+R()*3,sh:"b",g:g*.95,rot:0,vr:0})   // краплі падають разом із йокаєм
+}
 function burst(f,x,y,n,c){if(f.p.length>140)return;for(let i=0;i<n;i++){const a=R()*6.283,s=120+R()*380;f.p.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:1,c:c||(R()<.5?"#ffb703":"#ff2a5f")})}}
 const pop=(f,x,y,s,big)=>f.x.push({x,y,s,l:1,big});
 function spawn(f,st,fs){
@@ -128,7 +134,7 @@ function multi(f,n,now,e){      // 3+ йокаїв одним свайпом —
 function cut(f,e,ang,now){
  if(e.sc)return hitScroll(f,e,ang);
  e.cut=1;f.fx.push({x:e.x,y:e.py,a:ang,l:1});
- splat(f,e.x,e.py,YC[e.y]||"#ff2a5f",e);
+ splat(f,e.x,e.py,YC[e.y]||"#ff2a5f",e,ang);
  if(f.bo&&f.bo.ty=="spl"&&!e.sp)for(const s of[-1,1])f.e.push({y:e.y,dg:e.y,sc:0,sp:1,r:e.r*.7,x:e.x,py:e.py,vx:e.vx+s*140,vy:Math.min(e.vy,0)-220,rot:0,vr:e.vr,cut:0});
  if(f.bo&&f.bo.ty=="rch")burst(f,e.x,e.py,6,"#ffd24a");
  for(const s of[1,-1])f.hv.push({y:e.y,r:e.r,x:e.x,py:e.py,vx:e.vx-Math.sin(ang)*s*190,vy:e.vy*.4+Math.cos(ang)*s*190,rot:e.rot,vr:e.vr+s*3,cl:ang-e.rot,s,l:1.4});
@@ -368,6 +374,7 @@ function upd(f,raw,now){
  f.p=f.p.filter(p=>p.l>0);
  for(const p of f.p){cx.globalAlpha=Math.max(0,Math.min(1,p.l));cx.fillStyle=p.c;
   if(!p.sh){cx.fillRect(p.x-1.5,p.y-1.5,3,3);continue}
+  if(p.sh=="b"){const aa=Math.atan2(p.vy,p.vx);cx.fillStyle=p.c;cx.save();cx.translate(p.x,p.y);cx.rotate(aa);cx.beginPath();cx.arc(0,0,p.s,-Math.PI/2,Math.PI/2);cx.lineTo(-p.s*3,0);cx.closePath();cx.fill();cx.restore();continue}
   if(p.sh=="v"){cx.strokeStyle=p.c;cx.lineCap="round";cx.lineWidth=p.s;cx.beginPath();cx.moveTo(p.x,p.y);cx.lineTo(p.x-p.vx*.05,p.y-p.vy*.05);cx.stroke();cx.fillStyle=p.c;cx.beginPath();cx.arc(p.x,p.y,p.s*.75,0,6.3);cx.fill();continue}
   const s=p.s||3;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot||0);cx.beginPath();
   if(p.sh=="s"){for(let i=0;i<10;i++){const r=i%2?s*.45:s,a=i*Math.PI/5-Math.PI/2;cx.lineTo(Math.cos(a)*r,Math.sin(a)*r)}cx.closePath();cx.fill()}
