@@ -35,7 +35,7 @@ const icoH=(n,h,c)=>ICOK.has(n)?`<img src="img/ico/${n}.png" class="${c}" alt=""
 /* ── УНІВЕРСАЛЬНА ЗАМІНА ЕМОДЗІ НА PNG ──
    Поклади img/emoji/<код>.png (код = кодпоінт у hex, напр. 🎁 → 1f381.png, ⛩️ → 26e9.png). Гра сама знайде файл і замінить цей емодзі
    в усіх текстах, кнопках, нагородах і на canvas. Список кодів, які є в грі, — EMALL нижче й у inkai-assets.md */
-const EMALL=["1f3ad","1f3ee","1f48e","1f381","26e9","1f3f7","1f98a","1f479","1f409","1f527","1f47a","1f438","1f977","1f4dc","2744","1f480","1f4fa","26a1","1f514","1f451","23f3","2694","2716","1f338","2b50","1f525","1f573","1f319","2705","1f50a","1f465","1f3c6","1f4f2","1fa99","1f47b","1f517","1f32a","1f5e1","1f49a","1f1fa-1f1e6","1f4a4","1faa8","1f4b0","1f9db","2600","2728","2764","1f507","274c","1f431","1f3b0","26d4","1f308","1f30b","1f30c","1f432","1f3ef","1f98c","1f3f0","1f4a5","1f6e1","1f300","1f3af","1f570","1f680","23ed","23f1","1f5bc","1f4c8","1f4e3","1f31f","1f54a","1fa9e","1f41d","1f388","1f9ec","1f343","1f98e","26a0","2601","2604","2623","2668","2702","25b6","1f1ec-1f1e7","1f50d","1f4e7","1f5d3","1f7e2","1fa78","1f4a0","1f52e","1f327","1f32c","1f4c4","1f41f","1f3b5","1f47e","1f320","1f38b","1f5fb","1f30a","1f41a","1f35c","1f3b2","1f4e6","1f634","1f9ff","1f4ab","1f497","1f6ab","1f340","1f948","1f947","1f3fa","1f33e","26f0","1faad","1f375","1f38e","1f33a","1f38c","1f682","1f4fc","1fab7","1f303","1f916","1f985","1f39f","1f987"];
+const EMALL=["1f3ad","1f3ee","1f48e","1f381","26e9","1f451","2694","1f4fa","1f465","1f3f7","1f98a","1f479","1f409","1f527","1f47a","1f438","1f977","26a1","1f4dc","2744","1f480","23f3","1f514","2716","1f338","2b50","1f525","1f573","1f319","2705","1f50a","1f3c6","1f4f2","1fa99","1f4c5","1f47b","1f517","1f32a","1f5e1","1f49a","1f1fa-1f1e6","1f4a4","1f3c5","1f91d","1f3af","1faa8","1f4b0","1f9db","2600","2728","2764","1f507","274c","25b6","1f431","1f3b0","26d4","1f3b5","1f916","1f308","1f30b","1f30c","1f432","1f3ef","1f98c","1f3f0","1f4a5","1f6e1","1f300","1f570","1f680","23ed","23f1","1f5bc","1f4c8","1f4e3","1f31f","1f54a","1fa9e","1f41d","1f388","1f9ec","1f343","1f98e","1f4a8","26a0","2601","2604","2623","2668","2702","2708","1f1ec-1f1e7","1f50d","1f4e7","1f5d3","1f7e2","1f4f8","1fa78","1f4a0","1f52e","1f327","1f32c","1f4c4","1f41f","1f47e","1f320","1f38b","1f5fb","1f30a","1f41a","1f35c","1f3b2","1f4e6","1f634","1f9ff","1f4ab","1f497","1f6ab","1f340","1f948","1f947","1f3fa","1f33e","26f0","1faad","1f375","1f38e","1f33a","1f38c","1f682","1f4fc","1fab7","1f303","1f985","1f39f","1f987"];
 let EMJ=new Set();const EIM={};
 const EMRX=/(?:\p{Regional_Indicator}{2}|\p{Extended_Pictographic}(?:\uFE0F|\p{Emoji_Modifier})?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F|\p{Emoji_Modifier})?)*)/gu;
 const emCode=s=>[...s].map(c=>c.codePointAt(0).toString(16)).filter(h=>h!="fe0f").join("-");
@@ -85,7 +85,7 @@ const def={
  c:{x2:0,x3:0,plus:0,fz:0,chg:0,br:0,mb:0,sl0:0,bh0:0,shd:0,st:0,cmb:0,bos:0,wide:0,slw:0,lx:0,sx:0,m10:0,m30:0,mx5:0,hrt:0,fz15:0,nsc:0,bhf:0,sc2:0,lck:0},
  ck:{s:0,sn:0,sd:"",g:0,d:0},bp:{},bpd:"",
  adw:{n:0,d:"",t:0},                        // стрілка-реклама
- avs:[],pzUsed:[],tot:0,lm:0,master:null,masterAt:0,tatGot:0,pt:0,wk:"",pw:[0,0],fcm:"",bossWins:0,                       // для складніших умов тату (див. social.js)
+ avs:[],pzUsed:[],qd:{},qt:{},friends10:0,tot:0,lm:0,master:null,masterAt:0,tatGot:0,pt:0,wk:"",pw:[0,0],fcm:"",bossWins:0,                       // для складніших умов тату (див. social.js)
  cp:[],claimed:[],friends:0,offers:{}
 };
 let S={...def,...JSON.parse(localStorage.ink_s5||"{}")};S.c={...def.c,...S.c};S.ck={...def.ck,...S.ck};S.adw={...def.adw,...S.adw};S.bp=S.bp||{};
@@ -198,7 +198,7 @@ function adwGo(){const s=adwSt();
  if(s.n>=CFG.adw.max){toast(t("Ліміт на сьогодні. Повертайся завтра!|Daily limit. Come back tomorrow!"));return}
  if(!s.ok){toast(t("Наступна нагорода через|Next reward in")+" "+tm(s.left));return}
  ad("📺 "+t("Нагорода: 💎 · 🏮 · ×2 монет на 10–30 с|Prize: 💎 · 🏮 · ×2 coins for 10–30s"),()=>{S.adw.n++;S.adw.t=Date.now();adwReward()},"🎁",0)}
-function adwReward(){const w=wp([34,22,14,16,9,5]);let m;      // монети · ×2/10с · ×2/30с · 🏮 · 💎 (рідко)
+function adwReward(){const w=wp([38,24,16,7,9,6]);let m;      // монети · ×2/10с · ×2/30с · 🏮 · 💎 (рідко)
  if(w==0){const a=Math.round(800*(1+S.blade*.15)*(.7+R()*.6));S.mon+=a;m=fmt(a)+" 文"}
  else if(w==1){S.c.m10++;m=t("Бустер: ×2 монет на 10 с|Boost: ×2 coins for 10s")}
  else if(w==2){S.c.m30++;m=t("Бустер: ×2 монет на 30 с|Boost: ×2 coins for 30s")}
