@@ -5,7 +5,7 @@
 const cv=$("cv"),cx=cv.getContext("2d",{alpha:false});let W,H,D=1,SAT=0,G={on:0},ptr={},bgC=null,FLP=0;
 function rs(){D=Math.min(2,devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*D;cv.height=H*D;cx.setTransform(D,0,0,D,0,0);SAT=$("sat").offsetHeight;bgC=null}
 addEventListener("resize",()=>{if(!$("gm").classList.contains("hidden"))rs()});
-const COIN_K=.6;   // 🔧 загальний множник заробітку монет (менше = повільніше)
+const COIN_K=.5;   // 🔧 загальний множник заробітку монет (менше = повільніше)
 const GR=f=>f.h*1.05*(1-.02*U("slow"))*(G.gs||1);                           // 🔧 гравітація
 
 // ═══ ГОЛОВНИЙ ЕКРАН ═══
@@ -134,7 +134,6 @@ function multi(f,n,now,e){      // 3+ йокаїв одним свайпом —
 function cut(f,e,ang,now){
  if(e.sc)return hitScroll(f,e,ang);
  e.cut=1;f.fx.push({x:e.x,y:e.py,a:ang,l:1});
- splat(f,e.x,e.py,YC[e.y]||"#ff2a5f",e,ang);
  if(f.bo&&f.bo.ty=="spl"&&!e.sp)for(const s of[-1,1])f.e.push({y:e.y,dg:e.y,sc:0,sp:1,r:e.r*.7,x:e.x,py:e.py,vx:e.vx+s*140,vy:Math.min(e.vy,0)-220,rot:0,vr:e.vr,cut:0});
  if(f.bo&&f.bo.ty=="rch")burst(f,e.x,e.py,6,"#ffd24a");
  for(const s of[1,-1])f.hv.push({y:e.y,r:e.r,x:e.x,py:e.py,vx:e.vx-Math.sin(ang)*s*190,vy:e.vy*.4+Math.cos(ang)*s*190,rot:e.rot,vr:e.vr+s*3,cl:ang-e.rot,s,l:1.4});
@@ -221,12 +220,12 @@ function drawBoss(f,b,dt,now){
  cx.globalAlpha=1;cx.shadowColor=C;cx.shadowBlur=14;sprB(cx,b,sc);cx.shadowBlur=0;
  cx.restore()}
 function bossFlee(f,b){b.gone=1;pop(f,f.bx,f.by,t("Втік! 💨|Escaped! 💨"),1);burst(f,f.bx,f.by,16,"#9ca3af");f.bo=null;f.fz=0;f.nb=f.cuts+10;track("boss_flee",{boss:b.ty})}
-function bossBurst(f,b){      // рівно 4 уламки в 4 діагональні боки, кривава смуга за кожним
- const n=Math.SQRT1_2;[[1,1],[1,-1],[-1,1],[-1,-1]].forEach(d=>{const qd=(d[0]>0?1:0)|(d[1]>0?2:0),v=520;
-  f.hv.push({y:b.y,bt:b.ty,r:b.r,x:f.bx,py:f.by,vx:d[0]*v*n,vy:d[1]*v*n-60,rot:0,vr:d[0]*d[1]*1.6,cl:0,qd,s:1,l:1.4});
-  f.bs.push({x:f.bx,y:f.by,a:Math.atan2(d[1],d[0]),t:0});
-  for(let k=0;k<10;k++)f.p.push({x:f.bx,y:f.by,vx:d[0]*(180+R()*380)*n+(R()-.5)*90,vy:d[1]*(180+R()*380)*n+(R()-.5)*90,l:1.5,c:["#b91c1c","#7f1d1d","#dc2626"][R()*3|0],s:2+R()*4,sh:"v",g:200,rot:0,vr:0})});
- f.sh=22;f.fa=.45;navigator.vibrate&&navigator.vibrate([40,30,80])}
+function bossBurst(f,b){      // бос розривається на 4 рівні шматки (чверті), що з обертанням стрімко відлітають; за ними — іскри
+ const n=Math.SQRT1_2;[[1,1],[1,-1],[-1,1],[-1,-1]].forEach(d=>{const qd=(d[0]>0?1:0)|(d[1]>0?2:0),v=820;
+  f.hv.push({y:b.y,bt:b.ty,r:b.r,x:f.bx,py:f.by,vx:d[0]*v*n,vy:d[1]*v*n-120,rot:0,vr:d[0]*d[1]*6,cl:0,qd,s:1,l:1.7});
+  const an=Math.atan2(d[1],d[0]);
+  for(let k=0;k<9;k++)f.p.push({x:f.bx,y:f.by,vx:d[0]*(240+R()*520)*n+(R()-.5)*120,vy:d[1]*(240+R()*520)*n+(R()-.5)*120,l:1.1,c:["#fff3b0","#ffffff","#ffd24a"][R()*3|0],s:5+R()*8,sh:k%3?"l":"s",g:0,rot:an,vr:k%3?0:6})});
+ f.sh=24;f.fa=.5;navigator.vibrate&&navigator.vibrate([40,30,80])}
 function frz(f){f.fz=1;f.cr=[];f.fp=0;f.ice=Array.from({length:46},()=>({e:R()*4|0,p:R(),l:30+R()*90,w:10+R()*18}))}
 // Заморозка: лід росте від країв, екран світліє до крижаного, при розбитті — тане
 function frost(f,raw){f.fk=f.fz?Math.min(1,(f.fk||0)+raw*1.4):Math.max(0,(f.fk||0)-raw*2.2);const k=f.fk;if(k<=0||!f.ice)return;
@@ -453,7 +452,7 @@ function endRound(mult){
  let m=mult||1;if(S.c.x2>0){m*=2;S.c.x2--}if(S.c.x3>0){m*=3;S.c.x3--}
  const coins=Math.round((best+ex)*COIN_K*(1+.03*U("end"))*(G.mb||1)*(shogunNight()?2:1))*m;
  const ln=G.lx?2:R()<.03?1:0;                                               // 🏮 рідко; бустер «×2 ліхтарі» гарантує 2
- track("round_end",{score:best,sec:Math.round(G.el),mode:G.m,revives:G.rv||0,bosses:G.f.reduce((s,f)=>s+f.kills,0)});S.mon+=coins;S.xp+=best;S.ln+=ln;if(G.sx)S.souls++;save();push();
+ S.rc=S.rc?S.rc*.7+coins/m*.3:coins/m;track("round_end",{score:best,sec:Math.round(G.el),mode:G.m,revives:G.rv||0,bosses:G.f.reduce((s,f)=>s+f.kills,0)});S.mon+=coins;S.xp+=best;S.ln+=ln;if(G.sx)S.souls++;save();push();
  G.res={sc,coins,m,ln,bc:R()<.05+.02*G.f.reduce((s,f)=>s+f.kills,0)+(G.lk?.2:0)};       // шанс сундука-знахідки
  if(S.rounds%CFG.adEvery==0)ad(CFG.promo.text,showRes,"",1);else showRes();
 }
