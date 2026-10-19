@@ -5,7 +5,7 @@ const firebaseConfig={apiKey:"PASTE_API_KEY",authDomain:"PASTE_PROJECT_ID.fireba
 const CFG={
  hero:{name:"INKAI",quote:"Кожна лінія — це історія. Кожен йокай — частина неї.|Every line tells a story. Every yokai is a part of her."},
  promo:{text:"Підпишись на Instagram YYOKAI|Follow YYOKAI on Instagram",url:"https://instagram.com/yyokai.tattoo"},
- adEvery:3,offerReward:1000,offlineBaseMin:120,adminHash:"__HASH__",
+ adEvery:3,offerReward:1000,offlineBaseMin:90,adminHash:"__HASH__",
  adw:{max:3,gap:600000},
  vapidKey:"PASTE_VAPID_KEY",   // Firebase → Project settings → Cloud Messaging → Web push certificates
  shogun:{day:6,from:20,to:23},   // «Ніч Сьогуна»: субота 20:00–23:00 за часом гравця, монети ×2
@@ -85,7 +85,7 @@ const def={
  c:{x2:0,x3:0,plus:0,fz:0,chg:0,br:0,mb:0,sl0:0,bh0:0,shd:0,st:0,cmb:0,bos:0,wide:0,slw:0,lx:0,sx:0,m10:0,m30:0,mx5:0,hrt:0,fz15:0,nsc:0,bhf:0,sc2:0,lck:0},
  ck:{s:0,sn:0,sd:"",g:0,d:0},bp:{},bpd:"",
  adw:{n:0,d:"",t:0},                        // стрілка-реклама
- avs:[],pzUsed:[],qd:{},qt:{},friends10:0,tot:0,lm:0,master:null,masterAt:0,tatGot:0,pt:0,wk:"",pw:[0,0],fcm:"",bossWins:0,                       // для складніших умов тату (див. social.js)
+ avs:[],pzUsed:[],idl:{d:"",s:0},rc:0,qd:{},qt:{},friends10:0,tot:0,lm:0,master:null,masterAt:0,tatGot:0,pt:0,wk:"",pw:[0,0],fcm:"",bossWins:0,                       // для складніших умов тату (див. social.js)
  cp:[],claimed:[],friends:0,offers:{}
 };
 let S={...def,...JSON.parse(localStorage.ink_s5||"{}")};S.c={...def.c,...S.c};S.ck={...def.ck,...S.ck};S.adw={...def.adw,...S.adw};S.bp=S.bp||{};
@@ -111,12 +111,14 @@ async function loadKat(){try{const r=await fetch("data/katana.json?v="+Date.now(
 function sync(){if(S.mon>(S.lm||0))S.tot=(S.tot||0)+S.mon-(S.lm||0);S.lm=S.mon}   // «усього зароблено монет» для умов тату
 function save(){sync();localStorage.ink_s5=JSON.stringify(S)}
 (function newDay(){const d=today();if(S.last!==d){const y=new Date(Date.now()-864e5).toISOString().slice(0,10);S.streak=S.last===y?S.streak+1:1;S.best=Math.max(S.best,S.streak);S.days++;S.last=d}if(S.bpd!==d){S.bpd=d;S.bp={}}})();
+let xpSent=null;
 async function push(){
  if(!isReal()||!S.nick)return;
  const{offers,friends,...r}=S;
  try{
   await FB.setDoc(FB.doc(db,"users",user.uid),{...r,coins:S.mon,lvl:lvl(S.xp),nickLc:S.nick.toLowerCase(),email:user.email||"",lastSeen:FB.serverTimestamp()},{merge:true});
-  await FB.setDoc(FB.doc(db,"public",user.uid),{nick:S.nick,nickLc:S.nick.toLowerCase(),av:S.av,xp:S.xp,lvl:lvl(S.xp),days:S.days,coins:S.mon,ts:FB.serverTimestamp()},{merge:true});
+  const pub={nick:S.nick,nickLc:S.nick.toLowerCase(),av:S.av,xp:S.xp,lvl:lvl(S.xp),days:S.days,coins:S.mon,ts:FB.serverTimestamp()};if(xpSent==null||S.xp>xpSent)pub.xt=FB.serverTimestamp();   // xt — час останнього росту XP (для захисту від підробки)
+  await FB.setDoc(FB.doc(db,"public",user.uid),pub,{merge:true});xpSent=S.xp;
  }catch(e){}
 }
 async function logDay(){if(!isReal()||S.dl===today())return;S.dl=today();try{await FB.addDoc(FB.collection(db,"daylog"),{uid:user.uid,ts:FB.serverTimestamp()})}catch(e){}}
@@ -208,7 +210,7 @@ function adwReward(){const w=wp([38,24,16,7,9,6]);let m;      // монети ·
  save();push();hdr();toast("🎁 "+m);adTick()}
 
 // ═══ 9. ОФЛАЙН-ДОХІД І СТАРТ ═══
-function offline(){const cap=(CFG.offlineBaseMin+15*U("off"))*60,away=Math.min((Date.now()-S.seen)/1000,cap),g=Math.floor(away*idleRate());if(away>60&&g>0){S.mon+=g;setTimeout(()=>toast("💤 "+t("Поки тебе не було, духи принесли|While you were away, spirits earned")+" +"+fmt(g)+" 文"),3500)}S.seen=Date.now()}
+function offline(){const cap=(CFG.offlineBaseMin+15*U("off"))*60,away=Math.min((Date.now()-S.seen)/1000,cap),use=away>60?idleCredit(away):0,g=Math.floor(use*idleRate());if(use>60&&g>0){S.mon+=g;setTimeout(()=>toast("💤 "+t("Поки тебе не було, духи принесли|While you were away, spirits earned")+" +"+fmt(g)+" 文"),3500)}S.seen=Date.now()}
 function boot(){
  mkAmb($("ambA"),10);mkAdw();
  document.querySelectorAll(".inst").forEach(b=>{b.onclick=install;if(matchMedia("(display-mode: standalone)").matches)b.style.display="none"});
