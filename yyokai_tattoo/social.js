@@ -1,10 +1,16 @@
-/* INKAI social.js — вхід, нік, майстри, розіграш ТОП-10, друзі, рейтинг, нагороди, профіль, адмінка
-   ПРАВИЛА FIRESTORE — файл firestore.rules (вставити в Firebase Console → Firestore → Rules, замінити ADMIN_UID):
+/* INKAI social.js — вхід, нік, майстри, розіграш ТОП-10, друзі, рейтинг, нагороди, профіль, адмінка, квести
+   ПРАВИЛА FIRESTORE — файл firestore.rules (Firebase Console → Firestore → Rules, замінити ADMIN_UID):
 rules_version='2'; service cloud.firestore { match /databases/{d}/documents {
   function admin(){ return request.auth.uid in ['ADMIN_UID']; }
   function masterOn(m){ return get(/databases/$(database)/documents/masters/$(m)).data.paidUntil > request.time; }   // майстер оплатив — інакше заявка неможлива
   match /users/{u}   { allow read: if request.auth.uid==u || admin(); allow write: if request.auth.uid==u; }
-  match /public/{u}  { allow read: if request.auth!=null; allow write: if request.auth.uid==u; }
+  // ТАБЛИЦЯ ЛІДЕРІВ ЗАХИЩЕНА: XP можна лише збільшувати й не швидше, ніж реально можливо (≈4000 XP/с + запас). Правка значення через F12 відхиляється сервером.
+  match /public/{u}  { allow read: if request.auth!=null;
+    allow create: if request.auth.uid==u && request.resource.data.xp<=50000 && request.resource.data.xt==request.time;
+    allow update: if request.auth.uid==u && (
+      request.resource.data.xp==resource.data.xp ||
+      ( request.resource.data.xt==request.time && request.resource.data.xp>resource.data.xp &&
+        request.resource.data.xp-resource.data.xp <= 50000+4000*((request.time.toMillis()-resource.data.get('xt',request.time-duration.value(2,'d')).toMillis())/1000) ) ); }
   match /referrals/{u}{ allow read: if request.auth!=null; allow create: if request.auth.uid==u; }
   match /daylog/{x}  { allow create: if request.auth.uid==request.resource.data.uid && request.resource.data.ts==request.time;
                        allow read: if admin() || resource.data.uid==request.auth.uid; }
@@ -15,7 +21,7 @@ rules_version='2'; service cloud.firestore { match /databases/{d}/documents {
   match /claims/{c}  { allow create: if request.auth.uid==request.resource.data.uid && masterOn(request.resource.data.master);   // id заявки фіксований → подати вдруге неможливо
                        allow read, update: if admin(); }
   match /adEvents/{a}{ allow create: if request.auth!=null; }
-  match /offers/{o}  { allow read: if true; allow write: if admin();
+  match /offers/{o}  { allow read: if true; allow write: if admin(); }
   match /events/{e}  { allow read: if request.auth!=null; allow write: if false; }      // розіграш пише лише скрипт на сервері (Admin SDK)
   match /prizes/{p}  { allow read: if request.auth.uid==resource.data.uid || admin(); allow write: if false; }
   match /meta/{m}    { allow read, write: if false; }
@@ -127,7 +133,9 @@ async function rRating(){
  let L=[];
  if(FBOK&&db){try{const q=await FB.getDocs(FB.query(FB.collection(db,"public"),FB.orderBy("xp","desc"),FB.limit(100)));q.forEach(d=>{const x=d.data();L.push({id:d.id,nick:x.nick||"?",av:x.av||"fox",xp:x.xp||0,days:x.days||1})})}catch(e){}}
  const me=isReal()?user.uid:"me";
- if(L.some(u=>u.id==me))L=L.map(u=>u.id==me?{...u,xp:Math.max(u.xp,S.xp),av:S.av}:u);else L.push({id:me,nick:S.nick||t("Ти|You"),av:S.av,xp:S.xp,days:S.days});
+ if(L.some(u=>u.id==me))L=L.map(u=>u.id==me?{...u,av:S.av}:u);      // XP береться лише з сервера — правка через F12 нічого не змінює
+ else if(isReal()){try{const d=await FB.getDoc(FB.doc(db,"public",me));if(d.exists()){const x=d.data();L.push({id:me,nick:x.nick||S.nick,av:S.av,xp:x.xp||0,days:x.days||1})}}catch(e){}}
+ else L.push({id:me,nick:S.nick||t("Ти|You"),av:S.av,xp:S.xp,days:S.days});
  L.sort((a,b)=>b.xp-a.xp);PL=L.slice(0,100);
  $("view-rating").innerHTML=`<h2 class="text-xl font-black uppercase text-neonGold mb-3 text-center">⛩️ ${t("Книга Самураїв — ТОП-100|Samurai Book — TOP-100")}</h2>${raffleCard()}<div class="space-y-2">`+PL.map((u,i)=>`<button onclick="showPl(${i})" class="card !p-3 w-full flex items-center justify-between text-left ${i<5?"!border-neonGold/50":""} ${u.id==me?"!border-crimsonRed":""}"><div class="flex items-center gap-3"><span class="font-black font-mono text-sm w-8 ${i==0?"text-neonGold":i==1?"text-gray-300":i==2?"text-amber-600":""}">#${i+1}</span><div class="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center text-xl">${avHTML(u.av)}</div><div><b class="text-xs">${esc(u.nick)}</b><div class="text-[10px] text-gray-400">Lv ${lvl(u.xp)}</div></div></div><span class="font-mono text-xs text-neonGold">${fmt(u.xp)} XP</span></button>`).join("")+`</div>`;
 }
@@ -324,7 +332,9 @@ async function admView(id){
 async function admClaims(){
  const box=$("admRes");box.innerHTML="…";
  try{const s=await FB.getDocs(FB.query(FB.collection(db,"claims"),FB.orderBy("ts","desc"),FB.limit(20)));
-  box.innerHTML=s.empty?`<div class="text-xs text-gray-500">—</div>`:s.docs.map(d=>{const c=d.data();return `<div class="card !p-3 text-xs space-y-0.5"><b>${esc(c.nick||"?")}</b> → <span class="text-neonGold">${esc(c.tier)}</span> ${c.code?"#"+esc(c.code):""}<div class="text-[10px] text-gray-400">XP ${fmt(c.xp||0)} · ${t("дні сервер|server days")} ${c.serverDays??"—"} (${t("в додатку|app")} ${c.days}) · ${t("серія|streak")} ${c.streak} · ${t("друзів|friends")} ${c.friends} · ${t("завдань|tasks")} ${c.tasks} · ${t("босів|bosses")} ${c.kills||0} · ${t("клинків|blades")} ${c.blades||0} · ${t("реклам|ads")} ${c.ads} · ${dstr(c.ts)}</div></div>`}).join("")}
+  const pubs=await Promise.all(s.docs.map(d=>FB.getDoc(FB.doc(db,"public",d.data().uid)).then(x=>x.exists()?x.data().xp:null).catch(()=>null)));
+  box.innerHTML=s.empty?`<div class="text-xs text-gray-500">—</div>`:s.docs.map((d,i)=>{const c=d.data(),sx=pubs[i],bad=sx!=null&&(c.xp||0)>sx*1.3+1000;
+   return `<div class="card !p-3 text-xs space-y-0.5 ${bad?"!border-crimsonRed":""}"><b>${esc(c.nick||"?")}</b> → <span class="text-neonGold">${esc(c.tier)}</span> ${c.masterName?"· "+esc(c.masterName):""} ${c.code?"#"+esc(c.code):""}${bad?` <b class="text-crimsonRed">⚠ ${t("XP у заявці більший за серверний|claimed XP exceeds server XP")}</b>`:""}<div class="text-[10px] text-gray-400">XP ${fmt(c.xp||0)} (${t("сервер|server")} ${sx==null?"—":fmt(sx)}) · ${t("дні сервер|server days")} ${c.serverDays??"—"} · ${t("друзів 10 р.|friends L10")} ${c.friends10??"—"} · ${t("босів|bosses")} ${c.kills||0} · ${t("клинків|blades")} ${c.blades||0} · ${dstr(c.ts)}</div></div>`}).join("")}
  catch(e){box.innerHTML=`<div class="text-xs text-crimsonRed">${esc(e.message)}</div>`}
 }
 
