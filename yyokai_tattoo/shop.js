@@ -74,7 +74,7 @@ const BLD=[
 const FXI={n:"",gold:"✨",void:"🕳",rb:"🌈",fire:"🔥",ice:"❄️",bolt:"⚡",blood:"🩸",jade:"💠",sakura:"🌸",neon:"🔮",star:"⭐",rain:"🌧",wind:"🌬",paper:"📄",koi:"🐟",music:"🎵",rune:"ᚠ",glitch:"👾",moon:"🌙",lava:"🌋",aurora:"🌌",toxic:"☣️",crystal:"💎",ghost:"👻",comet:"☄️",sun:"☀️",galaxy:"🌠",dragon:"🐲"};
 const _k=[0,0,0,0,0];       // 22 зв · 24 рід · 24 епіч · 18 легенд · 12 міф. Ціна росте за номером усередині рідкості. ch=1 → лише з сундуків
 const BL=BLD.map((d,i)=>{const r=d[4]!=null?d[4]:i<14?0:i<30?1:i<44?2:i<54?3:4,k=_k[r]++;
- return{i,nm:d[0],c1:d[1],c2:d[2],fx:d[3],w:3+Math.min(i,60)*.05,sc:1+i*.055,r,cur:RC[r],price:Math.round([i?250*1.7**k:0,2e6*1.35**k,5e8*1.3**k,15+k*8,10+k*5][r])}});   // 🔧 ціни
+ return{i,nm:d[0],c1:d[1],c2:d[2],fx:d[3],w:3+Math.min(i,60)*.05,sc:1+i*.055,r,cur:RC[r],price:Math.round([i?250*1.7**k:0,2e6*1.35**k,5e8*1.3**k,15+k*8,10+k*5][r]*(r<3?1.3:1))}});   // 🔧 ціни
 const bname=b=>t(b.nm);
 const bcss=b=>b.fx=="rb"?"linear-gradient(90deg,#f00,#fa0,#ff0,#0f0,#0ff,#00f,#f0f)":b.fx=="void"?`linear-gradient(90deg,#000 30%,${b.c2})`:`linear-gradient(90deg,${b.c1},${b.c2})`;
 /* КАТАНА. Своя картинка: img/katana/<номер>.png (горизонтально, руків'я ліворуч, вістря праворуч, 512×128) + номер у data/katana.json.
@@ -83,17 +83,18 @@ const KHC=["#3a3a44","#1f3b6b","#5b2a86","#8a6a00","#9b1030"],KGL={star:"✦",go
 let _kg=0;
 function katSVG(b,cls,style){const id="kg"+(_kg++),rc=RN[b.r][1],gold=b.r>2?"#ffd24a":"#c8ced8";
  const stops=b.fx=="rb"?'<stop offset="0" stop-color="#f00"/><stop offset=".25" stop-color="#fa0"/><stop offset=".45" stop-color="#ff0"/><stop offset=".65" stop-color="#0f0"/><stop offset=".85" stop-color="#0ff"/><stop offset="1" stop-color="#f0f"/>':b.fx=="void"?`<stop offset="0" stop-color="#000"/><stop offset=".65" stop-color="#07000f"/><stop offset="1" stop-color="${b.c2}"/>`:`<stop offset="0" stop-color="${b.c2}"/><stop offset=".55" stop-color="${b.c1}"/><stop offset="1" stop-color="#fff"/>`;
- const gl=KGL[b.fx],deco=gl?[[160,20],[205,24],[250,12],[290,8]].slice(0,2+(b.r>>1)).map(p=>`<text x="${p[0]}" y="${p[1]}" font-size="${9+b.r*2}" fill="${b.fx=="blood"?"#8b0000":b.c1=="#fff"||b.c1=="#ffffff"?"#ffe9a8":b.c1}" text-anchor="middle" opacity=".9">${gl}</text>`).join(""):"";
- const wrap=[...Array(6)].map((_,i)=>`M${14+i*8} 17l6 12M${20+i*8} 17l-6 12`).join("");
- const blade="M80 20.5 Q200 14 306 2 L311 6.5 Q200 28 80 27 Z";
- return `<svg viewBox="0 0 314 46" xmlns="http://www.w3.org/2000/svg" class="${cls||"w-full h-auto"}" style="filter:drop-shadow(0 0 ${3+b.r*2}px ${b.fx=="rb"?"#f0f":rc});transform:rotate(-8deg);${style||""}"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="0">${stops}</linearGradient><linearGradient id="${id}v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".38"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".4"/></linearGradient></defs>
- <rect x="8" y="17" width="56" height="12" rx="5.5" fill="${KHC[b.r]}"/><path d="${wrap}" stroke="rgba(255,255,255,.32)" stroke-width="1.4" fill="none"/>
- <rect x="3" y="16" width="8" height="14" rx="3" fill="${gold}"/><circle cx="36" cy="23" r="2.6" fill="${gold}"/>
- <ellipse cx="68" cy="23" rx="4.2" ry="11.5" fill="${gold}" stroke="rgba(0,0,0,.5)" stroke-width="1"/><circle cx="68" cy="23" r="1.7" fill="#2a2a33"/>
- <rect x="72" y="19" width="9" height="8" rx="1.6" fill="#d9a441"/><rect x="74" y="20" width="1.6" height="6" fill="rgba(255,255,255,.45)"/>
+ const gl=KGL[b.fx],deco=gl?[170,225,280,335].slice(0,2+(b.r>>1)).map((x,i)=>`<text x="${x}" y="${63-i*3}" font-size="${10+b.r*2}" fill="${b.fx=="blood"?"#8b0000":b.c1=="#fff"||b.c1=="#ffffff"?"#ffe9a8":b.c1}" text-anchor="middle" opacity=".9">${gl}</text>`).join(""):"";
+ const wrap=[...Array(8)].map((_,i)=>`M${12+i*10} 28l10 14M${22+i*10} 28l-10 14`).join("");
+ const blade="M120 29 Q265 21 392 4 L396 9 Q262 34 120 40 Z";
+ return `<svg viewBox="0 0 400 70" xmlns="http://www.w3.org/2000/svg" class="${cls||"w-full h-auto"}" style="filter:drop-shadow(0 0 ${3+b.r*2}px ${b.fx=="rb"?"#f0f":rc});transform:rotate(-8deg);${style||""}"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="0">${stops}</linearGradient><linearGradient id="${id}v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".4"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".45"/></linearGradient></defs>
+ <rect x="12" y="27" width="80" height="16" rx="7" fill="${KHC[b.r]}"/><path d="${wrap}" stroke="rgba(255,255,255,.34)" stroke-width="1.5" fill="none"/>
+ <rect x="6" y="25" width="11" height="20" rx="4" fill="${gold}"/><ellipse cx="42" cy="35" rx="3.2" ry="2.2" fill="${gold}"/><ellipse cx="68" cy="35" rx="3.2" ry="2.2" fill="${gold}"/>
+ <rect x="90" y="26" width="9" height="18" rx="2.5" fill="${gold}"/>
+ <ellipse cx="105" cy="35" rx="5" ry="17" fill="#2b2b33" stroke="${gold}" stroke-width="2"/><circle cx="105" cy="26" r="1.8" fill="${gold}"/><circle cx="105" cy="44" r="1.8" fill="${gold}"/>
+ <rect x="110" y="29" width="11" height="12" rx="2" fill="#d9a441"/><rect x="112" y="30" width="2" height="10" fill="rgba(255,255,255,.5)"/>
  <path d="${blade}" fill="url(#${id})"/><path d="${blade}" fill="url(#${id}v)"/>
- <path d="${blade}" fill="none" stroke="rgba(255,255,255,.85)" stroke-width=".9" stroke-linejoin="round"/>${deco}</svg>`}
-const katI=b=>kat(b,"inline-block align-middle","width:2.2em;height:.5em");
+ <path d="M396 9 Q262 34 120 40" fill="none" stroke="#fff" stroke-width="1.3" opacity=".95"/><path d="M120 29 Q265 21 392 4" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="1"/>${deco}</svg>`}
+const katI=b=>kat(b,"inline-block align-middle","width:2.4em;height:.42em");
 function kat(b,cls,style){const svg=katSVG(b,cls,style);return KATL.has(b.i)?`<img src="img/katana/${b.i}.png" data-h="${svg.replace(/"/g,"&quot;")}" onerror="this.outerHTML=this.dataset.h" class="${cls||"w-full h-auto"}" style="${style||""}">`:svg}
 const bar=b=>`<div class="py-3 px-1">${kat(b,"w-full h-auto")}</div>`;
 
@@ -102,7 +103,7 @@ const LOC=[["Храм Асука|Asuka Temple","🏯"],["Ліс Нари|Nara Fo
 const VAR=["Світанок|Dawn","День|Day","Захід|Sunset","Ніч|Night","Туман|Mist"];
 const BG=Array.from({length:100},(_,i)=>{const l=i%20,v=i/20|0,h=(l*18+v*7)%360,P=[[h+20,70,38,60,12],[h,60,40,50,14],[(h+340)%360,80,42,55,10],[(h+220)%360,60,24,60,6],[h,15,34,25,12]][v],[a,b]=LOC[l][0].split("|"),[c,d]=VAR[v].split("|");
  return{i,nm:a+" · "+c+"|"+b+" · "+d,r:v,cur:RC[v],ic:LOC[l][1],g:[`hsl(${P[0]},${P[1]}%,${P[2]}%)`,`hsl(${(P[0]+25)%360},${P[3]}%,${P[4]}%)`],
-  price:Math.round([i?1500*1.5**l:0,5e6*1.35**l,3e9*1.3**l,10+l*5,10+l*4][v])}});   // 🔧 ціни
+  price:Math.round([i?1500*1.5**l:0,5e6*1.35**l,3e9*1.3**l,10+l*5,10+l*4][v]*(v<3?1.3:1))}});   // 🔧 ціни
 
 /* ПОКРАЩЕННЯ: [id, іконка, назва, опис, база, —, макс. рівень, дохід/с]. Ціна рівня = база × 2^рівень */
 const UP=[
@@ -131,8 +132,12 @@ const UP=[
  ["chest","📦","Скарбничка|Treasury","+3% монет із сундуків|+3% chest coins",800,2,12],
  ["off","😴","Нічний дозор|Night watch","+15 хв офлайн-доходу|+15 min offline income",500,2,12]
 ];
-const upCost=(u,l)=>Math.floor(u[4]*2**l);
+const UPM=1.3;   // 🔧 множник цін покращень
+const upCost=(u,l)=>Math.floor(u[4]*UPM*2**l);
 const mile=l=>2**[5,10,15,20].filter(x=>l>=x).length;
+const IDLE_CAP=4*3600;     // пасивний дохід — не більше 4 годин на добу (зокрема й офлайн)
+function idleCredit(sec){const d=today();if(!S.idl||S.idl.d!==d)S.idl={d,s:0};const use=Math.max(0,Math.min(sec,IDLE_CAP-S.idl.s));S.idl.s+=use;return use}
+function idleLeft(){const l=Math.max(0,IDLE_CAP-(S.idl&&S.idl.d===today()?S.idl.s:0));return Math.floor(l/3600)+":"+String(Math.floor(l%3600/60)).padStart(2,"0")}
 const idleRate=()=>UP.filter(u=>u[7]).reduce((s,u)=>s+U(u[0])*u[7]*mile(U(u[0])),0);
 
 /* БУСТЕРИ: [id, іконка, назва, ціна, кількість, ad]. Зберігаються в S.c, витрачаються на старті раунду. Ціна ×2 за кожну покупку за день. ad=1 — лише за рекламу */
@@ -165,7 +170,10 @@ const BS=[
  ["sc2","✨","Усі очки ×2 на раунд|All score ×2 this round",0,1,0,"cosmic"],
  ["lck","🍀","Удача: +20% до сундука-знахідки|Luck: +20% bonus chest chance",0,1,0,"imperial"]
 ];
-const bsCost=b=>b[3]*2**(S.bp[b[0]]||0);
+/* Ціна бустера «живе» разом з тобою: грошові (×2, ×3, ×1.5) коштують частку від твого середнього заробітку за раунд, решта дорожчає зі зростанням доходу */
+const rcAvg=()=>Math.max(1500,S.rc||0),BSP={x2:2.1,x3:1.4,mb:.35};
+const bsBase=b=>BSP[b[0]]?Math.max(b[3],Math.round(BSP[b[0]]*rcAvg())):Math.round(b[3]*Math.max(1,Math.pow(rcAvg()/1500,.7)));
+const bsCost=b=>bsBase(b)*2**(S.bp[b[0]]||0);
 
 // ═══ МАГАЗИН ═══
 let shopT="b",shopR=-1,bm=1,bgN=20;
@@ -189,7 +197,7 @@ function rShop(){
   h+=L.slice(0,bgN).map(g=>{const o=S.bgs.includes(g.i),e=S.bg==g.i;return `<div class="card !p-0 overflow-hidden" style="border-color:${e?"#ffb703":RN[g.r][1]+"88"}"><div class="p-3 flex items-center gap-3" style="background:linear-gradient(135deg,${g.g[0]},${g.g[1]})"><span class="text-3xl">${g.ic}</span><div class="flex-1 min-w-0"><b class="text-xs block">${t(g.nm)}</b>${rbadge(g.r)}</div>${o?`<button class="btn ${e?"!bg-emerald-600":""}" onclick="eq('bg',${g.i})">${e?"✓":t("Обрати|Equip")}</button>`:buyBtn("bg",g,0,"shrink-0 w-[42%]")}</div></div>`}).join("");
   if(bgN<L.length)h+=`<button class="btn w-full py-3" onclick="moreBg()">${t("Показати ще|Show more")} (${L.length-bgN})</button>`}
  if(shopT=="u"){
-  h+=`<div class="card !p-3 flex items-center justify-between text-xs"><span>💤 ${t("Пасивний дохід|Passive income")}: <b id="pInc" class="text-emerald-400">${fmt(idleRate())} 文/${t("с|s")}</b></span><button class="btn" onclick="setBm()">${t("Купити|Buy")} ×${bm}</button></div>`;
+  h+=`<div class="card !p-3 flex items-center justify-between text-xs"><span>💤 ${t("Пасивний дохід|Passive income")}: <b id="pInc" class="text-emerald-400">${fmt(idleRate())} 文/${t("с|s")}</b><span class="block text-[10px] text-gray-400">${t("Ліміт 4 год на добу, залишилось|Cap 4 h per day, left")} ${idleLeft()}</span></span><button class="btn" onclick="setBm()">${t("Купити|Buy")} ×${bm}</button></div>`;
   h+=[...UP].sort((a,b)=>!!b[7]-!!a[7]).map(u=>{const l=U(u[0]),mx=l>=u[6],c=upCost(u,l);return `<div class="card !p-3 space-y-1 min-h-[88px]"><div class="flex items-center justify-between gap-2"><div class="flex items-center gap-2"><span class="w-9 h-9 shrink-0 inline-flex items-center justify-center text-2xl">${ico("u_"+u[0],u[1],"h-9 w-9 object-contain")}</span><div><b class="text-xs">${t(u[2])}</b><div class="text-[10px] text-gray-400">${t(u[3])}</div></div></div><button class="btng shrink-0 min-w-[96px] text-center" data-c="${c}" data-mx="${mx?1:0}" ${mx||S.mon<c?"disabled":""} onclick="buyUp('${u[0]}')">${mx?"MAX":fmt(c)+" "+CI.mon}</button></div><div class="flex justify-between text-[10px]"><span class="text-neonGold">Lv ${l}/${u[6]}</span><span class="text-emerald-400">${u[7]?fmt(l*u[7]*mile(l))+" 文/"+t("с|s")+(mile(l)>1?" ×"+mile(l):""):""}</span></div><div class="h-1 bg-inkDark rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-neonGold to-crimsonRed" style="width:${l/u[6]*100}%"></div></div></div>`}).join("");
  }
  if(shopT=="c")h+=`<p class="text-[11px] text-gray-400">${t("Бустери зберігаються й витрачаються на старті раунду. Ціна подвоюється після кожної покупки (оновлюється щодня).|Boosts are kept and spent at round start. Price doubles after each purchase (resets daily).")}</p>`+BS.map(b=>{const c=bsCost(b);return `<div class="card flex items-center justify-between gap-2 min-h-[72px]"><div class="flex items-center gap-3"><span class="w-9 h-9 shrink-0 inline-flex items-center justify-center text-2xl">${ico("b_"+b[0],b[1],"h-9 w-9 object-contain")}</span><div><b class="text-xs">${t(b[2])}</b><div class="text-[11px] text-gray-400">${t("В запасі|Owned")}: ${b[0]=="chg"?"—":S.c[b[0]]||0}</div></div></div>${b[5]?`<span class="chip">📺 ${t("реклама|ads")}</span>`:b[6]?`<span class="chip !border-neonGold/50 text-neonGold">🎁 ${exName(b[6])}</span>`:`<button class="btng shrink-0 min-w-[96px] text-center" data-c="${c}" ${S.mon>=c?"":"disabled"} onclick="buyB('${b[0]}')">${fmt(c)} ${CI.mon}</button>`}</div>`}).join("");
@@ -198,4 +206,4 @@ function rShop(){
 // оновлює лише стан кнопок і дохід, не перемальовуючи список (немає стрибків щосекунди)
 function shopLive(){document.querySelectorAll("#view-shop [data-c]").forEach(b=>{b.disabled=b.dataset.mx=="1"||S[b.dataset.cur||"mon"]<+b.dataset.c});const p=$("pInc");if(p)p.textContent=fmt(idleRate())+" 文/"+t("с|s")}
 let idleTick=0;
-setInterval(()=>{const r=idleRate();if(r){S.mon+=r;hdr();if(cur=="shop")shopLive()}},1000);
+setInterval(()=>{const r=idleRate();if(r&&!document.hidden){const u=idleCredit(1);if(u){S.mon+=r*u;hdr();if(cur=="shop")shopLive()}}},1000);
