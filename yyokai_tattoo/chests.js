@@ -144,9 +144,7 @@ async function runChest(c,p,im){
  ro.innerHTML=`<div id="robg" class="absolute inset-0" style="opacity:0;transition:opacity 1.8s ease;background:linear-gradient(180deg,rgba(24,10,60,.55),rgba(5,3,18,.88)),url(img/chest/bg_${c[0]}.png) center/cover no-repeat,url(img/chest/open_bg.png) center/cover no-repeat"></div><div id="rcont" class="relative w-full max-w-md h-full flex items-center justify-center overflow-hidden"></div>`;
  const rc=$("rcont");
  rc.innerHTML=`<div id="chw" class="relative" style="width:230px;height:230px">
-  <div style="position:absolute;inset:-80px;border-radius:50%;background:conic-gradient(from 0deg,${MA}00,${MA}aa,${MA}00 20%,${MY}88,${MA}00 40%,${MC}88,${MA}00 60%,${MY}88,${MA}00 80%,${MA}aa,${MA}00);-webkit-mask:radial-gradient(circle,transparent 60%,#000 61%,#000 66%,transparent 67%);mask:radial-gradient(circle,transparent 60%,#000 61%,#000 66%,transparent 67%);animation:raysSpin 8s linear infinite"></div>
-  <div style="position:absolute;inset:-52px;animation:raysSpin 18s linear infinite reverse">${[...RUNES].map((r,i)=>`<span style="position:absolute;left:50%;top:50%;margin:-9px;font-size:17px;color:${MY};text-shadow:0 0 10px ${MY};transform:rotate(${i*45}deg) translateY(-150px)">${r}</span>`).join("")}</div>
-  <div id="chh" style="position:absolute;inset:-60px;border-radius:50%;background:radial-gradient(circle,${A}aa,${A}00 66%);filter:blur(12px);opacity:.35;transition:opacity 1s,transform 1s"></div>
+  <div id="chh" style="position:absolute;inset:-90px;border-radius:50%;background:radial-gradient(ellipse,${A}55 0%,${A}20 35%,transparent 72%);filter:blur(24px);opacity:.8;pointer-events:none"
   <div id="chi" class="relative h-full flex items-center justify-center text-8xl" style="--sc:1;animation:floatY 2s ease-in-out infinite;filter:drop-shadow(0 8px 18px #000a) drop-shadow(0 0 22px ${A})">${IMG(im,c[1],"h-52 w-auto")}</div></div>
   <div class="absolute top-6 left-0 right-0 text-center pointer-events-none"><span class="font-black tracking-[.25em] uppercase text-xs" style="color:${MY};text-shadow:0 0 10px ${MA}">${c[1]} ${t(c[2])}</span></div>`;
  ro.classList.replace("hidden","flex");
