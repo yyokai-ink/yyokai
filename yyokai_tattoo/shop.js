@@ -2,6 +2,7 @@
    РІДКІСТЬ: 0 звичайний · 1 рідкісний · 2 епічний (монети 文) · 3 легендарний (💎 — боси, сундуки) · 4 міфічний (🏮 — реклама, сундуки) */
 
 const YK=["🦊","👹","👺","🐸","💀","🐉"];
+const RATE={bossJd:.05,adJd:.09,roundLn:.03,adLn:.07};   // 🔧 шанси рідких валют (показуються гравцям у вікні «Чому вони рідкісні»)
 const YIMG={};[["🦊","fox"],["👹","oni"],["👺","tengu"],["🐸","kappa"],["💀","skull"],["🐉","dragon"],["📜","scroll"]].forEach(([e,n])=>{const i=new Image();i.src="img/yokai/"+n+".png";YIMG[e]=i});
 const BGI={},bgImg=i=>BGI[i]||(BGI[i]=Object.assign(new Image(),{src:"img/bg/"+i+".png"})),rdy=i=>i&&i.complete&&i.naturalWidth;
 const RN=[["Звичайний|Common","#9ca3af"],["Рідкісний|Rare","#3b82f6"],["Епічний|Epic","#a855f7"],["Легендарний|Legendary","#ffb703"],["Міфічний|Mythic","#ff2a5f"]];
@@ -74,7 +75,7 @@ const BLD=[
 const FXI={n:"",gold:"✨",void:"🕳",rb:"🌈",fire:"🔥",ice:"❄️",bolt:"⚡",blood:"🩸",jade:"💠",sakura:"🌸",neon:"🔮",star:"⭐",rain:"🌧",wind:"🌬",paper:"📄",koi:"🐟",music:"🎵",rune:"ᚠ",glitch:"👾",moon:"🌙",lava:"🌋",aurora:"🌌",toxic:"☣️",crystal:"💎",ghost:"👻",comet:"☄️",sun:"☀️",galaxy:"🌠",dragon:"🐲"};
 const _k=[0,0,0,0,0];       // 22 зв · 24 рід · 24 епіч · 18 легенд · 12 міф. Ціна росте за номером усередині рідкості. ch=1 → лише з сундуків
 const BL=BLD.map((d,i)=>{const r=d[4]!=null?d[4]:i<14?0:i<30?1:i<44?2:i<54?3:4,k=_k[r]++;
- return{i,nm:d[0],c1:d[1],c2:d[2],fx:d[3],w:3+Math.min(i,60)*.05,sc:1+i*.055,r,cur:RC[r],price:Math.round([i?250*1.7**k:0,2e6*1.35**k,5e8*1.3**k,15+k*8,10+k*5][r]*(r<3?1.3:1))}});   // 🔧 ціни
+ return{i,nm:d[0],c1:d[1],c2:d[2],fx:d[3],w:3+Math.min(i,60)*.05,sc:1+i*.055,cm:1+i*.035,r,cur:RC[r],price:Math.round([i?150*1.4**k:0,4e5*1.2**k,1e7*1.15**k,15+k*8,10+k*5][r]*(r<3?1.3:1))}});   // 🔧 ціни
 const bname=b=>t(b.nm);
 const bcss=b=>b.fx=="rb"?"linear-gradient(90deg,#f00,#fa0,#ff0,#0f0,#0ff,#00f,#f0f)":b.fx=="void"?`linear-gradient(90deg,#000 30%,${b.c2})`:`linear-gradient(90deg,${b.c1},${b.c2})`;
 /* КАТАНА. Своя картинка: img/katana/<номер>.png (горизонтально, руків'я ліворуч, вістря праворуч, 512×128) + номер у data/katana.json.
@@ -103,38 +104,52 @@ const LOC=[["Храм Асука|Asuka Temple","🏯"],["Ліс Нари|Nara Fo
 const VAR=["Світанок|Dawn","День|Day","Захід|Sunset","Ніч|Night","Туман|Mist"];
 const BG=Array.from({length:100},(_,i)=>{const l=i%20,v=i/20|0,h=(l*18+v*7)%360,P=[[h+20,70,38,60,12],[h,60,40,50,14],[(h+340)%360,80,42,55,10],[(h+220)%360,60,24,60,6],[h,15,34,25,12]][v],[a,b]=LOC[l][0].split("|"),[c,d]=VAR[v].split("|");
  return{i,nm:a+" · "+c+"|"+b+" · "+d,r:v,cur:RC[v],ic:LOC[l][1],g:[`hsl(${P[0]},${P[1]}%,${P[2]}%)`,`hsl(${(P[0]+25)%360},${P[3]}%,${P[4]}%)`],
-  price:Math.round([i?1500*1.5**l:0,5e6*1.35**l,3e9*1.3**l,10+l*5,10+l*4][v]*(v<3?1.3:1))}});   // 🔧 ціни
+  price:Math.round([i?800*1.35**l:0,6e5*1.22**l,2e7*1.2**l,10+l*5,10+l*4][v]*(v<3?1.3:1))}});   // 🔧 ціни
 
 /* ПОКРАЩЕННЯ: [id, іконка, назва, опис, база, —, макс. рівень, дохід/с]. Ціна рівня = база × 2^рівень */
 const UP=[
- ["s1","👻","Дух-помічник|Helper spirit","+1 文/с, працює й офлайн|+1 coin/s, works offline",100,2,20,1],
- ["s2","🐸","Каппа-торговець|Kappa merchant","+5 文/с|+5 coins/s",1500,2,20,5],
- ["s3","🦊","Лисиця-касир|Fox cashier","+25 文/с|+25 coins/s",12000,2,20,25],
- ["s4","👹","Оні-коваль|Oni smith","+120 文/с|+120 coins/s",90000,2,20,120],
- ["s5","🐉","Дракон-скарбник|Dragon treasurer","+700 文/с|+700 coins/s",600000,2,20,700],
- ["coin","💰","Золота кисть|Golden brush","+10% монет за розріз|+10% coins per cut",150,2,12],
- ["combo","🔗","Ланцюг комбо|Combo chain","+0.02 до множника комбо|+0.02 combo multiplier",200,2,12],
- ["cwin","⏳","Вікно комбо|Combo window","+40 мс на комбо|+40ms combo window",180,2,12],
- ["crit","💥","Критичний розріз|Critical slash","+3% шанс ×3|+3% chance of ×3 hit",300,2,12],
- ["critm","🔥","Сила крита|Crit power","+0.2 до множника крита|+0.2 crit multiplier",500,2,12],
- ["x2","🎲","Подвійна монета|Double coin","+2% шанс ×2 за розріз|+2% chance of ×2 per cut",400,2,12],
- ["time","🛡","Міцне серце|Tough heart","+1 життя кожні 5 рівнів|+1 life every 5 levels",800,2,10],
- ["frz","⚡","Тривале шаленство|Long frenzy","+0.5 с шаленства|+0.5s frenzy",350,2,12],
- ["frth","🌀","Швидке шаленство|Quick frenzy","−1 комбо до шаленства кожні 3 рівні|−1 combo to frenzy every 3 levels",600,2,9],
- ["boss","👑","Вбивця босів|Boss slayer","+5% подвійного удару по босу|+5% double hit on boss",450,2,12],
- ["bossr","🏆","Трофей боса|Boss trophy","+10% очок за боса|+10% boss points",500,2,12],
- ["soul","⛩️","Збирач душ|Soul collector","+1 душа за боса|+1 soul per boss",700,2,10],
- ["hit","🎯","Широке лезо|Wide blade","+3% радіус ураження|+3% hit radius",250,2,12],
- ["spawn","🌪","Потік йокаїв|Yokai flow","+4% частіше з'являються|+4% faster spawn",300,2,12],
- ["slow","🕰","Час Тенгу|Tengu time","+2% повільніше падіння|+2% slower fall",350,2,12],
- ["start","🚀","Швидкий старт|Fast start","+30 очок на старті|+30 starting points",250,2,12],
- ["end","🎁","Фінальний бонус|End bonus","+3% монет за раунд|+3% round coins",300,2,12],
- ["chest","📦","Скарбничка|Treasury","+3% монет із сундуків|+3% chest coins",800,2,12],
- ["off","😴","Нічний дозор|Night watch","+15 хв офлайн-доходу|+15 min offline income",500,2,12]
+ // пасивний дохід (дрібний, не більше 4 год/добу): [id, іконка, назва, опис, база, —, макс. рівень, 文/с на рівень]
+ ["s1","👻","Дух-помічник|Helper spirit","+0.05 文/с, працює й офлайн|+0.05 coin/s, works offline",400,2,20,.05],
+ ["s2","🐸","Каппа-торговець|Kappa merchant","+0.25 文/с|+0.25 coins/s",3000,2,20,.25],
+ ["s3","🦊","Лисиця-касир|Fox cashier","+1 文/с|+1 coin/s",20000,2,20,1],
+ ["s4","👹","Оні-коваль|Oni smith","+4 文/с|+4 coins/s",120000,2,20,4],
+ ["s5","🐉","Дракон-скарбник|Dragon treasurer","+16 文/с|+16 coins/s",800000,2,20,16],
+ ["coin","💰","Золота кисть|Golden brush","+10% монет за йокая|+10% coins per yokai",600,2,12],
+ ["combo","🔗","Ланцюг комбо|Combo chain","+0.3% монет за кожен пункт комбо|+0.3% coins per combo point",800,2,12],
+ ["cwin","⏳","Вікно комбо|Combo window","+40 мс на комбо|+40ms combo window",700,2,12],
+ ["crit","💥","Критичний розріз|Critical slash","+3% шанс ×3|+3% chance of ×3 hit",1200,2,12],
+ ["critm","🔥","Сила крита|Crit power","+0.2 до множника крита|+0.2 crit multiplier",2000,2,12],
+ ["x2","🎲","Подвійна монета|Double coin","+2% шанс ×2 за розріз|+2% chance of ×2 per cut",1600,2,12],
+ ["gt","✨","Золотий дотик|Golden touch","+1% шанс ×5 монет за розріз|+1% chance of ×5 coins per cut",5000,2,10],
+ ["time","🛡","Міцне серце|Tough heart","+1 життя кожні 5 рівнів|+1 life every 5 levels",3000,2,10],
+ ["keep","🧷","Стійке комбо|Steady combo","+5% шанс не втратити комбо при промаху|+5% chance to keep combo on a miss",3000,2,10],
+ ["frz","⚡","Тривале шаленство|Long frenzy","+0.5 с шаленства|+0.5s frenzy",1400,2,12],
+ ["frth","🌀","Швидке шаленство|Quick frenzy","−1 комбо до шаленства кожні 3 рівні|−1 combo to frenzy every 3 levels",2400,2,9],
+ ["boss","👑","Вбивця босів|Boss slayer","+5% подвійного удару по босу|+5% double hit on boss",1800,2,12],
+ ["bossr","🏆","Трофей боса|Boss trophy","+10% монет і очок за боса|+10% boss coins and points",2000,2,12],
+ ["bcoin","💴","Скарб боса|Boss treasure","+8% монет із босів|+8% coins from bosses",2500,2,12],
+ ["bt","⏱","Час на боса|Boss time","+0.3 с на розправу з босом|+0.3s to defeat a boss",2600,2,10],
+ ["bfast","📯","Поклик боса|Boss call","Бос з'являється на 1 розріз раніше кожні 2 рівні|Boss appears 1 cut sooner every 2 levels",3500,2,8],
+ ["ice","🧊","Тонкий лід|Thin ice","−1 свайп для розбиття льоду кожні 4 рівні|−1 swipe to break ice every 4 levels",3500,2,8],
+ ["mcb","✂️","Майстер мульти-свайпу|Multi-swipe master","+10% монет за 3+ йокаїв одним свайпом|+10% coins for 3+ yokai in one swipe",1800,2,10],
+ ["scrl","📜","Обережність|Caution","−4% свитків у потоці|−4% scrolls in the flow",2200,2,10],
+ ["soul","⛩️","Збирач душ|Soul collector","+1 душа за боса|+1 soul per boss",2800,2,10],
+ ["lan","🏮","Нюх на ліхтарі|Lantern nose","+0.2% шанс 🏮 за раунд|+0.2% chance of 🏮 per round",6000,2,8],
+ ["hit","🎯","Широке лезо|Wide blade","+3% радіус ураження|+3% hit radius",1000,2,12],
+ ["kmul","🗡","Гартування катани|Blade tempering","+5% до коефіцієнта катани|+5% blade multiplier",4000,2,10],
+ ["spawn","🌪","Потік йокаїв|Yokai flow","+4% частіше з'являються|+4% faster spawn",1200,2,12],
+ ["slow","🕰","Час Тенгу|Tengu time","+2% повільніше падіння|+2% slower fall",1400,2,12],
+ ["start","🚀","Швидкий старт|Fast start","+30 очок на старті|+30 starting points",1000,2,12],
+ ["end","🎁","Фінальний бонус|End bonus","+3% монет за раунд|+3% round coins",1200,2,12],
+ ["duo","👥","Бойове братерство|Brotherhood","+10% монет у дуо-режимі|+10% coins in duo mode",2500,2,10],
+ ["xpb","🎓","Досвід самурая|Samurai experience","+4% XP за раунд|+4% XP per round",2000,2,12],
+ ["chest","📦","Скарбничка|Treasury","+3% монет із сундуків|+3% chest coins",3000,2,12],
+ ["off","😴","Нічний дозор|Night watch","+15 хв офлайн-доходу|+15 min offline income",2000,2,12]
 ];
-const UPM=1.3;   // 🔧 множник цін покращень
-const upCost=(u,l)=>Math.floor(u[4]*UPM*2**l);
-const mile=l=>2**[5,10,15,20].filter(x=>l>=x).length;
+const UPM=3;      // 🔧 множник цін покращень: ×3 до бази (ціна завжди «з запасом» відносно того, що реально нафармити)
+const UPG=1.6;    // 🔧 зростання ціни за рівень
+const upCost=(u,l)=>Math.floor(u[4]*UPM*UPG**l);
+const mile=l=>1+.25*[5,10,15,20].filter(x=>l>=x).length;   // віхи рівнів дають +25% (раніше ×2 за віху — звідси й «250 млн»)
 const IDLE_CAP=4*3600;     // пасивний дохід — не більше 4 годин на добу (зокрема й офлайн)
 function idleCredit(sec){const d=today();if(!S.idl||S.idl.d!==d)S.idl={d,s:0};const use=Math.max(0,Math.min(sec,IDLE_CAP-S.idl.s));S.idl.s+=use;return use}
 function idleLeft(){const l=Math.max(0,IDLE_CAP-(S.idl&&S.idl.d===today()?S.idl.s:0));return Math.floor(l/3600)+":"+String(Math.floor(l%3600/60)).padStart(2,"0")}
@@ -171,8 +186,8 @@ const BS=[
  ["lck","🍀","Удача: +20% до сундука-знахідки|Luck: +20% bonus chest chance",0,1,0,"imperial"]
 ];
 /* Ціна бустера «живе» разом з тобою: грошові (×2, ×3, ×1.5) коштують частку від твого середнього заробітку за раунд, решта дорожчає зі зростанням доходу */
-const rcAvg=()=>Math.max(1500,S.rc||0),BSP={x2:2.1,x3:1.4,mb:.35};
-const bsBase=b=>BSP[b[0]]?Math.max(b[3],Math.round(BSP[b[0]]*rcAvg())):Math.round(b[3]*Math.max(1,Math.pow(rcAvg()/1500,.7)));
+const rcAvg=()=>Math.max(600,S.rc||0),BSP={x2:2.1,x3:1.4,mb:.35};
+const bsBase=b=>BSP[b[0]]?Math.max(b[3],Math.round(BSP[b[0]]*rcAvg())):Math.round(b[3]*Math.max(1,Math.pow(rcAvg()/600,.7)));
 const bsCost=b=>bsBase(b)*2**(S.bp[b[0]]||0);
 
 // ═══ МАГАЗИН ═══
@@ -192,18 +207,18 @@ function rShop(){
  let h=`<div class="grid grid-cols-4 gap-1.5 text-[11px] font-bold">${tb.map(([k,l])=>`<button onclick="shopTab('${k}')" class="py-2 rounded-xl ${shopT==k?"bg-crimsonRed":"bg-inkCard border border-inkBorder"}">${l}</button>`).join("")}</div>`;
  if(shopT=="b"||shopT=="g"){
   h+=`<div class="flex gap-1.5 overflow-x-auto pb-1"><button onclick="shopRar(-1)" class="chip shrink-0 ${shopR<0?"!border-white":""}">${t("Усі|All")}</button>${RN.map((r,i)=>`<button onclick="shopRar(${i})" class="chip shrink-0" style="color:${r[1]};${shopR==i?"border-color:"+r[1]:""}">${t(r[0])}</button>`).join("")}</div><div class="text-[10px] text-gray-500">${t("Легендарні — за 💎 (боси, сундуки). Міфічні — за 🏮 (реклама, сундуки).|Legendary — 💎 (bosses, chests). Mythic — 🏮 (ads, chests).")}</div>`}
- if(shopT=="b")h+=`<div class="grid grid-cols-2 gap-3">`+BL.filter(b=>shopR<0||b.r==shopR).map(b=>{const o=S.blades.includes(b.i),e=S.blade==b.i;return `<div class="card !p-3 space-y-2" style="border-color:${e?"#ffb703":RN[b.r][1]+"88"}">${bar(b)}${rbadge(b.r)}<b class="block text-[10px] leading-tight">${FXI[b.fx]} ${bname(b)}</b><div class="text-[10px] text-gray-400">×${b.sc.toFixed(2)} ${t("очок|score")}</div>${o?`<button class="btn w-full ${e?"!bg-emerald-600":""}" onclick="eq('blade',${b.i})">${e?"✓":t("Обрати|Equip")}</button>`:buyBtn("blade",b)}</div>`}).join("")+`</div>`;
+ if(shopT=="b")h+=`<div class="grid grid-cols-2 gap-3">`+BL.filter(b=>shopR<0||b.r==shopR).map(b=>{const o=S.blades.includes(b.i),e=S.blade==b.i;return `<div class="card !p-3 space-y-2" style="border-color:${e?"#ffb703":RN[b.r][1]+"88"}">${bar(b)}${rbadge(b.r)}<b class="block text-[10px] leading-tight">${FXI[b.fx]} ${bname(b)}</b><div class="text-[10px] text-gray-400">×${(b.cm*(1+.05*U("kmul"))).toFixed(2)} ${t("монет|coins")}</div>${o?`<button class="btn w-full ${e?"!bg-emerald-600":""}" onclick="eq('blade',${b.i})">${e?"✓":t("Обрати|Equip")}</button>`:buyBtn("blade",b)}</div>`}).join("")+`</div>`;
  if(shopT=="g"){const L=BG.filter(g=>shopR<0||g.r==shopR);
   h+=L.slice(0,bgN).map(g=>{const o=S.bgs.includes(g.i),e=S.bg==g.i;return `<div class="card !p-0 overflow-hidden" style="border-color:${e?"#ffb703":RN[g.r][1]+"88"}"><div class="p-3 flex items-center gap-3" style="background:linear-gradient(135deg,${g.g[0]},${g.g[1]})"><span class="text-3xl">${g.ic}</span><div class="flex-1 min-w-0"><b class="text-xs block">${t(g.nm)}</b>${rbadge(g.r)}</div>${o?`<button class="btn ${e?"!bg-emerald-600":""}" onclick="eq('bg',${g.i})">${e?"✓":t("Обрати|Equip")}</button>`:buyBtn("bg",g,0,"shrink-0 w-[42%]")}</div></div>`}).join("");
   if(bgN<L.length)h+=`<button class="btn w-full py-3" onclick="moreBg()">${t("Показати ще|Show more")} (${L.length-bgN})</button>`}
  if(shopT=="u"){
-  h+=`<div class="card !p-3 flex items-center justify-between text-xs"><span>💤 ${t("Пасивний дохід|Passive income")}: <b id="pInc" class="text-emerald-400">${fmt(idleRate())} 文/${t("с|s")}</b><span class="block text-[10px] text-gray-400">${t("Ліміт 4 год на добу, залишилось|Cap 4 h per day, left")} ${idleLeft()}</span></span><button class="btn" onclick="setBm()">${t("Купити|Buy")} ×${bm}</button></div>`;
-  h+=[...UP].sort((a,b)=>!!b[7]-!!a[7]).map(u=>{const l=U(u[0]),mx=l>=u[6],c=upCost(u,l);return `<div class="card !p-3 space-y-1 min-h-[88px]"><div class="flex items-center justify-between gap-2"><div class="flex items-center gap-2"><span class="w-9 h-9 shrink-0 inline-flex items-center justify-center text-2xl">${ico("u_"+u[0],u[1],"h-9 w-9 object-contain")}</span><div><b class="text-xs">${t(u[2])}</b><div class="text-[10px] text-gray-400">${t(u[3])}</div></div></div><button class="btng shrink-0 min-w-[96px] text-center" data-c="${c}" data-mx="${mx?1:0}" ${mx||S.mon<c?"disabled":""} onclick="buyUp('${u[0]}')">${mx?"MAX":fmt(c)+" "+CI.mon}</button></div><div class="flex justify-between text-[10px]"><span class="text-neonGold">Lv ${l}/${u[6]}</span><span class="text-emerald-400">${u[7]?fmt(l*u[7]*mile(l))+" 文/"+t("с|s")+(mile(l)>1?" ×"+mile(l):""):""}</span></div><div class="h-1 bg-inkDark rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-neonGold to-crimsonRed" style="width:${l/u[6]*100}%"></div></div></div>`}).join("");
+  h+=`<div class="card !p-3 flex items-center justify-between text-xs"><span>💤 ${t("Пасивний дохід|Passive income")}: <b id="pInc" class="text-emerald-400">${fr(idleRate())} 文/${t("с|s")}</b><span class="block text-[10px] text-gray-400">${t("Ліміт 4 год на добу, залишилось|Cap 4 h per day, left")} ${idleLeft()}</span></span><button class="btn" onclick="setBm()">${t("Купити|Buy")} ×${bm}</button></div>`;
+  h+=[...UP].sort((a,b)=>!!b[7]-!!a[7]).map(u=>{const l=U(u[0]),mx=l>=u[6],c=upCost(u,l);return `<div class="card !p-3 space-y-1 min-h-[88px]"><div class="flex items-center justify-between gap-2"><div class="flex items-center gap-2"><span class="w-9 h-9 shrink-0 inline-flex items-center justify-center text-2xl">${ico("u_"+u[0],u[1],"h-9 w-9 object-contain")}</span><div><b class="text-xs">${t(u[2])}</b><div class="text-[10px] text-gray-400">${t(u[3])}</div></div></div><button class="btng shrink-0 min-w-[96px] text-center" data-c="${c}" data-mx="${mx?1:0}" ${mx||S.mon<c?"disabled":""} onclick="buyUp('${u[0]}')">${mx?"MAX":fmt(c)+" "+CI.mon}</button></div><div class="flex justify-between text-[10px]"><span class="text-neonGold">Lv ${l}/${u[6]}</span><span class="text-emerald-400">${u[7]?fr(l*u[7]*mile(l))+" 文/"+t("с|s")+(mile(l)>1?" ×"+mile(l):""):""}</span></div><div class="h-1 bg-inkDark rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-neonGold to-crimsonRed" style="width:${l/u[6]*100}%"></div></div></div>`}).join("");
  }
  if(shopT=="c")h+=`<p class="text-[11px] text-gray-400">${t("Бустери зберігаються й витрачаються на старті раунду. Ціна подвоюється після кожної покупки (оновлюється щодня).|Boosts are kept and spent at round start. Price doubles after each purchase (resets daily).")}</p>`+BS.map(b=>{const c=bsCost(b);return `<div class="card flex items-center justify-between gap-2 min-h-[72px]"><div class="flex items-center gap-3"><span class="w-9 h-9 shrink-0 inline-flex items-center justify-center text-2xl">${ico("b_"+b[0],b[1],"h-9 w-9 object-contain")}</span><div><b class="text-xs">${t(b[2])}</b><div class="text-[11px] text-gray-400">${t("В запасі|Owned")}: ${b[0]=="chg"?"—":S.c[b[0]]||0}</div></div></div>${b[5]?`<span class="chip">📺 ${t("реклама|ads")}</span>`:b[6]?`<span class="chip !border-neonGold/50 text-neonGold">🎁 ${exName(b[6])}</span>`:`<button class="btng shrink-0 min-w-[96px] text-center" data-c="${c}" ${S.mon>=c?"":"disabled"} onclick="buyB('${b[0]}')">${fmt(c)} ${CI.mon}</button>`}</div>`}).join("");
  const v=$("view-shop"),y=window.scrollY;v.style.minHeight=v.offsetHeight+"px";v.innerHTML=h;window.scrollTo(0,y);requestAnimationFrame(()=>{v.style.minHeight=""})
 }
 // оновлює лише стан кнопок і дохід, не перемальовуючи список (немає стрибків щосекунди)
-function shopLive(){document.querySelectorAll("#view-shop [data-c]").forEach(b=>{b.disabled=b.dataset.mx=="1"||S[b.dataset.cur||"mon"]<+b.dataset.c});const p=$("pInc");if(p)p.textContent=fmt(idleRate())+" 文/"+t("с|s")}
+function shopLive(){document.querySelectorAll("#view-shop [data-c]").forEach(b=>{b.disabled=b.dataset.mx=="1"||S[b.dataset.cur||"mon"]<+b.dataset.c});const p=$("pInc");if(p)p.textContent=fr(idleRate())+" 文/"+t("с|s")}
 let idleTick=0;
 setInterval(()=>{const r=idleRate();if(r&&!document.hidden){const u=idleCredit(1);if(u){S.mon+=r*u;hdr();if(cur=="shop")shopLive()}}},1000);
