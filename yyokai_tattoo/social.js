@@ -151,6 +151,7 @@ async function loadMasters(force,silent){if(!FBOK||!db)return;if(!force&&Date.no
  catch(e){}
  if(!silent){if(cur=="rewards")rRewards();ensureMaster()}}
 const masterOf=id=>MS.find(m=>m.id==id);
+const OWN="yyokai";   // id документа masters/yyokai — це ТИ: безкоштовні тату (розіграш, міні-тату) виконує лише цей майстер; знижки діють у обраного гравцем майстра
 const mAv=m=>{const src=m.photo||(m.ig?"img/masters/"+m.ig+".jpg":""),l=esc((m.nm||"?")[0].toUpperCase());return src?`<img src="${esc(src)}" class="w-full h-full object-cover" onerror="this.outerHTML='${l}'">`:l};
 const masterRow=m=>`<div class="card !p-3 flex items-center gap-3"><div class="relative shrink-0"><div class="w-14 h-14 rounded-full overflow-hidden bg-inkDark border-2 ${m.bu>Date.now()?"border-neonGold":"border-inkBorder"} flex items-center justify-center text-xl font-black">${mAv(m)}</div>${m.bu>Date.now()?`<span class="absolute -top-1 -right-1 text-xs">⭐</span>`:""}</div><div class="flex-1 min-w-0"><b class="text-sm block truncate">${esc(m.nm)}</b><div class="text-[10px] text-gray-400 truncate">${m.ig?"@"+esc(m.ig):esc(m.city)}</div><div class="flex gap-1.5 mt-1.5"><button class="btn !px-3 !bg-inkDark border border-inkBorder" ${m.ig?"":"disabled"} onclick="window.open('https://instagram.com/${encodeURIComponent(m.ig)}','_blank')">${t("Ознайомитись|View")}</button><button class="btng !px-3" onclick="pickMaster('${esc(m.id)}')">${t("Обрати|Choose")}</button></div></div></div>`;
 function masterList(force){
@@ -192,7 +193,7 @@ setInterval(()=>{const left=rafTarget-Date.now(),e=$("rafT");
  if(left<=0){if(left>-10*6e4&&isReal()&&!$("raf")&&!rafDone())showRaffleWait();if(left<=-10*6e4)rafTarget=nextRaffle()}
  if(e){const s=Math.max(0,Math.floor(left/1e3)),d=s/86400|0;e.textContent=`${d}${t("д|d")} ${String(s%86400/3600|0).padStart(2,"0")}:${String(s%3600/60|0).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`}},1000);
 const rafDone=()=>RAF&&RAF.month==new Date().toISOString().slice(0,7)&&RAF.ts&&RAF.ts.toMillis&&Date.now()-RAF.ts.toMillis()<20*6e4;
-const raffleCard=()=>`<div class="card text-center space-y-1" style="border-color:#ffb70388"><div class="text-xs tracking-[.3em] text-neonGold font-black">🎰 ${t("РОЗІГРАШ ТАТУ|TATTOO DRAW")}</div><div id="rafT" class="text-2xl font-black font-mono">--</div><div class="text-[11px] text-gray-300">${t("Щомісяця о 20:00 (Київ). Беруть участь гравці ТОП-10: 1 безкоштовний сеанс (тату до 7000 грн) і 9 знижок. Напередодні приходить сповіщення.|Every month at 20:00 (Kyiv). TOP-10 players take part: 1 free session (tattoo up to 7000 UAH) and 9 discounts. A reminder arrives the day before.")}</div>${RAF&&RAF.winner?`<div class="text-xs text-gray-400">${t("Минулий переможець|Last winner")}: <b class="text-white">${esc(RAF.winner.nick)}</b></div>`:""}</div>`;
+const raffleCard=()=>`<div class="card text-center space-y-1" style="border-color:#ffb70388"><div class="text-xs tracking-[.3em] text-neonGold font-black">🎰 ${t("РОЗІГРАШ ТАТУ|TATTOO DRAW")}</div><div id="rafT" class="text-2xl font-black font-mono">--</div><div class="text-[11px] text-gray-300">${t("Щомісяця о 20:00 (Київ). Беруть участь гравці ТОП-10: 1 безкоштовний сеанс у майстра YYOKAI (тату до 7000 грн) і 9 знижок у твого майстра. Напередодні приходить сповіщення.|Every month at 20:00 (Kyiv). TOP-10 players take part: 1 free session with master YYOKAI (tattoo up to 7000 UAH) and 9 discounts with your master. A reminder arrives the day before.")}</div>${RAF&&RAF.winner?`<div class="text-xs text-gray-400">${t("Минулий переможець|Last winner")}: <b class="text-white">${esc(RAF.winner.nick)}</b></div>`:""}</div>`;
 function watchRaffle(){if(rafUnsub||!FBOK||!db)return;
  rafUnsub=FB.onSnapshot(FB.doc(db,"events","raffle"),s=>{if(!s.exists())return;const e=s.data();RAF=e;
   const fresh=e.ts&&e.ts.toMillis&&Date.now()-e.ts.toMillis()<20*6e4;
@@ -214,7 +215,7 @@ function showRaffle(e){
  st.style.transition="transform 7s cubic-bezier(.08,.7,.1,1)";requestAnimationFrame(()=>requestAnimationFrame(()=>{st.style.transform=`translateX(-${target}px)`}));
  let last=-1;const tk=setInterval(()=>{if(!st.isConnected){clearInterval(tk);return}const m=new DOMMatrix(getComputedStyle(st).transform),idx=Math.floor((-m.m41+bw/2-8)/104);if(idx!=last){last=idx;sfx("tick",()=>tone(1300,.04,"square",.07))}},40);
  setTimeout(()=>{clearInterval(tk);const r=$("rfres");if(!r)return;sfx("reveal",()=>[0,4,7,12].forEach((s,i)=>setTimeout(()=>tone(330*2**(s/12),.7,"triangle",.14),i*140)));
-  r.innerHTML=`<div style="animation:dropBounce .9s cubic-bezier(.3,1.2,.4,1) both"><div class="w-20 h-20 rounded-full overflow-hidden mx-auto border-4 border-neonGold" style="box-shadow:0 0 40px #ffb703">${avHTML(w.av)}</div><div class="text-xl font-black mt-2 text-neonGold">🏆 ${esc(w.nick)}</div><div class="text-sm text-gray-200">${t("виграв безкоштовний сеанс (тату до 7000 грн)!|won a free session (tattoo up to 7000 UAH)!")}</div></div><div class="text-xs text-gray-300 mt-2">${mine?(mine.kind=="free"?t("Це ти! Приз — у вкладці «Нагороди».|It is you! Your prize is in the Rewards tab."):t("Ти отримуєш знижку|You get a discount of")+" "+mine.pct+"%"+t(" — у вкладці «Нагороди».| — see the Rewards tab.")):t("Інші 9 учасників отримали знижки.|The other 9 players got discounts.")}</div>`;
+  r.innerHTML=`<div style="animation:dropBounce .9s cubic-bezier(.3,1.2,.4,1) both"><div class="w-20 h-20 rounded-full overflow-hidden mx-auto border-4 border-neonGold" style="box-shadow:0 0 40px #ffb703">${avHTML(w.av)}</div><div class="text-xl font-black mt-2 text-neonGold">🏆 ${esc(w.nick)}</div><div class="text-sm text-gray-200">${t("виграв безкоштовний сеанс у майстра YYOKAI (тату до 7000 грн)!|won a free session with master YYOKAI (tattoo up to 7000 UAH)!")}</div></div><div class="text-xs text-gray-300 mt-2">${mine?(mine.kind=="free"?t("Це ти! Приз — у вкладці «Нагороди».|It is you! Your prize is in the Rewards tab."):t("Ти отримуєш знижку|You get a discount of")+" "+mine.pct+"%"+t(" — у вкладці «Нагороди».| — see the Rewards tab.")):t("Інші 9 учасників отримали знижки.|The other 9 players got discounts.")}</div>`;
   fxShoot(r,40,["#ffb703","#ff2a5f","#fff"]);$("rfok").classList.remove("hidden")},7300)}
 
 // ═══ НАГОРОДИ: складніші умови. Дні беруться з СЕРВЕРНОГО логу (SD), а не з телефона ═══
@@ -226,12 +227,12 @@ const need=k=>{
   X=["Очки XP (за раунди)|XP points (from rounds)",S.xp],T=["Підтверджені завдання партнерів|Verified partner tasks",tasksOk()],
   B=["Босів переможено|Bosses defeated",S.kills],K=["Клинків у колекції|Blades collected",S.blades.length],G2=["Фонів у колекції|Backgrounds collected",S.bgs.length],A=["Реклам переглянуто|Ads watched",S.ads],C=["Накопичено монет за весь час|Total coins earned",S.tot||0];
  return {
-  d10:[[...F,1],[...D,4],[...C,1e7],[...X,20000]],
-  d20:[[...F,2],[...D,6],[...C,3e7],[...X,60000],[...B,5]],
-  d30:[[...F,3],[...D,9],[...C,8e7],[...X,150000],[...B,12],[...T,2]],
-  d40:[[...F,4],[...D,12],[...C,2e8],[...X,300000],[...B,25],[...T,4]],
-  mini:[[...F,3],[...D,30],[...C,1.5e9],[...X,900000],[...B,60],[...T,6],[...K,15]],
-  big:[[...F,8],[...D,60],[...C,1.2e10],[...X,4000000],[...B,150],[...T,10],[...K,40],[...G2,35],[...A,60]]
+  d10:[[...F,1],[...D,4],[...C,8e4],[...X,20000]],
+  d20:[[...F,2],[...D,6],[...C,3e5],[...X,60000],[...B,5]],
+  d30:[[...F,3],[...D,9],[...C,8e5],[...X,150000],[...B,12],[...T,2]],
+  d40:[[...F,4],[...D,12],[...C,2e6],[...X,300000],[...B,25],[...T,4]],
+  mini:[[...F,3],[...D,30],[...C,5e6],[...X,900000],[...B,60],[...T,6],[...K,15]],
+  big:[[...F,8],[...D,60],[...C,3e7],[...X,4000000],[...B,150],[...T,10],[...K,40],[...G2,35],[...A,60]]
  }[k];
 };
 const NAMES={d10:"🏷 Знижка 10% на тату|🏷 10% tattoo discount",d20:"🏷 Знижка 20%|🏷 20% discount",d30:"🏷 Знижка 30%|🏷 30% discount",d40:"🏷 Знижка 40%|🏷 40% discount",mini:"🎁 Міні-тату (до 1500 грн) · 1 раз|🎁 Mini tattoo (up to 1500 UAH) · once",big:"👑 Велике тату (7000 грн) · лише 1 раз|👑 Big tattoo (7000 UAH) · only once"};
@@ -240,18 +241,18 @@ async function claim(id,code){
  const cp=code?S.cp.find(c=>c.code==code):null;
  if(cp?cp.used:S.claimed.includes(id))return;
  if(!isReal()){alert(t("Щоб подати заявку, увійди через Google/Apple.|Sign in with Google/Apple to claim."));authMode("reg");go("auth");return}
- const mid=cp?(cp.m||(S.master&&S.master.id)):(S.master&&S.master.id),m=mid&&masterOf(mid);
+ const ty0=cp?cp.type:id,mid=(ty0=="mini"||ty0=="big"||String(ty0).startsWith("tat"))?OWN:cp?(cp.m||(S.master&&S.master.id)):(S.master&&S.master.id),m=mid&&masterOf(mid);
  if(!m){alert(t("Обери майстра зі списку активних партнерів (вкладка «Нагороди»).|Pick a master from the active partners list (Rewards tab)."));return}
  const ty=cp?cp.type:id,tat=ty=="mini"||ty=="big"||ty.startsWith("tat"),ym=today().slice(0,7);
  const docId=user.uid+"_"+(ty=="big"?"tat_big":ty=="mini"?"tat_mini":ty.startsWith("tat")?"tat_coupon":"disc_"+ym);   // знижка — 1 на місяць, тату — 1 раз
  try{await FB.setDoc(FB.doc(db,"claims",docId),{uid:user.uid,master:m.id,masterName:m.nm,email:user.email||"",nick:S.nick,tier:id,code:code||"",kind:tat?"tattoo":"discount",xp:S.xp,tot:S.tot||0,days:S.days,serverDays:SD,streak:S.streak,friends:S.friends,tasks:tasksOk(),ads:S.ads,kills:S.kills,blades:S.blades.length,bgs:S.bgs.length,ts:FB.serverTimestamp(),status:"new"});
-  if(cp)cp.used=1;else S.claimed.push(id);save();rend();alert(t("Заявку надіслано майстру «|Request sent to master “")+m.nm+t("» і студії YYOKAI. Ми перевіримо умови й напишемо тобі.|” and YYOKAI studio. We will verify and contact you."))}
+  if(cp)cp.used=1;else S.claimed.push(id);save();rend();alert(t("Заявку надіслано майстру «|Request sent to master “")+m.nm+t("». Ми перевіримо умови й напишемо тобі.|”. We will verify and contact you."))}
  catch(e){alert(e.code=="permission-denied"?t("Така заявка вже подавалась (знижка — раз на місяць, кожне тату — раз у житті) або майстер більше не активний.|Such a claim was already sent (one discount per month, each tattoo once per lifetime) or the master is no longer active."):e.message)}
 }
-const MINI_PRICE=1.5e9,MINI_DAYS=20;
+const MINI_PRICE=3e6,MINI_DAYS=20;
 async function buyMini(){
  sync();if(!isReal()){alert(t("Щоб подати заявку, увійди через Google/Apple.|Sign in with Google/Apple to claim."));return}
- const m=S.master&&masterOf(S.master.id);if(!m){alert(t("Спершу обери майстра зі списку.|Choose a master first."));return}
+ const m=masterOf(OWN);if(!m){alert(t("Майстер YYOKAI тимчасово недоступний.|Master YYOKAI is temporarily unavailable."));return}
  if(SD<MINI_DAYS){toast(t("Потрібно більше різних днів у грі|You need more different days played"));return}
  if(S.mon<MINI_PRICE){toast(t("Не вистачає монет|Not enough coins"));return}
  if(S.friends10<3){toast(t("Запроси 3 друзів, які досягли 10 рівня|Invite 3 friends who reached level 10"));return}
@@ -259,17 +260,17 @@ async function buyMini(){
   S.mon-=MINI_PRICE;save();push();track("purchase",{kind:"mini_tattoo"});rend();alert(t("Заявку надіслано майстру «|Request sent to master “")+m.nm+t("». Монети списано.|”. Coins deducted."))}
  catch(e){alert(e.code=="permission-denied"?t("Цього місяця таку заявку вже подано, або майстер більше не активний.|You already sent such a request this month, or the master is no longer active."):e.message)}}
 async function claimPrize(pid){
- const z=PZ.find(p=>p.id==pid);if(!z||S.pzUsed.includes(pid))return;const m=S.master&&masterOf(S.master.id);
+ const z=PZ.find(p=>p.id==pid);if(!z||S.pzUsed.includes(pid))return;const m=z.kind=="free"?masterOf(OWN):(S.master&&masterOf(S.master.id));
  if(!m){alert(t("Обери майстра зі списку активних партнерів.|Choose a master from the active partners list."));return}
  try{await FB.setDoc(FB.doc(db,"claims",user.uid+"_raffle_"+z.month),{uid:user.uid,master:m.id,masterName:m.nm,email:user.email||"",nick:S.nick,tier:"raffle_"+z.kind,pct:z.pct||0,code:"",kind:z.kind=="free"?"tattoo":"discount",ts:FB.serverTimestamp(),status:"new"});
-  S.pzUsed.push(pid);save();rRewards();alert(t("Приз передано майстру «|Prize sent to master “")+m.nm+t("». Студія напише тобі.|”. The studio will contact you."))}
+  S.pzUsed.push(pid);save();rRewards();alert(t("Приз передано майстру «|Prize sent to master “")+m.nm+t("». Майстер напише тобі.|”. The master will contact you."))}
  catch(e){alert(e.code=="permission-denied"?t("Цей приз уже заявлено, або майстер більше не активний.|This prize was already claimed, or the master is no longer active."):e.message)}}
 function rRewards(){
  loadSD();loadMasters(0);
- const cps=S.cp.filter(c=>!c.used),pz=PZ.filter(p=>!S.pzUsed.includes(p.id)),cm=S.master&&masterOf(S.master.id),okMini=!!cm&&SD>=MINI_DAYS&&S.friends10>=3&&S.mon>=MINI_PRICE;
- $("view-rewards").innerHTML=`<h2 class="text-xl font-black uppercase text-center">${t("Нагороди студії YYOKAI|YYOKAI studio rewards")}</h2>${masterCard()}${raffleCard()}
- ${pz.length?`<h3 class="text-sm font-black uppercase text-center">${t("Мої призи розіграшу|My draw prizes")}</h3>`+pz.map(z=>`<div class="card flex items-center justify-between gap-2"><div><b class="text-sm">${z.kind=="free"?"🏆 "+t("Безкоштовний сеанс (тату до 7000 грн)|Free session (tattoo up to 7000 UAH)"):"🏷 "+t("Знижка|Discount")+" "+z.pct+"%"}</b><div class="text-[10px] text-gray-400">${esc(z.month)}</div></div><button class="btng shrink-0" ${cm?"":"disabled"} onclick="claimPrize('${esc(z.id)}')">${t("Забрати|Claim")}</button></div>`).join(""):""}
- <div class="card space-y-3"><h3 class="font-black text-sm text-center">🎁 ${t("Безкоштовний сеанс (тату до 1500 грн)|Free session (tattoo up to 1500 UAH)")}</h3><p class="text-[11px] text-gray-300 text-center">${t("Купується за монети раз на місяць. Обов'язково: запроси 3 друзів, які досягли 10 рівня. Сеанс виконує обраний майстер.|Bought with coins once a month. Required: invite 3 friends who reached level 10. Done by your chosen master.")}</p>
+ const cps=S.cp.filter(c=>!c.used),pz=PZ.filter(p=>!S.pzUsed.includes(p.id)),cm=S.master&&masterOf(S.master.id),okMini=!!masterOf(OWN)&&SD>=MINI_DAYS&&S.friends10>=3&&S.mon>=MINI_PRICE;
+ $("view-rewards").innerHTML=`<h2 class="text-xl font-black uppercase text-center">${t("Нагороди майстра YYOKAI|YYOKAI master rewards")}</h2>${masterCard()}${raffleCard()}
+ ${pz.length?`<h3 class="text-sm font-black uppercase text-center">${t("Мої призи розіграшу|My draw prizes")}</h3>`+pz.map(z=>`<div class="card flex items-center justify-between gap-2"><div><b class="text-sm">${z.kind=="free"?"🏆 "+t("Безкоштовний сеанс (тату до 7000 грн)|Free session (tattoo up to 7000 UAH)"):"🏷 "+t("Знижка|Discount")+" "+z.pct+"%"}</b><div class="text-[10px] text-gray-400">${esc(z.month)}</div></div><button class="btng shrink-0" ${(z.kind=="free"?masterOf(OWN):cm)?"":"disabled"} onclick="claimPrize('${esc(z.id)}')">${t("Забрати|Claim")}</button></div>`).join(""):""}
+ <div class="card space-y-3"><h3 class="font-black text-sm text-center">🎁 ${t("Безкоштовний сеанс (тату до 1500 грн)|Free session (tattoo up to 1500 UAH)")}</h3><p class="text-[11px] text-gray-300 text-center">${t("Купується за монети раз на місяць. Обов'язково: запроси 3 друзів, які досягли 10 рівня. Сеанс виконує майстер YYOKAI.|Bought with coins once a month. Required: invite 3 friends who reached level 10. Done by master YYOKAI.")}</p>
   ${rows([["Різних днів у грі (за даними сервера)|Different days played (server-verified)",isReal()?SD:0,MINI_DAYS],["Друзів 10-го рівня (запроси 3)|Friends at level 10 (invite 3)",S.friends10,3],["Монет на балансі|Coins on balance",S.mon,MINI_PRICE]])}
   <button onclick="buyMini()" ${okMini?"":"disabled"} class="btng w-full py-2.5 ${okMini?"":"!from-gray-800 !to-gray-800 !text-gray-500"}">${t("Купити за|Buy for")} ${fmt(MINI_PRICE)} ${CI.mon}</button></div>
  ${cps.length?`<h3 class="text-sm font-black uppercase text-center">${t("Мої купони зі скринь|My chest coupons")}</h3>`+cps.map(c=>{const mm=masterOf(c.m||(S.master&&S.master.id)),ok=!!mm;return `<div class="card flex items-center justify-between gap-2"><div class="min-w-0"><b class="text-sm">${esc(c.lb.split(" · ")[0])}</b><div class="font-mono text-lg tracking-widest text-neonGold">#${esc(c.code)}</div><div class="text-[11px] text-gray-300">${c.mi?"@"+esc(c.mi):esc(c.mn||(mm?mm.nm:"—"))}${ok?"":" · ⛔"}</div></div><button class="btng shrink-0" ${ok?"":"disabled"} onclick="claim('${esc(c.type)}','${esc(c.code)}')">${t("Забрати|Claim")}</button></div>`}).join(""):""}
@@ -277,7 +278,7 @@ function rRewards(){
   <div>1️⃣ ${t("Обери місто й майстра — усі знижки та призи діятимуть лише в нього.|Pick a city and a master — all discounts and prizes work only with him.")}</div>
   <div>2️⃣ ${t("Грай у різні дні: лічильник днів іде з сервера, його не обдурити.|Play on different days: the day counter comes from the server.")}</div>
   <div>3️⃣ ${t("Потрапи в ТОП-10 рейтингу — щомісяця о 20:00 розіграш: 1 безкоштовний сеанс (до 7000 грн) і 9 знижок.|Reach the TOP-10 — every month at 20:00 there is a draw: 1 free session (up to 7000 UAH) and 9 discounts.")}</div>
-  <div>4️⃣ ${t("Знижки 5–40% можуть випасти з будь-якого сундука: чим дорожчий сундук, тим вищий шанс (від ≈0,1% до 3%). Під кодом купона — нік майстра.|Discounts of 5–40% can drop from any chest: the pricier the chest, the higher the chance (≈0.1% to 3%). The master's nickname is shown under the coupon code.")}</div></div>`;
+  <div>4️⃣ ${t("Знижки 5–50% можуть випасти з будь-якого сундука: чим дорожчий сундук, тим вищий шанс (від ≈0,4% до 4%). Під кодом купона — нік майстра.|Discounts of 5–50% can drop from any chest: the pricier the chest, the higher the chance (≈0.4% to 4%). The master's nickname is shown under the coupon code.")}</div></div>`;
 }
 // ═══ ПРОФІЛЬ ═══
 function rProfile(){
@@ -341,7 +342,7 @@ async function admClaims(){
 // ═══ АДМІНКА: майстри (оплата = paidUntil). Неоплачений майстер миттєво зникає зі списку гравців ═══
 async function admMasters(){const box=$("admRes");box.innerHTML="…";
  try{const q=await FB.getDocs(FB.collection(db,"masters"));
-  box.innerHTML=`<div class="card space-y-2"><b class="text-xs">${t("Новий майстер|New master")}</b><input id="mN" class="inp !py-2" placeholder="Ім'я / студія"><input id="mC" class="inp !py-2" placeholder="Місто"><input id="mI" class="inp !py-2" placeholder="Instagram (без @)"><input id="mT" class="inp !py-2" placeholder="Telegram chat id (для сповіщень майстру)"><input id="mP" class="inp !py-2" placeholder="URL фото (необов'язково)"><button class="btn w-full" onclick="admAddMaster()">+ ${t("Додати на 30 днів|Add for 30 days")}</button></div>`+
+  box.innerHTML=`<div class="card space-y-2"><b class="text-xs">${t("Новий майстер|New master")}</b><input id="mN" class="inp !py-2" placeholder="Ім'я / студія"><input id="mC" class="inp !py-2" placeholder="Місто"><input id="mI" class="inp !py-2" placeholder="Instagram (без @)"><input id="mT" class="inp !py-2" placeholder="Telegram chat id (для сповіщень майстру)"><input id="mP" class="inp !py-2" placeholder="URL фото (необов'язково)"><button class="btn w-full" onclick="admAddMaster()">+ ${t("Додати на 30 днів|Add for 30 days")}</button><button class="btn w-full !bg-inkDark border border-inkBorder" onclick="admOwn()">🥷 ${t("Мій профіль YYOKAI (∞)|My YYOKAI profile (∞)")}</button></div>`+
   q.docs.map(d=>{const x=d.data(),pu=x.paidUntil&&x.paidUntil.toMillis?x.paidUntil.toMillis():0,on=pu>Date.now();
    return `<div class="card !p-3 text-xs space-y-2"><div><b>${esc(x.name||"?")}</b> · ${esc(x.city||"")} <span class="${on?"text-emerald-400":"text-crimsonRed"}">${on?"✅ "+t("до|until")+" "+new Date(pu).toLocaleDateString():"⛔ "+t("не оплачено|unpaid")}</span></div><div class="flex gap-2 flex-wrap"><button class="btn" onclick="admMasterPay('${esc(d.id)}',30)">+30 ${t("днів|days")}</button><button class="btn !bg-amber-600" onclick="admMasterBoost('${esc(d.id)}',30)">⭐ +30 ${t("днів|days")}</button><button class="btn !bg-red-700" onclick="admMasterPay('${esc(d.id)}',0)">${t("Вимкнути|Disable")}</button><button class="btn !bg-inkDark border border-inkBorder" onclick="admClients('${esc(d.id)}')">${t("Клієнти|Clients")}</button></div></div>`}).join("")}
  catch(e){box.innerHTML=`<div class="text-xs text-crimsonRed">${esc(e.message)}</div>`}}
@@ -350,7 +351,13 @@ async function admAddMaster(){const v=i=>($(i).value||"").trim();if(!v("mN"))ret
 async function admMasterPay(id,days){
  try{const ref=FB.doc(db,"masters",id),r=await FB.getDoc(ref),cur=r.data().paidUntil&&r.data().paidUntil.toMillis?r.data().paidUntil.toMillis():0;
   await FB.updateDoc(ref,{paidUntil:FB.Timestamp.fromMillis(days?Math.max(cur,Date.now())+days*864e5:Date.now()-1000)});admMasters()}catch(e){alert(e.message)}}
-async function admMasterBoost(id,days){   // платне просування: ⭐ угорі списку міста
+async function boostFree(id){try{const q=await FB.getDocs(FB.collection(db,"masters")),all=q.docs.map(d=>({id:d.id,...d.data()})),me=all.find(x=>x.id==id);if(!me)return true;
+ return !all.some(x=>x.id!=id&&x.city==me.city&&x.boostUntil&&x.boostUntil.toMillis&&x.boostUntil.toMillis()>Date.now())}catch(e){return true}}
+async function admOwn(){try{const tg=prompt("Telegram chat id для сповіщень (порожньо — не змінювати)")||"";await FB.setDoc(FB.doc(db,"masters",OWN),{name:"YYOKAI",city:"Львів",ig:"yyokai.tattoo",paidUntil:FB.Timestamp.fromMillis(Date.UTC(2099,0,1)),...(tg?{tg}:{})},{merge:true});alert("OK");admMasters()}catch(e){alert(e.message)}}
+async function admMasterBoost(id,days){      // ТОП-1 міста — лише одне місце: поки інший майстр міста має активне просування, нове не продається
+ if(!(await boostFree(id))){alert("⛔ ТОП-1 у цьому місті вже зайнятий іншим майстром");return}
+ return admMasterBoost0(id,days)}
+async function admMasterBoost0(id,days){   // платне просування: ⭐ угорі списку міста
  try{const ref=FB.doc(db,"masters",id),r=await FB.getDoc(ref),cur=r.data().boostUntil&&r.data().boostUntil.toMillis?r.data().boostUntil.toMillis():0;
   await FB.updateDoc(ref,{boostUntil:FB.Timestamp.fromMillis(Math.max(cur,Date.now())+days*864e5)});admMasters()}catch(e){alert(e.message)}}
 async function admClients(id){const box=$("admRes");box.innerHTML="…";
@@ -388,9 +395,10 @@ async function loadQuests(){let base=DEFQ;
  try{const r=await fetch("data/quests.json?v="+Date.now());if(r.ok){const j=await r.json();if(Array.isArray(j)&&j.length)base=j}}catch(e){}
  let extra=[];if(isReal()){try{extra=(await FB.getDocs(FB.collection(db,"offers"))).docs.map(d=>{const x=d.data();return{id:"o_"+d.id,k:"link",ic:x.ic||"🤝",nm:x.title||x.nm||"Partner",url:x.url,r:x.r||{mon:CFG.offerReward}}})}catch(e){}}
  QS=[...base,...extra];if(cur=="friends")rFriends()}
-function rwChips(r){const a=[];if(r.mon)a.push(`<span class="chip !py-0.5">${fmt(r.mon)} ${CI.mon}</span>`);if(r.souls)a.push(`<span class="chip !py-0.5">${r.souls} ${ico("soul","⛩️")}</span>`);if(r.jd)a.push(`<span class="chip !py-0.5">${r.jd} ${CI.jd}</span>`);if(r.ln)a.push(`<span class="chip !py-0.5 text-neonGold">${r.ln} ${CI.ln}</span>`);
+const qm=x=>Math.round(x*.25);   // 🔧 монети в нагородах квестів ×0.25 (під нову економіку)
+function rwChips(r){const a=[];if(r.mon)a.push(`<span class="chip !py-0.5">${fmt(qm(r.mon))} ${CI.mon}</span>`);if(r.souls)a.push(`<span class="chip !py-0.5">${r.souls} ${ico("soul","⛩️")}</span>`);if(r.jd)a.push(`<span class="chip !py-0.5">${r.jd} ${CI.jd}</span>`);if(r.ln)a.push(`<span class="chip !py-0.5 text-neonGold">${r.ln} ${CI.ln}</span>`);
  for(const k in(r.b||{})){const b=BS.find(x=>x[0]==k);a.push(`<span class="chip !py-0.5">${ico("b_"+k,b?b[1]:"⚡","h-3.5 w-3.5 inline-block object-contain align-middle")} ×${r.b[k]}</span>`)}return a.join("")}
-function giveR(r){S.mon+=r.mon||0;S.souls+=r.souls||0;S.jd+=r.jd||0;S.ln+=r.ln||0;for(const k in(r.b||{}))S.c[k]=(S.c[k]||0)+r.b[k];save();push();hdr();toast("🎁 "+t("Нагороду отримано!|Reward received!"))}
+function giveR(r){S.mon+=qm(r.mon||0);S.souls+=r.souls||0;S.jd+=r.jd||0;S.ln+=r.ln||0;for(const k in(r.b||{}))S.c[k]=(S.c[k]||0)+r.b[k];save();push();hdr();toast("🎁 "+t("Нагороду отримано!|Reward received!"))}
 function qOpen(id){const q=QS.find(x=>x.id==id);if(!q||S.qd[id])return;window.open(q.url,"_blank");S.qt[id]=Date.now();save();track("quest_open",{id});rFriends();setTimeout(()=>{if(cur=="friends")rFriends()},20500)}
 function qClaim(id){const q=QS.find(x=>x.id==id);if(!q||S.qd[id])return;
  if(q.k=="link"){if(!S.qt[id]||Date.now()-S.qt[id]<2e4){toast(t("Спершу відкрий посилання й зачекай 20 секунд|Open the link first and wait 20 seconds"));return}}
