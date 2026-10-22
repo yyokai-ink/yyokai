@@ -11,7 +11,7 @@ const CK=[["s","🥈","Срібний|Silver",600000,"#9ca3af",2,"ln"],["g","�
 const _C=[["jomon","🏺","Дзьомон|Jomon"],["yayoi","🌾","Яйой|Yayoi"],["kofun","⛰️","Кофун|Kofun"],["asuka","🏯","Асука|Asuka"],["nara","🦌","Нара|Nara"],["heian","🪭","Хейан|Heian"],["kamakura","⚔️","Камакура|Kamakura"],["muromachi","🍵","Муромачі|Muromachi"],["sengoku","🔥","Сенгоку|Sengoku"],["azuchi","🏰","Адзуті-Момояма|Azuchi-Momoyama"],["edo","🏮","Едо|Edo"],["meiji","🌸","Мейдзі|Meiji"],["taisho","🎎","Тайсьо|Taisho"]];
 const _L=[["tengu","👺","Тенгу|Tengu"],["kitsune","🦊","Кіцуне|Kitsune"],["oni","👹","Оні|Oni"],["kappa","🐸","Каппа|Kappa"],["yukionna","❄️","Юкі-онна|Yuki-onna"],["ryujin","🐉","Рюдзін|Ryujin"],["sakura","🌺","Сакура|Sakura"],["ninja","🥷","Ніндзя|Ninja"],["samurai","🗡️","Самурай|Samurai"],["shogun","🎌","Сьогун|Shogun"],["geisha","🎭","Гейша|Geisha"],["torii","⛩️","Торії|Torii"]];
 const _J=[["showa","🚂","Сьова|Showa"],["heisei","📼","Хейсей|Heisei"],["reiwa","🪷","Рейва|Reiwa"],["neon","🌃","Неон-Токіо|Neon Tokyo"],["cyber","🤖","Кібер-Едо|Cyber Edo"],["cosmic","🌌","Космічний|Cosmic"],["dragon","🐲","Драконів|Dragon"],["phoenix","🦅","Фенікс|Phoenix"],["heaven","☁️","Небесний|Heavenly"],["thunder","⚡","Громовий|Thunder"],["abyss","🌀","Безодня|Abyss"],["imperial","👑","Імператорський|Imperial"]];
-const EC=[..._C.map((x,i)=>[x[0],x[1],x[2],"mon",Math.round(1000*2.2**i),`hsl(${i*27},70%,60%)`,i<5?3:i<10?4:5]),
+const EC=[..._C.map((x,i)=>[x[0],x[1],x[2],"mon",Math.round(500*1.8**i),`hsl(${i*27},70%,60%)`,i<5?3:i<10?4:5]),
  ..._L.map((x,i)=>[x[0],x[1],x[2],"ln",3+i*3,`hsl(${200+i*13},75%,62%)`,i<4?3:i<8?4:5]),
  ..._J.map((x,i)=>[x[0],x[1],x[2],"jd",8+i*10,`hsl(${280+i*8},80%,64%)`,i<3?4:5])];
 
@@ -21,12 +21,12 @@ const EC=[..._C.map((x,i)=>[x[0],x[1],x[2],"mon",Math.round(1000*2.2**i),`hsl(${
  EC.forEach(e=>{for(const r of pref[e[6]]){const b=BL.find(x=>x.i>=10&&x.r==r&&!x.ex);if(b){b.ex=e[0];break}}
   for(const r of pref[e[6]]){const g=BG.find(x=>x.i>=6&&x.r==r&&!x.ex);if(g){g.ex=e[0];break}}})})();
 // Ваги: [монети, бустер, душі, ліхтарі, нефрит, знижка, тату, клинок/фон]
-const LOOT=[[52,34,6,.2,0,.1,0,0],[38,24,10,.3,.3,.3,0,6],[24,18,12,.4,.8,.8,0,11],[30,20,12,.4,.5,1,0,12],[18,16,12,.5,.9,2,0,15],[10,12,12,.6,1.6,3,0,16]];   // 4-й елемент — 🏮 (≈0.2–0.6%), 5-й — 💎 (≈0.3–1.6%), 6-й — знижки (0.1–3%): рідкісні валюти справді рідкісні   // 4-й елемент — ліхтарі (дуже рідко), 6-й — знижки   // 6-й елемент = шанс знижки у %, зростає з ціною сундука: срібний 0.1% … найдорожчі 3%   // знижки — лише в найдорожчих (легендарних) сундуках і дуже рідко (≈0.4%); тату-купонів із сундуків більше нема
+const LOOT=[[52,34,6,.2,0,.4,0,0],[38,24,10,.3,.3,.8,0,6],[24,18,12,.4,.8,1.2,0,11],[30,20,12,.4,.5,1.6,0,12],[18,16,12,.5,.9,2.5,0,15],[10,12,12,.6,1.6,4,0,16]];   // 6-й елемент — шанс знижки 5–50% (≈0.4%…4% за відкриття)   // 4-й елемент — 🏮 (≈0.2–0.6%), 5-й — 💎 (≈0.3–1.6%), 6-й — знижки (0.1–3%): рідкісні валюти справді рідкісні   // 4-й елемент — ліхтарі (дуже рідко), 6-й — знижки   // 6-й елемент = шанс знижки у %, зростає з ціною сундука: срібний 0.1% … найдорожчі 3%   // знижки — лише в найдорожчих (легендарних) сундуках і дуже рідко (≈0.4%); тату-купонів із сундуків більше нема
 // Рідкість клинка/фона [зв, рід, епіч, легенд, міф] — легендарні (💎) і міфічні (🏮) випадають лише з дорогих сундуків
 const RW=[[0,0,0,0,0],[60,30,9,1,0],[30,35,25,9,1],[40,35,20,4,1],[15,30,35,17,3],[0,15,35,35,15]];
-const CB=[350,2800,14000,5000,40000,300000];
+const CB=[50,400,2000,800,6000,40000];
 const SR=[[1,2],[1,3],[2,5],[2,4],[3,6],[5,10]],LR=[[1,1],[1,1],[1,2],[1,1],[1,2],[1,3]],JR=[[1,1],[1,1],[1,2],[1,1],[1,2],[1,3]];
-const DW=[[[5],[1]],[[5,10],[70,30]],[[5,10,20],[50,30,20]],[[5,10,20,30],[40,30,20,10]],[[5,10,20,30,40],[30,30,25,10,5]],[[10,20,30,40],[20,30,30,20]]];   // які знижки й з якою вагою для кожної сили сундука
+const DW=[[[5],[1]],[[5,10],[70,30]],[[5,10,20],[50,30,20]],[[5,10,20,30],[40,30,20,10]],[[5,10,20,30,40],[30,30,25,10,5]],[[10,20,30,40,50],[20,30,25,15,10]]];   // які знижки й з якою вагою для кожної сили сундука
 const pickDisc=p=>DW[p][0][wp(DW[p][1])];
 const RAR=["#6b7280","#3b82f6","#a855f7","#ffb703","#ff2a5f"];
 const IMG=(s,e,c)=>`<img src="${s}" data-e="${e}" onerror="this.outerHTML=this.dataset.e" class="${c}">`;
@@ -42,7 +42,7 @@ function rollGear(p,key){      // клинок, фон або аватар; ек
  return null}
 function rollItem(p,key){
  const exb=key?BS.filter(b=>b[6]==key):[];if(exb.length&&R()<.12){const b=exb[0];return{ty:"u",id:b[0],ic:b[1],lb:t(b[2]).split(":")[0].slice(0,28),r:4}}
- let ty=wp(LOOT[p]);const sc=1+S.blade*.05;
+ let ty=wp(LOOT[p]);const sc=1+S.blade*.02;
  if((ty==5||ty==6)&&!S.master)ty=0;          // знижки прив'язані до майстра
  if(ty==6&&S.tatGot)ty=0;                       // тату-купон із сундука — лише один за весь час
  if(ty==1){const pl=BS.filter(b=>!b[5]&&!b[6]&&b[0]!="chg"),b=pl[R()*pl.length|0];return{ty:"u",id:b[0],ic:b[1],lb:t(b[2]).split(":")[0].slice(0,24),r:p>3?2:1}}
@@ -70,7 +70,7 @@ function chSt(k){const n=Date.now(),c=S.ck;
 const EG=[["mon","За монети|For coins"],["ln","За ліхтарі|For lanterns"],["jd","За нефрит|For jade"]];
 const chestCard=(e,i)=>`<div class="card !p-2 text-center space-y-1" style="border-color:${e[5]};box-shadow:0 0 12px ${e[5]}44"><div class="relative h-16 flex items-center justify-center text-4xl"><div class="absolute inset-0 rounded-full" style="background:radial-gradient(circle,${e[5]}55,transparent 70%);filter:blur(8px)"></div><div class="relative" style="animation:floatY 3.4s ease-in-out ${(i%7)*.25}s infinite">${IMG("img/chest/e_"+e[0]+".png",e[1],"h-16 w-auto")}</div></div><b class="text-[11px] block leading-tight">${t(e[2])}</b><button class="btng w-full !px-1" ${S[e[3]]>=e[4]?"":"disabled"} onclick="openEpoch(${i})">${fmt(e[4])} ${CI[e[3]]}</button></div>`;
 function rChests(){
- $("view-chests").innerHTML=`<h2 class="text-xl font-black uppercase text-center">${t("Сундуки INKAI|INKAI chests")} · ${CK.length+EC.length}</h2><button onclick="econInfo()" class="w-full py-2 rounded-xl border border-neonGold/40 bg-neonGold/10 text-neonGold text-xs font-bold">ℹ️ ${t("Чому 💎 і 🏮 такі рідкісні й що за них купити|Why 💎 and 🏮 are so rare and what they buy")}</button><p class="text-[11px] text-gray-400 text-center">${t("Чим дорожчий сундук — тим кращі нагороди: монети, душі, нефрит, бустери, клинки, фони, аватари, купони на тату.|The pricier the chest, the better the loot: coins, souls, jade, boosts, blades, backgrounds, avatars, tattoo coupons.")}</p><div class="grid grid-cols-3 gap-2">`+
+ $("view-chests").innerHTML=`<h2 class="text-xl font-black uppercase text-center">${t("Сундуки INKAI|INKAI chests")} · ${CK.length+EC.length}</h2><button onclick="econInfo()" class="w-full py-2 rounded-xl border border-neonGold/40 bg-neonGold/10 text-neonGold text-xs font-bold">ℹ️ ${t("Чому 💎 і 🏮 такі рідкісні й що за них купити|Why 💎 and 🏮 are so rare and what they buy")}</button><p class="text-[11px] text-gray-400 text-center">${t("Чим дорожчий сундук — тим кращі нагороди: монети, душі, нефрит, бустери, клинки, фони, аватари, купони на тату.|The pricier the chest, the better the loot: coins, souls, jade, boosts, blades, backgrounds, avatars, tattoo coupons.")}</p>${S.master?"":`<button onclick="openMasterList()" class="w-full py-2 rounded-xl border border-crimsonRed/50 bg-crimsonRed/10 text-xs font-bold text-crimsonRed">🥷 ${t("Обери майстра — тоді зі скринь можуть випасти знижки 5–50%|Pick a master — then chests can drop 5–50% discounts")}</button>`}<div class="grid grid-cols-3 gap-2">`+
  CK.map((c,k)=>`<div class="card !p-2 text-center flex flex-col gap-1" style="border-color:${c[4]}"><div class="relative h-20 flex items-center justify-center text-5xl"><div class="absolute inset-0 rounded-full" style="background:radial-gradient(circle,${c[4]}55,transparent 70%);filter:blur(8px)"></div><div class="relative" style="animation:floatY 3.2s ease-in-out ${k*.4}s infinite">${IMG("img/chest/"+CHF[k]+".png",c[1],"h-20 w-auto")}</div></div><b class="text-[11px] leading-tight min-h-[2.4em] flex items-center justify-center">${t(c[2])} ${t("сундук|chest")}</b><div id="ct${k}" class="font-mono text-[10px] text-neonGold min-h-[28px] leading-tight"></div><div class="mt-auto space-y-1"><button id="co${k}" class="btng w-full !px-1" onclick="openChest(${k},0)">${t("Відкрити|Open")}</button><button id="cs${k}" class="btn w-full !px-1 !bg-deepPurple" onclick="openChest(${k},1)">⏭ ${c[5]} ${CUR[c[6]]}</button></div></div>`).join("")+`</div>`+
  EG.map(g=>`<h3 class="text-sm font-black uppercase pt-3">${t(g[1])}</h3><div class="grid grid-cols-3 gap-2">${EC.map((e,i)=>e[3]==g[0]?chestCard(e,i):"").join("")}</div>`).join("");
  tickCh();
@@ -90,7 +90,7 @@ function openEpoch(i){if(opening)return;sync();const e=EC[i];if(S[e[3]]<e[4])ret
 let afterRev=null;
 function bonus(){G.res.bc=0;$("res").classList.replace("flex","hidden");afterRev=showRes;runChest(["bonus","🎁","Сундук-знахідка|Found chest",0,"#ffb703"],R()<.25?2:1,"img/chest/bonus.png")}
 function fxShoot(par,n,cols){for(let i=0;i<n;i++){const e=document.createElement("span"),a=R()*6.283,d=90+R()*190,z=7+R()*12;
- e.style.cssText=`position:absolute;left:50%;top:50%;width:${z}px;height:${z}px;margin:-${z/2}px;border-radius:${R()<.5?"50%":"2px"};background:radial-gradient(circle,${cols[R()*cols.length|0]},transparent 75%);--dx:${Math.cos(a)*d}px;--ux:${Math.cos(a)*d*.6}px;--uy:${Math.sin(a)*d*.6-60-R()*60}px;--dy:${Math.sin(a)*d+160+R()*80}px;--rt:${(R()-.5)*720}deg;animation:shoot ${1.1+R()*.8}s ${R()*.15}s cubic-bezier(.2,.7,.4,1) forwards;pointer-events:none;opacity:0`;par.appendChild(e);setTimeout(()=>e.remove(),2400)}}
+ e.style.cssText=`position:absolute;left:50%;top:50%;width:${z}px;height:${z}px;margin:-${z/2}px;border-radius:2px;background:${cols[R()*cols.length|0]};--dx:${Math.cos(a)*d}px;--ux:${Math.cos(a)*d*.6}px;--uy:${Math.sin(a)*d*.6-60-R()*60}px;--dy:${Math.sin(a)*d+160+R()*80}px;--rt:${(R()-.5)*720}deg;animation:shoot ${1.1+R()*.8}s ${R()*.15}s cubic-bezier(.2,.7,.4,1) forwards;pointer-events:none;opacity:0`;par.appendChild(e);setTimeout(()=>e.remove(),2400)}}
 function fxSplat(par,col,n){for(let i=0;i<n;i++){const e=document.createElement("span"),a=R()*6.283,d=70+R()*140,z=10+R()*26;     // бризки соку, як у Fruit Ninja
  e.style.cssText=`position:absolute;left:50%;top:50%;width:${z}px;height:${z*(.7+R()*.5)}px;margin:-${z/2}px;border-radius:50% 40% 55% 45%;background:${R()<.7?col:"#fff"};--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d}px;animation:splatOut ${.7+R()*.6}s ease-out forwards;pointer-events:none;opacity:0`;par.appendChild(e);setTimeout(()=>e.remove(),1600)}}
 /* Відкриття: чистий і атмосферний екран. Удар катаною — сундук лише здригається; розріз — розпадається на дві половини. Без рун, ореолів і смуг. */
@@ -110,8 +110,8 @@ function slashOpen(rc,im,c){return new Promise(res=>{
   k2.globalAlpha=bl.fx=="ghost"?.6:1;k2.fillStyle=fs;k2.shadowColor=sc;k2.shadowBlur=14+bl.r*3;k2.fill();if(bl.fx=="void"){k2.shadowBlur=0;k2.strokeStyle=bl.c2;k2.lineWidth=1.6;k2.stroke()}
   k2.shadowBlur=0;k2.globalAlpha=1;k2.strokeStyle="rgba(255,255,255,.85)";k2.lineWidth=1.3;k2.beginPath();P.forEach((q,i)=>i?k2.lineTo(q.x,q.y):k2.moveTo(q.x,q.y));k2.stroke()};
  const loop=()=>{if(!cvs.isConnected)return;k2.clearRect(0,0,W2,H2);const now=performance.now();
-  for(const s of strokes){while(s.p.length&&now-s.p[0].t>240)s.p.shift();ribbon(s.p,now);
-   if(s.p.length>2&&R()<.55&&!done){const q=s.p[s.p.length-1],e=document.createElement("span"),z=3+R()*5;     // іскри обраної катани біля вістря
+  for(const s of strokes){while(s.p.length&&now-s.p[0].t>240)s.p.shift();
+   if(0){const q=s.p[s.p.length-1],e=document.createElement("span"),z=3+R()*5;     // іскри обраної катани біля вістря
     e.style.cssText=`position:absolute;left:${q.x}px;top:${q.y}px;width:${z}px;height:${z}px;margin:-${z/2}px;border-radius:50%;background:radial-gradient(circle,${cols[R()*cols.length|0]},transparent 75%);--ox:${(R()-.5)*50}px;animation:orb ${.7+R()*.5}s ease-out forwards;pointer-events:none`;rc.appendChild(e);setTimeout(()=>e.remove(),1300)}}
   for(let i=strokes.length-1;i>=0;i--)if(!strokes[i].p.length&&!strokes[i].on)strokes.splice(i,1);
   requestAnimationFrame(loop)};requestAnimationFrame(loop);
@@ -146,7 +146,7 @@ async function runChest(c,p,im){
  ro.classList.replace("hidden","flex");
  requestAnimationFrame(()=>requestAnimationFrame(()=>{const b=$("robg");if(b)b.style.opacity=1}));
  await slashOpen(rc,im,c);                         // 1) розрізаєш сундук катаною: 5 ударів, можна одним безперервним свайпом
- rc.insertAdjacentHTML("beforeend",`<div style="position:absolute;inset:0;background:radial-gradient(circle,#fff8,${MA}44,transparent 70%);filter:blur(10px);animation:flashOut .7s ease-out forwards;pointer-events:none"></div>`);
+ 
  sfx("boss",()=>tone(140,.4,"sawtooth",.22));navigator.vibrate&&navigator.vibrate([30,20,60]);
  await sleep(600);
  // 2) рядок із нагородами красиво біжить і зупиняється на призі
@@ -165,10 +165,9 @@ async function runChest(c,p,im){
 function reveal(it){
  const c=RAR[it.r],ov=$("rev"),isC=it.ty=="d"||it.ty=="t",rn=["bl","bg","av"].includes(it.ty)?RN[it.r][0]:["ЗВИЧАЙНИЙ|COMMON","РІДКІСНИЙ|RARE","ЕПІЧНИЙ|EPIC","ЛЕГЕНДАРНИЙ|LEGENDARY","МІФІЧНИЙ|MYTHIC"][it.r];
  ov.style.background="rgba(8,4,24,.55)";ov.style.backdropFilter="blur(6px)";ov.style.webkitBackdropFilter="blur(6px)";
- ov.innerHTML=`<div class="absolute inset-0 flex items-center justify-center pointer-events-none"><div style="width:130vmin;height:130vmin;border-radius:50%;background:radial-gradient(circle,${c}77 0%,${MA}33 32%,${MA}00 64%);filter:blur(40px);animation:glowIn 1.4s ease-out both,pulse-glow 4s 1.4s ease-in-out infinite"></div></div>
- <div class="absolute inset-0 flex items-center justify-center pointer-events-none"><div style="width:62vmin;height:62vmin;border-radius:50%;background:radial-gradient(circle,#ffffff55 0%,${c}33 40%,${c}00 70%);filter:blur(26px);animation:glowIn 1.6s .1s ease-out both"></div></div>
+ ov.innerHTML=`<div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse at 50% 46%,${c}66 0%,${c}22 30%,${MA}12 55%,transparent 80%);animation:glowIn 1.6s ease-out both,pulse-glow 5s 1.6s ease-in-out infinite"></div>${Array.from({length:16},()=>`<i class="ember" style="left:${R()*100}%;--dx:${(R()-.5)*90}px;width:${3+R()*4}px;height:${3+R()*4}px;background:${R()<.5?c:"#fff"};box-shadow:0 0 10px ${c};animation-duration:${5+R()*5}s;animation-delay:-${R()*6}s"></i>`).join("")}
  <div id="rcard" class="relative px-6 space-y-3"><div class="text-[11px] font-black tracking-[.35em] uppercase" style="color:${c};animation:cardIn .6s .5s both">${t(rn)}</div>
-  <div class="relative mx-auto flex items-center justify-center overflow-hidden" style="width:160px;height:160px;border-radius:2rem;background:radial-gradient(circle at 50% 35%,${c}44,rgba(14,8,34,.55));box-shadow:0 0 60px ${c}55,inset 0 0 40px ${c}22;backdrop-filter:blur(6px);animation:dropBounce .95s cubic-bezier(.3,1.2,.4,1) both"><span class="text-7xl" style="filter:drop-shadow(0 0 22px ${c})">${it.ic}</span></div>
+  <div class="relative mx-auto flex items-center justify-center" style="width:160px;height:160px;animation:dropBounce .95s cubic-bezier(.3,1.2,.4,1) both"><span class="text-7xl" style="filter:drop-shadow(0 0 22px ${c})">${it.ic}</span></div>
   <div class="text-2xl font-black" style="color:${c};text-shadow:0 0 22px ${c}88;animation:cardIn .6s .7s both">${esc(lab(it))}</div>
   ${isC?`<div class="text-xs text-gray-300">${t("Купон збережено у вкладці «Нагороди»|Coupon saved in the Rewards tab")}</div>`:""}${["bl","bg","av"].includes(it.ty)?`<div class="text-xs text-gray-300">${t("Додано й уже доступне в магазині/профілі|Added — already available in the Shop/Profile")}</div>`:""}
   <div style="animation:cardIn .6s 1s both">${["bl","bg","av"].includes(it.ty)?`<button class="btn px-8 py-3 mt-2 mr-2" onclick="wearDrop('${it.ty}','${it.i??it.id}')">${t("Одягнути зараз|Equip now")}</button>`:""}<button class="btng px-10 py-3 mt-2" onclick="closeRev()">OK</button></div></div>`;
