@@ -23,12 +23,14 @@ async function fbInit(){try{
  const m=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-auth.js"),import(B+"firebase-firestore.js")]);
  FB=Object.assign({},...m);app=FB.initializeApp(firebaseConfig);auth=FB.getAuth(app);db=FB.getFirestore(app);
  FBOK=!firebaseConfig.apiKey.startsWith("PASTE");
- if(FBOK){try{const A=await import(B+"firebase-analytics.js");FA={a:A.getAnalytics(app),log:A.logEvent}}catch(e){}initAuth()}else authReady();
+ if(FBOK){initAuth();import(B+"firebase-analytics.js").then(A=>{FA={a:A.getAnalytics(app),log:A.logEvent}}).catch(()=>{})}else authReady();
 }catch(e){authReady()}}
 
 // ═══ 2. ДОПОМІЖНЕ ═══
 const $=i=>document.getElementById(i),R=Math.random,today=()=>new Date().toISOString().slice(0,10),sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const fmt=n=>{n=Math.floor(n);if(n<1e6)return n.toLocaleString();let i=0;while(n>=1000&&i<5){n/=1000;i++}return(n<100?n.toFixed(1):Math.floor(n))+["","K","M","B","T","Q"][i]};
+const fr=n=>n<10?String(Math.round(n*100)/100):fmt(n);   // дробові числа (пасивний дохід)
+const NC=navigator.connection||{},SLOW=!!(NC.saveData||/^(slow-2g|2g|3g)$/.test(NC.effectiveType||""));   // повільний інтернет → без відео й зайвих запитів
 const ICOK=new Set();   // які PNG-іконки реально існують (перевіряється один раз при старті → жодного блимання емодзі)
 const ico=(n,e,c="h-4 w-4 inline-block align-middle object-contain")=>ICOK.has(n)?`<img src="img/ico/${n}.png" class="${c}" alt="">`:e;   // своя PNG-іконка або емодзі
 const icoH=(n,h,c)=>ICOK.has(n)?`<img src="img/ico/${n}.png" class="${c}" alt="">`:h;   // PNG або запасний HTML (іконка FontAwesome)
@@ -148,7 +150,7 @@ function hdr(){$("hCoins").textContent=fmt(S.mon);$("hSouls").textContent=fmt(S.
 function rend(){hdr();const f=RV[cur];if(f&&!(cur=="chests"&&opening))f()}
 function go(v){cur=v;document.querySelectorAll(".view").forEach(e=>e.classList.add("hidden"));const el=$("view-"+v);if(el)el.classList.remove("hidden");
  document.querySelectorAll(".nb").forEach(b=>{const a=b.dataset.g==v;b.classList.toggle("text-crimsonRed",a);b.classList.toggle("text-gray-400",!a)});
- $("hdr").style.display=$("nav").style.display=v=="auth"?"none":"";$("amb").style.display=v=="auth"?"none":"block";window.scrollTo(0,0);rend();adTick();track("screen",{name:v})}
+ $("hdr").style.display=$("nav").style.display=v=="auth"?"none":"";$("amb").style.display=v=="auth"?"none":"block";window.scrollTo(0,0);if(v=="auth"&&!SLOW){const a=$("authVid");a&&a.play&&a.play().catch(()=>{})}rend();adTick();track("screen",{name:v})}
 function tr(){document.querySelectorAll("[data-t]").forEach(e=>e.textContent=t(e.dataset.t));document.querySelectorAll("[data-p]").forEach(e=>e.placeholder=t(e.dataset.p));$("langBtn").textContent=$("langBtn2").textContent=lang=="ua"?"🇺🇦":"🇬🇧";authMode(mode);if(!splashDone)$("spQ").textContent=t(CFG.hero.quote)}
 function toggleLanguage(){lang=lang=="ua"?"en":"ua";localStorage.ink_lang=lang;tr();rend()}
 function route(){
@@ -170,16 +172,17 @@ function install(){track("install_click");
 // ═══ 7. ЗАСТАВКА: лого по центру між верхом і смужками ═══
 function splash(){
  $("spName").textContent=CFG.hero.name;
- for(let i=0;i<14;i++){const e=document.createElement("i");e.className="ember";e.style.cssText=`left:${R()*100}%;--dx:${(R()-.5)*120}px;animation-duration:${3+R()*4}s;animation-delay:${R()*4}s`;$("splash").appendChild(e)}
- const imgs=[...Object.values(YIMG),...CHF.map(n=>{const i=new Image();i.src="img/chest/"+n+".png";return i})];
- let loaded=0,authOk=false;imgs.forEach(i=>{if(i.complete)loaded++;else i.onload=i.onerror=()=>loaded++});
- authReadyP.then(()=>authOk=true);setTimeout(()=>authOk=true,4000);
+ if(!SLOW){const v=document.createElement("video");v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;v.setAttribute("muted","");v.className="absolute inset-0 w-full h-full object-cover";v.innerHTML='<source src="bar2.mp4" type="video/mp4">';$("splash").insertBefore(v,$("splash").firstChild);v.play&&v.play().catch(()=>{})}
+ for(let i=0;i<(SLOW?0:14);i++){const e=document.createElement("i");e.className="ember";e.style.cssText=`left:${R()*100}%;--dx:${(R()-.5)*120}px;animation-duration:${3+R()*4}s;animation-delay:${R()*4}s`;$("splash").appendChild(e)}
+ setTimeout(()=>CHF.forEach(n=>{new Image().src="img/chest/"+n+".png"}),800);   // картинки догружаються у фоні, заставка їх не чекає
+ let authOk=false;
+ authReadyP.then(()=>authOk=true);setTimeout(()=>authOk=true,2200);
  const t0=performance.now();
  const iv=setInterval(()=>{
-  const el=performance.now()-t0,real=loaded/imgs.length*.8+(authOk?.2:0),sh=Math.min(1,real,el/6000);
+  const el=performance.now()-t0,real=authOk?1:.9,sh=Math.min(1,real,el/(SLOW?1200:1600));
   $("spBar").style.width=Math.max(8,sh*100)+"%";$("spV").style.height=sh*100+"%";$("spPct").textContent=Math.round(sh*100)+"%";
   $("spTxt").textContent=sh>=1?t("Готово|Ready"):sh<.4?t("Малюємо йокаїв…|Drawing yokai…"):sh<.8?t("Куємо клинки…|Forging blades…"):t("Відкриваємо врата…|Opening the gate…");
-  if(sh>=1||el>9000){clearInterval(iv);
+  if(sh>=1||el>3000){clearInterval(iv);
    setTimeout(()=>{splashDone=true;route();adTick();track("step_splash_done");$("splash").style.opacity=0;setTimeout(()=>$("splash").remove(),700)},250);   // спершу готуємо потрібний екран під заставкою — жодного «блимання» гри   // 6 с — і одразу на реєстрацію
   }
  },100);
@@ -201,7 +204,7 @@ function adwGo(){const s=adwSt();
  if(!s.ok){toast(t("Наступна нагорода через|Next reward in")+" "+tm(s.left));return}
  ad("📺 "+t("Нагорода: 💎 · 🏮 · ×2 монет на 10–30 с|Prize: 💎 · 🏮 · ×2 coins for 10–30s"),()=>{S.adw.n++;S.adw.t=Date.now();adwReward()},"🎁",0)}
 function adwReward(){const w=wp([38,24,16,7,9,6]);let m;      // монети · ×2/10с · ×2/30с · 🏮 · 💎 (рідко)
- if(w==0){const a=Math.round(800*(1+S.blade*.15)*(.7+R()*.6));S.mon+=a;m=fmt(a)+" 文"}
+ if(w==0){const a=Math.round(500*(1+S.blade*.04)*(.7+R()*.6));S.mon+=a;m=fmt(a)+" 文"}
  else if(w==1){S.c.m10++;m=t("Бустер: ×2 монет на 10 с|Boost: ×2 coins for 10s")}
  else if(w==2){S.c.m30++;m=t("Бустер: ×2 монет на 30 с|Boost: ×2 coins for 30s")}
  else if(w==3){const a=rr(1,2);S.ln+=a;m="+"+a+" 🏮"}
@@ -215,10 +218,13 @@ function boot(){
  mkAmb($("ambA"),10);mkAdw();
  document.querySelectorAll(".inst").forEach(b=>{b.onclick=install;if(matchMedia("(display-mode: standalone)").matches)b.style.display="none"});
  tr();hdrIcons();loadAv().then(()=>rend());loadKat().then(()=>rend());$("musBtn").textContent=music?"🔊":"🔇";hdr();offline();splash();fbInit();
- startEmoji();navIcons();probeIco();
+ navIcons();setTimeout(startEmoji,SLOW?5000:2000);setTimeout(probeIco,SLOW?6000:2500);   // ~200 перевірок PNG — після старту, а не до нього
  document.addEventListener("pointerdown",e=>{const b=e.target.closest&&e.target.closest("button");if(!b)return;track("tap",{el:(b.id||b.getAttribute("onclick")||b.textContent||"").trim().slice(0,40),screen:cur})},true);   // на яких кнопках тиснуть
  addEventListener("visibilitychange",()=>{if(document.hidden)track("leave",{screen:cur,in_game:playing()?1:0})});                                    // де саме йдуть із гри
  addEventListener("error",e=>track("js_error",{msg:String(e.message).slice(0,60)}));
- const show=()=>document.body.classList.add("rd");(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>requestAnimationFrame(()=>requestAnimationFrame(show)));setTimeout(show,1500);   // м'яке з'явлення без смикання
+ const show=()=>document.body.classList.add("rd");(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>requestAnimationFrame(()=>requestAnimationFrame(show)));setTimeout(show,600);   // м'яке з'явлення без смикання
 setInterval(adTick,1000);
 }
+
+
+
