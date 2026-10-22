@@ -16,14 +16,17 @@ const CFG={
 
 // ═══ 1. FIREBASE (ініціалізується в boot) ═══
 let FB={},app,auth,db,FBOK=false,authReady,FA={};
-function track(n,p){try{if(FA.log)FA.log(FA.a,n,p||{})}catch(e){}}      // Google Analytics 4 (безкоштовно): події для статистики
+/* РІДКІ ВАЛЮТИ: ймовірності в одному місці — їх читає і гра, і вікно «Економіка». 💎 нефрит і 🏮 ліхтарі навмисно дуже рідкісні, за них — найкращі нагороди. */
+const RATE={bossJd:.03,roundLn:.005,adJd:.02,adLn:.02};
+const FAq=[];
+function track(n,p){try{if(FA.log)FA.log(FA.a,n,p||{});else if(FAq.length<60)FAq.push([n,p])}catch(e){}}      // Google Analytics 4 (безкоштовно): події для статистики
 const authReadyP=new Promise(r=>authReady=r);
 async function fbInit(){try{
  const B="https://www.gstatic.com/firebasejs/10.8.0/";
  const m=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-auth.js"),import(B+"firebase-firestore.js")]);
  FB=Object.assign({},...m);app=FB.initializeApp(firebaseConfig);auth=FB.getAuth(app);db=FB.getFirestore(app);
  FBOK=!firebaseConfig.apiKey.startsWith("PASTE");
- if(FBOK){try{const A=await import(B+"firebase-analytics.js");FA={a:A.getAnalytics(app),log:A.logEvent}}catch(e){}initAuth()}else authReady();
+ if(FBOK){initAuth();setTimeout(async()=>{try{const A=await import(B+"firebase-analytics.js");FA={a:A.getAnalytics(app),log:A.logEvent};FAq.splice(0).forEach(q=>track(q[0],q[1]))}catch(e){}},2500)}else authReady();
 }catch(e){authReady()}}
 
 // ═══ 2. ДОПОМІЖНЕ ═══
@@ -75,7 +78,7 @@ function mkAmb(el,n){const E=["🦊","👹","👺","🐸","💀","🐉"],N=["fox
 
 // ═══ 3. ДАНІ ГРАВЦЯ ═══
 const def={
- mon:500,souls:10,jd:0,ln:3,                // 文 монети · ⛩️ душі · 💎 нефрит (jd) · 🏮 ліхтарі (ln)
+ mon:200,souls:10,jd:0,ln:3,                // 文 монети · ⛩️ душі · 💎 нефрит (jd) · 🏮 ліхтарі (ln)
  xp:0,rounds:0,kills:0,ads:0,
  days:1,streak:1,best:1,last:today(),dl:"",
  seen:Date.now(),nick:"",av:"fox",
@@ -156,7 +159,7 @@ function route(){
  if(user&&!S.nick){showNick();return}
  if(user||guestMode){go("play");ensureMaster();return}
  if(refId)$("refBanner").classList.remove("hidden");
- $("inApp").classList.toggle("hidden",!inApp);authMode("reg");go("auth");track("step_auth_view");
+ $("inApp").classList.toggle("hidden",!inApp);authMode("reg");const av=$("authVid");if(av&&!av.src&&!slowNet()){av.src="video/auth_bg.mp4";av.play&&av.play().catch(()=>{})}go("auth");track("step_auth_view");
 }
 
 // ═══ 6. ВСТАНОВЛЕННЯ (іконка на робочий стіл) ═══
@@ -168,21 +171,22 @@ function install(){track("install_click");
 }
 
 // ═══ 7. ЗАСТАВКА: лого по центру між верхом і смужками ═══
+const slowNet=()=>{const cn=navigator.connection||{};return !!(cn.saveData||/2g|3g/.test(cn.effectiveType||""))};
 function splash(){
- $("spName").textContent=CFG.hero.name;
- for(let i=0;i<14;i++){const e=document.createElement("i");e.className="ember";e.style.cssText=`left:${R()*100}%;--dx:${(R()-.5)*120}px;animation-duration:${3+R()*4}s;animation-delay:${R()*4}s`;$("splash").appendChild(e)}
- const imgs=[...Object.values(YIMG),...CHF.map(n=>{const i=new Image();i.src="img/chest/"+n+".png";return i})];
- let loaded=0,authOk=false;imgs.forEach(i=>{if(i.complete)loaded++;else i.onload=i.onerror=()=>loaded++});
- authReadyP.then(()=>authOk=true);setTimeout(()=>authOk=true,4000);
- const t0=performance.now();
+ $("spName").textContent=CFG.hero.name;const slow=slowNet(),vid=$("spVid");
+ if(vid){if(slow)vid.remove();else{vid.src="maska.MP4";vid.play&&vid.play().catch(()=>{})}}                 // відео — лише на нормальному зв'язку
+ if(!slow)for(let i=0;i<8;i++){const e=document.createElement("i");e.className="ember";e.style.cssText=`left:${R()*100}%;--dx:${(R()-.5)*120}px;animation-duration:${3+R()*4}s;animation-delay:${R()*4}s`;$("splash").appendChild(e)}
+ let authOk=false,imgOk=false;authReadyP.then(()=>authOk=true);setTimeout(()=>authOk=true,slow?1500:2200);
+ const hi=$("spHero");if(!hi||hi.complete)imgOk=true;else{hi.addEventListener("load",()=>imgOk=true);hi.addEventListener("error",()=>{hi.remove();imgOk=true});setTimeout(()=>imgOk=true,slow?1000:1600)}
+ const t0=performance.now(),MIN=700,MAX=slow?2800:3600;     // готово, щойно є вхід і головна картинка (мін. 0.7 с), але не довше 3–4 с
  const iv=setInterval(()=>{
-  const el=performance.now()-t0,real=loaded/imgs.length*.8+(authOk?.2:0),sh=Math.min(1,real,el/6000);
+  const el=performance.now()-t0,ready=authOk&&imgOk&&el>=MIN,done=ready||el>=MAX,sh=done?1:Math.min(.92,el/MAX*.95);
   $("spBar").style.width=Math.max(8,sh*100)+"%";$("spV").style.height=sh*100+"%";$("spPct").textContent=Math.round(sh*100)+"%";
   $("spTxt").textContent=sh>=1?t("Готово|Ready"):sh<.4?t("Малюємо йокаїв…|Drawing yokai…"):sh<.8?t("Куємо клинки…|Forging blades…"):t("Відкриваємо врата…|Opening the gate…");
-  if(sh>=1||el>9000){clearInterval(iv);
-   setTimeout(()=>{splashDone=true;route();adTick();track("step_splash_done");$("splash").style.opacity=0;setTimeout(()=>$("splash").remove(),700)},250);   // спершу готуємо потрібний екран під заставкою — жодного «блимання» гри   // 6 с — і одразу на реєстрацію
-  }
- },100);
+  if(done){clearInterval(iv);
+   setTimeout(()=>{splashDone=true;route();adTick();track("step_splash_done");$("splash").style.opacity=0;setTimeout(()=>$("splash").remove(),500);
+    setTimeout(()=>{startEmoji();probeIco()},600)},150)}      // важкі перевірки PNG — вже після заставки
+ },80);
 }
 
 // ═══ 8. РЕКЛАМА: оверлей + бокова стрілка (3 рази на день, раз на 10 хв) ═══
@@ -200,8 +204,8 @@ function adwGo(){const s=adwSt();
  if(s.n>=CFG.adw.max){toast(t("Ліміт на сьогодні. Повертайся завтра!|Daily limit. Come back tomorrow!"));return}
  if(!s.ok){toast(t("Наступна нагорода через|Next reward in")+" "+tm(s.left));return}
  ad("📺 "+t("Нагорода: 💎 · 🏮 · ×2 монет на 10–30 с|Prize: 💎 · 🏮 · ×2 coins for 10–30s"),()=>{S.adw.n++;S.adw.t=Date.now();adwReward()},"🎁",0)}
-function adwReward(){const w=wp([38,24,16,7,9,6]);let m;      // монети · ×2/10с · ×2/30с · 🏮 · 💎 (рідко)
- if(w==0){const a=Math.round(800*(1+S.blade*.15)*(.7+R()*.6));S.mon+=a;m=fmt(a)+" 文"}
+function adwReward(){const w=wp([44,28,18,RATE.adLn*100,RATE.adJd*100,6]);let m;      // монети · ×2/10с · ×2/30с · 🏮 · 💎 (рідко)
+ if(w==0){const a=Math.round(400*(1+S.blade*.15)*(.7+R()*.6));S.mon+=a;m=fmt(a)+" 文"}
  else if(w==1){S.c.m10++;m=t("Бустер: ×2 монет на 10 с|Boost: ×2 coins for 10s")}
  else if(w==2){S.c.m30++;m=t("Бустер: ×2 монет на 30 с|Boost: ×2 coins for 30s")}
  else if(w==3){const a=rr(1,2);S.ln+=a;m="+"+a+" 🏮"}
@@ -214,8 +218,9 @@ function offline(){const cap=(CFG.offlineBaseMin+15*U("off"))*60,away=Math.min((
 function boot(){
  mkAmb($("ambA"),10);mkAdw();
  document.querySelectorAll(".inst").forEach(b=>{b.onclick=install;if(matchMedia("(display-mode: standalone)").matches)b.style.display="none"});
- tr();hdrIcons();loadAv().then(()=>rend());loadKat().then(()=>rend());$("musBtn").textContent=music?"🔊":"🔇";hdr();offline();splash();fbInit();
- startEmoji();navIcons();probeIco();
+ if("serviceWorker" in navigator)navigator.serviceWorker.register("firebase-messaging-sw.js").catch(()=>{});
+ tr();hdrIcons();loadAv().then(()=>rend());loadKat().then(()=>rend());$("musBtn").textContent=music?"🔊":"🔇";hdr();offline();splash();fbInit();requestAnimationFrame(()=>requestAnimationFrame(()=>setTimeout(()=>{const b=$("boot");if(b){b.style.transition="opacity .25s";b.style.opacity=0;setTimeout(()=>b.remove(),300)}},120)));
+ navIcons();
  document.addEventListener("pointerdown",e=>{const b=e.target.closest&&e.target.closest("button");if(!b)return;track("tap",{el:(b.id||b.getAttribute("onclick")||b.textContent||"").trim().slice(0,40),screen:cur})},true);   // на яких кнопках тиснуть
  addEventListener("visibilitychange",()=>{if(document.hidden)track("leave",{screen:cur,in_game:playing()?1:0})});                                    // де саме йдуть із гри
  addEventListener("error",e=>track("js_error",{msg:String(e.message).slice(0,60)}));
