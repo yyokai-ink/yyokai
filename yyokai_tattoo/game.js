@@ -5,7 +5,7 @@
 const cv=$("cv"),cx=cv.getContext("2d",{alpha:false});let W,H,D=1,SAT=0,G={on:0},ptr={},bgC=null,FLP=0;
 function rs(){D=Math.min(2,devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*D;cv.height=H*D;cx.setTransform(D,0,0,D,0,0);SAT=$("sat").offsetHeight;bgC=null}
 addEventListener("resize",()=>{if(!$("gm").classList.contains("hidden"))rs()});
-const COIN_K=.5;   // 🔧 загальний множник заробітку монет (менше = повільніше)
+const COIN_K=2;   // 🔧 загальний множник заробітку монет (менше = повільніше)
 const GR=f=>f.h*1.05*(1-.02*U("slow"))*(G.gs||1);                           // 🔧 гравітація
 
 // ═══ ГОЛОВНИЙ ЕКРАН ═══
@@ -19,7 +19,7 @@ function rPlay(){
    <div class="font-black">${esc(S.nick||t("Гість|Guest"))} · Lv ${lvl(S.xp)}</div>
    <div class="text-[11px] text-gray-200">${t(g.nm)} · ${FXI[b.fx]} ${bname(b)}</div>${bar(b)}
   </div>
-  <div class="relative z-10 flex justify-center gap-2 flex-wrap">${chips}${rate?`<span class="chip text-emerald-400">💤 +${fmt(rate)} 文/${t("с|s")}</span>`:""}</div>
+  <div class="relative z-10 flex justify-center gap-2 flex-wrap">${chips}${rate?`<span class="chip text-emerald-400">💤 +${fmd(rate)} 文/${t("с|s")}</span>`:""}</div>
  </div>
  <div class="grid grid-cols-2 gap-3">
   <button onclick="startRound(1)" class="btng py-4 text-sm shadow-[0_0_24px_rgba(255,183,3,.3)]">⚔️ ${t("ГРАТИ|PLAY")}</button>
@@ -37,7 +37,7 @@ function rPlay(){
 
 // ═══ ПОЛЕ ГРАВЦЯ ═══
 const ambient=(w,h)=>Array.from({length:6},()=>({y:YK[R()*6|0],r:30+R()*40,x:R()*w,py:R()*h,vx:(R()-.5)*14,vy:-(6+R()*14),rot:R()*6,vr:(R()-.5)*.4}));
-const mkF=(oy,h,fl)=>({oy,h,fl,w:W,fx:[],e:[],hv:[],p:[],x:[],trs:[],sq:[],bs:[],zm:1,sc:30*U("start"),ex:0,cb:0,cT:0,cuts:0,nb:12,bo:null,sp:1,fz:0,cr:[],fp:0,sl:0,st:0,fr:0,sh:0,fa:0,ts:1,kills:0,
+const mkF=(oy,h,fl)=>({oy,h,fl,w:W,fx:[],e:[],hv:[],p:[],x:[],trs:[],sq:[],bs:[],zm:1,scf:2*U("start"),sc:2*U("start"),sw:[],ex:0,cb:0,cT:0,cuts:0,nb:12,bo:null,sp:1,fz:0,cr:[],fp:0,sl:0,st:0,fr:0,sh:0,fa:0,ts:1,kills:0,
  ms:0,sk:0,mx:3+(U("time")/5|0)+(S.c.plus>0?1:0),dead:0,why:"",bl:[],dr:[],bc:0,dbl:0});
 function startRound(m){
  if(G.on)return;
@@ -51,7 +51,7 @@ function startRound(m){
  if(c.mb>0){c.mb--;G.mb=1.5}
  if(c.sl0>0){c.sl0--;F(f=>f.sl=nw+8000)}
  if(c.shd>0){c.shd--;F(f=>f.mx+=2)}
- if(c.st>0){c.st--;F(f=>f.sc+=300)}
+ if(c.st>0){c.st--;F(f=>addSc(f,30))}
  if(c.cmb>0){c.cmb--;F(f=>{f.cb=10;f.cT=nw+3000})}
  if(c.bos>0){c.bos--;F(f=>f.nb=4)}
  if(c.wide>0){c.wide--;G.wide=1.5}
@@ -101,36 +101,39 @@ function splat(f,x,y,c,e,ang){if(f.p.length>200)return;const g=GR(f),ex=e?e.vx*.
 function burst(f,x,y,n,c){if(f.p.length>140)return;for(let i=0;i<n;i++){const a=R()*6.283,s=120+R()*380;f.p.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:1,c:c||(R()<.5?"#ffb703":"#ff2a5f")})}}
 const pop=(f,x,y,s,big)=>f.x.push({x,y,s,l:1,big});
 function spawn(f,st,fs){
- const bt=f.bo?f.bo.ty:"",sc=fs||(bt=="nos"||G.nsc?false:R()<Math.min(.2,.06+G.el/800)),sw=bt=="swm",r=sw?20+R()*10:34+R()*16,x=f.w*(.15+R()*.7),h=f.h*(.5+R()*.25),g=GR(f);
+ const bt=f.bo?f.bo.ty:"",sc=fs||(bt=="nos"||G.nsc?false:R()<Math.min(.2,.06+G.el/800)*(1-.04*U("scp"))),sw=bt=="swm",r=sw?20+R()*10:34+R()*16,x=f.w*(.15+R()*.7),h=f.h*(.5+R()*.25),g=GR(f);
  const vx=(f.w/2-x)*(.15+R()*.3)*(sw?2:1),vy=-Math.sqrt(2*g*h)*(st?1.1:1),vr=(R()-.5)*4,y=sc?"📜":YK[R()*6|0],dg=YK[R()*6|0];
- f.e.push({y,dg,sc,r,x,py:f.h+r,vx,vy,rot:0,vr,cut:0});
+ f.e.push({y,dg,sc,r,x,py:f.h+r,vx,vy,rot:0,vr,cut:0,gd:!sc&&R()<.03*U("dcoin")});
  if(bt=="mir")f.e.push({y,dg,sc,r,x:f.w-x,py:f.h+r,vx:-vx,vy,rot:0,vr:-vr,cut:0});     // дзеркальна пара
 }
-function score(f,base,now){
- const b=BL[S.blade];let m=(1+f.cb*(.2+.02*U("combo")))*b.sc*(1+.1*U("coin"))*(now<f.fr?2:1)*(now<f.sl?2:1)*(now<f.st?1.5:1);
+const addSc=(f,v)=>{f.scf=Math.max(0,(f.scf||0)+v);f.sc=Math.floor(f.scf)};
+function score(f,base,now,flat){
+ const b=BL[S.blade];let m=(flat?1:1+f.cb*(.2+.02*U("combo")))*b.sc*(1+.1*U("coin"))*(now<f.fr?2:1)*(now<f.sl?2:1)*(now<f.st?1.5:1);
  if(R()<.03*U("crit"))m*=3+.2*U("critm");
  if(R()<.02*U("x2"))m*=2;
  const bt=f.bo?f.bo.ty:"";if(bt=="rch")m*=3;else if(bt=="nos")m*=1.5;if(G.sc2)m*=2;
- const p=Math.round(base*m);f.sc+=p;if(now<f.dbl)f.ex+=p;return p;     // ex = очки, подвоєні бустером ×2 монет
+ const p=base*m;f.scf=(f.scf||0)+p;f.sc=Math.floor(f.scf);if(now<f.dbl)f.ex+=p;return p;     // ex = очки, подвоєні бустером ×2 монет
 }
 function die(f,why){
  f.dead=1;f.why=why;f.e=[];f.bo=null;f.fz=0;
  if(G.f.every(x=>x.dead)&&!G.fin){G.fin=1;setTimeout(overScreen,why=="sk"?1000:600)}
 }
-function missed(f,x){const bt=f.bo?f.bo.ty:"";if(bt=="hea"){f.bo.hp=Math.min(f.bo.mh,f.bo.hp+1);pop(f,f.bx,f.by,"💚 +1",1)}if(bt=="vmp"){f.sc=Math.max(0,f.sc-25);pop(f,f.w/2,f.h*.5,"🧛 −25",1)}f.ms++;f.cb=0;snd(160,.2,.15);pop(f,Math.max(40,Math.min(f.w-40,x)),f.h-70,"✖ "+f.ms+"/"+f.mx,1);f.sh=6;navigator.vibrate&&navigator.vibrate(30);if(f.ms>=f.mx)die(f,"ms")}
+function missed(f,x){const bt=f.bo?f.bo.ty:"";if(bt=="hea"){f.bo.hp=Math.min(f.bo.mh,f.bo.hp+1);pop(f,f.bx,f.by,"💚 +1",1)}if(bt=="vmp"){addSc(f,-3);pop(f,f.w/2,f.h*.5,"🧛 −3",1)}f.ms++;f.cb=0;snd(160,.2,.15);pop(f,Math.max(40,Math.min(f.w-40,x)),f.h-70,"✖ "+f.ms+"/"+f.mx,1);f.sh=6;navigator.vibrate&&navigator.vibrate(30);if(f.ms>=f.mx)die(f,"ms")}
 function bloodAdd(f,x,y){const s=f.sk,n=s==1?1:s==2?3:6;
  for(let k=0;k<n;k++){const bx=k?R()*f.w:x,by=k?R()*f.h:y,r=f.w*(s==1?.3:.26)*(.6+R()*.6);
   f.bl.push({x:bx,y:by,a:.34,q:Array.from({length:6},()=>[(R()-.5)*r*1.3,(R()-.5)*r*1.3,r*(.25+R()*.4)])});
   for(let d=0;d<3+s*2;d++)f.dr.push({x:bx+(R()-.5)*r,y:by+(R()-.5)*r*.4,l:0,m:30+R()*f.h*.18,w:3+R()*6,v:25+R()*45})}}
 function hitScroll(f,e,ang){
- e.cut=1;f.cb=0;f.sk++;f.sh=14;f.fa=.3;burst(f,e.x,e.py,18,"#e8dcc0");f.fx.push({x:e.x,y:e.py,a:ang,l:1});
+ e.cut=1;f.cb=0;f.sk++;f.sh=18;f.fa=.4;burst(f,e.x,e.py,26,"#e8dcc0");f.sw.push({x:e.x,y:e.py,t:0});
+ for(let i=0;i<30;i++){const a=R()*6.283,s=140+R()*460;f.p.push({x:e.x,y:e.py,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:1.1,c:R()<.6?"#e8dcc0":R()<.5?"#ffb703":"#7f1d1d",s:3+R()*5,sh:"q",g:260,rot:R()*6,vr:(R()-.5)*14})}
+ f.fx.push({x:e.x,y:e.py,a:ang,l:1});
  bloodAdd(f,e.x,e.py);sfx("boss",()=>snd(110,.35,.25));navigator.vibrate&&navigator.vibrate([40,30,60]);
  pop(f,e.x,e.py,"📜 "+f.sk+"/3",1);
  if(f.sk>=3)die(f,"sk");
 }
 function multi(f,n,now,e){      // 3+ йокаїв одним свайпом — бонус і напис
- const nm=[,,,t("ТРІЙНИЙ!|TRIPLE!"),t("4× КОМБО!|4× COMBO!"),t("5× МЕГА!|5× MEGA!")][Math.min(n,5)]||n+"× "+t("ШАЛЕНСТВО!|FRENZY!"),bonus=[0,0,0,40,90,160][Math.min(n,5)]*(n>5?n-4:1),p=score(f,bonus,now);
- pop(f,e.x,e.py-34,nm+" +"+p,1);burst(f,e.x,e.py,14+n*3,"#ffd24a");f.cb+=1;f.sh=Math.max(f.sh,8+n);navigator.vibrate&&navigator.vibrate([20,20,40])}
+ const nm=[,,,t("ТРІЙНИЙ!|TRIPLE!"),t("4× КОМБО!|4× COMBO!"),t("5× МЕГА!|5× MEGA!")][Math.min(n,5)]||n+"× "+t("ШАЛЕНСТВО!|FRENZY!"),bonus=(n>5?10+(n-5)*2:[0,0,0,6,8,10][n])*(1+.1*U("mult")),p=score(f,bonus,now,1);
+ pop(f,e.x,e.py-34,nm+" +"+Math.max(1,Math.round(p)),1);burst(f,e.x,e.py,14+n*3,"#ffd24a");f.cb+=1;f.sh=Math.max(f.sh,8+n);navigator.vibrate&&navigator.vibrate([20,20,40])}
 function cut(f,e,ang,now){
  if(e.sc)return hitScroll(f,e,ang);
  e.cut=1;f.fx.push({x:e.x,y:e.py,a:ang,l:1});
@@ -139,7 +142,8 @@ function cut(f,e,ang,now){
  for(const s of[1,-1])f.hv.push({y:e.y,r:e.r,x:e.x,py:e.py,vx:e.vx-Math.sin(ang)*s*190,vy:e.vy*.4+Math.cos(ang)*s*190,rot:e.rot,vr:e.vr+s*3,cl:ang-e.rot,s,l:1.4});
  f.cb=now-f.cT<700+40*U("cwin")?f.cb+1:1;f.cT=now;
  if(f.cb>=Math.max(3,8-(U("frth")/3|0))&&now>f.fr)f.fr=now+4000+500*U("frz");
- const p=score(f,10,now);pop(f,e.x,e.py,"+"+p);burst(f,e.x,e.py,10);f.sh=6;f.cuts++;
+ const p=score(f,e.gd?3:1,now);pop(f,e.x,e.py,"+"+Math.max(1,Math.round(p))+(e.gd?" ★":""));burst(f,e.x,e.py,e.gd?18:10,e.gd?"#ffd24a":null);f.sh=6;f.cuts++;
+ if(U("regen")&&f.cuts%(40-3*U("regen"))==0&&f.ms>0){f.ms--;pop(f,e.x,e.py-30,"💗 −1",1)}   // регенерація: час від часу прощається промах
  navigator.vibrate&&navigator.vibrate(10);sfx("slash",()=>snd(500+f.cb*25));
  if(f.cuts>=f.nb&&!f.bo)mkBoss(f,now);
 }
@@ -152,11 +156,11 @@ const BOSS={
  scr:["📜 Свиткопад|📜 Scroll Rain","#ef4444",8,"На екран сиплються свитки!|Scrolls rain down!"],
  gld:["🌟 Золотий Йокай|🌟 Golden Yokai","#facc15",10,"9 секунд шаленства ×2|9 seconds of ×2 frenzy"],
  nos:["🕊 Мирний Дух|🕊 Peace Spirit","#a7f3d0",8,"Свитків немає, очки ×1.5|No scrolls, score ×1.5"],
- mir:["🪞 Дзеркальний Оні|🪞 Mirror Oni","#e5e7eb",10,"Ёкаї летять дзеркальними парами|Yokai fly in mirrored pairs"],
+ mir:["🪞 Дзеркальний Оні|🪞 Mirror Oni","#e5e7eb",10,"Йокаї летять дзеркальними парами|Yokai fly in mirrored pairs"],
  swm:["🐝 Рій Тенгу|🐝 Tengu Swarm","#fbbf24",10,"Купа дрібних швидких йокаїв|A swarm of tiny fast yokai"],
- inv:["👻 Невидимка|👻 Invisible","#94a3b8",10,"Ёкаї мерехтять і зникають|Yokai flicker and fade"],
- lgt:["🎈 Повітряний|🎈 Airborne","#f9a8d4",10,"Ёкаї ширяють довше|Yokai float for longer"],
- hvy:["🪨 Кам'яний Голем|🪨 Stone Golem","#a8a29e",10,"Ёкаї падають важко й швидко|Yokai fall heavy and fast"],
+ inv:["👻 Невидимка|👻 Invisible","#94a3b8",10,"Йокаї мерехтять і зникають|Yokai flicker and fade"],
+ lgt:["🎈 Повітряний|🎈 Airborne","#f9a8d4",10,"Йокаї ширяють довше|Yokai float for longer"],
+ hvy:["🪨 Кам'яний Голем|🪨 Stone Golem","#a8a29e",10,"Йокаї падають важко й швидко|Yokai fall heavy and fast"],
  spl:["🧬 Розщеплювач|🧬 Splitter","#34d399",10,"Розрізані йокаї діляться надвоє|Cut yokai split in two"],
  shd:["🥷 Тінь-ніндзя|🥷 Shadow Ninja","#6366f1",6,"Бос телепортується|The boss teleports"],
  hea:["💚 Цілитель|💚 Healer","#4ade80",8,"Лікується, коли ти пропускаєш ёкая|Heals when you miss a yokai"],
@@ -169,7 +173,7 @@ const BOSS={
 const BCOL={},BNAME={};for(const k in BOSS){BCOL[k]=BOSS[k][1];BNAME[k]=BOSS[k][0]}
 function mkBoss(f,now,force){
  const ks=Object.keys(BOSS),ty=force||ks[R()*ks.length|0],B=BOSS[ty];
- f.bo={y:YK[R()*6|0],ty,hp:G.bhf?Math.ceil(B[2]/2):B[2],mh:G.bhf?Math.ceil(B[2]/2):B[2],t:0,ap:0,rg:0,hist:[],hit:0,last:0,r0:Math.min(f.w,f.h)*.14,r:Math.min(f.w,f.h)*.14,z:1,tl:5,nf:now+9000,ab:0,ns:now+1500,tp:0,tx:f.w/2,ty2:f.h*.4};
+ f.bo={y:YK[R()*6|0],ty,hp:G.bhf?Math.ceil(B[2]/2):B[2],mh:G.bhf?Math.ceil(B[2]/2):B[2],t:0,ap:0,rg:0,hist:[],hit:0,last:0,r0:Math.min(f.w,f.h)*.14,r:Math.min(f.w,f.h)*.14,z:1,tl:5+.3*U("bosst"),tm:5+.3*U("bosst"),nf:now+9000,ab:0,ns:now+1500,tp:0,tx:f.w/2,ty2:f.h*.4};
  f.bx=f.w/2;f.by=f.h*.4;track("boss_spawn",{boss:ty});pop(f,f.w/2,f.h*.3,"BOSS!",1);f.ban={s:t(B[0]),d:t(B[3])+" · "+t("5 с на комбо!|5 s for the combo!"),l:1};f.fa=.4;snd(120,.4,.2);
  if(ty=="frz")frz(f);if(ty=="slo")f.sl=now+7000;if(ty=="sto")f.st=now+8000;if(ty=="gld")f.fr=Math.max(f.fr,now+9000);
 }
@@ -241,7 +245,7 @@ function frost(f,raw){f.fk=f.fz?Math.min(1,(f.fk||0)+raw*1.4):Math.max(0,(f.fk||
 
 // ═══ ВВІД: екранні координати → локальні координати поля ═══
 const fOf=y=>G.m==2?G.f[y<H/2?0:1]:G.f[0];
-const lc=(f,e)=>{let x=e.clientX,y=f.fl?f.oy+f.h-e.clientY:e.clientY-f.oy;if(f.zm>1.001){x=f.w/2+(x-f.w/2)/f.zm;y=f.h*.5+(y-f.h*.5)/f.zm}return[x,y]};   // зворотне відображення дотику з урахуванням зуму
+const lc=(f,e)=>{let x=f.fl?f.w-e.clientX:e.clientX,y=f.fl?f.oy+f.h-e.clientY:e.clientY-f.oy;if(f.zm>1.001){x=f.w/2+(x-f.w/2)/f.zm;y=f.h*.5+(y-f.h*.5)/f.zm}return[x,y]};   // зворотне відображення дотику з урахуванням зуму
 const dseg=(px,py,ax,ay,bx,by)=>{const dx=bx-ax,dy=by-ay,l=dx*dx+dy*dy||1;let u=((px-ax)*dx+(py-ay)*dy)/l;u=Math.max(0,Math.min(1,u));return Math.hypot(px-ax-u*dx,py-ay-u*dy)};
 cv.addEventListener("pointerdown",e=>{if(!G.on)return;const f=fOf(e.clientY);if(f.dead)return;const[x,y]=lc(f,e);const tr=[{x,y,t:performance.now()}];ptr[e.pointerId]={f,x,y,tr};f.trs.push(tr)});
 cv.addEventListener("pointermove",e=>{
@@ -258,9 +262,9 @@ cv.addEventListener("pointermove",e=>{
   if(now-b.last>=120){
    b.last=now;if(b.ty=="cmb"&&f.cb<3){f.cb++;f.cT=now;pop(f,f.bx,f.by,"COMBO "+f.cb+"/3");p.x=x;p.y=y;return}f.fx.push({x:f.bx,y:f.by,a:ang,l:1});b.hp-=R()<.05*U("boss")?2:1;b.hit=1;f.cb++;f.cT=now;f.sh=8;burst(f,f.bx,f.by,10,"#fff");sfx("boss",()=>snd(260,.12,.18));
    if(b.hp<=0){
-    const pt=score(f,300*(1+.1*U("bossr"))+(b.ab||0)*50+Math.round(Math.max(0,b.tl)*40),now);pop(f,f.bx,f.by,"+"+pt+" 👑",1);burst(f,f.bx,f.by,50);bossBurst(f,b);track("boss_kill",{boss:b.ty,sec:Math.round(b.t)});
+    const pt=score(f,10*(1+.1*U("bossr"))+(b.ab||0)*2+Math.max(0,b.tl)*.5,now,1);pop(f,f.bx,f.by,"+"+Math.max(1,Math.round(pt))+" 👑",1);burst(f,f.bx,f.by,50);bossBurst(f,b);track("boss_kill",{boss:b.ty,sec:Math.round(b.t)});
     f.kills++;S.kills++;S.bossWins++;S.souls+=5+U("soul");
-    if(R()<.5){S.jd++;pop(f,f.bx,f.by-40,"+1 💎",1)}         // 💎 — головна нагорода за боса
+    if(R()<RATE.bossJd){S.jd++;pop(f,f.bx,f.by-40,"+1 💎",1)}         // 💎 — головна нагорода за боса
     save();f.bo=null;f.fz=0;f.nb=f.cuts+14;
    }
   }
@@ -335,12 +339,12 @@ function trailFill(f,bl,P,Lh,Rh,now){
 // ═══ ОНОВЛЕННЯ І МАЛЮВАННЯ ПОЛЯ ═══
 function upd(f,raw,now){
  const slow=now<f.sl,storm=now<f.st,fren=now<f.fr;f.ts+=((slow?.4:f.fz?.25:f.bo?.4:1)-f.ts)*.15;
- const dt=raw*f.ts,ed=dt*(storm?1.25:1),g=GR(f),pace=1+Math.min(.5,G.el/180),h=f.h;FLP=f.fl;const b=f.bo;if(f.ban)f.ban.l-=raw*.4;
+ const dt=raw*f.ts,ed=dt*(storm?1.25:1),g=GR(f),pace=1+Math.min(.5,G.el/180),h=f.h;FLP=0;const b=f.bo;if(f.ban)f.ban.l-=raw*.4;
  cx.save();cx.beginPath();cx.rect(0,f.oy,W,h);cx.clip();
- cx.translate(0,f.fl?f.oy+h:f.oy);if(f.fl)cx.scale(1,-1);          // верхній гравець: світ віддзеркалено по вертикалі
+ if(f.fl){cx.translate(f.w,f.oy+h);cx.rotate(Math.PI)}else cx.translate(0,f.oy);          // верхній гравець: усе повернуто на 180° — йокаї летять від його краю, PNG дивляться «вгору» з його боку
  cx.translate((R()-.5)*f.sh,(R()-.5)*f.sh);f.sh*=.85;
  f.zm+=((f.bo?1.12:1)-f.zm)*Math.min(1,raw*4);if(f.zm>1.001){cx.translate(f.w/2,h*.5);cx.scale(f.zm,f.zm);cx.translate(-f.w/2,-h*.5)}   // камера трохи «наближається» до боса
- if(f.fl){cx.save();cx.translate(0,h);cx.scale(1,-1);drawBG(f.w,h);cx.restore()}else drawBG(f.w,h);
+ drawBG(f.w,h);
  f.sq=f.sq.filter(q=>(q.l-=dt*.45)>0);for(const q of f.sq){cx.globalAlpha=Math.min(.55,q.l*.6);cx.fillStyle=q.c;cx.beginPath();cx.arc(q.x,q.y,q.r,0,6.3);cx.fill();for(const d of q.d){cx.beginPath();cx.arc(q.x+d[0],q.y+d[1],d[2],0,6.3);cx.fill()}}cx.globalAlpha=1;
  f.sp-=dt;
  if(f.sp<=0&&!f.dead&&!f.fz){const bt=b?b.ty:"",n=Math.min(3,1+(R()*(2+G.el/60)|0))+(bt=="swm"?3:bt=="rch"?1:0);for(let i=0;i<n;i++)setTimeout(()=>G.on&&!f.dead&&spawn(f,storm),i*240);f.sp=(1.5+R()*.9)/pace/(storm?1.6:1)/(slow?1.6:1)/(fren?1.3:1)/(1+.04*U("spawn"))}
@@ -351,12 +355,13 @@ function upd(f,raw,now){
  for(const e of f.e){const gb=b?(b.ty=="lgt"?.45:b.ty=="hvy"?1.8:1):1;
   e.vy+=g*gb*ed;if(b&&b.ty=="wnd")e.vx+=Math.sin(b.t*1.4)*260*ed;e.x+=e.vx*ed;e.py+=e.vy*ed;e.rot+=e.vr*ed;
   if(f.fz){e.py-=70*raw;if(e.py<-140)continue}                                   // заморожені йокаї повільно відлітають
-  if(!e.cut){cx.save();if(b&&b.ty=="inv")cx.globalAlpha=.12+.88*Math.abs(Math.sin(now/260+e.x*.02));if(f.fz)cx.globalAlpha=.8;cx.translate(e.x,e.py);cx.rotate(e.rot);sp(cx,b&&b.ty=="cha"&&e.sc?e.dg:e.y,e.r);cx.restore()}
+  if(!e.cut){cx.save();if(e.gd){cx.shadowColor="#ffd24a";cx.shadowBlur=18}if(b&&b.ty=="inv")cx.globalAlpha=.12+.88*Math.abs(Math.sin(now/260+e.x*.02));if(f.fz)cx.globalAlpha=.8;cx.translate(e.x,e.py);cx.rotate(e.rot);sp(cx,b&&b.ty=="cha"&&e.sc?e.dg:e.y,e.r);cx.restore()}
   if(e.cut)continue;
   if(e.vy>0&&e.py>h+110){if(!e.sc&&!f.fz&&!f.dead)missed(f,e.x);continue}
   ne.push(e)}
  f.e=ne;
  f.hv=f.hv.filter(q=>{q.vy+=g*dt;q.x+=q.vx*dt;q.py+=q.vy*dt;q.rot+=q.vr*dt;q.l-=dt;if(q.l<=0||q.py>h+200)return false;cx.save();cx.globalAlpha=Math.min(1,q.l);cx.translate(q.x,q.py);cx.rotate(q.rot);cx.rotate(q.cl);cx.beginPath();if(q.qd!=null)cx.rect(q.qd&1?0:-q.r*2,q.qd&2?0:-q.r*2,q.r*2,q.r*2);else cx.rect(-q.r*2,q.s>0?0:-q.r*2,q.r*4,q.r*2);cx.clip();cx.rotate(-q.cl);q.bt?sprB(cx,{ty:q.bt,r:q.r,y:q.y},1):sp(cx,q.y,q.r);cx.restore();return true});
+ f.sw=f.sw.filter(s=>{s.t+=dt*2.4;if(s.t>=1)return false;cx.globalAlpha=1-s.t;cx.strokeStyle="#ffd9a8";cx.lineWidth=7*(1-s.t)+1;cx.beginPath();cx.arc(s.x,s.y,18+s.t*170,0,6.3);cx.stroke();cx.strokeStyle="#ff2a5f";cx.lineWidth=3*(1-s.t);cx.beginPath();cx.arc(s.x,s.y,10+s.t*120,0,6.3);cx.stroke();cx.globalAlpha=1;return true});   // ударна хвиля вибуху свитка
  f.bs=f.bs.filter(s=>{s.t+=dt*1.2;if(s.t>=1)return false;const pr=Math.min(1,s.t*4),len=420*pr,w=26*(1-s.t*.85);   // кривава смуга: росте, тоншає й зникає
   cx.save();cx.translate(s.x,s.y);cx.rotate(s.a);cx.globalAlpha=Math.max(0,1-s.t*1.1)*.9;cx.lineCap="round";
   cx.strokeStyle="#7f1d1d";cx.lineWidth=w;cx.beginPath();cx.moveTo(0,0);cx.lineTo(len,0);cx.stroke();
@@ -387,7 +392,7 @@ function upd(f,raw,now){
   else if(p.sh=="q"){cx.fillRect(-s/2,-s/2,s,s)}
   else{cx.arc(0,0,s,0,6.3);cx.fill()}
   cx.restore()}cx.globalAlpha=1;
- f.x=f.x.filter(q=>{q.y-=50*dt;q.l-=dt*1.2;if(q.l<=0)return false;cx.save();cx.globalAlpha=Math.min(1,q.l);cx.translate(q.x,q.y);if(f.fl)cx.scale(1,-1);cx.fillStyle="#ffb703";cx.font=`800 ${q.big?30:19}px system-ui`;cx.textAlign="center";rich(cx,q.s,0,0,q.big?30:19);cx.restore();return true});
+ f.x=f.x.filter(q=>{q.y-=50*dt;q.l-=dt*1.2;if(q.l<=0)return false;cx.save();cx.globalAlpha=Math.min(1,q.l);cx.translate(q.x,q.y);cx.fillStyle="#ffb703";cx.font=`800 ${q.big?30:19}px system-ui`;cx.textAlign="center";rich(cx,q.s,0,0,q.big?30:19);cx.restore();return true});
  const bl=BL[S.blade];f.fx.length=0;                          // лінію розрізу не малюємо
  f.trs.forEach(tr=>{while(tr.length&&now-tr[0].t>=200)tr.shift()});
  f.trs=f.trs.filter(tr=>tr.length||Object.values(ptr).some(p=>p.tr===tr));
@@ -420,7 +425,7 @@ function hud(f,now){
  cx.fillStyle="#ff2a5f";cx.font="800 13px system-ui";rich(cx,st,w/2,T+98,13);
  if(f.ban&&f.ban.l>0){cx.globalAlpha=Math.min(1,f.ban.l*1.5);cx.fillStyle="#fff";cx.font="900 18px system-ui";rich(cx,f.ban.s,w/2,T+160,18);cx.font="600 12px system-ui";cx.fillStyle="#ffd27a";cx.fillText(f.ban.d,w/2,T+180);cx.globalAlpha=1}
  if(b){const bw=w*.6,bx=(w-bw)/2,by=T+112;cx.fillStyle="#272235";cx.fillRect(bx,by,bw,8);cx.fillStyle=BCOL[b.ty];cx.fillRect(bx,by,bw*Math.max(0,b.hp)/b.mh,8);
-  cx.fillStyle="#fff";cx.font="bold 11px system-ui";rich(cx,t(BNAME[b.ty])+" "+Math.max(0,b.hp)+"/"+b.mh,w/2,by+24,11);cx.fillStyle="#272235";cx.fillRect(bx,by+32,bw,5);cx.fillStyle=b.tl<2?"#ff2a5f":"#ffb703";cx.fillRect(bx,by+32,bw*Math.max(0,b.tl)/5,5);cx.fillStyle="#fff";cx.font="bold 11px system-ui";cx.fillText(Math.max(0,b.tl).toFixed(1)+" "+t("с|s"),w/2,by+52)}
+  cx.fillStyle="#fff";cx.font="bold 11px system-ui";rich(cx,t(BNAME[b.ty])+" "+Math.max(0,b.hp)+"/"+b.mh,w/2,by+24,11);cx.fillStyle="#272235";cx.fillRect(bx,by+32,bw,5);cx.fillStyle=b.tl<2?"#ff2a5f":"#ffb703";cx.fillRect(bx,by+32,bw*Math.max(0,b.tl)/b.tm,5);cx.fillStyle="#fff";cx.font="bold 11px system-ui";cx.fillText(Math.max(0,b.tl).toFixed(1)+" "+t("с|s"),w/2,by+52)}
 
  cx.restore();
  if(f.dead&&duo){cx.fillStyle="rgba(0,0,0,.5)";cx.fillRect(0,f.oy,W,f.h);cx.fillStyle="#ff2a5f";cx.textAlign="center";cx.font="900 32px system-ui";cx.fillText("K.O.",W/2,f.oy+f.h/2)}
@@ -451,8 +456,8 @@ function endRound(mult){
  const sc=G.f.map(f=>f.sc),bi=sc.indexOf(Math.max(...sc)),best=sc[bi],ex=G.f[bi].ex;S.rounds++;
  let m=mult||1;if(S.c.x2>0){m*=2;S.c.x2--}if(S.c.x3>0){m*=3;S.c.x3--}
  const coins=Math.round((best+ex)*COIN_K*(1+.03*U("end"))*(G.mb||1)*(shogunNight()?2:1))*m;
- const ln=G.lx?2:R()<.03?1:0;                                               // 🏮 рідко; бустер «×2 ліхтарі» гарантує 2
- S.rc=S.rc?S.rc*.7+coins/m*.3:coins/m;track("round_end",{score:best,sec:Math.round(G.el),mode:G.m,revives:G.rv||0,bosses:G.f.reduce((s,f)=>s+f.kills,0)});S.mon+=coins;S.xp+=best;S.ln+=ln;if(G.sx)S.souls++;save();push();
+ const ln=G.lx?2:R()<RATE.roundLn?1:0;                                               // 🏮 рідко; бустер «×2 ліхтарі» гарантує 2
+ track("round_end",{score:best,sec:Math.round(G.el),mode:G.m,revives:G.rv||0,bosses:G.f.reduce((s,f)=>s+f.kills,0)});S.mon+=coins;S.xp+=best;S.ln+=ln;if(G.sx)S.souls++;save();push();
  G.res={sc,coins,m,ln,bc:R()<.05+.02*G.f.reduce((s,f)=>s+f.kills,0)+(G.lk?.2:0)};       // шанс сундука-знахідки
  if(S.rounds%CFG.adEvery==0)ad(CFG.promo.text,showRes,"",1);else showRes();
 }
