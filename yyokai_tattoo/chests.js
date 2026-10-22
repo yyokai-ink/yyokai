@@ -144,13 +144,8 @@ async function runChest(c,p,im){
  ro.innerHTML=`<div id="robg" class="absolute inset-0" style="opacity:0;transition:opacity 1.8s ease;background:linear-gradient(180deg,rgba(24,10,60,.55),rgba(5,3,18,.88)),url(img/chest/bg_${c[0]}.png) center/cover no-repeat,url(img/chest/open_bg.png) center/cover no-repeat"></div><div id="rcont" class="relative w-full max-w-md h-full flex items-center justify-center overflow-hidden"></div>`;
  const rc=$("rcont");
  rc.innerHTML=`<div id="chw" class="relative" style="width:230px;height:230px">
-<div id="chi" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
-  ${IMG(im,c[1],"h-52 w-auto")}
-</div>
-  <div id="chi" class="relative h-full flex items-center justify-center text-8xl" style="--sc:1;animation:floatY 2s ease-in-out infinite;filter:drop-shadow(0 8px 18px #000a) drop-shadow(0 0 22px ${A})">${IMG(im,c[1],"h-52 w-auto")}</div></div>
-  <div class="absolute top-6 left-0 right-0 text-center pointer-events-none"><span class="font-black tracking-[.25em] uppercase text-xs" style="color:${MY};text-shadow:0 0 10px ${MA}">${c[1]} ${t(c[2])}</span></div>`;
- ro.classList.replace("hidden","flex");
- requestAnimationFrame(()=>requestAnimationFrame(()=>{const b=$("robg");if(b)b.style.opacity=1}));
+<div id="chh" style="position:absolute;inset:-60px;border-radius:50%;background:radial-gradient(circle,${A}55 0%,${A}20 35%,transparent 72%);filter:blur(16px);opacity:.4;pointer-events:none;transition:opacity 1s,transform 1s"></div>
+<div id="chi" class="relative h-full flex items-center justify-center text-8xl" style="--sc:1;animation:floatY 2s ease-in-out infinite;filter:drop-shadow(0 8px 18px #000a) drop-shadow(0 0 22px ${A})">${IMG(im,c[1],"h-52 w-auto")}</div></div>
  await slashOpen(rc,im,c);                         // 1) розрізаєш сундук катаною: 5 ударів, можна одним безперервним свайпом
  rc.insertAdjacentHTML("beforeend",`<div style="position:absolute;inset:0;background:radial-gradient(circle,#fff,${MA}99,transparent 75%);animation:flashOut .6s ease-out forwards;pointer-events:none"></div>
   <div style="position:absolute;left:50%;top:50%;width:200px;height:200px;margin:-100px;border-radius:50%;border:5px solid ${MY};box-shadow:0 0 30px ${MY};animation:ringOut .8s ease-out forwards;pointer-events:none"></div>
