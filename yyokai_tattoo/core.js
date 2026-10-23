@@ -64,7 +64,12 @@ async function probeIco(){const names=["coin","soul","jade","lantern",...["play"
  if(ICOK.size){hdrIcons();navIcons();rend()}}
 function navIcons(){document.querySelectorAll(".nv").forEach(e=>e.innerHTML=icoH("nav_"+e.dataset.n,`<i class="fa-solid fa-${e.dataset.fa}"></i>`,"h-6 w-6 object-contain"))}
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let lang=localStorage.ink_lang||"ua";const t=s=>{const a=String(s).split("|");return lang=="ua"?a[0]:a[1]||a[0]};
+let lang=localStorage.ink_lang||"ua";/* 🎃 ТЕМА БОМБ — те, що раніше було «свитком» (не різати! 3 штуки = кінець гри). ЗМІНЮЙ ТІЛЬКИ ТУТ — і гра, і всі описи оновляться самі.
+   e — емодзі; img — файл img/yokai/<img>.png (немає файлу — малюється емодзі); col — колір вибуху/бризок
+   ua/en: one — «один», many — «3 ...», gen — «немає .../−4% ...», rain — назва боса. Приклад зміни: e:"💣", img:"bomb", one:"бомба", many:"бомби", gen:"бомб", rain:"Бомбопад" */
+const BOMB={e:"🎃",img:"pumpkin",col:"#ff8a1f",ua:{one:"гарбуз",many:"гарбузи",gen:"гарбузів",rain:"Гарбузопад"},en:{one:"pumpkin",many:"pumpkins",gen:"pumpkins",rain:"Pumpkin Rain"}};
+const bombTok=s=>s.replace(/\{([bB])omb:(\w+)\}/g,(_,c,k)=>{let v=k=="e"?BOMB.e:(BOMB[lang]||BOMB.ua)[k]||"";return c=="B"?v.charAt(0).toUpperCase()+v.slice(1):v});   // {bomb:many} → «гарбузи», {Bomb:many} → «Гарбузи», {bomb:e} → емодзі
+const t=s=>{const a=String(s).split("|");return bombTok(lang=="ua"?a[0]:a[1]||a[0])};
 async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
 function toast(m){const e=$("toast");e.textContent=m;e.classList.remove("hidden");setTimeout(()=>e.classList.add("hidden"),4500)}
 const tm=ms=>{const s=Math.ceil(ms/1000),d=s/86400|0,h=s%86400/3600|0,m=s%3600/60|0;return d?`${d}${t("д|d")} ${h}${t("г|h")}`:h?`${h}:${String(m).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`:`${m}:${String(s%60).padStart(2,"0")}`};
@@ -88,12 +93,15 @@ const def={
  ck:{s:0,sn:0,sd:"",g:0,d:0},bp:{},bpd:"",
  adw:{n:0,d:"",t:0},                        // стрілка-реклама
  avs:[],pzUsed:[],idl:{d:"",s:0},rc:0,qd:{},qt:{},friends10:0,tot:0,lm:0,master:null,masterAt:0,tatGot:0,pt:0,wk:"",pw:[0,0],fcm:"",bossWins:0,                       // для складніших умов тату (див. social.js)
- cp:[],claimed:[],friends:0,offers:{}
+ cp:[],claimed:[],friends:0,offers:{},
+ bst:{},sr:"",pr:0,ptot:0,tut:0,xwk:0,xw:0,xmk:0,xm:0,flash:0
 };
-let S={...def,...JSON.parse(localStorage.ink_s5||"{}")};S.c={...def.c,...S.c};S.ck={...def.ck,...S.ck};S.adw={...def.adw,...S.adw};S.bp=S.bp||{};
+let S={...def,...JSON.parse(localStorage.ink_s5||"{}")};S.c={...def.c,...S.c};S.ck={...def.ck,...S.ck};S.adw={...def.adw,...S.adw};S.bp=S.bp||{};if(S.rounds>0)S.tut=1;   // старі гравці навчання не проходять
 let user=null,mode="reg",cur="play",guestMode=false,splashDone=false,adminOK=false,PL=[],FR=[],OFFERS=[],opening=0;
 const refId=new URLSearchParams(location.search).get("ref")||localStorage.ink_ref||"";
 if(new URLSearchParams(location.search).get("ref"))localStorage.ink_ref=refId;
+{const _q=new URLSearchParams(location.search);if(_q.get("vs")&&+_q.get("sc")>0)localStorage.ink_duel=JSON.stringify({n:_q.get("vs").slice(0,16),sc:+_q.get("sc")})}   // дуель за посиланням ?vs=Нік&sc=Рахунок
+let DUEL=null;try{DUEL=JSON.parse(localStorage.ink_duel||"null")}catch(e){}
 const isReal=()=>FBOK&&user&&user.uid!="local_guest";
 const lvl=x=>1+Math.floor(Math.sqrt(x/300));
 const U=k=>S.up[k]||0;
@@ -110,7 +118,7 @@ async function enablePush(){track("push_enable");
  catch(e){alert(e.message)}}
 let KATL=new Set();      // номери катан, для яких є свій PNG (img/katana/<номер>.png); список — у data/katana.json
 async function loadKat(){try{const r=await fetch("data/katana.json?v="+Date.now());if(r.ok){const j=await r.json();if(Array.isArray(j))KATL=new Set(j.map(Number))}}catch(e){}}
-function sync(){if(S.mon>(S.lm||0))S.tot=(S.tot||0)+S.mon-(S.lm||0);S.lm=S.mon}   // «усього зароблено монет» для умов тату
+function sync(){if(S.mon>(S.lm||0)){const g=S.mon-(S.lm||0);S.tot=(S.tot||0)+g;S.ptot=(S.ptot||0)+g}S.lm=S.mon}   // «усього зароблено монет» для умов тату
 function save(){sync();localStorage.ink_s5=JSON.stringify(S)}
 (function newDay(){const d=today();if(S.last!==d){const y=new Date(Date.now()-864e5).toISOString().slice(0,10);S.streak=S.last===y?S.streak+1:1;S.best=Math.max(S.best,S.streak);S.days++;S.last=d}if(S.bpd!==d){S.bpd=d;S.bp={}}})();
 let xpSent=null;
@@ -119,7 +127,7 @@ async function push(){
  const{offers,friends,...r}=S;
  try{
   await FB.setDoc(FB.doc(db,"users",user.uid),{...r,coins:S.mon,lvl:lvl(S.xp),nickLc:S.nick.toLowerCase(),email:user.email||"",lastSeen:FB.serverTimestamp()},{merge:true});
-  const pub={nick:S.nick,nickLc:S.nick.toLowerCase(),av:S.av,xp:S.xp,lvl:lvl(S.xp),days:S.days,coins:S.mon,ts:FB.serverTimestamp()};if(xpSent==null||S.xp>xpSent)pub.xt=FB.serverTimestamp();   // xt — час останнього росту XP (для захисту від підробки)
+  const pub={nick:S.nick,nickLc:S.nick.toLowerCase(),av:S.av,xp:S.xp,lvl:lvl(S.xp),days:S.days,coins:S.mon,city:(S.master&&S.master.city)||"",wk:S.xwk||0,wx:S.xw||0,wsc:(S.xwk||0)*1e9+(S.xw||0),mk:S.xmk||0,mx:S.xm||0,msc:(S.xmk||0)*1e9+(S.xm||0),ts:FB.serverTimestamp()};if(xpSent==null||S.xp>xpSent)pub.xt=FB.serverTimestamp();   // xt — час останнього росту XP (для захисту від підробки)
   await FB.setDoc(FB.doc(db,"public",user.uid),pub,{merge:true});xpSent=S.xp;
  }catch(e){}
 }
@@ -170,19 +178,20 @@ function install(){track("install_click");
 }
 
 // ═══ 7. ЗАСТАВКА: лого по центру між верхом і смужками ═══
+const SPLASH_MS=6000;   // 🔧 скільки мс триває заставка (6000 = 6 секунд)
 function splash(){
  $("spName").textContent=CFG.hero.name;
  if(!SLOW){const v=document.createElement("video");v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;v.setAttribute("muted","");v.className="absolute inset-0 w-full h-full object-cover";v.innerHTML='<source src="bar2.mp4" type="video/mp4">';$("splash").insertBefore(v,$("splash").firstChild);v.play&&v.play().catch(()=>{})}
  for(let i=0;i<(SLOW?0:14);i++){const e=document.createElement("i");e.className="ember";e.style.cssText=`left:${R()*100}%;--dx:${(R()-.5)*120}px;animation-duration:${3+R()*4}s;animation-delay:${R()*4}s`;$("splash").appendChild(e)}
  setTimeout(()=>CHF.forEach(n=>{new Image().src="img/chest/"+n+".png"}),800);   // картинки догружаються у фоні, заставка їх не чекає
  let authOk=false;
- authReadyP.then(()=>authOk=true);setTimeout(()=>authOk=true,2200);
+ authReadyP.then(()=>authOk=true);setTimeout(()=>authOk=true,SPLASH_MS);
  const t0=performance.now();
  const iv=setInterval(()=>{
-  const el=performance.now()-t0,real=authOk?1:.9,sh=Math.min(1,real,el/(SLOW?1200:1600));
+  const el=performance.now()-t0,real=authOk?1:.9,sh=Math.min(1,real,el/SPLASH_MS);
   $("spBar").style.width=Math.max(8,sh*100)+"%";$("spV").style.height=sh*100+"%";$("spPct").textContent=Math.round(sh*100)+"%";
   $("spTxt").textContent=sh>=1?t("Готово|Ready"):sh<.4?t("Малюємо йокаїв…|Drawing yokai…"):sh<.8?t("Куємо клинки…|Forging blades…"):t("Відкриваємо врата…|Opening the gate…");
-  if(sh>=1||el>3000){clearInterval(iv);
+  if(sh>=1||el>SPLASH_MS+3000){clearInterval(iv);
    setTimeout(()=>{splashDone=true;route();adTick();track("step_splash_done");$("splash").style.opacity=0;setTimeout(()=>$("splash").remove(),700)},250);   // спершу готуємо потрібний екран під заставкою — жодного «блимання» гри   // 6 с — і одразу на реєстрацію
   }
  },100);
