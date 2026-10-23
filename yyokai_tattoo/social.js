@@ -1,3 +1,4 @@
+window.INKV=window.INKV||{};INKV.social="20261023b";
 /* INKAI social.js — вхід, нік, майстри, розіграш ТОП-10, друзі, рейтинг, нагороди, профіль, адмінка, квести
    ПРАВИЛА FIRESTORE — файл firestore.rules (Firebase Console → Firestore → Rules, замінити ADMIN_UID):
 rules_version='2'; service cloud.firestore { match /databases/{d}/documents {
@@ -187,18 +188,18 @@ async function pickMaster(id){
 // ═══ РОЗІГРАШ ТАТУ СЕРЕД ТОП-10 (щомісяця о 20:00 за Києвом; результат пише сервер) ═══
 let RAF=null,PZ=[],rafSeen=localStorage.ink_raf||"",rafUnsub=null;
 function kyivMs(y,m,d,h){let t0=Date.UTC(y,m,d,h-3,0);for(let i=0;i<2;i++){const hh=+new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Kyiv",hour:"2-digit",hourCycle:"h23"}).format(new Date(t0));t0+=(h-hh)*36e5}return t0}
-function nextRaffle(){const n=new Date();let y=n.getFullYear(),m=n.getMonth(),t0=kyivMs(y,m,1,20);if(t0<=Date.now())t0=kyivMs(y,m+1,1,20);return t0}
+function nextRaffle(){const n=new Date();let y=n.getFullYear(),m=n.getMonth(),t0=kyivMs(y,m+1,0,20);if(t0<=Date.now())t0=kyivMs(y,m+2,0,20);return t0}   // розіграш — В ОСТАННІЙ ДЕНЬ місяця о 20:00 (Київ)
 let rafTarget=nextRaffle();
 setInterval(()=>{const left=rafTarget-Date.now(),e=$("rafT");
  if(left<=0){if(left>-10*6e4&&isReal()&&!$("raf")&&!rafDone())showRaffleWait();if(left<=-10*6e4)rafTarget=nextRaffle()}
  if(e){const s=Math.max(0,Math.floor(left/1e3)),d=s/86400|0;e.textContent=`${d}${t("д|d")} ${String(s%86400/3600|0).padStart(2,"0")}:${String(s%3600/60|0).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`}},1000);
 const rafDone=()=>RAF&&RAF.month==new Date().toISOString().slice(0,7)&&RAF.ts&&RAF.ts.toMillis&&Date.now()-RAF.ts.toMillis()<20*6e4;
-const raffleCard=()=>`<div class="card text-center space-y-1" style="border-color:#ffb70388"><div class="text-xs tracking-[.3em] text-neonGold font-black">🎰 ${t("РОЗІГРАШ ТАТУ|TATTOO DRAW")}</div><div id="rafT" class="text-2xl font-black font-mono">--</div><div class="text-[11px] text-gray-300">${t("Щомісяця о 20:00 (Київ). Беруть участь гравці ТОП-10: 1 безкоштовний сеанс у майстра YYOKAI (тату до 7000 грн) і 9 знижок у твого майстра. Напередодні приходить сповіщення.|Every month at 20:00 (Kyiv). TOP-10 players take part: 1 free session with master YYOKAI (tattoo up to 7000 UAH) and 9 discounts with your master. A reminder arrives the day before.")}</div>${RAF&&RAF.winner?`<div class="text-xs text-gray-400">${t("Минулий переможець|Last winner")}: <b class="text-white">${esc(RAF.winner.nick)}</b></div>`:""}</div>`;
+const raffleCard=()=>`<div class="card text-center space-y-1" style="border-color:#ffb70388"><div class="text-xs tracking-[.3em] text-neonGold font-black">🎰 ${t("РОЗІГРАШ ТАТУ|TATTOO DRAW")}</div><div id="rafT" class="text-2xl font-black font-mono">--</div><div class="text-[11px] text-gray-300">${t("В останній день місяця о 20:00 (Київ). Беруть участь ТОП-10 за XP місяця: 1 безкоштовний сеанс у майстра YYOKAI (тату до 7000 грн) і 9 знижок у твого майстра. Напередодні приходить сповіщення.|On the last day of each month at 20:00 (Kyiv). The month's TOP-10 by XP take part: 1 free session with master YYOKAI (tattoo up to 7000 UAH) and 9 discounts with your master. A reminder arrives the day before.")}</div>${RAF&&RAF.winner?`<div class="text-xs text-gray-400">${t("Минулий переможець|Last winner")}: <b class="text-white">${esc(RAF.winner.nick)}</b></div>`:""}</div>`;
 function watchRaffle(){if(rafUnsub||!FBOK||!db)return;
  rafUnsub=FB.onSnapshot(FB.doc(db,"events","raffle"),s=>{if(!s.exists())return;const e=s.data();RAF=e;
   const fresh=e.ts&&e.ts.toMillis&&Date.now()-e.ts.toMillis()<20*6e4;
   if(e.month&&e.month!==rafSeen){rafSeen=e.month;localStorage.ink_raf=e.month;if(fresh&&!playing())showRaffle(e)}
-  loadPrizes();if(cur=="rating")rRating()},()=>{})}
+  loadPrizes();if(cur=="rating")rRatingX()},()=>{})}
 async function loadPrizes(){if(!isReal())return;try{const q=await FB.getDocs(FB.query(FB.collection(db,"prizes"),FB.where("uid","==",user.uid),FB.limit(12)));PZ=q.docs.map(d=>({id:d.id,...d.data()}));if(cur=="rewards")rRewards()}catch(e){}}
 function showRaffleWait(){const ov=document.createElement("div");ov.id="raf";ov.className="fixed inset-0 z-[98] flex flex-col items-center justify-center text-center";ov.style.cssText="background:radial-gradient(circle at 50% 30%,rgba(60,10,40,.92),rgba(5,4,10,.97))";
  ov.innerHTML=`<div class="text-6xl" style="animation:floatY 1.4s ease-in-out infinite">🎰</div><div class="mt-4 text-lg font-black text-neonGold">${t("Розіграш починається…|The draw is starting…")}</div><button class="btn mt-6 !bg-inkDark border border-inkBorder" onclick="$('raf').remove()">${t("Закрити|Close")}</button>`;document.body.appendChild(ov)}
@@ -277,7 +278,7 @@ function rRewards(){
  <div class="card text-xs text-gray-300 space-y-1"><b class="text-neonGold">${t("Як це працює|How it works")}</b>
   <div>1️⃣ ${t("Обери місто й майстра — усі знижки та призи діятимуть лише в нього.|Pick a city and a master — all discounts and prizes work only with him.")}</div>
   <div>2️⃣ ${t("Грай у різні дні: лічильник днів іде з сервера, його не обдурити.|Play on different days: the day counter comes from the server.")}</div>
-  <div>3️⃣ ${t("Потрапи в ТОП-10 рейтингу — щомісяця о 20:00 розіграш: 1 безкоштовний сеанс (до 7000 грн) і 9 знижок.|Reach the TOP-10 — every month at 20:00 there is a draw: 1 free session (up to 7000 UAH) and 9 discounts.")}</div>
+  <div>3️⃣ ${t("Потрапи в ТОП-10 місяця за XP — в останній день місяця о 20:00 розіграш: 1 безкоштовний сеанс (до 7000 грн) і 9 знижок.|Reach the month's TOP-10 by XP — on the last day of the month at 20:00 there is a draw: 1 free session (up to 7000 UAH) and 9 discounts.")}</div>
   <div>4️⃣ ${t("Знижки 5–50% можуть випасти з будь-якого сундука: чим дорожчий сундук, тим вищий шанс (від ≈0,4% до 4%). Під кодом купона — нік майстра.|Discounts of 5–50% can drop from any chest: the pricier the chest, the higher the chance (≈0.4% to 4%). The master's nickname is shown under the coupon code.")}</div></div>`;
 }
 // ═══ ПРОФІЛЬ ═══
@@ -286,7 +287,7 @@ function rProfile(){
  <div class="card flex flex-col items-center text-center gap-2"><div class="w-20 h-20 rounded-2xl overflow-hidden flex items-center justify-center text-5xl" style="border:2px solid #ffb703">${avHTML(S.av)}</div><h3 class="font-bold text-lg">${esc(S.nick||t("Гість|Guest"))}</h3><span class="inline-block px-3 py-0.5 bg-crimsonRed/20 border border-crimsonRed/40 text-crimsonRed text-[11px] font-bold rounded-full">Lv ${lvl(S.xp)} · ${fmt(S.xp)} XP</span></div>
  <div class="card space-y-2"><h4 class="text-xs font-bold text-neonGold uppercase">${t("Мій нік|My nickname")}</h4><div class="flex gap-2"><input id="nickNew" maxlength="16" value="${esc(S.nick||"")}" class="inp !py-2.5"><button onclick="changeNick()" class="btn">${t("Змінити|Change")}</button></div><div id="nickMsg" class="text-xs text-crimsonRed min-h-[14px]"></div></div>
  <button onclick="enablePush()" class="w-full py-3 rounded-xl bg-neonGold/10 border border-neonGold/40 text-neonGold font-bold text-sm">${S.fcm?t("🔔 Сповіщення увімкнено (оновити)|🔔 Notifications on (refresh)"):t("🔔 Увімкнути сповіщення|🔔 Enable notifications")}</button>
- ${avPicker()}
+ ${profExtras()}${avPicker()}
  <div class="card text-xs text-gray-300 grid grid-cols-2 gap-1"><div>${t("Раундів|Rounds")}: <b>${S.rounds}</b></div><div>${t("Босів|Bosses")}: <b>${S.kills}</b></div><div>${t("Днів|Days")}: <b>${S.days}</b></div><div>${t("Серія підряд|Streak")}: <b>${S.streak}</b></div></div>
  <div class="card space-y-1"><h4 class="text-xs font-bold text-neonGold uppercase">🔊 ${t("Перевірка звуків і файлів|Sound & file check")}</h4>${sndStat()}</div>
  ${matchMedia("(display-mode: standalone)").matches?"":`<button onclick="install()" class="w-full py-3 rounded-xl bg-neonGold/10 border border-neonGold/40 text-neonGold font-bold text-sm">${t("📲 Встановити гру|📲 Install game")}</button>`}
