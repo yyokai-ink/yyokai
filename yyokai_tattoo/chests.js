@@ -99,7 +99,7 @@ const bcols=bl=>BFX[bl.fx]||[bl.c1,bl.c2,"#fff"];
 const MA="#a78bfa",MY="#ffd24a";
 function slashOpen(rc,im,c){return new Promise(res=>{
  let n=0,done=0,sl=0;const strokes=[],act={},chw=$("chw"),chi=$("chi");rc.style.touchAction="none";
- rc.insertAdjacentHTML("beforeend",`<canvas id="chc" class="absolute inset-0 pointer-events-none" style="width:100%;height:100%"></canvas><div id="chp" class="absolute left-0 right-0 bottom-8 text-center pointer-events-none"><div class="text-sm font-black tracking-[.2em] uppercase" style="color:${MY}">${t("Розріж сундук катаною — 5 ударів!|Slash the chest with your katana — 5 cuts!")}</div><div class="flex justify-center mt-1">${kat(BL[S.blade],"inline-block","width:120px;height:21px;transform:none")}</div><div class="text-[11px] text-gray-300">${t("Можна не відриваючи пальця — водь туди-сюди|You can keep your finger down — swipe back and forth")}</div><div class="flex gap-2 justify-center mt-2">${[0,1,2,3,4].map(i=>`<span id="pp${i}" class="w-3.5 h-3.5 rounded-full" style="background:rgba(255,255,255,.25);transition:all .3s"></span>`).join("")}</div><button id="chskip" class="hidden pointer-events-auto btn mt-3 !bg-inkDark border border-inkBorder">${t("Пропустити|Skip")}</button></div>`);
+ rc.insertAdjacentHTML("beforeend",`<canvas id="chc" class="absolute inset-0 pointer-events-none" style="width:100%;height:100%"></canvas><div id="chp" class="absolute left-0 right-0 bottom-8 text-center pointer-events-none"><div class="text-sm font-black tracking-[.2em] uppercase" style="color:${MY}">${t("Розріж сундук катаною — 5 ударів!|Slash the chest with your katana — 5 cuts!")}</div><div class="flex justify-center mt-1">${kat(BL[S.blade],"inline-block","width:120px;height:21px;transform:none")}</div><div class="text-[11px] text-gray-300">${t("Рубай рухом із боку в бік — просте утримання пальця не рахується|Slash side to side — just holding your finger does not count")}</div><div class="flex gap-2 justify-center mt-2">${[0,1,2,3,4].map(i=>`<span id="pp${i}" class="w-3.5 h-3.5 rounded-full" style="background:rgba(255,255,255,.25);transition:all .3s"></span>`).join("")}</div><button id="chskip" class="hidden pointer-events-auto btn mt-3 !bg-inkDark border border-inkBorder">${t("Пропустити|Skip")}</button></div>`);
  const cvs=$("chc"),W2=rc.clientWidth,H2=rc.clientHeight,k2=cvs.getContext("2d");cvs.width=W2*2;cvs.height=H2*2;k2.scale(2,2);
  const bl=BL[S.blade],cols=bcols(bl);   // розрізаєш саме обраною катаною: її колір, слід і іскри
  const pos=e=>{const r=rc.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top,t:performance.now()}};
@@ -109,14 +109,17 @@ function slashOpen(rc,im,c){return new Promise(res=>{
   let fs,sc=bl.c2;if(bl.fx=="rb"){sc=fs=`hsl(${now/3%360|0},100%,60%)`}else if(bl.fx=="void")fs="#000";else{const g=k2.createLinearGradient(P[0].x,P[0].y,P[nn-1].x,P[nn-1].y);g.addColorStop(0,bl.c2);g.addColorStop(1,bl.c1);fs=g}
   k2.globalAlpha=bl.fx=="ghost"?.6:1;k2.fillStyle=fs;k2.shadowColor=sc;k2.shadowBlur=14+bl.r*3;k2.fill();if(bl.fx=="void"){k2.shadowBlur=0;k2.strokeStyle=bl.c2;k2.lineWidth=1.6;k2.stroke()}
   k2.shadowBlur=0;k2.globalAlpha=1;k2.strokeStyle="rgba(255,255,255,.85)";k2.lineWidth=1.3;k2.beginPath();P.forEach((q,i)=>i?k2.lineTo(q.x,q.y):k2.moveTo(q.x,q.y));k2.stroke()};
- const loop=()=>{if(!cvs.isConnected)return;k2.clearRect(0,0,W2,H2);const now=performance.now();
-  for(const s of strokes){while(s.p.length&&now-s.p[0].t>240)s.p.shift();
-   if(0){const q=s.p[s.p.length-1],e=document.createElement("span"),z=3+R()*5;     // іскри обраної катани біля вістря
-    e.style.cssText=`position:absolute;left:${q.x}px;top:${q.y}px;width:${z}px;height:${z}px;margin:-${z/2}px;border-radius:50%;background:radial-gradient(circle,${cols[R()*cols.length|0]},transparent 75%);--ox:${(R()-.5)*50}px;animation:orb ${.7+R()*.5}s ease-out forwards;pointer-events:none`;rc.appendChild(e);setTimeout(()=>e.remove(),1300)}}
+ const cf={p:[]};let lt=performance.now();      // слід катани малюється ТИМИ Ж функціями, що й у грі: стрічка + частинки твоєї катани, окремо для кожного пальця (до 10)
+ const loop=()=>{if(!cvs.isConnected)return;k2.clearRect(0,0,W2,H2);const now=performance.now(),dt=Math.min(.05,(now-lt)/1000);lt=now;
+  for(const s of strokes){while(s.p.length&&now-s.p[0].t>200)s.p.shift();const P=s.p,nn=P.length;
+   if(nn>=3){const Lh=[],Rh=[];for(let i=0;i<nn;i++){const a0=P[Math.max(0,i-1)],b0=P[Math.min(nn-1,i+1)];let dx=b0.x-a0.x,dy=b0.y-a0.y;const l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;const wd=bl.w*2.2*Math.sin(Math.PI*i/(nn-1))*Math.max(0,1-(now-P[i].t)/200)+.4;Lh.push([P[i].x-dy*wd,P[i].y+dx*wd]);Rh.push([P[i].x+dy*wd,P[i].y-dx*wd])}
+    trailFill(cf,bl,P,Lh,Rh,now,k2);k2.globalAlpha=1;if(R()<.6)fxPart(cf,bl,P[nn-1])}}
+  for(const p of cf.p){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=(p.g==null?400:p.g)*dt;p.rot=(p.rot||0)+(p.vr||0)*dt;p.l-=dt*1.6}
+  cf.p=cf.p.filter(p=>p.l>0);drawParts(k2,cf.p);k2.globalAlpha=1;
   for(let i=strokes.length-1;i>=0;i--)if(!strokes[i].p.length&&!strokes[i].on)strokes.splice(i,1);
   requestAnimationFrame(loop)};requestAnimationFrame(loop);
  const finish=()=>{if(done)return;done=1;for(const ev of[["pointerdown",dn],["pointermove",mv],["pointerup",up],["pointercancel",up]])rc.removeEventListener(ev[0],ev[1]);
-  const p=$("chp");if(p)p.remove();
+  const p=$("chp");if(p)p.remove();sfx("chestcrack");
   const sN=Math.max(-.8,Math.min(.8,sl)),yl=50-sN*50,yr=50+sN*50,nr=Math.sqrt(1+sN*sN),nx=-sN/nr*150,ny=1/nr*150;
   chi.style.visibility="hidden";
   const half=(poly,cl)=>`<div class="${cl} text-8xl" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;--nx:${nx}px;--ny:${ny}px;clip-path:polygon(${poly});filter:drop-shadow(0 10px 16px #000a)">${IMG(im,c[1],"h-52 w-auto")}</div>`;
@@ -124,13 +127,13 @@ function slashOpen(rc,im,c){return new Promise(res=>{
   fxShoot(chw,16,[...cols,"#fff"]);setTimeout(()=>{cvs.remove();res()},800)};
  const hit=s=>{if(done)return;n++;sl=s;const pp=$("pp"+(n-1));if(pp){pp.style.background=MY;pp.style.transform="scale(1.3)"}
   chi.style.setProperty("--sc",1+.03*n);chi.style.animation="none";void chi.offsetWidth;chi.style.animation="chestHit .35s ease-out forwards";     // лише рух сундука при ударі
-  sfx("slash",()=>snd(500+n*70));navigator.vibrate&&navigator.vibrate(18+n*8);if(n>=5)finish()};
+  sfx("chesthit",null,n);navigator.vibrate&&navigator.vibrate(18+n*8);if(n>=5)finish()};
  const dn=e=>{if(done)return;const p=pos(e),s={p:[p],on:1,acc:0,th:0};act[e.pointerId]=s;strokes.push(s)};
  // ОДИН безперервний свайп = кілька ударів: кожні ~70 px руху по сундуку (туди-сюди, не відриваючи пальця) — удар
- const mv=e=>{const s=act[e.pointerId];if(!s||done)return;const p=pos(e),l=s.p[s.p.length-1],d=Math.hypot(p.x-l.x,p.y-l.y);s.p.push(p);
+ const mv=e=>{const s=act[e.pointerId];if(!s||done)return;const p=pos(e),l=s.p[s.p.length-1],d=Math.hypot(p.x-l.x,p.y-l.y);s.p.push(p);const vx=p.x-l.x,vy=p.y-l.y,rev=s.ux!=null&&(vx*s.ux+vy*s.uy)<0;if(Math.abs(vx)+Math.abs(vy)>2){s.ux=vx;s.uy=vy}
   const r=chi.getBoundingClientRect(),rr=rc.getBoundingClientRect(),x=p.x+rr.left,y=p.y+rr.top;
-  if(x>r.left-10&&x<r.right+10&&y>r.top-10&&y<r.bottom+10){s.acc+=d;
-   if(s.acc>=70&&performance.now()-s.th>100){s.acc-=70;s.th=performance.now();const q=s.p[Math.max(0,s.p.length-6)],dx=p.x-q.x;hit((p.y-q.y)/(Math.abs(dx)<4?(dx>=0?4:-4):dx))}}};
+  if(x>r.left-10&&x<r.right+10&&y>r.top-10&&y<r.bottom+10){if(rev)s.acc=0;s.acc+=d;
+   if(s.acc>=70&&performance.now()-s.th>100){s.acc-=70;s.th=performance.now();const q=s.p[Math.max(0,s.p.length-6)],dx=p.x-q.x;hit((p.y-q.y)/(Math.abs(dx)<4?(dx>=0?4:-4):dx))}}else s.acc=0};
  const up=e=>{const s=act[e.pointerId];if(s)s.on=0;delete act[e.pointerId]};
  rc.addEventListener("pointerdown",dn);rc.addEventListener("pointermove",mv);rc.addEventListener("pointerup",up);rc.addEventListener("pointercancel",up);
  setTimeout(()=>{const b=$("chskip");if(b&&!done){b.classList.remove("hidden");b.onclick=()=>{sl=.3;finish()}}},5000)})}
@@ -147,7 +150,7 @@ async function runChest(c,p,im){
  requestAnimationFrame(()=>requestAnimationFrame(()=>{const b=$("robg");if(b)b.style.opacity=1}));
  await slashOpen(rc,im,c);                         // 1) розрізаєш сундук катаною: 5 ударів, можна одним безперервним свайпом
  
- sfx("boss",()=>tone(140,.4,"sawtooth",.22));navigator.vibrate&&navigator.vibrate([30,20,60]);
+ navigator.vibrate&&navigator.vibrate([30,20,60]);
  await sleep(600);
  // 2) рядок із нагородами красиво біжить і зупиняється на призі
  rc.innerHTML=`<div class="w-full space-y-4 px-2" style="animation:stripIn .6s ease-out both"><h2 class="text-center font-black tracking-[.25em] uppercase text-sm" style="color:${MY}">${c[1]} ${t(c[2])}</h2>
@@ -161,18 +164,44 @@ async function runChest(c,p,im){
   if(performance.now()-t0<5400)requestAnimationFrame(lp);else res()};requestAnimationFrame(lp)});
  apply(it);reveal(it);
 }
+/* ЧАСТИНКИ НАГОРОДИ: canvas, адитивне змішування. Вибух іскор із центру + хвиля світла + повільні вогники знизу догори.
+   Усе — м'які світні точки (градієнти), без квадратів і чітких країв. Кількість росте з рідкістю. */
+function revFX(ov,col,rar){
+ if(!ov||ov.classList.contains("hidden")||!$("rcard"))return;
+ const W=ov.clientWidth||innerWidth,H=ov.clientHeight||innerHeight,dp=Math.min(2,devicePixelRatio||1),cv=document.createElement("canvas");
+ cv.width=W*dp;cv.height=H*dp;cv.style.cssText="position:absolute;inset:0;width:100%;height:100%;pointer-events:none";ov.insertBefore(cv,$("rcard"));
+ const g=cv.getContext("2d");g.scale(dp,dp);
+ const hx=c=>/^#[0-9a-f]{6}$/i.test(c)?c:/^#[0-9a-f]{3}$/i.test(c)?"#"+c[1]+c[1]+c[2]+c[2]+c[3]+c[3]:"#ffffff",h0=hx(col),pal=[h0,h0,"#ffffff",hx(MA)],P=[],cx0=W/2,cy0=H*.46;
+ const burst=n=>{for(let i=0;i<n;i++){const a=R()*6.283,s=80+R()*(240+rar*50);P.push({x:cx0,y:cy0,vx:Math.cos(a)*s,vy:Math.sin(a)*s-30,age:0,l:1.5+R()*1.5,z:2+R()*3.4,c:pal[R()*4|0],tw:R()*6,st:R()<.22,dr:.93+R()*.04,up:20})}};
+ const mote=()=>P.push({x:R()*W,y:H+8,vx:(R()-.5)*16,vy:-(22+R()*38),age:0,l:6+R()*4,z:1.2+R()*2.4,c:pal[R()*4|0],tw:R()*6,st:0,dr:1,up:0});
+ const t0=performance.now();let last=t0,fired=0;
+ const loop=now=>{if(!cv.isConnected||ov.classList.contains("hidden"))return;
+  const dt=Math.min(.05,(now-last)/1000),age=(now-t0)/1000;last=now;g.clearRect(0,0,W,H);g.globalCompositeOperation="lighter";
+  if(!fired){fired=1;burst(46+rar*22)}
+  if(age<9&&R()<dt*(10+rar*3))mote();
+  if(age<1.3){const k=age/1.3,rr=k*Math.max(W,H)*.6,gr=g.createRadialGradient(cx0,cy0,Math.max(0,rr-50),cx0,cy0,rr+50);   // хвиля світла: м'яке кільце без меж
+   gr.addColorStop(0,h0+"00");gr.addColorStop(.5,h0+Math.round((1-k)*80).toString(16).padStart(2,"0"));gr.addColorStop(1,h0+"00");g.fillStyle=gr;g.fillRect(0,0,W,H)}
+  const keep=[];
+  for(const p of P){p.age+=dt;const f=p.age/p.l;if(f>=1||p.y<-30)continue;
+   const k=Math.pow(p.dr,dt*60);p.vx*=k;p.vy=p.vy*k-p.up*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;
+   const al=Math.min(1,f*8)*(1-f)*(.65+.35*Math.sin(now/110+p.tw)),r=p.z*(p.st?5:4.5),gr=g.createRadialGradient(p.x,p.y,0,p.x,p.y,r);
+   gr.addColorStop(0,p.c+"ff");gr.addColorStop(.25,p.c+"aa");gr.addColorStop(1,p.c+"00");g.globalAlpha=Math.max(0,al);g.fillStyle=gr;g.beginPath();g.arc(p.x,p.y,r,0,6.283);g.fill();
+   if(p.st){const L=p.z*7*(1-f);g.strokeStyle=p.c;g.lineWidth=1;g.beginPath();g.moveTo(p.x-L,p.y);g.lineTo(p.x+L,p.y);g.moveTo(p.x,p.y-L);g.lineTo(p.x,p.y+L);g.stroke()}   // 4-променева іскра
+   keep.push(p)}
+  P.length=0;P.push(...keep);g.globalAlpha=1;requestAnimationFrame(loop)};
+ requestAnimationFrame(loop)}
 // Нагорода: м'яке розмите коло світла (без променів і чітких меж), картка падає з відскоком
 function reveal(it){
  const c=RAR[it.r],ov=$("rev"),isC=it.ty=="d"||it.ty=="t",rn=["bl","bg","av"].includes(it.ty)?RN[it.r][0]:["ЗВИЧАЙНИЙ|COMMON","РІДКІСНИЙ|RARE","ЕПІЧНИЙ|EPIC","ЛЕГЕНДАРНИЙ|LEGENDARY","МІФІЧНИЙ|MYTHIC"][it.r];
  ov.style.background="rgba(8,4,24,.55)";ov.style.backdropFilter="blur(6px)";ov.style.webkitBackdropFilter="blur(6px)";
- ov.innerHTML=`<div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse at 50% 46%,${c}66 0%,${c}22 30%,${MA}12 55%,transparent 80%);animation:glowIn 1.6s ease-out both,pulse-glow 5s 1.6s ease-in-out infinite"></div>${Array.from({length:16},()=>`<i class="ember" style="left:${R()*100}%;--dx:${(R()-.5)*90}px;width:${3+R()*4}px;height:${3+R()*4}px;background:${R()<.5?c:"#fff"};box-shadow:0 0 10px ${c};animation-duration:${5+R()*5}s;animation-delay:-${R()*6}s"></i>`).join("")}
+ ov.innerHTML=`<div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(circle 75vmax at 50% 46%,${c}55 0%,${c}1a 38%,${MA}0d 62%,rgba(0,0,0,0) 100%);animation:fadeBg 1.4s ease-out both,pulse-glow 5s 1.4s ease-in-out infinite"></div>
  <div id="rcard" class="relative px-6 space-y-3"><div class="text-[11px] font-black tracking-[.35em] uppercase" style="color:${c};animation:cardIn .6s .5s both">${t(rn)}</div>
   <div class="relative mx-auto flex items-center justify-center" style="width:160px;height:160px;animation:dropBounce .95s cubic-bezier(.3,1.2,.4,1) both"><span class="text-7xl" style="filter:drop-shadow(0 0 22px ${c})">${it.ic}</span></div>
   <div class="text-2xl font-black" style="color:${c};text-shadow:0 0 22px ${c}88;animation:cardIn .6s .7s both">${esc(lab(it))}</div>
   ${isC?`<div class="text-xs text-gray-300">${t("Купон збережено у вкладці «Нагороди»|Coupon saved in the Rewards tab")}</div>`:""}${["bl","bg","av"].includes(it.ty)?`<div class="text-xs text-gray-300">${t("Додано й уже доступне в магазині/профілі|Added — already available in the Shop/Profile")}</div>`:""}
   <div style="animation:cardIn .6s 1s both">${["bl","bg","av"].includes(it.ty)?`<button class="btn px-8 py-3 mt-2 mr-2" onclick="wearDrop('${it.ty}','${it.i??it.id}')">${t("Одягнути зараз|Equip now")}</button>`:""}<button class="btng px-10 py-3 mt-2" onclick="closeRev()">OK</button></div></div>`;
- ov.classList.replace("hidden","flex");sfx("reveal",()=>[0,4,7,12].slice(0,2+Math.min(2,it.r)).forEach((s,i)=>setTimeout(()=>tone(330*2**(s/12),.7,"triangle",.14),i*140)));
- const cc=$("rcard");setTimeout(()=>{fxShoot(cc,14+it.r*8,[c,"#fff",MA])},700);navigator.vibrate&&setTimeout(()=>navigator.vibrate([20,30,40]),700);
+ ov.classList.replace("hidden","flex");sfx("reveal",null,it.r);setTimeout(()=>sfx("land"),620);
+ const cc=$("rcard");setTimeout(()=>revFX(ov,c,it.r),450);navigator.vibrate&&setTimeout(()=>navigator.vibrate([20,30,40]),700);
 }
 /* ЕКОНОМІКА 💎 І 🏮 — вікно-пояснення для гравців: чому вони рідкісні, звідки беруться й що за них купити. Числа беруться з коду (RATE, LOOT). */
 function econInfo(){
