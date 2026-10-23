@@ -5,6 +5,7 @@
 <meta name="apple-mobile-web-app-title" content="INKAI"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0a090d">
 <title>INKAI by YYOKAI</title>
+<meta property="og:title" content="INKAI by YYOKAI"><meta property="og:description" content="Рубай йокаїв, збирай сундуки, вигравай тату в майстра YYOKAI"><meta property="og:image" content="Иконка3.PNG">   <!-- для красивого прев'ю посилання вкажи повну адресу https://твій-сайт/Иконка3.PNG -->
 <link rel="manifest" href="inkai-manifest.json"><link rel="icon" href="Иконка3.PNG"><link rel="apple-touch-icon" href="Иконка3.PNG">
 <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{inkDark:'#0a090d',inkCard:'#131118',inkBorder:'#272235',crimsonRed:'#ff2a5f',neonGold:'#ffb703',deepPurple:'#3b0764',cyberBlue:'#00f0ff'}}}}</script>
@@ -32,6 +33,7 @@ canvas{touch-action:none}
 html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .4s ease}body.rd{opacity:1}#splash{position:fixed;inset:0;z-index:120;overflow:hidden}
 @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @keyframes glowIn{from{opacity:0;transform:scale(.55)}to{opacity:1;transform:scale(1)}}
+@keyframes fadeBg{from{opacity:0}to{opacity:1}}
 @keyframes cardIn{from{opacity:0;transform:translateY(24px) scale(.85)}to{opacity:1;transform:none}}
 .shk{animation:shakeC .22s infinite}
 .dia{position:absolute;width:8px;height:8px;background:#a8854a;transform:rotate(45deg);left:-3.5px}
@@ -196,9 +198,11 @@ html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .4s 
 
 <!-- Порядок важливий. Усі файли — звичайні скрипти зі спільними глобальними змінними -->
 <script defer src="core.js"></script>
+<script defer src="audio.js"></script>
 <script defer src="social.js"></script>
 <script defer src="shop.js"></script>
 <script defer src="chests.js"></script>
 <script defer src="game.js"></script>
+<script defer src="meta.js"></script>
 <script>addEventListener("DOMContentLoaded",function(){boot()})</script>
 </body></html>
