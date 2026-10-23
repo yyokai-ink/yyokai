@@ -5,10 +5,20 @@
 <meta name="apple-mobile-web-app-title" content="INKAI"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0a090d">
 <title>INKAI by YYOKAI</title>
+<script>
+/* ЗАХИСТ ВІД «ЧОРНОГО ЕКРАНА»: помилка показується на екрані, сторінка з'являється за 3 с в будь-якому разі, застарілі/відсутні файли видно одразу.
+   При кожній заливці змінюй INK_BUILD тут І в першому рядку кожного .js (INKV.xxx="...") — тоді телефон не візьме старі файли з кешу. */
+window.INK_BUILD="20261023b";
+window.inkErr=function(m){var d=document.getElementById("inkerr");if(!d){d=document.createElement("div");d.id="inkerr";d.style.cssText="position:fixed;left:0;right:0;bottom:0;max-height:50%;overflow:auto;z-index:99999;background:#7a0010;color:#fff;font:12px/1.4 monospace;padding:10px;white-space:pre-wrap";(document.body||document.documentElement).appendChild(d)}d.textContent+=m+"\n"};
+addEventListener("error",function(e){window.inkErr("⚠ "+(e.message||"error")+" @ "+String(e.filename||"").split("/").pop()+":"+e.lineno)});
+addEventListener("unhandledrejection",function(e){window.inkErr("⚠ "+((e.reason&&e.reason.message)||e.reason))});
+setTimeout(function(){if(document.body)document.body.classList.add("rd")},3000);
+</script>
+<meta property="og:title" content="INKAI by YYOKAI"><meta property="og:description" content="Рубай йокаїв, збирай сундуки, вигравай тату в майстра YYOKAI"><meta property="og:image" content="Иконка3.PNG">   <!-- для красивого прев'ю посилання вкажи повну адресу https://твій-сайт/Иконка3.PNG -->
 <link rel="manifest" href="inkai-manifest.json"><link rel="icon" href="Иконка3.PNG"><link rel="apple-touch-icon" href="Иконка3.PNG">
-<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{inkDark:'#0a090d',inkCard:'#131118',inkBorder:'#272235',crimsonRed:'#ff2a5f',neonGold:'#ffb703',deepPurple:'#3b0764',cyberBlue:'#00f0ff'}}}}</script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lilita+One&display=swap" rel="stylesheet">
 <style type="text/tailwindcss">
 .card{@apply bg-inkCard/85 backdrop-blur-sm border border-inkBorder rounded-2xl p-4}
@@ -29,9 +39,10 @@ canvas{touch-action:none}
 @keyframes rise{from{transform:translateY(0);opacity:0}15%{opacity:1}to{transform:translateY(-75vh) translateX(var(--dx));opacity:0}}
 @keyframes drift{from{transform:translate3d(var(--x0),108vh,0) rotate(0)}to{transform:translate3d(var(--x1),-20vh,0) rotate(var(--rt))}}
 .glow{animation:pulse-glow 3s infinite}
-html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .8s ease}body.rd{opacity:1}
+html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .4s ease}body.rd{opacity:1}#splash{position:fixed;inset:0;z-index:120;overflow:hidden}
 @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @keyframes glowIn{from{opacity:0;transform:scale(.55)}to{opacity:1;transform:scale(1)}}
+@keyframes fadeBg{from{opacity:0}to{opacity:1}}
 @keyframes cardIn{from{opacity:0;transform:translateY(24px) scale(.85)}to{opacity:1;transform:none}}
 .shk{animation:shakeC .22s infinite}
 .dia{position:absolute;width:8px;height:8px;background:#a8854a;transform:rotate(45deg);left:-3.5px}
@@ -74,7 +85,7 @@ html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .8s 
 
 <!-- ═════ ЗАСТАВКА: після завантаження лого стоїть по центру між верхом і смужками ═════ -->
 <div id="splash" class="fixed inset-0 z-[120] overflow-hidden transition-opacity duration-700" style="background:linear-gradient(135deg,#efe3cf,#e2d2b8);font-family:Georgia,serif">
- <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover"><source src="bar2.mp4" type="video/mp4"></video>
+ 
  <div class="absolute inset-0" style="background:linear-gradient(90deg,rgba(236,222,200,.95) 0,rgba(236,222,200,.72) 45%,rgba(236,222,200,0) 80%)"></div>
  <img src="hero.png" onerror="this.remove()" class="absolute bottom-0 right-[-10%] h-[88%] w-auto max-w-none" style="filter:drop-shadow(0 0 30px rgba(0,0,0,.35))">
  <div class="absolute left-5 top-[5%] bottom-[5%] w-px" style="background:rgba(168,133,74,.55)"><div id="spV" class="absolute left-0 top-0 w-px" style="height:0;background:#8b1a2b;box-shadow:0 0 6px #8b1a2b"></div><i class="dia" style="top:-4px"></i><i class="dia" style="bottom:-4px"></i></div>
@@ -128,7 +139,7 @@ html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .8s 
 
  <!-- ОКРЕМИЙ ЕКРАН ВХОДУ: шапка і меню приховані, у гру пускає лише після входу -->
  <section id="view-auth" class="view hidden fixed inset-0 z-[100] overflow-y-auto bg-inkDark">
-  <video autoplay muted loop playsinline class="fixed inset-0 w-full h-full object-cover opacity-30 pointer-events-none"><source src="video/auth_bg.mp4" type="video/mp4"></video>
+  <video id="authVid" muted loop playsinline preload="none" class="fixed inset-0 w-full h-full object-cover opacity-30 pointer-events-none"><source src="video/auth_bg.mp4" type="video/mp4"></video>
   <div class="fixed inset-0 pointer-events-none" style="background:radial-gradient(ellipse at 50% 0%,rgba(255,42,95,.22),transparent 60%),radial-gradient(ellipse at 50% 100%,rgba(59,7,100,.5),transparent 60%),linear-gradient(180deg,rgba(10,9,13,.4),rgba(10,9,13,.85))"></div>
   <div id="ambA" class="amb"></div>
   <button onclick="toggleLanguage()" id="langBtn2" class="fixed right-3 z-[101] px-3 py-1.5 rounded-xl bg-black/50 border border-white/20 text-xs font-bold" style="top:calc(env(safe-area-inset-top,0px) + 10px)">🇺🇦</button>
@@ -195,9 +206,15 @@ html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .8s 
 </nav>
 
 <!-- Порядок важливий. Усі файли — звичайні скрипти зі спільними глобальними змінними -->
-<script src="core.js"></script>
-<script src="social.js"></script>
-<script src="shop.js"></script>
-<script src="chests.js"></script>
-<script src="game.js"></script>
-<script>boot()</sc
+<script defer src="core.js?v=20261023b"></script>
+<script defer src="audio.js?v=20261023b"></script>
+<script defer src="social.js?v=20261023b"></script>
+<script defer src="shop.js?v=20261023b"></script>
+<script defer src="chests.js?v=20261023b"></script>
+<script defer src="game.js?v=20261023b"></script>
+<script defer src="meta.js?v=20261023b"></script>
+<script>addEventListener("DOMContentLoaded",function(){
+ var bad=["core","audio","social","shop","chests","game","meta"].filter(function(k){return !(window.INKV&&INKV[k]===INK_BUILD)});
+ if(bad.length)inkErr("⚠ Застарілі або відсутні файли / outdated or missing files: "+bad.join(", ")+".\nЗалий їх на сайт і оновити сторінку (Ctrl+Shift+R) / upload them and hard-refresh.");
+ try{boot()}catch(e){inkErr("⚠ boot: "+e.message)}})</script>
+</body></html>
