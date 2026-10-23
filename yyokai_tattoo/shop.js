@@ -3,7 +3,8 @@
 
 const YK=["🦊","👹","👺","🐸","💀","🐉"];
 const RATE={bossJd:.05,adJd:.09,roundLn:.03,adLn:.07};   // 🔧 шанси рідких валют (показуються гравцям у вікні «Чому вони рідкісні»)
-const YIMG={};[["🦊","fox"],["👹","oni"],["👺","tengu"],["🐸","kappa"],["💀","skull"],["🐉","dragon"],["📜","scroll"]].forEach(([e,n])=>{const i=new Image();i.src="img/yokai/"+n+".png";YIMG[e]=i});
+const YIMG={};[["🦊","fox"],["👹","oni"],["👺","tengu"],["🐸","kappa"],["💀","skull"],["🐉","dragon"]].forEach(([e,n])=>{const i=new Image();i.src="img/yokai/"+n+".png";YIMG[e]=i});
+{const i=new Image();i.src="img/yokai/"+BOMB.img+".png";YIMG[BOMB.e]=i}   // спрайт «бомби» береться з теми BOMB (core.js)
 const BGI={},bgImg=i=>BGI[i]||(BGI[i]=Object.assign(new Image(),{src:"img/bg/"+i+".png"})),rdy=i=>i&&i.complete&&i.naturalWidth;
 const RN=[["Звичайний|Common","#9ca3af"],["Рідкісний|Rare","#3b82f6"],["Епічний|Epic","#a855f7"],["Легендарний|Legendary","#ffb703"],["Міфічний|Mythic","#ff2a5f"]];
 const RC=["mon","mon","mon","jd","ln"],CI={mon:ico("coin","文"),jd:ico("jade","💎"),ln:ico("lantern","🏮")};   // свої PNG: img/ico/coin|jade|lantern.png
@@ -132,14 +133,14 @@ const UP=[
  ["bfast","📯","Поклик боса|Boss call","Бос з'являється на 1 розріз раніше кожні 2 рівні|Boss appears 1 cut sooner every 2 levels",3500,2,8],
  ["ice","🧊","Тонкий лід|Thin ice","−1 свайп для розбиття льоду кожні 4 рівні|−1 swipe to break ice every 4 levels",3500,2,8],
  ["mcb","✂️","Майстер мульти-свайпу|Multi-swipe master","+10% монет за 3+ йокаїв одним свайпом|+10% coins for 3+ yokai in one swipe",1800,2,10],
- ["scrl","📜","Обережність|Caution","−4% свитків у потоці|−4% scrolls in the flow",2200,2,10],
+ ["scrl",BOMB.e,"Обережність|Caution","−4% {bomb:gen} у потоці|−4% {bomb:many} in the flow",2200,2,10],
  ["soul","⛩️","Збирач душ|Soul collector","+1 душа за боса|+1 soul per boss",2800,2,10],
  ["lan","🏮","Нюх на ліхтарі|Lantern nose","+0.2% шанс 🏮 за раунд|+0.2% chance of 🏮 per round",6000,2,8],
  ["hit","🎯","Широке лезо|Wide blade","+3% радіус ураження|+3% hit radius",1000,2,12],
  ["kmul","🗡","Гартування катани|Blade tempering","+5% до коефіцієнта катани|+5% blade multiplier",4000,2,10],
  ["spawn","🌪","Потік йокаїв|Yokai flow","+4% частіше з'являються|+4% faster spawn",1200,2,12],
  ["slow","🕰","Час Тенгу|Tengu time","+2% повільніше падіння|+2% slower fall",1400,2,12],
- ["start","🚀","Швидкий старт|Fast start","+30 очок на старті|+30 starting points",1000,2,12],
+ ["start","🚀","Швидкий старт|Fast start","+5 монет на старті|+5 starting coins",1000,2,12],
  ["end","🎁","Фінальний бонус|End bonus","+3% монет за раунд|+3% round coins",1200,2,12],
  ["duo","👥","Бойове братерство|Brotherhood","+10% монет у дуо-режимі|+10% coins in duo mode",2500,2,10],
  ["xpb","🎓","Досвід самурая|Samurai experience","+4% XP за раунд|+4% XP per round",2000,2,12],
@@ -153,7 +154,7 @@ const mile=l=>1+.25*[5,10,15,20].filter(x=>l>=x).length;   // віхи рівн�
 const IDLE_CAP=4*3600;     // пасивний дохід — не більше 4 годин на добу (зокрема й офлайн)
 function idleCredit(sec){const d=today();if(!S.idl||S.idl.d!==d)S.idl={d,s:0};const use=Math.max(0,Math.min(sec,IDLE_CAP-S.idl.s));S.idl.s+=use;return use}
 function idleLeft(){const l=Math.max(0,IDLE_CAP-(S.idl&&S.idl.d===today()?S.idl.s:0));return Math.floor(l/3600)+":"+String(Math.floor(l%3600/60)).padStart(2,"0")}
-const idleRate=()=>UP.filter(u=>u[7]).reduce((s,u)=>s+U(u[0])*u[7]*mile(U(u[0])),0);
+const idleRate=()=>(1+.25*(S.pr||0))*UP.filter(u=>u[7]).reduce((s,u)=>s+U(u[0])*u[7]*mile(U(u[0])),0);
 
 /* БУСТЕРИ: [id, іконка, назва, ціна, кількість, ad]. Зберігаються в S.c, витрачаються на старті раунду. Ціна ×2 за кожну покупку за день. ad=1 — лише за рекламу */
 const BS=[
@@ -166,7 +167,7 @@ const BS=[
  ["br","🌈","Райдужний міст: йокаї злітають аркою|Rainbow bridge: yokai rise in an arc",1800,1],
  ["sl0","⏳","Старт зі сповільненням часу 8 с|Start with 8s slow time",1200,1],
  ["bh0","🕳","Старт з чорною дірою 6 с|Start with a black hole 6s",2200,1],
- ["st","🚀","+300 очок на старті|+300 points at start",900,1],
+ ["st","🚀","+30 монет на старті|+30 coins at start",900,1],
  ["cmb","🔗","Старт з комбо ×10|Start with ×10 combo",1100,1],
  ["bos","👑","Бос уже після 4 розрізів|Boss after just 4 cuts",1300,1],
  ["wide","🎯","Радіус леза ×1.5 на раунд|Blade radius ×1.5 for a round",1000,1],
@@ -180,7 +181,7 @@ const BS=[
  ["mx5","💫","×5 монет у раунді|×5 coins this round",0,1,0,"edo"],
  ["hrt","💗","+3 життя в раунді|+3 lives this round",0,1,0,"sengoku"],
  ["fz15","🔥","Старт з 15 с шаленства|Start with 15s frenzy",0,1,0,"showa"],
- ["nsc","🚫","Раунд без свитків|A round without scrolls",0,1,0,"kitsune"],
+ ["nsc","🚫","Раунд без {bomb:gen}|A round without {bomb:many}",0,1,0,"kitsune"],
  ["bhf","🗡","Усі боси мають удвічі менше HP|All bosses have half HP",0,1,0,"ryujin"],
  ["sc2","✨","Усі очки ×2 на раунд|All score ×2 this round",0,1,0,"cosmic"],
  ["lck","🍀","Удача: +20% до сундука-знахідки|Luck: +20% bonus chest chance",0,1,0,"imperial"]
