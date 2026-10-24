@@ -1,4 +1,4 @@
-window.INKV=window.INKV||{};INKV.audio="20261023b";
+window.INKV=window.INKV||{};INKV.audio="20261023c";
 /* INKAI audio.js — звуковий рушій. Підключається ПІСЛЯ core.js.
    • Музика: лобі (спокійна, koto/дрон) і бій (тайко + шамісен) — ДВА різних треки. Є файли music/menu.mp3, music/battle.mp3 → грають вони;
      немає файлів → музику «грає» сам браузер (WebAudio), тож тиші не буває.
