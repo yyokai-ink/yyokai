@@ -1,4 +1,4 @@
-window.INKV=window.INKV||{};INKV.game="20261023b";
+window.INKV=window.INKV||{};INKV.game="20261023c";
 /* INKAI game.js — головний екран, раунд (canvas), дуо зверху/знизу, боси, душі 1–3, бустери старту
    ДУО: екран ділиться ГОРИЗОНТАЛЬНО. Верхній гравець: йокаї летять від верхнього краю й падають угору, HUD вгорі.
    Нижній — як у соло. Усе моделюється в локальних координатах поля (flip = віддзеркалення по вертикалі). */
@@ -41,14 +41,15 @@ function rPlay(){
 const ambient=(w,h)=>Array.from({length:6},()=>({y:YK[R()*6|0],r:30+R()*40,x:R()*w,py:R()*h,vx:(R()-.5)*14,vy:-(6+R()*14),rot:R()*6,vr:(R()-.5)*.4}));
 const mkF=(oy,h,fl)=>({oy,h,fl,w:W,fx:[],e:[],hv:[],p:[],x:[],trs:[],sq:[],bs:[],zm:1,get sc(){return Math.floor(this.cn)},set sc(v){this.cn=v},ex:0,cb:0,cT:0,cuts:0,nb:12,bo:null,sp:1,fz:0,cr:[],fp:0,sl:0,st:0,fr:0,sh:0,fa:0,ts:1,kills:0,
  ms:0,sk:0,mx:3+(U("time")/5|0)+(S.c.plus>0?1:0),dead:0,why:"",bl:[],dr:[],bc:0,dbl:0,cn:5*U("start"),rm:0});
-function startRound(m){
+function startRound(m,opt){
  if(G.on)return;
  $("gm").classList.remove("hidden");$("res").classList.replace("flex","hidden");rs();
  const n=m||1;
  G={on:1,m:n,el:0,fin:0,mb:1,rv:0,f:n==2?[mkF(0,H/2,1),mkF(H/2,H/2,0)]:[mkF(0,H,0)],l:performance.now()};
- const nw=performance.now(),F=fn=>G.f.forEach(fn),c=S.c;
+ const nw=performance.now(),F=fn=>G.f.forEach(fn),c=(opt&&opt.duel)?{}:S.c;
+ if(opt&&opt.duel){G.duel=opt.duel;G.rs=mulberry32(opt.duel.seed);G.tut=0}      // дуель: спільне seed, жодних бустерів
  // бустери старту (зберігаються в S.c до використання)
- if(n==1&&!S.tut){G.tut=1;G.bhf=1;F(f=>{f.nb=7})}   // навчальний раунд: без програшу, бос після 7 розрізів
+ if(n==1&&!S.tut&&!G.duel){G.tut=1;G.bhf=1;F(f=>{f.nb=7})}   // навчальний раунд: без програшу, бос після 7 розрізів
  if(c.plus>0)c.plus--;
  if(c.fz>0){c.fz--;F(f=>f.fr=nw+8000)}
  if(c.mb>0){c.mb--;G.mb=1.5}
@@ -74,7 +75,7 @@ function startRound(m){
  if(c.br>0){c.br--;F(f=>{for(let i=0;i<8;i++)setTimeout(()=>{if(!G.on||f.dead)return;const x=f.w*(.1+.8*i/7),h=f.h*(.3+.25*Math.sin(Math.PI*i/7)),r=38;f.e.push({y:YK[i%6],sc:0,r,x,py:f.h+r,vx:0,vy:-Math.sqrt(2*GR(f)*h),rot:0,vr:0,cut:0})},i*180)})}
  Object.keys(BOSS).forEach(k=>bimg(k));track("round_start",{mode:n,blade:S.blade});save();snd(300,.2);setMusic("battle");adTick();requestAnimationFrame(frame);
 }
-function quitRound(){if(G.on){if(G.tut){S.tut=1;save()}addPlay(G.el);track("quit_round",{sec:Math.round(G.el)})}G.on=0;ptr={};setMusic("menu");$("gm").classList.add("hidden");adTick();rend()}
+function quitRound(){if(G.on&&G.duel){G.dend=1;duelEnd();return}if(G.on){if(G.tut){S.tut=1;save()}addPlay(G.el);track("quit_round",{sec:Math.round(G.el)})}G.on=0;ptr={};setMusic("menu");$("gm").classList.add("hidden");adTick();rend()}
 function sp(c,y,r){
  const i=YIMG[y];if(FLP)c.scale(1,-1);
  if(rdy(i)){const k=Math.min(2*r/i.naturalWidth,2*r/i.naturalHeight)*1.15,w=i.naturalWidth*k,h=i.naturalHeight*k;c.drawImage(i,-w/2,-h/2,w,h)}
@@ -104,8 +105,8 @@ function splat(f,x,y,c,e,ang){if(f.p.length>200)return;const g=GR(f),ex=e?e.vx*.
 function burst(f,x,y,n,c){if(f.p.length>140)return;for(let i=0;i<n;i++){const a=R()*6.283,s=120+R()*380;f.p.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:1,c:c||(R()<.5?"#ffb703":"#ff2a5f")})}}
 const pop=(f,x,y,s,big)=>f.x.push({x,y,s,l:1,big});
 function spawn(f,st,fs){
- const bt=f.bo?f.bo.ty:"",sc=fs||(bt=="nos"||G.nsc?false:R()<Math.min(.2,.06+G.el/800)*(1-.04*U("scrl"))),sw=bt=="swm",r=sw?20+R()*10:34+R()*16,x=f.w*(.15+R()*.7),h=f.h*(.5+R()*.25),g=GR(f);
- const vx=(f.w/2-x)*(.15+R()*.3)*(sw?2:1),vy=-Math.sqrt(2*g*h)*(st?1.1:1),vr=(R()-.5)*4,y=sc?BOMB.e:YK[R()*6|0],dg=YK[R()*6|0];
+ const bt=f.bo?f.bo.ty:"",sc=fs||(bt=="nos"||G.nsc?false:RS()<Math.min(.2,.06+G.el/800)*(1-.04*U("scrl"))),sw=bt=="swm",r=sw?20+RS()*10:34+RS()*16,x=f.w*(.15+RS()*.7),h=f.h*(.5+RS()*.25),g=GR(f);
+ const vx=(f.w/2-x)*(.15+RS()*.3)*(sw?2:1),vy=-Math.sqrt(2*g*h)*(st?1.1:1),vr=(RS()-.5)*4,y=sc?BOMB.e:YK[RS()*6|0],dg=YK[RS()*6|0];
  f.e.push({y,dg,sc,r,x,py:f.h+r,vx,vy,rot:0,vr,cut:0});
  if(bt=="mir")f.e.push({y,dg,sc,r,x:f.w-x,py:f.h+r,vx:-vx,vy,rot:0,vr:-vr,cut:0});     // дзеркальна пара
 }
@@ -117,7 +118,8 @@ function score(f,base,now){return 0;   // ЗАЛИШЕНО ПОРОЖНІМ: о�
  const p=Math.round(base*m);f.sc+=p;return p;     // ex = очки, подвоєні бустером ×2 монет
 }
 /* МОНЕТИ: 1 文 за йокая, 10 за боса, 2×N за N йокаїв одним свайпом (3→+6, 4→+8). Далі множать катана, покращення, комбо й бустери */
-function coinGain(f,base,now){
+function coinGain(f,base,now,raw){f.dp=(f.dp||0)+(raw==null?base:raw);   // dp = «чисті очки» без множників — за ними рахується дуель
+
  const b=BL[S.blade],bt=f.bo?f.bo.ty:"";
  let m=b.cm*(1+.25*(S.pr||0))*(1+.05*U("kmul"))*(1+.1*U("coin"))*(1+Math.min(f.cb,30)*(.01+.003*U("combo")))*(now<f.fr?2:1)*(now<f.sl?2:1)*(now<f.st?1.5:1)*(G.sc2?2:1);
  if(bt=="rch")m*=3;else if(bt=="nos")m*=1.5;
@@ -130,11 +132,11 @@ function boom(f,x,y){if(f.p.length>260)return;      // свиток вибуха
  for(let i=0;i<30;i++){const a=R()*6.283,s=160+R()*520;f.p.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:1,c:["#ffb703","#ff4500","#fff3b0","#ff2a5f"][R()*4|0],s:5+R()*9,sh:i%3?"f":"s",g:140,rot:R()*6,vr:(R()-.5)*10})}
  for(let i=0;i<24;i++){const a=i/24*6.283;f.p.push({x,y,vx:Math.cos(a)*620,vy:Math.sin(a)*620,l:.55,c:"#fff3b0",s:4,sh:"o",g:0,rot:0,vr:0})}
  f.sh=Math.max(f.sh,22);f.fa=.45}
-function die(f,why){
+function die(f,why){if(G.duel)return;
  f.dead=1;f.why=why;f.e=[];f.bo=null;f.fz=0;
  if(G.f.every(x=>x.dead)&&!G.fin){G.fin=1;setTimeout(overScreen,why=="sk"?1000:600)}
 }
-function missed(f,x){const bt=f.bo?f.bo.ty:"";if(bt=="hea"){f.bo.hp=Math.min(f.bo.mh,f.bo.hp+1);pop(f,f.bx,f.by,"💚 +1",1)}if(bt=="vmp"){f.cn=Math.max(0,f.cn-5);pop(f,f.w/2,f.h*.5,"🧛 −5",1)}f.ms++;if(R()>=.05*U("keep"))f.cb=0;snd(160,.2,.15);pop(f,Math.max(40,Math.min(f.w-40,x)),f.h-70,"✖ "+f.ms+"/"+f.mx,1);f.sh=6;navigator.vibrate&&navigator.vibrate(30);if(G.tut&&f.ms>=f.mx)f.ms=f.mx-1;else if(f.ms>=f.mx)die(f,"ms")}
+function missed(f,x){const bt=f.bo?f.bo.ty:"";if(bt=="hea"){f.bo.hp=Math.min(f.bo.mh,f.bo.hp+1);pop(f,f.bx,f.by,"💚 +1",1)}if(bt=="vmp"){f.cn=Math.max(0,f.cn-5);pop(f,f.w/2,f.h*.5,"🧛 −5",1)}f.ms++;if(R()>=.05*U("keep"))f.cb=0;snd(160,.2,.15);pop(f,Math.max(40,Math.min(f.w-40,x)),f.h-70,"✖ "+f.ms+"/"+f.mx,1);f.sh=6;navigator.vibrate&&navigator.vibrate(30);if((G.tut||G.duel)&&f.ms>=f.mx)f.ms=f.mx-1;else if(f.ms>=f.mx)die(f,"ms")}
 function bloodAdd(f,x,y){const s=f.sk,n=s==1?1:s==2?3:6;
  for(let k=0;k<n;k++){const bx=k?R()*f.w:x,by=k?R()*f.h:y,r=f.w*(s==1?.3:.26)*(.6+R()*.6);
   f.bl.push({x:bx,y:by,a:.34,q:Array.from({length:6},()=>[(R()-.5)*r*1.3,(R()-.5)*r*1.3,r*(.25+R()*.4)])});
@@ -143,11 +145,11 @@ function hitScroll(f,e,ang){
  e.cut=1;f.cb=0;f.sk++;f.sh=14;f.fa=.3;burst(f,e.x,e.py,18,BOMB.col);boom(f,e.x,e.py);f.fx.push({x:e.x,y:e.py,a:ang,l:1});
  bloodAdd(f,e.x,e.py);sfx("bomb");navigator.vibrate&&navigator.vibrate([40,30,60]);
  pop(f,e.x,e.py,BOMB.e+" "+f.sk+"/3",1);
- if(f.sk>=3){if(G.tut)f.sk=2;else die(f,"sk")}
+ if(G.duel)f.dp=Math.max(0,Math.floor((f.dp||0)*.95));if(f.sk>=3){if(G.tut||G.duel)f.sk=2;else die(f,"sk")}
 }
 function multi(f,n,now,e){      // 3+ йокаїв одним свайпом — бонус і напис
  const nm=[,,,t("ТРІЙНИЙ!|TRIPLE!"),t("4× КОМБО!|4× COMBO!"),t("5× МЕГА!|5× MEGA!")][Math.min(n,5)]||n+"× "+t("ШАЛЕНСТВО!|FRENZY!"),bonus=[0,0,0,40,90,160][Math.min(n,5)]*(n>5?n-4:1),p=score(f,bonus,now);
- const cg=coinGain(f,2*n*(1+.1*U("mcb")),now);pop(f,e.x,e.py-34,nm+" +"+cg+" 文",1);sfx("combo",null,n);burst(f,e.x,e.py,14+n*3,"#ffd24a");f.cb+=1;f.sh=Math.max(f.sh,8+n);navigator.vibrate&&navigator.vibrate([20,20,40])}
+ const cg=coinGain(f,2*n*(1+.1*U("mcb")),now,2*n);pop(f,e.x,e.py-34,nm+" +"+cg+" 文",1);sfx("combo",null,n);burst(f,e.x,e.py,14+n*3,"#ffd24a");f.cb+=1;f.sh=Math.max(f.sh,8+n);navigator.vibrate&&navigator.vibrate([20,20,40])}
 function cut(f,e,ang,now){
  if(e.sc)return hitScroll(f,e,ang);
  e.cut=1;f.fx.push({x:e.x,y:e.py,a:ang,l:1});
@@ -185,7 +187,7 @@ const BOSS={
 };
 const BCOL={},BNAME={};for(const k in BOSS){BCOL[k]=BOSS[k][1];BNAME[k]=BOSS[k][0]}
 function mkBoss(f,now,force){
- const ks=Object.keys(BOSS),ty=force||(G.tut?"gld":ks[R()*ks.length|0]),B=BOSS[ty];
+ const ks=Object.keys(BOSS),ty=force||(G.tut?"gld":ks[RS()*ks.length|0]),B=BOSS[ty];
  f.bo={y:YK[R()*6|0],ty,hp:G.bhf?Math.ceil(B[2]/2):B[2],mh:G.bhf?Math.ceil(B[2]/2):B[2],t:0,ap:0,rg:0,hist:[],hit:0,last:0,r0:Math.min(f.w,f.h)*.14,r:Math.min(f.w,f.h)*.14,z:1,tl:5+.3*U("bt"),nf:now+9000,ab:0,ns:now+1500,tp:0,tx:f.w/2,ty2:f.h*.4};
  sfx("bossin");f.bx=f.w/2;f.by=f.h*.4;track("boss_spawn",{boss:ty});pop(f,f.w/2,f.h*.3,"BOSS!",1);f.ban={s:t(B[0]),d:t(B[3])+" · "+t("5 с на комбо!|5 s for the combo!"),l:1};f.fa=.4;snd(120,.4,.2);
  if(ty=="frz")frz(f);if(ty=="slo")f.sl=now+7000;if(ty=="sto")f.st=now+8000;if(ty=="gld")f.fr=Math.max(f.fr,now+9000);
@@ -277,7 +279,7 @@ cv.addEventListener("pointermove",e=>{
   if(now-(p.bh||0)>=120&&p.sl>=b.r*1.1){p.sl=0;p.bh=now;
    b.last=now;if(b.ty=="cmb"&&f.cb<3){f.cb++;f.cT=now;pop(f,f.bx,f.by,"COMBO "+f.cb+"/3");p.x=x;p.y=y;return}f.fx.push({x:f.bx,y:f.by,a:ang,l:1});b.hp-=R()<.05*U("boss")?2:1;b.hit=1;f.cb++;f.cT=now;f.sh=8;burst(f,f.bx,f.by,10,"#fff");sfx("bosshit");{const hg=coinGain(f,1,now);pop(f,f.bx+(R()-.5)*70,f.by+(R()-.5)*50,"+"+hg)}
    if(b.hp<=0){
-    const pt=score(f,300*(1+.1*U("bossr"))+(b.ab||0)*50+Math.round(Math.max(0,b.tl)*40),now);const bcg=coinGain(f,(10+(b.ab||0))*(1+.08*U("bcoin")+.1*U("bossr")),now);pop(f,f.bx,f.by,"+"+Math.round(bcg)+" 文 👑",1);burst(f,f.bx,f.by,50);bossBurst(f,b);sfx("bossdie");track("boss_kill",{boss:b.ty,sec:Math.round(b.t)});
+    const pt=score(f,300*(1+.1*U("bossr"))+(b.ab||0)*50+Math.round(Math.max(0,b.tl)*40),now);const bcg=coinGain(f,(10+(b.ab||0))*(1+.08*U("bcoin")+.1*U("bossr")),now,10+(b.ab||0));pop(f,f.bx,f.by,"+"+Math.round(bcg)+" 文 👑",1);burst(f,f.bx,f.by,50);bossBurst(f,b);sfx("bossdie");track("boss_kill",{boss:b.ty,sec:Math.round(b.t)});
     f.kills++;S.kills++;S.bossWins++;bstHit(f,b.ty);S.souls+=5+U("soul");
     if(R()<RATE.bossJd*(curEvent()?2:1)){S.jd++;pop(f,f.bx,f.by-40,"+1 💎",1)}         // 💎 — головна нагорода за боса
     save();f.bo=null;f.fz=0;f.nb=f.cuts+14-(U("bfast")/2|0);
@@ -381,7 +383,7 @@ function upd(f,raw,now){
  drawBG(f.w,h);
  f.sq=f.sq.filter(q=>(q.l-=dt*.45)>0);for(const q of f.sq){cx.globalAlpha=Math.min(.55,q.l*.6);cx.fillStyle=q.c;cx.beginPath();cx.arc(q.x,q.y,q.r,0,6.3);cx.fill();for(const d of q.d){cx.beginPath();cx.arc(q.x+d[0],q.y+d[1],d[2],0,6.3);cx.fill()}}cx.globalAlpha=1;
  f.sp-=dt;
- if(f.sp<=0&&!f.dead&&!f.fz){const bt=b?b.ty:"",n=Math.min(3,1+(R()*(2+G.el/60)|0))+(bt=="swm"?3:bt=="rch"?1:0);for(let i=0;i<n;i++)setTimeout(()=>G.on&&!f.dead&&spawn(f,storm),i*240);f.sp=(1.5+R()*.9)/pace/(storm?1.6:1)/(slow?1.6:1)/(fren?1.3:1)/(1+.04*U("spawn"))}
+ if(f.sp<=0&&!f.dead&&!f.fz){const bt=b?b.ty:"",n=Math.min(3,1+(RS()*(2+G.el/60)|0))+(bt=="swm"?3:bt=="rch"?1:0);for(let i=0;i<n;i++)setTimeout(()=>G.on&&!f.dead&&spawn(f,storm),i*240);f.sp=(1.5+RS()*.9)/pace/(storm?1.6:1)/(slow?1.6:1)/(fren?1.3:1)/(1+.04*U("spawn"))}
  if(b&&b.ty=="frz"&&!f.fz&&now>b.nf)frz(f);
  if(b&&b.ty=="scr"&&now>b.ns){b.ns=now+1800;spawn(f,0,1)}
  if(b&&b.ty=="bh"&&f.bx!=null)for(const e of f.e){if(e.cut)continue;const dx=f.bx-e.x,dy=f.by-e.py,d=Math.hypot(dx,dy)||1;e.vx+=dx/d*1100*dt;e.vy+=dy/d*1100*dt;if(d<b.r*.8){e.cut=1;b.ab++;pop(f,f.bx,f.by-b.r,"🕳 ×"+b.ab);burst(f,f.bx,f.by,6,"#c4b5fd")}}
@@ -434,7 +436,7 @@ function upd(f,raw,now){
 function hud(f,now){
  const duo=G.m==2;cx.save();if(duo&&f.fl){cx.translate(W/2,H/2);cx.rotate(Math.PI);cx.translate(-W/2,-H/2)}   // дуо: лічильники біля центру, у верхнього — догори ногами
  const T=duo?H/2+8:f.oy+SAT+10,w=f.w,b=f.bo,fs=f.h<420?27:38,ls=f.h<420?15:19,slow=now<f.sl,fren=now<f.fr,storm=now<f.st;
- cx.fillStyle="#fff";cx.textAlign="center";cx.font=`900 ${fs}px system-ui`;cx.fillText(fmt(f.cn),w/2,T+44);cx.textAlign="left";if(DUEL&&!duo){cx.fillStyle=f.sc>=DUEL.sc?"#4ade80":"#ffd27a";cx.font="700 12px system-ui";cx.fillText("⚔ "+DUEL.n+": "+fmt(DUEL.sc),14,T+50)}cx.textAlign="center";
+ cx.fillStyle="#fff";cx.textAlign="center";cx.font=`900 ${fs}px system-ui`;cx.fillText(fmt(G.duel?(f.dp||0):f.cn),w/2,T+44);cx.textAlign="left";if(G.duel)duelHud(f,w,T);if(DUEL&&!duo){cx.fillStyle=f.sc>=DUEL.sc?"#4ade80":"#ffd27a";cx.font="700 12px system-ui";cx.fillText("⚔ "+DUEL.n+": "+fmt(DUEL.sc),14,T+50)}cx.textAlign="center";
  const ly=T+74;cx.font=`800 ${ls}px system-ui`;
  for(let i=0;i<f.mx;i++){cx.globalAlpha=i<f.ms?1:.3;cx.fillStyle=i<f.ms?"#ff2a5f":"#fff";rich(cx,"✖",w/2-14-(f.mx-1-i)*(ls+3),ly,ls)}
  for(let i=0;i<3;i++){cx.globalAlpha=i<f.sk?1:.3;rich(cx,BOMB.e,w/2+16+i*(ls+5),ly,ls)}
@@ -450,7 +452,7 @@ function hud(f,now){
  cx.restore();
  if(f.dead&&duo){cx.fillStyle="rgba(0,0,0,.5)";cx.fillRect(0,f.oy,W,f.h);cx.fillStyle="#ff2a5f";cx.textAlign="center";cx.font="900 32px system-ui";cx.fillText("K.O.",W/2,f.oy+f.h/2)}
 }
-function frame(now){if(!G.on)return;const raw=Math.min(.033,(now-G.l)/1000);G.l=now;if(!G.fin)G.el+=raw;G.f.forEach(f=>upd(f,raw,now));
+function frame(now){if(!G.on)return;const raw=Math.min(.033,(now-G.l)/1000);G.l=now;if(!G.fin)G.el+=raw;if(G.duel&&G.el>=DUEL_SEC&&G.on&&!G.dend){G.dend=1;duelEnd()}G.f.forEach(f=>upd(f,raw,now));
  if(G.m==2){cx.fillStyle="#ffb703";cx.shadowColor="#ff2a5f";cx.shadowBlur=10;cx.fillRect(0,H/2-1.5,W,3);cx.shadowBlur=0}
  requestAnimationFrame(frame)}
 
