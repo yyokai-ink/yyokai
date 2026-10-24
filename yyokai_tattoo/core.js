@@ -1,4 +1,4 @@
-window.INKV=window.INKV||{};INKV.core="20261023b";
+window.INKV=window.INKV||{};INKV.core="20261023c";
 /* INKAI core.js — спільне ядро: налаштування, стан, звук, навігація, заставка, реклама-стрілка */
 
 // ═══ 0. НАЛАШТУВАННЯ 🔧 ═══
@@ -105,7 +105,7 @@ if(new URLSearchParams(location.search).get("ref"))localStorage.ink_ref=refId;
 let DUEL=null;try{DUEL=JSON.parse(localStorage.ink_duel||"null")}catch(e){}
 const isReal=()=>FBOK&&user&&user.uid!="local_guest";
 const lvl=x=>1+Math.floor(Math.sqrt(x/300));
-const U=k=>S.up[k]||0;
+const U=k=>(typeof G!=="undefined"&&G.on&&G.duel)?0:(S.up[k]||0);   // у дуелі прокачка вимкнена — рівні умови для обох
 const playing=()=>typeof G!="undefined"&&G.on;
 const shogunNight=()=>{const d=new Date(),h=d.getHours(),z=CFG.shogun;return d.getDay()==z.day&&h>=z.from&&h<z.to};
 function addPlay(sec){if(!(sec>0))return;const d=new Date(),j=new Date(d.getFullYear(),0,1),w=d.getFullYear()+"-"+Math.ceil(((d-j)/864e5+j.getDay()+1)/7);   // час у грі: усього й по тижнях (для пушів «ми сумуємо»)
