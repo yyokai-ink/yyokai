@@ -1,4 +1,4 @@
-window.INKV=window.INKV||{};INKV.meta="20261023b";
+window.INKV=window.INKV||{};INKV.meta="20261023c";
 /* INKAI meta.js — рейтинг тиждень/місяць/міста, щоденна серія, бестіарій, переродження, івенти, дуель, навчання.
    Підключається ПІСЛЯ game.js. Використовує глобальні змінні решти файлів. */
 
@@ -35,7 +35,7 @@ function playExtras(){let h="";const ev=curEvent();
  if(ev)h+=`<div class="card text-center !border-crimsonRed/60 glow"><b class="text-crimsonRed">${ev[3]} ${t(ev[4])}</b><div class="text-[11px] text-gray-300">${t(ev[5])}</div></div>`;
  if(DUEL&&DUEL.sc>0)h+=`<div class="card text-center !border-neonGold/60"><b class="text-neonGold">⚔️ ${t("Дуель|Duel")}: ${esc(DUEL.n)} ${t("набрав|scored")} ${fmt(DUEL.sc)}</b><div class="text-[11px] text-gray-300">${t("Побий цей рахунок в одному соло-раунді — отримаєш бустер ×2 монет.|Beat this score in one solo round to win a ×2 coins boost.")}</div></div>`;
  if(!S.tut)h+=`<div class="card text-center !border-neonGold/60 glow"><b>🥷 ${t("Навчання за 1 хвилину — і перший сундук у подарунок|1-minute tutorial — and a free first chest")}</b></div>`;
- else h+=dailyCard();
+ else h+=dailyCard()+duelCard();
  return h}
 
 // ═══ НАВЧАННЯ: перший соло-раунд — без програшу: йокаї → свиток → бос → сундук ═══
@@ -74,6 +74,8 @@ function profExtras(){const n=Object.keys(BOSS).filter(k=>(S.bst||{})[k]>0).leng
 
 // ═══ РЕЙТИНГ: тиждень · місяць · міста · весь час (розіграш тату — за XP місяця) ═══
 let ratT="w";
+// місце поза ТОП-100: один запит-лічильник («скільки гравців мають більше за мене»)
+async function myRank(f,v){try{const r=await FB.getCountFromServer(FB.query(FB.collection(db,"public"),FB.where(f,">",v)));return r.data().count+1}catch(e){return null}}
 async function rRatingX(){
  const el=$("view-rating"),W=wkNum(),M=monNum(),me=isReal()?user.uid:"me",tabs=[["w","Тиждень|Week"],["m","Місяць|Month"],["c","Міста|Cities"],["a","Весь час|All time"]];
  const head=`<h2 class="text-xl font-black uppercase text-neonGold mb-3 text-center">⛩️ ${t("Книга Самураїв|Samurai Book")}</h2>${raffleCard()}<div class="grid grid-cols-4 gap-1.5 text-[11px] font-bold my-3">${tabs.map(([k,l])=>`<button onclick="ratT='${k}';rRatingX()" class="py-2 rounded-xl ${ratT==k?"bg-crimsonRed":"bg-inkCard border border-inkBorder"}">${t(l)}</button>`).join("")}</div>`;
@@ -82,13 +84,25 @@ async function rRatingX(){
  if(FBOK&&db){try{const f=ratT=="m"?"msc":ratT=="a"?"xp":"wsc",q=await FB.getDocs(FB.query(FB.collection(db,"public"),FB.orderBy(f,"desc"),FB.limit(ratT=="c"?300:100)));q.forEach(d=>L.push({id:d.id,...d.data()}))}catch(e){}}
  if(cur!="rating")return;
  const val=u=>ratT=="m"?(u.mk===M?u.mx||0:0):ratT=="a"?u.xp||0:(u.wk===W?u.wx||0:0);
+ const card=(big,sub,hl)=>`<div class="card !p-3 text-center ${hl?"!border-crimsonRed glow":""}"><div class="text-[10px] uppercase text-gray-400">${t("Твоє місце|Your place")}</div><div class="text-2xl font-black text-neonGold">${big}</div><div class="text-[11px] text-gray-300">${sub}</div></div>`;
+ // ── МІСТА ──
  if(ratT=="c"){const g={};L.filter(u=>u.wk===W&&u.city).forEach(u=>{const c=g[u.city]=g[u.city]||{n:u.city,v:0,p:0};c.v+=u.wx||0;c.p++});
-  const C=Object.values(g).sort((a,b)=>b.v-a.v).slice(0,15),mc=S.master&&S.master.city;
-  el.innerHTML=head+`<p class="text-[11px] text-gray-400 text-center">${t("Місто береться з обраного майстра. XP усіх гравців міста за тиждень складаються.|City comes from your chosen master. All players' weekly XP adds up.")}</p>`+(mc?"":`<button class="btn w-full" onclick="go('rewards')">🥷 ${t("Обери майстра, щоб грати за своє місто|Pick a master to play for your city")}</button>`)+
-  (C.length?C.map((c,i)=>`<div class="card !p-3 flex items-center justify-between ${c.n==mc?"!border-crimsonRed":i<3?"!border-neonGold/50":""}"><div class="flex items-center gap-3"><span class="font-black font-mono text-sm w-8 ${i==0?"text-neonGold":""}">#${i+1}</span><div><b class="text-xs">${i==0?"👑 ":""}${esc(c.n)}</b><div class="text-[10px] text-gray-400">${c.p} ${t("гравців|players")}</div></div></div><span class="font-mono text-xs text-neonGold">${fmt(c.v)} XP</span></div>`).join(""):`<p class="text-xs text-gray-500 text-center">—</p>`);return}
+  const all=Object.values(g).sort((a,b)=>b.v-a.v),mc=S.master&&S.master.city,ci=all.findIndex(c=>c.n==mc),row=(c,i)=>`<div class="card !p-3 flex items-center justify-between ${c.n==mc?"!border-crimsonRed":i<3?"!border-neonGold/50":""}"><div class="flex items-center gap-3"><span class="font-black font-mono text-sm w-10 ${i==0?"text-neonGold":""}">#${i+1}</span><div><b class="text-xs">${i==0?"👑 ":""}${esc(c.n)}</b><div class="text-[10px] text-gray-400">${c.p} ${t("гравців|players")}</div></div></div><span class="font-mono text-xs text-neonGold">${fmt(c.v)} XP</span></div>`;
+  const mine=!mc?`<button class="btn w-full" onclick="go('rewards')">🥷 ${t("Обери майстра, щоб грати за своє місто|Pick a master to play for your city")}</button>`:ci>=0?card("#"+(ci+1)+" · "+esc(mc),fmt(all[ci].v)+" XP · "+all[ci].p+" "+t("гравців|players"),1):card("—",esc(mc)+" · "+t("поки без очок цього тижня|no points this week"),0);
+  el.innerHTML=head+`<p class="text-[11px] text-gray-400 text-center">${t("Місто береться з обраного майстра. XP усіх гравців міста за тиждень складаються.|City comes from your chosen master. All players' weekly XP adds up.")}</p>`+mine+
+   (all.length?all.slice(0,100).map(row).join(""):`<p class="text-xs text-gray-500 text-center">—</p>`);return}
+ // ── ГРАВЦІ (тиждень / місяць / весь час) ──
  L=L.map(u=>({...u,v:val(u)})).filter(u=>u.v>0).sort((a,b)=>b.v-a.v).map(u=>u.id==me?{...u,av:S.av}:u);
  if(!isReal()&&ratT=="a")L.push({id:me,nick:S.nick||t("Ти|You"),av:S.av,xp:S.xp,v:S.xp,days:S.days});
- PL=L.slice(0,100);const mi=PL.findIndex(u=>u.id==me),mine=ratT=="m"?S.xm:ratT=="a"?S.xp:S.xw;
- el.innerHTML=head+`<div class="text-[11px] text-center text-gray-400 mb-2">${mi>=0?t("Твоє місце|Your place")+": #"+(mi+1):t("Твій результат|Your result")+": "+fmt(mine||0)+" XP · "+t("грай, щоб потрапити в ТОП|play to enter the TOP")}</div><div class="space-y-2">`+
- PL.map((u,i)=>`<button onclick="showPl(${i})" class="card !p-3 w-full flex items-center justify-between text-left ${i<5?"!border-neonGold/50":""} ${u.id==me?"!border-crimsonRed":""}"><div class="flex items-center gap-3"><span class="font-black font-mono text-sm w-8 ${i==0?"text-neonGold":i==1?"text-gray-300":i==2?"text-amber-600":""}">#${i+1}</span><div class="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center text-xl">${avHTML(u.av||"fox")}</div><div><b class="text-xs">${esc(u.nick||"?")}</b><div class="text-[10px] text-gray-400">Lv ${lvl(u.xp||0)}${u.city?" · "+esc(u.city):""}</div></div></div><span class="font-mono text-xs text-neonGold">${fmt(u.v)} XP</span></button>`).join("")+`</div>`}
+ PL=L.slice(0,100);
+ const mi=PL.findIndex(u=>u.id==me),mineV=ratT=="m"?(S.xmk===M?S.xm||0:0):ratT=="a"?S.xp||0:(S.xwk===W?S.xw||0:0),
+  key=ratT=="m"?M*1e9+(S.xm||0):ratT=="a"?(S.xp||0):W*1e9+(S.xw||0),fld=ratT=="m"?"msc":ratT=="a"?"xp":"wsc";
+ let summary;
+ if(!isReal())summary=`<div class="card !p-3 text-center text-xs text-gray-300">${t("Увійди через Google/Apple, щоб потрапити в рейтинг.|Sign in with Google/Apple to enter the rating.")}</div>`;
+ else if(mineV<=0)summary=card("—",t("Ще немає очок за цей період — зіграй раунд!|No points for this period yet — play a round!"),0);
+ else if(mi>=0)summary=card("#"+(mi+1),fmt(mineV)+" XP",1);
+ else{const rk=await myRank(fld,key);if(cur!="rating")return;
+  summary=card(rk?"#"+rk.toLocaleString("uk"):"> 100",fmt(mineV)+" XP"+(PL.length>=100?" · "+t("ТОП-100 від|TOP-100 from")+" "+fmt(PL[99].v)+" XP":""),1)}
+ el.innerHTML=head+summary+`<div class="space-y-2 mt-2">`+
+ PL.map((u,i)=>`<button onclick="showPl(${i})" class="card !p-3 w-full flex items-center justify-between text-left ${i<5?"!border-neonGold/50":""} ${u.id==me?"!border-crimsonRed":""}"><div class="flex items-center gap-3"><span class="font-black font-mono text-sm w-10 ${i==0?"text-neonGold":i==1?"text-gray-300":i==2?"text-amber-600":""}">#${i+1}</span><div class="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center text-xl">${avHTML(u.av||"fox")}</div><div><b class="text-xs">${esc(u.nick||"?")}</b><div class="text-[10px] text-gray-400">Lv ${lvl(u.xp||0)}${u.city?" · "+esc(u.city):""}</div></div></div><span class="font-mono text-xs text-neonGold">${fmt(u.v)} XP</span></button>`).join("")+`</div>`}
 RV.rating=()=>rRatingX();
