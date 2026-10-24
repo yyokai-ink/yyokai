@@ -8,7 +8,7 @@
 <script>
 /* ЗАХИСТ ВІД «ЧОРНОГО ЕКРАНА»: помилка показується на екрані, сторінка з'являється за 3 с в будь-якому разі, застарілі/відсутні файли видно одразу.
    При кожній заливці змінюй INK_BUILD тут І в першому рядку кожного .js (INKV.xxx="...") — тоді телефон не візьме старі файли з кешу. */
-window.INK_BUILD="20261023b";
+window.INK_BUILD="20261023c";
 window.inkErr=function(m){var d=document.getElementById("inkerr");if(!d){d=document.createElement("div");d.id="inkerr";d.style.cssText="position:fixed;left:0;right:0;bottom:0;max-height:50%;overflow:auto;z-index:99999;background:#7a0010;color:#fff;font:12px/1.4 monospace;padding:10px;white-space:pre-wrap";(document.body||document.documentElement).appendChild(d)}d.textContent+=m+"\n"};
 addEventListener("error",function(e){window.inkErr("⚠ "+(e.message||"error")+" @ "+String(e.filename||"").split("/").pop()+":"+e.lineno)});
 addEventListener("unhandledrejection",function(e){window.inkErr("⚠ "+((e.reason&&e.reason.message)||e.reason))});
@@ -206,15 +206,16 @@ html{background:#0a090d;overflow-x:hidden}body{opacity:0;transition:opacity .4s 
 </nav>
 
 <!-- Порядок важливий. Усі файли — звичайні скрипти зі спільними глобальними змінними -->
-<script defer src="core.js?v=20261023b"></script>
-<script defer src="audio.js?v=20261023b"></script>
-<script defer src="social.js?v=20261023b"></script>
-<script defer src="shop.js?v=20261023b"></script>
-<script defer src="chests.js?v=20261023b"></script>
-<script defer src="game.js?v=20261023b"></script>
-<script defer src="meta.js?v=20261023b"></script>
+<script defer src="core.js?v=20261023c"></script>
+<script defer src="audio.js?v=20261023c"></script>
+<script defer src="social.js?v=20261023c"></script>
+<script defer src="shop.js?v=20261023c"></script>
+<script defer src="chests.js?v=20261023c"></script>
+<script defer src="game.js?v=20261023c"></script>
+<script defer src="meta.js?v=20261023c"></script>
+<script defer src="duel.js?v=20261023c"></script>
 <script>addEventListener("DOMContentLoaded",function(){
- var bad=["core","audio","social","shop","chests","game","meta"].filter(function(k){return !(window.INKV&&INKV[k]===INK_BUILD)});
+ var bad=["core","audio","social","shop","chests","game","meta","duel"].filter(function(k){return !(window.INKV&&INKV[k]===INK_BUILD)});
  if(bad.length)inkErr("⚠ Застарілі або відсутні файли / outdated or missing files: "+bad.join(", ")+".\nЗалий їх на сайт і оновити сторінку (Ctrl+Shift+R) / upload them and hard-refresh.");
  try{boot()}catch(e){inkErr("⚠ boot: "+e.message)}})</script>
 </body></html>
