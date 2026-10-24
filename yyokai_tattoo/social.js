@@ -1,4 +1,4 @@
-window.INKV=window.INKV||{};INKV.social="20261023b";
+window.INKV=window.INKV||{};INKV.social="20261023c";
 /* INKAI social.js — вхід, нік, майстри, розіграш ТОП-10, друзі, рейтинг, нагороди, профіль, адмінка, квести
    ПРАВИЛА FIRESTORE — файл firestore.rules (Firebase Console → Firestore → Rules, замінити ADMIN_UID):
 rules_version='2'; service cloud.firestore { match /databases/{d}/documents {
