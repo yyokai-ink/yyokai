@@ -46,6 +46,19 @@ input[type=file]::file-selector-button{margin-right:12px;border:0;border-radius:
 .st{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:14px}
 .st:last-child{border:0}
 .hp{position:absolute;left:-9999px}
+.phone{display:flex;align-items:stretch;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.45);overflow:hidden}
+.phone:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(229,9,47,.15)}
+.phone span{display:grid;place-items:center;padding:0 12px 0 14px;font-weight:900;font-size:16px;color:#fff;background:rgba(229,9,47,.22);border-right:1px solid rgba(255,255,255,.12)}
+.phone input{border:0;border-radius:0;background:transparent;box-shadow:none!important;height:52px}
+.req{display:flex;gap:14px;align-items:center;padding:14px;margin-top:10px;border-radius:20px;border:1px solid color-mix(in srgb,var(--c) 55%,transparent);background:color-mix(in srgb,var(--c) 14%,rgba(0,0,0,.3))}
+.req .ic{font-size:34px;line-height:1}
+.req b{display:block;font-size:15px}
+.req .tx{margin-top:4px;font-size:15px;font-weight:900;color:var(--c)}
+.req .nt{margin-top:6px;font-size:13px;color:#ddd;line-height:1.4}
+.req.pulse .ic{animation:pl 1.6s infinite}
+@keyframes pl{50%{transform:scale(1.15)}}
+.again{display:none;width:100%;margin-top:14px;border:1px solid var(--line);border-radius:999px;padding:15px;background:rgba(255,255,255,.07);color:#fff;font-weight:900;font-size:15px}
+.fh{color:#777;font-size:12px;margin-top:6px}
 </style>
 </head>
 <body>
@@ -54,8 +67,9 @@ input[type=file]::file-selector-button{margin-right:12px;border:0;border-radius:
   <div class="sub">Заявка на тату · майстер підтвердить запис</div>
 
   <div class="card" id="mine" style="display:none"><div class="step"><i>✓</i>Мої заявки</div><div id="mineList"></div></div>
+  <button class="again" id="again" onclick="again()">＋ Нова заявка</button>
 
-  <div class="card">
+  <div class="card" id="formCard">
     <div class="step"><i>1</i>Дата і час</div>
     <input id="date" type="date">
     <label>Вільний час</label>
@@ -63,13 +77,15 @@ input[type=file]::file-selector-button{margin-right:12px;border:0;border-radius:
 
     <div class="step"><i>2</i>Контакти</div>
     <label style="margin-top:0">Імʼя *</label><input id="name" autocomplete="name">
-    <label>Телефон *</label><input id="phone" type="tel" placeholder="+380..." autocomplete="tel">
-    <label>Telegram / Instagram</label><input id="contact" placeholder="@username">
+    <label>Телефон *</label>
+    <div class="phone"><span>+380</span><input id="phone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="XX XXX XX XX" maxlength="12"></div>
+    <label>Нік Telegram / Instagram</label><input id="contact" placeholder="@username">
 
     <div class="step"><i>3</i>Ідея</div>
     <label style="margin-top:0">Місце на тілі та розмір</label><input id="place" placeholder="Рука, 10x15 см">
     <label>Ідея тату</label><textarea id="idea" placeholder="Стиль, референси, побажання..."></textarea>
-    <label>Фото / референс</label><input id="photo" type="file" accept="image/jpeg,image/png,image/webp">
+    <label>Фото / референс</label><input id="photo" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif">
+    <div class="fh">Фото до 50 MB</div>
 
     <input class="hp" id="hp" tabindex="-1" autocomplete="off">
     <button class="btn" id="go" onclick="send()">Надіслати заявку</button>
@@ -78,23 +94,35 @@ input[type=file]::file-selector-button{margin-right:12px;border:0;border-radius:
 </div>
 
 <script>
-// ====== НАСТРОЙКИ (те ж, що в crm.html) ======
 const SB_URL="https://jtilygljejobpljcfqrd.supabase.co";
 const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0aWx5Z2xqZWpvYnBsamNmcXJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU2MjAwNTEsImV4cCI6MjExMTE5NjA1MX0.crPkRj0M5DV8kFbCU6i07P5uK71Oe54IuXfbI57bHeQ";
 const SLOTS=["10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00"];
-// ============================================
-
 const sb=supabase.createClient(SB_URL,SB_KEY);
 const $=id=>document.getElementById(id);
-const ST={pending:"⏳ Очікує підтвердження",waiting:"💳 Очікує передоплату",confirmed:"✅ Підтверджено",in_progress:"🎨 В процесі",done:"Завершено",cancelled:"❌ Скасовано"};
+const ST={
+  pending:["⏳","Очікуйте відповіді від майстра","#ff9f1c"],
+  waiting:["💳","Очікуємо передоплату","#ffd166"],
+  confirmed:["✅","Запис підтверджено, чекаємо тебе!","#7dffb1"],
+  in_progress:["🎨","Сеанс у процесі","#8ecbff"],
+  done:["✔️","Сеанс проведено. Дякуємо!","#b7ff7a"],
+  cancelled:["❌","Запис скасовано майстром","#ff6b7a"]};
 let picked=null,busy=[];
 
 function fmt(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 function say(t){const m=$("msg");m.textContent=t;m.style.display="block"}
 
 const today=fmt(new Date());
 $("date").min=today;$("date").value=today;
 $("date").onchange=loadSlots;
+
+// +380 закріплено, клієнт вводить тільки далі
+$("phone").addEventListener("input",e=>{
+  let v=e.target.value.replace(/\D/g,"");
+  if(v.startsWith("380"))v=v.slice(3);else if(v.startsWith("0"))v=v.slice(1);
+  v=v.slice(0,9);
+  e.target.value=[v.slice(0,2),v.slice(2,5),v.slice(5,7),v.slice(7,9)].filter(Boolean).join(" ");
+});
 
 async function loadSlots(){
   picked=null;const d=$("date").value;
@@ -111,59 +139,68 @@ async function loadSlots(){
     b.onclick=()=>{picked=s;document.querySelectorAll(".slot").forEach(x=>x.classList.remove("sel"));b.classList.add("sel")};
     $("slots").appendChild(b);
   });
-  if(dayOff)say("На цю дату запису немає — обери іншу.");else $("msg").style.display="none";
+  if(dayOff)say("На цю дату запису немає, обери іншу.");else $("msg").style.display="none";
 }
 
 async function send(){
   if($("hp").value)return;
-  const name=$("name").value.trim(),phone=$("phone").value.trim();
+  const name=$("name").value.trim(),digits=$("phone").value.replace(/\D/g,"");
   if(!picked)return say("Обери час.");
   if(name.length<2)return say("Вкажи імʼя.");
-  if(phone.length<6)return say("Вкажи телефон.");
+  if(digits.length!==9)return say("Введи номер повністю: 9 цифр після +380.");
   $("go").disabled=true;say("Надсилаю...");
   try{
     let url=null;const f=$("photo").files[0];
     if(f){
-      if(f.size>5*1024*1024)throw new Error("Фото більше 5 MB");
+      if(f.size>50*1024*1024)throw new Error("Фото більше 50 MB");
+      say("Завантажую фото…");
       const ext=(f.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"");
       const path=crypto.randomUUID()+"."+ext;
-      const up=await sb.storage.from("refs").upload(path,f,{contentType:f.type});
+      const up=await sb.storage.from("refs").upload(path,f,{contentType:f.type||"image/jpeg"});
       if(up.error)throw up.error;
       url=sb.storage.from("refs").getPublicUrl(path).data.publicUrl;
     }
-    const c=$("contact").value.trim();
     const {data,error}=await sb.rpc("create_request",{
-      p_date:$("date").value,p_time:picked,p_name:name,p_phone:phone,
-      p_telegram:c.startsWith("@")&&!c.includes("insta")?c:c,p_instagram:"",
+      p_date:$("date").value,p_time:picked,p_name:name,p_phone:"+380"+digits,
+      p_telegram:$("contact").value.trim(),p_instagram:"",
       p_placement:$("place").value.trim(),p_size:"",p_idea:$("idea").value.trim(),p_photo_url:url
     });
     if(error)throw error;
     const list=JSON.parse(localStorage.getItem("yyokai_req")||"[]");
     list.unshift({id:data,date:$("date").value,time:picked});
     localStorage.setItem("yyokai_req",JSON.stringify(list.slice(0,10)));
-    say("Заявку надіслано ✓ Майстер звʼяжеться з тобою. Статус нижче.");
     $("name").value=$("phone").value=$("contact").value=$("place").value=$("idea").value=$("photo").value="";
-    loadSlots();showMine();
+    $("msg").style.display="none";
+    $("formCard").style.display="none";$("again").style.display="block";
+    await showMine();
+    window.scrollTo({top:0,behavior:"smooth"});
+    loadSlots();
   }catch(e){
     const m=e.message||"";
-    say(m.includes("slot_taken")?"Цей час щойно зайняли — обери інший.":m.includes("slot_closed")?"Цей час закритий.":"Не вдалося надіслати: "+m);
+    say(m.includes("slot_taken")?"Цей час щойно зайняли, обери інший.":m.includes("slot_closed")?"Цей час закритий.":"Не вдалося надіслати: "+m);
     loadSlots();
   }
   $("go").disabled=false;
 }
+function again(){$("formCard").style.display="block";$("again").style.display="none";window.scrollTo({top:$("formCard").offsetTop-10,behavior:"smooth"})}
 
 async function showMine(){
   const list=JSON.parse(localStorage.getItem("yyokai_req")||"[]");
   if(!list.length)return;
-  $("mine").style.display="block";
   const rows=await Promise.all(list.map(async r=>{
     const {data}=await sb.rpc("get_status",{p_id:r.id});
-    return `<div class="st"><span>${r.date} · ${r.time}</span><span>${ST[data]||"—"}</span></div>`;
+    const x=data&&data[0];
+    if(!x)return "";
+    const [ic,tx,c]=ST[x.status]||["•",x.status,"#fff"];
+    return `<div class="req ${x.status==="pending"?"pulse":""}" style="--c:${c}"><div class="ic">${ic}</div><div>
+      <b>${r.date.split("-").reverse().join(".")} · ${esc(r.time)}</b><div class="tx">${tx}</div>
+      ${x.note?`<div class="nt">${esc(x.note)}</div>`:""}</div></div>`;
   }));
-  $("mineList").innerHTML=rows.join("");
+  const html=rows.join("");
+  if(html){$("mineList").innerHTML=html;$("mine").style.display="block"}
 }
 
-loadSlots();showMine();
+loadSlots();showMine();setInterval(showMine,15000);
 </script>
 </body>
 </html>
