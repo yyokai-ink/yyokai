@@ -26,20 +26,22 @@
     overscroll-behavior-x:none;touch-action:pan-y;-webkit-overflow-scrolling:touch;width:100%;max-width:100vw;}
   a{color:inherit;}
   img{max-width:100%;display:block;}
+  button{font:inherit;color:inherit;background:none;border:0;}
   ::selection{background:var(--red);color:var(--black);}
   :focus-visible{outline:2px solid var(--red);outline-offset:3px;}
   .mono{font-family:'JetBrains Mono',monospace;}
 
   /* ---------- TOP BAR ---------- */
-  .menu-btn{position:fixed;top:26px;right:24px;z-index:2000;width:26px;height:14px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;}
-  .menu-btn span{display:block;width:100%;height:1px;background:var(--white);transition:transform .35s var(--ease),opacity .35s;}
-  .menu-btn.active span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
-  .menu-btn.active span:nth-child(2){opacity:0;}
-  .menu-btn.active span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+  .menu-btn{position:fixed;top:16px;right:14px;z-index:2000;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .menu-btn .bars{position:relative;width:26px;height:14px;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none;}
+  .menu-btn .bars span{display:block;width:100%;height:1px;background:var(--white);transition:transform .35s var(--ease),opacity .35s;}
+  .menu-btn.active .bars span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+  .menu-btn.active .bars span:nth-child(2){opacity:0;}
+  .menu-btn.active .bars span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
 
   .brand-mark{position:fixed;top:24px;left:24px;z-index:2000;font-family:'Unbounded',sans-serif;font-size:13px;letter-spacing:.04em;text-decoration:none;color:var(--white);}
 
-  /* 👉 іконка звуку — рівно по центру між лого і бургером */
+  /* іконка звуку — по центру між лого і бургером */
   .sound-btn{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:2000;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:rgba(14,14,13,.6);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .3s,background .3s;}
   .sound-btn:hover{border-color:var(--red-deep);}
   .sound-btn svg{width:15px;height:15px;}
@@ -47,8 +49,8 @@
   .sound-btn.muted .icon-on{display:none;}
   .sound-btn.muted .icon-off{display:block;}
 
-  .nav-overlay{position:fixed;inset:0;background:var(--black);z-index:1999;display:flex;flex-direction:column;justify-content:center;padding:0 var(--gutter);transform:translateY(-102%);transition:transform .55s var(--ease);}
-  .nav-overlay.active{transform:translateY(0);}
+  .nav-overlay{position:fixed;inset:0;background:var(--black);z-index:1999;display:flex;flex-direction:column;justify-content:center;padding:0 var(--gutter);transform:translateY(-102%);visibility:hidden;transition:transform .55s var(--ease),visibility 0s linear .55s;}
+  .nav-overlay.active{transform:translateY(0);visibility:visible;transition:transform .55s var(--ease),visibility 0s;}
   .nav-overlay a{display:block;font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.5rem,6vw,2.6rem);color:var(--white-dim);text-decoration:none;padding:9px 0;border-bottom:1px solid var(--line);transition:color .3s var(--ease),padding-left .3s var(--ease),text-shadow .3s var(--ease);}
   .nav-overlay a:hover,.nav-overlay a:focus-visible{color:var(--white);padding-left:14px;text-shadow:0 0 22px rgba(244,241,234,0.45);}
   .nav-foot{margin-top:30px;font-size:12px;color:var(--white-dim);}
@@ -72,8 +74,8 @@
   .photo-cell:hover img{transform:scale(1.04);}
 
   /* ---------- LIGHTBOX ---------- */
-  .lightbox{position:fixed;inset:0;background:rgba(6,6,5,.97);z-index:3000;display:flex;align-items:center;justify-content:center;padding:60px 20px;opacity:0;visibility:hidden;transition:opacity .35s var(--ease);}
-  .lightbox.open{opacity:1;visibility:visible;}
+  .lightbox{position:fixed;inset:0;background:rgba(6,6,5,.97);z-index:3000;display:flex;align-items:center;justify-content:center;padding:60px 20px;opacity:0;visibility:hidden;transition:opacity .35s var(--ease),visibility 0s linear .35s;}
+  .lightbox.open{opacity:1;visibility:visible;transition:opacity .35s var(--ease),visibility 0s;}
   .lightbox img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;transform:scale(.96);transition:transform .35s var(--ease);}
   .lightbox.open img{transform:scale(1);}
   .lightbox-close{position:absolute;top:22px;right:22px;width:40px;height:40px;border-radius:50%;border:1px solid var(--red-deep);background:rgba(14,14,13,.7);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .3s,background .3s;}
@@ -89,25 +91,28 @@
 
 <a href="index.html" class="brand-mark">YYOKAI</a>
 
-<!-- 👉 звук: файл track.mp3 (той, що вже лежить у репозиторії) -->
+<!-- звук: файл 1234_out.mp3 (лежить у репозиторії) -->
 <audio id="bgAudio" src="1234_out.mp3" loop preload="none"></audio>
-<button class="sound-btn muted" id="soundBtn" aria-label="Увімкнути/вимкнути музику">
+<button type="button" class="sound-btn muted" id="soundBtn" aria-label="Увімкнути/вимкнути музику">
   <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.6"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16 8a5 5 0 0 1 0 8"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
   <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.6"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16 9l5 6M21 9l-5 6"/></svg>
 </button>
 
-<div class="menu-btn" id="menuBtn" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+<button type="button" class="menu-btn" id="menuBtn" aria-label="Меню" aria-expanded="false" aria-controls="nav">
+  <span class="bars"><span></span><span></span><span></span></span>
+</button>
 
-<nav class="nav-overlay" id="nav">
+<nav class="nav-overlay" id="nav" aria-label="Головне меню">
   <a href="index.html">Головна</a>
   <a href="index.html#price">Ціни</a>
   <a href="esciz.html">Вільні ескізи</a>
   <a href="index.html#tools">Функції</a>
   <a href="index.html#map">Контакти</a>
+  <a href="book.html">Записатися</a>
   <div class="nav-foot mono">yyokai.tattoo — Львів</div>
 </nav>
 
-<a href="booking.html" class="cta-fixed">Записатися</a>
+<a href="book.html" class="cta-fixed">Записатися</a>
 
 <div class="page-head" id="pageHead">
   <div class="mono">作 — works</div>
@@ -119,18 +124,40 @@
 </div>
 
 <div class="lightbox" id="lightbox">
-  <div class="lightbox-close" id="lightboxClose" aria-label="Закрити">
+  <div class="lightbox-close" id="lightboxClose" role="button" tabindex="0" aria-label="Закрити">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
   </div>
   <img id="lightboxImg" src="" alt="YYOKAI tattoo робота — повний розмір">
 </div>
 
 <script>
-  function toggleMenu(){
-    document.getElementById('nav').classList.toggle('active');
-    document.getElementById('menuBtn').classList.toggle('active');
-  }
+  /* ---- бургер-меню ---- */
+  (function(){
+    var nav = document.getElementById('nav');
+    var btn = document.getElementById('menuBtn');
 
+    function setMenu(open){
+      nav.classList.toggle('active', open);
+      btn.classList.toggle('active', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+
+    btn.addEventListener('click', function(){
+      setMenu(!nav.classList.contains('active'));
+    });
+
+    /* закрити меню при кліку на будь-яке посилання (щоб якорі #price, #map працювали) */
+    nav.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){ setMenu(false); });
+    });
+
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && nav.classList.contains('active')) setMenu(false);
+    });
+  })();
+
+  /* ---- поява заголовка ---- */
   (function(){
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var head = document.getElementById('pageHead');
@@ -151,15 +178,14 @@
     function tryAutoplay(){
       if(triedAutoplay) return;
       triedAutoplay = true;
-      audio.play().then(setIcon).catch(function(){
-        /* браузер заблокував автозапуск без прямого дотику — чекаємо клік по іконці */
-      });
+      var p = audio.play();
+      if(p && p.then){ p.then(setIcon).catch(function(){ /* автозапуск заблокований — чекаємо клік по іконці */ }); }
     }
     window.addEventListener('scroll', tryAutoplay, {once:true, passive:true});
     window.addEventListener('touchstart', tryAutoplay, {once:true, passive:true});
 
     btn.addEventListener('click', function(){
-      if(audio.paused){ audio.play().catch(function(){}); }
+      if(audio.paused){ var p = audio.play(); if(p && p.catch) p.catch(function(){}); }
       else{ audio.pause(); }
     });
     audio.addEventListener('play', setIcon);
@@ -167,8 +193,9 @@
   })();
 
   /* ---- галерея: сітка + лайтбокс ---- */
-  const photos = [
-    "рука1.jpg","рука2.jpg","рука3.png","нога1.jpg","рука5.heic","нога3.png","нога2.jpg","19.jpg","20.JPG","21.JPG","22.JPG","23.JPG","24.JPG","25.JPG","26.JPG","27.JPG","28.JPG",
+  var photos = [
+    "рука1.jpg","рука2.jpg","рука3.png","нога1.jpg","рука5.heic","нога3.png","нога2.jpg",
+    "19.jpg","20.JPG","21.JPG","22.JPG","23.JPG","24.JPG","25.JPG","26.JPG","27.JPG","28.JPG",
     "29.JPG","30.JPG","31.JPG","32.JPG","33.JPG","34.JPG","35.jpg","36.JPG","37.JPG","38.JPG",
     "39.JPG","40.JPG","41.JPG","42.JPG","43.JPG","44.JPG","45.JPG","46.JPG","47.JPG","48.JPG",
     "49.JPG","50.JPG","51.JPG","52.JPG","53.JPG","54.JPG","55.JPG","56.JPG","57.JPG","58.JPG",
@@ -188,9 +215,11 @@
     cell.className = 'photo-cell';
     var img = document.createElement('img');
     img.loading = 'lazy';
-    img.src = src;
     img.alt = 'YYOKAI tattoo робота';
     img.addEventListener('load', function(){ img.classList.add('loaded'); });
+    /* якщо файл не знайдено / не відображається (напр. .heic) — прибираємо порожню клітинку */
+    img.addEventListener('error', function(){ cell.remove(); });
+    img.src = src;
     cell.appendChild(img);
     cell.addEventListener('click', function(){
       lightboxImg.src = src;
