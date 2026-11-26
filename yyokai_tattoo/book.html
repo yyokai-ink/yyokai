@@ -44,9 +44,9 @@ input[type=file]::file-selector-button{margin-right:10px;border:0;border-radius:
 .cd button.x{color:#666;text-decoration:line-through;background:repeating-linear-gradient(45deg,rgba(255,255,255,.02),rgba(255,255,255,.02) 4px,rgba(255,255,255,.07) 4px,rgba(255,255,255,.07) 8px)}
 .cd button:disabled{cursor:default}.cd button.past{opacity:.2;text-decoration:none}
 .cd i{visibility:hidden}
-.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px}
-.hint{grid-column:1/-1;color:#888;font-size:12px}
-.slot{padding:10px 4px;border-radius:13px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#fff;font-weight:800;font-size:14px}
+.slots{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.hint{width:100%;text-align:center;color:#888;font-size:12px}
+.slot{min-width:92px;padding:10px 4px;border-radius:13px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#fff;font-weight:800;font-size:14px}
 .slot.sel{background:var(--accent);border-color:var(--accent);box-shadow:0 0 16px rgba(229,9,47,.5)}
 .slot:disabled{opacity:.3;text-decoration:line-through}
 .phone{display:flex;align-items:stretch;border-radius:13px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.45);overflow:hidden}
@@ -66,6 +66,22 @@ input[type=file]::file-selector-button{margin-right:10px;border:0;border-radius:
 .again{display:none;width:100%;margin-top:10px;border:1px solid var(--line);border-radius:999px;padding:12px;background:rgba(255,255,255,.07);color:#fff;font-weight:800;font-size:13px}
 .fh{color:#777;font-size:11px;margin-top:5px}
 .hp{position:absolute;left:-9999px}
+
+label.c{text-align:center;margin:12px 0 8px}
+.dt{width:100%;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.45);color:#fff;font-size:14px;text-align:left}
+.dt b{flex:1;font-weight:600;color:#aaa}.dt.has b{color:#fff;font-weight:800}
+.dt em{font-style:normal;color:#aaa;transition:.2s}.dt.open em{transform:rotate(180deg)}
+.dt.open{border-color:var(--accent)}
+.dtp{display:none;margin-top:8px;padding:12px;border-radius:16px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08)}
+.dtp.open{display:block;animation:sd .25s ease}
+@keyframes sd{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.req{flex-wrap:wrap}
+.pay{flex-basis:100%;padding:11px 12px;border-radius:14px;background:rgba(0,0,0,.4);border:1px dashed rgba(255,255,255,.22);font-size:12.5px;line-height:1.5;color:#e8e0dd}
+.pay h4{font-size:13.5px;color:#fff;margin-bottom:3px}
+.cr{display:flex;align-items:center;gap:8px;margin:8px 0;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.08)}
+.cr code{flex:1;font:700 15px/1.2 ui-monospace,Menlo,monospace;letter-spacing:.05em;color:#fff}
+.cr button{border:0;border-radius:999px;padding:7px 13px;background:#fff;color:#050505;font-weight:800;font-size:12px;white-space:nowrap}
+.pay .ok{display:block;margin-top:6px;color:#bdb3b0}
 </style>
 
 </head>
@@ -80,13 +96,16 @@ input[type=file]::file-selector-button{margin-right:10px;border:0;border-radius:
 
   <div class="card" id="formCard">
     <div class="step"><i>1</i>Дата і час</div>
-    <div class="cal">
-      <div class="ch"><button id="pm" onclick="cm(-1)">‹</button><b id="cmt"></b><button onclick="cm(1)">›</button></div>
-      <div class="wk7"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Нд</span></div>
-      <div class="cd" id="cd"></div>
+    <button class="dt" id="dt" onclick="toggleDT()"><span>📅</span><b id="dtv">Обери дату і час</b><em>▾</em></button>
+    <div class="dtp" id="dtp">
+      <div class="cal">
+        <div class="ch"><button id="pm" onclick="cm(-1)">‹</button><b id="cmt"></b><button onclick="cm(1)">›</button></div>
+        <div class="wk7"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Нд</span></div>
+        <div class="cd" id="cd"></div>
+      </div>
+      <label class="c">Вільний час</label>
+      <div class="slots" id="slots"><span class="hint">Завантаження…</span></div>
     </div>
-    <label>Вільний час</label>
-    <div class="slots" id="slots"><span class="hint">Завантаження…</span></div>
 
     <div class="step"><i>2</i>Контакти</div>
     <label style="margin-top:0">Імʼя *</label><input id="name" autocomplete="name">
@@ -97,8 +116,8 @@ input[type=file]::file-selector-button{margin-right:10px;border:0;border-radius:
     <div class="step"><i>3</i>Ідея</div>
     <label style="margin-top:0">Місце на тілі та розмір</label><input id="place" placeholder="Рука, 10x15 см">
     <label>Ідея тату</label><textarea id="idea" placeholder="Стиль, референси, побажання..."></textarea>
-    <label>Фото / референс</label><input id="photo" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif">
-    <div class="fh">Фото до 50 MB</div>
+    <label>Фото / референси (до 3)</label><input id="photo" type="file" multiple accept="image/jpeg,image/png,image/webp,image/heic,image/heif" onchange="chkPhotos()">
+    <div class="fh" id="pcount">До 3 фото, кожне до 50 MB</div>
 
     <input class="hp" id="hp" tabindex="-1" autocomplete="off">
     <button class="btn" id="go" onclick="send()">Надіслати заявку</button>
@@ -118,6 +137,7 @@ const ST={
   in_progress:["🎨","Сеанс у процесі","#8ecbff"],
   done:["✔️","Сеанс проведено. Дякуємо!","#b7ff7a"],
   cancelled:["❌","Запис скасовано майстром","#ff6b7a"]};
+const PAY={card:"4149609059817330",amount:500};
 let SL=["11:00","13:00","16:00"],view=new Date(),sel=null,picked=null,busyM=[];
 view=new Date(view.getFullYear(),view.getMonth(),1);
 
@@ -165,8 +185,22 @@ function renderCal(){
   }
   $("cd").innerHTML=h;
 }
-function pick(k){sel=k;picked=null;$("msg").style.display="none";renderCal();renderSlots()}
-function cm(n){view=new Date(view.getFullYear(),view.getMonth()+n,1);sel=null;picked=null;loadMonth(true)}
+function pick(k){sel=k;picked=null;$("msg").style.display="none";renderCal();renderSlots();updDT()}
+function cm(n){view=new Date(view.getFullYear(),view.getMonth()+n,1);sel=null;picked=null;updDT();loadMonth(true)}
+function toggleDT(o){const p=$("dtp"),b=$("dt"),v=o===undefined?!p.classList.contains("open"):o;p.classList.toggle("open",v);b.classList.toggle("open",v)}
+function updDT(){
+  const b=$("dt");
+  if(sel&&picked){$("dtv").textContent=new Date(sel+"T00:00").toLocaleDateString("uk-UA",{weekday:"short",day:"numeric",month:"long"})+" · "+picked;b.classList.add("has")}
+  else{$("dtv").textContent="Обери дату і час";b.classList.remove("has")}
+}
+function chkPhotos(){
+  const inp=$("photo");let fl=[...inp.files];
+  if(fl.length>3){
+    try{const dt=new DataTransfer();fl.slice(0,3).forEach(f=>dt.items.add(f));inp.files=dt.files}catch(e){}
+    fl=fl.slice(0,3);say("Максимум 3 фото, обрано перші 3.");
+  }
+  $("pcount").textContent=fl.length?"Обрано: "+fl.length+" з 3":"До 3 фото, кожне до 50 MB";
+}
 function renderSlots(){
   const box=$("slots");
   if(!sel){box.innerHTML='<span class="hint">Обери дату у календарі. Закреслені дні недоступні.</span>';return}
@@ -175,7 +209,7 @@ function renderSlots(){
   SL.forEach(s=>{
     const b=document.createElement("button");b.className="slot"+(s===picked?" sel":"");b.textContent=s;
     b.disabled=set.has(s)||set.has(null)||(sel===today&&s<=nowT());
-    b.onclick=()=>{picked=s;renderSlots()};
+    b.onclick=()=>{picked=s;renderSlots();updDT();setTimeout(()=>toggleDT(false),250)};
     box.appendChild(b);
   });
 }
@@ -183,33 +217,34 @@ function renderSlots(){
 async function send(){
   if($("hp").value)return;
   const name=$("name").value.trim(),digits=$("phone").value.replace(/\D/g,"");
-  if(!sel)return say("Обери дату.");
-  if(!picked)return say("Обери час.");
+  if(!sel||!picked){toggleDT(true);return say("Обери дату і час.")}
   if(name.length<2)return say("Вкажи імʼя.");
   if(digits.length!==9)return say("Введи номер повністю: 9 цифр після +380.");
   $("go").disabled=true;say("Надсилаю...");
   try{
-    let url=null;const f=$("photo").files[0];
-    if(f){
+    const urls=[],files=[...$("photo").files].slice(0,3);
+    for(let i=0;i<files.length;i++){
+      const f=files[i];
       if(f.size>50*1024*1024)throw new Error("Фото більше 50 MB");
-      say("Завантажую фото…");
+      say("Завантажую фото "+(i+1)+" з "+files.length+"…");
       const ext=(f.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"");
       const path=crypto.randomUUID()+"."+ext;
       const up=await sb.storage.from("refs").upload(path,f,{contentType:f.type||"image/jpeg"});
       if(up.error)throw up.error;
-      url=sb.storage.from("refs").getPublicUrl(path).data.publicUrl;
+      urls.push(sb.storage.from("refs").getPublicUrl(path).data.publicUrl);
     }
+    say("Надсилаю...");
     const {data,error}=await sb.rpc("create_request",{
       p_date:sel,p_time:picked,p_name:name,p_phone:"+380"+digits,
       p_telegram:$("contact").value.trim(),p_instagram:"",
-      p_placement:$("place").value.trim(),p_size:"",p_idea:$("idea").value.trim(),p_photo_url:url
+      p_placement:$("place").value.trim(),p_size:"",p_idea:$("idea").value.trim(),p_photo_url:urls[0]||null,p_photos:urls.length?urls:null
     });
     if(error)throw error;
     const list=JSON.parse(localStorage.getItem("yyokai_req")||"[]");
-    list.unshift({id:data,date:sel,time:picked});
+    list.unshift({id:data,date:sel,time:picked,name});
     localStorage.setItem("yyokai_req",JSON.stringify(list.slice(0,10)));
     $("name").value=$("phone").value=$("contact").value=$("place").value=$("idea").value=$("photo").value="";
-    $("msg").style.display="none";picked=null;
+    $("msg").style.display="none";picked=null;updDT();$("pcount").textContent="До 3 фото, кожне до 50 MB";
     $("formCard").style.display="none";$("again").style.display="block";
     await showMine();
     window.scrollTo({top:0,behavior:"smooth"});
@@ -223,6 +258,21 @@ async function send(){
 }
 function again(){$("formCard").style.display="block";$("again").style.display="none";window.scrollTo({top:$("formCard").offsetTop-10,behavior:"smooth"})}
 
+function copyCard(btn){
+  const t=PAY.card,done=()=>{btn.textContent="Скопійовано ✓";setTimeout(()=>btn.textContent="Копіювати",2200)};
+  const fb=()=>{const a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";document.body.appendChild(a);a.select();try{document.execCommand("copy");done()}catch(e){btn.textContent=t}a.remove()};
+  if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t).then(done,fb);else fb();
+}
+function payHtml(r){
+  const d=r.date.slice(8)+"."+r.date.slice(5,7),purpose=(r.name?r.name:"Імʼя")+", "+d+", "+r.time;
+  const c=PAY.card.replace(/(\d{4})(?=\d)/g,"$1 ");
+  return `<div class="pay"><h4>💳 Передоплата ${PAY.amount} грн</h4>
+    Для підтвердження запису внесіть передоплату. Це не додаткова плата: сума повністю зараховується у вартість сеансу.
+    <div class="cr"><code>${c}</code><button onclick="copyCard(this)">Копіювати</button></div>
+    У призначенні платежу вкажіть імʼя, дату та час сеансу: <b>${esc(purpose)}</b>
+    <span class="ok">Після оплати майстер підтвердить дату і час, статус зміниться тут.</span></div>`;
+}
+let lastMine="";
 async function showMine(){
   const list=JSON.parse(localStorage.getItem("yyokai_req")||"[]");
   if(!list.length)return;
@@ -233,10 +283,11 @@ async function showMine(){
     const [ic,tx,c]=ST[x.status]||["•",x.status,"#fff"];
     return `<div class="req ${x.status==="pending"?"pulse":""}" style="--c:${c}"><div class="ic">${ic}</div><div>
       <b>${r.date.split("-").reverse().join(".")} · ${esc(r.time)}</b><div class="tx">${tx}</div>
-      ${x.note?`<div class="nt">${esc(x.note)}</div>`:""}</div></div>`;
+      ${x.note?`<div class="nt">${esc(x.note)}</div>`:""}</div>
+      ${x.status==="pending"||x.status==="waiting"?payHtml(r):""}</div>`;
   }));
   const html=rows.join("");
-  if(html){$("mineList").innerHTML=html;$("mine").style.display="block"}
+  if(html&&html!==lastMine){lastMine=html;$("mineList").innerHTML=html;$("mine").style.display="block"}
 }
 
 (async()=>{
