@@ -2,134 +2,146 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>YYOKAI | Tattoo CRM</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--accent:#e5092f;--line:rgba(255,255,255,.15)}
-body{background:radial-gradient(circle at 50% -10%,rgba(229,9,47,.35),transparent 35%),linear-gradient(180deg,#050505,#100206 45%,#000);color:#f6f1ef;font-family:Arial,sans-serif;min-height:100vh}
+:root{--accent:#e5092f;--line:rgba(255,255,255,.14)}
+body{background:radial-gradient(circle at 50% -10%,rgba(229,9,47,.3),transparent 35%),linear-gradient(180deg,#050505,#100206 45%,#000);color:#f6f1ef;font:14px/1.4 Arial,sans-serif;min-height:100vh;padding-bottom:84px}
 button,input,textarea,select{font-family:inherit}button{cursor:pointer}button:active{transform:scale(.96)}
-.app{padding:16px 16px 44px;max-width:1100px;margin:auto}
-.top{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-radius:26px;background:rgba(0,0,0,.78);border:1px solid var(--line);position:sticky;top:10px;z-index:50;backdrop-filter:blur(20px)}
-.logo{font-size:26px;font-weight:900;letter-spacing:.08em}
-.ghost{border:1px solid var(--line);background:rgba(255,255,255,.07);color:#fff;border-radius:999px;padding:10px 14px;font-weight:700}
-.card{margin-top:14px;padding:18px;border-radius:28px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.18)}
-.card h2{font-size:20px;margin-bottom:12px}
-.grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:14px}
-.head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
-.mt{font-size:20px;font-weight:900;text-transform:capitalize}
-.nav{width:42px;height:42px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:#fff;font-size:22px}
-.week,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
-.week span{text-align:center;color:#888;font-size:12px;font-weight:900;margin-bottom:6px}
-.day{position:relative;aspect-ratio:1;border:1px solid rgba(255,255,255,.09);border-radius:16px;background:rgba(255,255,255,.045);color:#fff;font-weight:900}
+.app{padding:10px 12px;max-width:900px;margin:auto}
+.top{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-radius:20px;background:rgba(0,0,0,.78);border:1px solid var(--line);position:sticky;top:8px;z-index:50;backdrop-filter:blur(20px)}
+.logo{font-size:19px;font-weight:900;letter-spacing:.1em}
+.ghost{border:1px solid var(--line);background:rgba(255,255,255,.07);color:#fff;border-radius:999px;padding:7px 12px;font-weight:700;font-size:13px}
+.card{margin-top:10px;padding:14px;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.16)}
+.card h2{font-size:16px;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:10px}
+.head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.mt{font-size:16px;font-weight:900;text-transform:capitalize}
+.nav{width:34px;height:34px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:#fff;font-size:18px}
+.week,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.week span{text-align:center;color:#888;font-size:11px;font-weight:900;margin-bottom:4px}
+.day{position:relative;aspect-ratio:1;border:1px solid rgba(255,255,255,.09);border-radius:12px;background:rgba(255,255,255,.045);color:#fff;font-weight:800;font-size:13px}
 .day.muted{opacity:.25}.day.today{border-color:var(--accent)}
 .day.active{background:rgba(229,9,47,.4)}
-.day.closed{background:repeating-linear-gradient(45deg,rgba(255,255,255,.03),rgba(255,255,255,.03) 6px,rgba(255,255,255,.1) 6px,rgba(255,255,255,.1) 12px);color:#777}
-.day i{position:absolute;right:5px;top:4px;font-style:normal;font-size:10px;background:#000;border-radius:99px;padding:1px 5px;border:1px solid var(--line)}
-.day.pend::after{content:"";position:absolute;left:6px;top:6px;width:8px;height:8px;border-radius:50%;background:#ff9f1c;box-shadow:0 0 10px #ff9f1c}
-.btn{border:0;border-radius:999px;padding:12px 16px;background:#fff;color:#050505;font-weight:900}
+.day.closed{color:#666;text-decoration:line-through;background:repeating-linear-gradient(45deg,rgba(255,255,255,.02),rgba(255,255,255,.02) 5px,rgba(255,255,255,.08) 5px,rgba(255,255,255,.08) 10px)}
+.day i{position:absolute;right:3px;top:2px;font-style:normal;font-size:9px;background:#000;border-radius:99px;padding:0 4px;border:1px solid var(--line)}
+.day.pend::after{content:"";position:absolute;left:5px;top:5px;width:6px;height:6px;border-radius:50%;background:#ff9f1c;box-shadow:0 0 8px #ff9f1c}
+.btn{border:0;border-radius:999px;padding:10px 14px;background:#fff;color:#050505;font-weight:900;font-size:13px}
 .btn.red{background:rgba(255,255,255,.07);color:#ff8a9a;border:1px solid var(--line)}
 .btn.ok{background:#7dffb1}
-.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px;margin-bottom:14px}
-.slot{padding:12px 6px;border-radius:14px;border:1px solid var(--line);background:rgba(125,255,177,.12);color:#fff;font-weight:900}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px;margin-bottom:10px}
+.slot{padding:9px 4px;border-radius:12px;border:1px solid var(--line);background:rgba(125,255,177,.12);color:#fff;font-weight:900;font-size:14px}
+.slot small{display:block;font-size:10px;font-weight:600;color:#ffd;opacity:.85;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
 .slot.closed{background:rgba(255,255,255,.04);color:#777;text-decoration:line-through}
 .slot.booked{background:rgba(229,9,47,.35)}
-.list{display:flex;flex-direction:column;gap:10px}
-.item{display:flex;gap:12px;align-items:center;text-align:left;width:100%;padding:12px;border-radius:20px;border:1px solid var(--line);background:rgba(255,255,255,.055);color:#fff}
-.item img{width:56px;height:56px;border-radius:12px;object-fit:cover;flex:none}
-.item .m{flex:1;min-width:0}.item b{display:block;font-size:16px}.item small{color:#aaa}
-.tag{font-size:11px;font-weight:900;padding:5px 9px;border-radius:99px;border:1px solid var(--c);background:color-mix(in srgb,var(--c) 22%,transparent)}
-.row{display:flex;gap:8px;margin-top:8px}
-.empty{padding:18px;border:1px dashed var(--line);border-radius:18px;color:#999;text-align:center}
-.wrap{position:fixed;inset:0;z-index:200;display:none;place-items:center;padding:16px;background:rgba(0,0,0,.85)}
+.list{display:flex;flex-direction:column;gap:8px}
+.item{display:flex;gap:10px;align-items:center;text-align:left;width:100%;padding:9px 10px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.055);color:#fff;cursor:pointer}
+.item img{width:44px;height:44px;border-radius:10px;object-fit:cover;flex:none}
+.item .m{flex:1;min-width:0}.item b{display:block;font-size:14px}.item small{color:#aaa;font-size:12px}
+.tag{font-size:10px;font-weight:900;padding:4px 8px;border-radius:99px;border:1px solid var(--c);background:color-mix(in srgb,var(--c) 22%,transparent);white-space:nowrap}
+.row{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.empty{padding:14px;border:1px dashed var(--line);border-radius:14px;color:#999;text-align:center;font-size:13px}
+.wrap{position:fixed;inset:0;z-index:200;display:none;place-items:center;padding:12px;background:rgba(0,0,0,.85)}
 .wrap.open{display:grid}
-.modal{width:100%;max-width:720px;max-height:92vh;overflow:auto;padding:22px;border-radius:28px;background:#050505;border:1px solid var(--line)}
-.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}
-label{display:block;color:#aaa;font-size:12px;font-weight:900;margin-bottom:6px}
-input,textarea,select{width:100%;border-radius:14px;padding:13px;border:1px solid var(--line);background:rgba(0,0,0,.45);color:#fff;font-size:15px;outline:none}
-textarea{min-height:80px}
-.photo img{max-width:100%;max-height:260px;border-radius:16px;margin-top:6px}
-.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:999;width:min(430px,92vw);padding:15px 18px;border-radius:20px;background:#000;border:1px solid var(--accent);opacity:0;pointer-events:none;transition:.2s}
+.modal{width:100%;max-width:640px;max-height:92vh;overflow:auto;padding:16px;border-radius:24px;background:#050505;border:1px solid var(--line)}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:8px}.full{grid-column:1/-1}
+label{display:block;color:#999;font-size:11px;font-weight:900;margin:2px 0 4px}
+input,textarea,select{width:100%;min-width:0;border-radius:12px;padding:10px 11px;border:1px solid var(--line);background:rgba(0,0,0,.45);color:#fff;font-size:16px;outline:none;-webkit-appearance:none;appearance:none}
+input[type=date]{text-align:left;min-height:42px}
+textarea{min-height:64px}
+.photo img{max-width:100%;max-height:220px;border-radius:14px;margin-top:4px}
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:999;width:min(430px,92vw);padding:12px 16px;border-radius:16px;background:#000;border:1px solid var(--accent);opacity:0;pointer-events:none;transition:.2s;font-size:13px}
 .toast.open{opacity:1}
 #login{position:fixed;inset:0;z-index:500;background:#000;display:grid;place-items:center;padding:20px}
 #login div{width:min(360px,100%);display:flex;flex-direction:column;gap:10px}
-@media(max-width:820px){.grid{grid-template-columns:1fr}.fg{grid-template-columns:1fr}}
-.top{gap:8px;flex-wrap:wrap}.top .logo{font-size:22px}
-.tabs{display:flex;gap:6px}.ghost.on{background:#fff;color:#000}
-.item{cursor:pointer}
-.wk{display:flex;gap:6px;margin-bottom:14px}
-.wk button{flex:1;padding:13px 0;border-radius:14px;border:1px solid var(--line);background:rgba(125,255,177,.12);color:#fff;font-weight:900}
+.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:60;display:none;grid-template-columns:repeat(4,1fr);padding:6px 8px calc(6px + env(safe-area-inset-bottom));background:rgba(0,0,0,.92);border-top:1px solid var(--line);backdrop-filter:blur(20px)}
+.tabbar button{background:none;border:0;color:#777;font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px;position:relative}
+.tabbar button span{font-size:20px}.tabbar button.on{color:#fff}
+.tabbar b{position:absolute;top:-1px;right:24%;background:var(--accent);border-radius:99px;font-size:10px;padding:1px 6px;color:#fff}
+.wk{display:flex;gap:5px;margin-bottom:12px}
+.wk button{flex:1;padding:11px 0;border-radius:12px;border:1px solid var(--line);background:rgba(125,255,177,.12);color:#fff;font-weight:900;font-size:13px}
 .wk button.off{background:rgba(229,9,47,.4);text-decoration:line-through}
-.qk{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.qk button{padding:13px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:#fff;font-weight:900}
-.rg{display:grid;grid-template-columns:1fr 1fr;gap:8px}.rg input{height:50px}
-input[type=date]{-webkit-appearance:none;appearance:none;min-width:0;text-align:left}
-.hist{font-size:13px;color:#aaa;line-height:1.7}
+.qk{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.qk button{padding:10px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:#fff;font-weight:800;font-size:13px}
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.hist{font-size:12px;color:#aaa;line-height:1.7}.fh{color:#888;font-size:12px;margin-top:8px}
+@media(max-width:820px){.grid{grid-template-columns:1fr}.fg{grid-template-columns:1fr 1fr}}
 </style>
+
 </head>
 <body>
 <div id="login"><div>
-  <div class="logo" style="text-align:center;margin-bottom:8px">YYOKAI</div>
+  <div class="logo" style="text-align:center;margin-bottom:8px;font-size:30px">YYOKAI</div>
   <input id="em" type="email" placeholder="Email">
   <input id="pw" type="password" placeholder="Пароль">
-  <button class="btn" onclick="login()">Увійти</button>
+  <button class="btn" style="padding:14px" onclick="login()">Увійти</button>
 </div></div>
 
 <main class="app" id="app" style="display:none">
-  <header class="top">
-    <div class="logo">YYOKAI</div>
-    <div class="tabs"><button class="ghost on" id="t1" onclick="tab(1)">Календар</button><button class="ghost" id="t2" onclick="tab(2)">Клієнти</button></div>
-    <button class="ghost" onclick="out()">⎋</button>
-  </header>
+  <header class="top"><div class="logo">YYOKAI</div><button class="ghost" onclick="out()">Вийти</button></header>
 
-  <div id="v1">
-    <section class="card"><h2>🔔 Нові заявки <span id="pc"></span></h2><div class="list" id="inbox"></div></section>
-    <section class="grid">
-      <div class="card">
-        <div class="head"><button class="nav" onclick="mv(-1)">‹</button><div class="mt" id="mt"></div><button class="nav" onclick="mv(1)">›</button></div>
-        <div class="week"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Нд</span></div>
-        <div class="days" id="days"></div>
-      </div>
-      <div class="card">
-        <div class="head"><div><div class="mt" id="dt"></div><div style="color:#aaa;font-size:13px" id="dc"></div></div>
-          <button class="btn" onclick="openM()">+ Запис</button></div>
-        <button class="btn red" id="dayBtn" style="width:100%;margin-bottom:12px" onclick="toggleDay()"></button>
-        <label>Години (тап = закрити/відкрити)</label>
-        <div class="slots" id="slots"></div>
-        <div class="list" id="tl"></div>
-      </div>
+  <div id="v0"><section class="card"><h2>🔔 Нові заявки</h2><div class="list" id="inbox"></div></section></div>
+
+  <div id="v1" style="display:none"><section class="grid">
+    <div class="card">
+      <div class="head"><button class="nav" onclick="mv(-1)">‹</button><div class="mt" id="mt"></div><button class="nav" onclick="mv(1)">›</button></div>
+      <div class="week"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Нд</span></div>
+      <div class="days" id="days"></div>
+    </div>
+    <div class="card">
+      <div class="head"><div><div class="mt" id="dt"></div><div style="color:#aaa;font-size:12px" id="dc"></div></div>
+        <button class="btn" onclick="openM()">+ Запис</button></div>
+      <div class="slots" id="slots"></div>
+      <button class="btn red" id="dayBtn" style="width:100%;margin-bottom:10px" onclick="toggleDay()"></button>
+      <div class="list" id="tl"></div>
+    </div>
+  </section></div>
+
+  <div id="v2" style="display:none"><section class="card">
+    <div class="head"><h2 style="margin:0">Клієнти</h2><button class="btn" onclick="openC()">+ Клієнт</button></div>
+    <input id="cq" placeholder="Пошук: імʼя, номер, нік" oninput="renderClients()" style="margin-bottom:10px">
+    <div class="list" id="cl"></div>
+  </section></div>
+
+  <div id="v3" style="display:none">
+    <section class="card"><h2>🕐 Години прийому</h2>
+      <label>Час початку сеансів (через кому)</label>
+      <input id="s_slots" placeholder="11:00, 13:00, 16:00">
+      <button class="btn" style="width:100%;margin-top:10px" onclick="saveSlots()">Зберегти години</button>
+      <div class="fh">Довгий сеанс? Відкрий запис і постав «Займає слотів»: наступні години закриються самі.</div>
     </section>
-    <section class="card">
-      <h2>📅 Графік роботи</h2>
+    <section class="card"><h2>📅 Вихідні та відпустка</h2>
       <label>Вихідні дні тижня (тап = вихідний щотижня)</label>
       <div class="wk" id="wk"></div>
-      <label>Закрити / відкрити період (відпустка)</label>
+      <label>Закрити / відкрити період</label>
       <div class="rg"><input id="r1" type="date"><input id="r2" type="date"></div>
-      <div class="row"><button class="btn red" style="flex:1" onclick="range(true)">🔒 Закрити період</button><button class="btn" style="flex:1" onclick="range(false)">🔓 Відкрити</button></div>
-    </section>
-  </div>
-
-  <div id="v2" style="display:none">
-    <section class="card">
-      <div class="head"><h2 style="margin:0">Клієнти</h2><button class="btn" onclick="openC()">+ Клієнт</button></div>
-      <input id="cq" placeholder="Пошук: імʼя, номер, нік" oninput="renderClients()" style="margin-bottom:12px">
-      <div class="list" id="cl"></div>
+      <div class="row"><button class="btn red" style="flex:1" onclick="range(true)">🔒 Закрити</button><button class="btn" style="flex:1" onclick="range(false)">🔓 Відкрити</button></div>
     </section>
   </div>
 </main>
 
+<nav class="tabbar" id="tabbar">
+  <button id="tb0" onclick="tab(0)"><span>🔔</span>Заявки<b id="pc" style="display:none"></b></button>
+  <button id="tb1" class="on" onclick="tab(1)"><span>📅</span>Календар</button>
+  <button id="tb2" onclick="tab(2)"><span>👤</span>Клієнти</button>
+  <button id="tb3" onclick="tab(3)"><span>⚙️</span>Графік</button>
+</nav>
+
 <section class="wrap" id="modal"><div class="modal">
-  <div class="head"><h2 id="mtitle">Запис</h2><button class="nav" onclick="closeM()">×</button></div>
+  <div class="head"><h2 id="mtitle" style="margin:0">Запис</h2><button class="nav" onclick="closeM()">×</button></div>
   <div class="qk" id="qk">
     <button onclick="quick('confirmed')">✅ Підтвердити</button>
     <button onclick="quick('done')">✔️ Сеанс проведено</button>
     <button onclick="quick('cancelled')">❌ Скасувати</button>
-    <button onclick="quick('pending')">↩ Повернути в очікування</button>
+    <button onclick="quick('pending')">↩ В очікування</button>
   </div>
   <div class="fg">
     <div><label>Дата</label><input id="f_date" type="date"></div>
-    <div><label>Час</label><input id="f_time" type="time"></div>
+    <div><label>Час</label><select id="f_time"></select></div>
+    <div><label>Займає слотів</label><select id="f_blocks"></select></div>
+    <div><label>Статус</label><select id="f_status"></select></div>
     <div><label>Імʼя</label><input id="f_name"></div>
     <div><label>Телефон</label><input id="f_phone" type="tel"></div>
     <div><label>Нік Telegram</label><input id="f_telegram"></div>
@@ -138,21 +150,20 @@ input[type=date]{-webkit-appearance:none;appearance:none;min-width:0;text-align:
     <div><label>Розмір</label><input id="f_size"></div>
     <div><label>Тривалість</label><input id="f_duration"></div>
     <div><label>Ціна</label><input id="f_price"></div>
-    <div><label>Передоплата</label><input id="f_deposit"></div>
-    <div><label>Статус</label><select id="f_status"></select></div>
+    <div class="full"><label>Передоплата</label><input id="f_deposit"></div>
     <div class="full"><label>Повідомлення клієнту (він бачить у статусі)</label><textarea id="f_public_note" placeholder="Напр.: передоплата 500₴ на карту ..."></textarea></div>
     <div class="full"><label>Ідея</label><textarea id="f_idea"></textarea></div>
     <div class="full"><label>Нотатки (тільки для тебе)</label><textarea id="f_notes"></textarea></div>
     <div class="full photo" id="ph"></div>
   </div>
-  <div class="row" style="flex-direction:column;align-items:center;margin-top:14px">
-    <button class="btn red" id="delBtn" style="width:min(320px,100%)" onclick="del()">Видалити</button>
-    <button class="btn" style="width:min(320px,100%)" onclick="save()">Зберегти</button>
+  <div class="row" style="justify-content:center;margin-top:12px">
+    <button class="btn red" id="delBtn" onclick="del()">Видалити</button>
+    <button class="btn" style="padding:10px 28px" onclick="save()">Зберегти</button>
   </div>
 </div></section>
 
 <section class="wrap" id="cmodal"><div class="modal">
-  <div class="head"><h2>Клієнт</h2><button class="nav" onclick="$('cmodal').classList.remove('open')">×</button></div>
+  <div class="head"><h2 style="margin:0">Клієнт</h2><button class="nav" onclick="$('cmodal').classList.remove('open')">×</button></div>
   <div class="fg">
     <div><label>Імʼя</label><input id="c_name"></div>
     <div><label>Телефон</label><input id="c_phone" type="tel"></div>
@@ -160,9 +171,9 @@ input[type=date]{-webkit-appearance:none;appearance:none;min-width:0;text-align:
     <div class="full"><label>Нотатки</label><textarea id="c_notes"></textarea></div>
     <div class="full hist" id="c_hist"></div>
   </div>
-  <div class="row" style="flex-direction:column;align-items:center;margin-top:14px">
-    <button class="btn red" id="cdel" style="width:min(320px,100%)" onclick="delC()">Видалити</button>
-    <button class="btn" style="width:min(320px,100%)" onclick="saveC()">Зберегти</button>
+  <div class="row" style="justify-content:center;margin-top:12px">
+    <button class="btn red" id="cdel" onclick="delC()">Видалити</button>
+    <button class="btn" style="padding:10px 28px" onclick="saveC()">Зберегти</button>
   </div>
 </div></section>
 <div class="toast" id="toast"></div>
@@ -170,13 +181,12 @@ input[type=date]{-webkit-appearance:none;appearance:none;min-width:0;text-align:
 <script>
 const SB_URL="https://jtilygljejobpljcfqrd.supabase.co";
 const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0aWx5Z2xqZWpvYnBsamNmcXJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU2MjAwNTEsImV4cCI6MjExMTE5NjA1MX0.crPkRj0M5DV8kFbCU6i07P5uK71Oe54IuXfbI57bHeQ";
-const SLOTS=["10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00"];
 const sb=supabase.createClient(SB_URL,SB_KEY);
 const $=id=>document.getElementById(id);
 const ST={pending:["Нова заявка","#ff9f1c"],waiting:["Очікує передоплату","#ffd166"],confirmed:["Підтверджено","#7dffb1"],in_progress:["В процесі","#8ecbff"],done:["Проведено","#b7ff7a"],cancelled:["Скасовано","#ff6b7a"]};
-const K=["date","time","name","phone","telegram","instagram","placement","size","duration","price","deposit","status","idea","notes","public_note"];
+const K=["date","time","blocks","status","name","phone","telegram","instagram","placement","size","duration","price","deposit","public_note","idea","notes"];
 const WD=["Пн","Вт","Ср","Чт","Пт","Сб","Нд"];
-let B=[],BL=[],CL=[],WO=[],sel=fmt(new Date()),cur=new Date(),editId=null,editC=null;
+let B=[],BL=[],CL=[],WO=[],SLOTS=["11:00","13:00","16:00"],sel=fmt(new Date()),cur=new Date(),editId=null,editC=null,first=true;
 
 $("f_status").innerHTML=Object.entries(ST).map(([k,v])=>`<option value="${k}">${v[0]}</option>`).join("");
 
@@ -185,8 +195,9 @@ function dow(k){const d=new Date(k+"T00:00").getDay();return d===0?7:d}
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 function norm(p){let s=String(p||"").replace(/[^\d+]/g,"");if(!s)return"";if(s[0]==="+")return s;if(s.startsWith("380"))return"+"+s;if(s[0]==="0"&&s.length===10)return"+38"+s;return s}
 function toast(m){const t=$("toast");t.textContent=m;t.classList.add("open");setTimeout(()=>t.classList.remove("open"),3800)}
-function tab(n){$("v1").style.display=n===1?"block":"none";$("v2").style.display=n===2?"block":"none";$("t1").classList.toggle("on",n===1);$("t2").classList.toggle("on",n===2)}
+function tab(n){for(let i=0;i<4;i++){$("v"+i).style.display=i===n?"block":"none";$("tb"+i).classList.toggle("on",i===n)}window.scrollTo(0,0)}
 function out(){sb.auth.signOut().then(()=>location.reload())}
+function busyErr(e){return e.code==="23505"||(e.message||"").includes("slot_taken")}
 
 async function login(){
   const {error}=await sb.auth.signInWithPassword({email:$("em").value.trim(),password:$("pw").value});
@@ -198,7 +209,7 @@ async function start(){
   if(!session)return;
   const {data}=await sb.from("admins").select("user_id").maybeSingle();
   if(!data){toast("Немає доступу (додай себе в таблицю admins)");await sb.auth.signOut();return}
-  $("login").style.display="none";$("app").style.display="block";
+  $("login").style.display="none";$("app").style.display="block";$("tabbar").style.display="grid";
   await load();
   sb.channel("bk").on("postgres_changes",{event:"*",schema:"public",table:"bookings"},p=>{
     load();
@@ -211,21 +222,25 @@ async function load(){
     sb.from("bookings").select("*").order("time"),
     sb.from("blocked_slots").select("*"),
     sb.from("clients").select("*").order("created_at",{ascending:false}),
-    sb.from("weekly_off").select("*")]);
+    sb.from("weekly_off").select("*"),
+    sb.from("settings").select("*").eq("key","slots")]);
   const er=r.find(x=>x.error);
-  if(er)return toast("Помилка завантаження: "+er.error.message+" (запусти update.sql?)");
-  B=r[0].data;BL=r[1].data;CL=r[2].data;WO=r[3].data.map(x=>x.dow);render();
+  if(er)return toast("Помилка завантаження: "+er.error.message+" (запусти update2.sql?)");
+  B=r[0].data;BL=r[1].data;CL=r[2].data;WO=r[3].data.map(x=>x.dow);
+  if(r[4].data[0])SLOTS=r[4].data[0].value;
+  render();
+  if(first){first=false;tab(B.some(b=>b.status==="pending")?0:1)}
 }
-function render(){renderCal();renderDay();renderInbox();renderWk();renderClients()}
+function render(){renderCal();renderDay();renderInbox();renderWk();renderClients();if(document.activeElement!==$("s_slots"))$("s_slots").value=SLOTS.join(", ")}
 
 function renderInbox(){
   const p=B.filter(b=>b.status==="pending").sort((x,y)=>x.created_at.localeCompare(y.created_at));
-  $("pc").textContent=p.length?"("+p.length+")":"";
+  $("pc").style.display=p.length?"block":"none";$("pc").textContent=p.length;
   document.title=(p.length?"("+p.length+") ":"")+"YYOKAI | CRM";
   $("inbox").innerHTML=p.length?p.map(b=>`
-    <div class="item" style="flex-wrap:wrap;cursor:default">
+    <div class="item" style="flex-wrap:wrap;cursor:default;align-items:flex-start">
       ${b.photo_url?`<img src="${esc(b.photo_url)}" onclick="window.open('${esc(b.photo_url)}')">`:""}
-      <div class="m"><b>${esc(b.name)}</b><small>${esc(b.date)} · ${esc(b.time)}</small><br>
+      <div class="m"><b>${esc(b.name)}</b><small>${esc(b.date.split("-").reverse().join("."))} · ${esc(b.time)}</small><br>
         <small><a style="color:#8ecbff" href="tel:${esc(b.phone)}">${esc(b.phone)}</a> ${esc(b.telegram||"")}</small><br>
         <small>${esc(b.idea||b.placement||"")}</small>
         <div class="row"><button class="btn ok" onclick="setSt('${b.id}','confirmed')">✅ Одобрити</button>
@@ -236,18 +251,26 @@ function renderInbox(){
 function rej(id){if(confirm("Відхилити заявку? Клієнт побачить ❌"))setSt(id,"cancelled")}
 async function setSt(id,status){
   const {error}=await sb.from("bookings").update({status,updated_at:new Date().toISOString()}).eq("id",id);
-  if(error)return toast("Помилка: "+(error.code==="23505"?"цей час уже зайнятий":error.message));
+  if(error)return toast(busyErr(error)?"Цей час уже зайнятий":"Помилка: "+error.message);
   toast("Статус: "+ST[status][0]);load();
 }
 
 function dayClosed(k){return BL.some(x=>x.date===k&&x.time===null)||WO.includes(dow(k))}
 function active(k){return B.filter(b=>b.date===k&&b.status!=="cancelled")}
+function occ(k){
+  const m={};
+  active(k).forEach(b=>{
+    const i=SLOTS.indexOf(b.time);
+    if(i<0){m[b.time]={b};return}
+    for(let j=0;j<(b.blocks||1)&&i+j<SLOTS.length;j++)m[SLOTS[i+j]]={b,cont:j>0};
+  });
+  return m;
+}
 
 function renderCal(){
   const y=cur.getFullYear(),m=cur.getMonth();
   $("mt").textContent=cur.toLocaleDateString("uk-UA",{month:"long",year:"numeric"});
-  let sd=new Date(y,m,1).getDay()||7;
-  const st=new Date(y,m,1-(sd-1)),today=fmt(new Date());
+  const sd=new Date(y,m,1).getDay()||7,st=new Date(y,m,1-(sd-1)),today=fmt(new Date());
   $("days").innerHTML="";
   for(let i=0;i<42;i++){
     const d=new Date(st);d.setDate(st.getDate()+i);const k=fmt(d),n=active(k).length;
@@ -265,21 +288,22 @@ function renderCal(){
 function mv(n){cur=new Date(cur.getFullYear(),cur.getMonth()+n,1);renderCal()}
 
 function renderDay(){
-  $("dt").textContent=new Date(sel+"T00:00").toLocaleDateString("uk-UA",{day:"numeric",month:"long",year:"numeric"});
+  $("dt").textContent=new Date(sel+"T00:00").toLocaleDateString("uk-UA",{weekday:"short",day:"numeric",month:"long"});
   const list=B.filter(b=>b.date===sel).sort((a,b)=>a.time.localeCompare(b.time));
   $("dc").textContent=active(sel).length+" записів";
-  const wo=WO.includes(dow(sel)),dcOnly=BL.some(x=>x.date===sel&&x.time===null),dc=wo||dcOnly;
-  $("dayBtn").textContent=wo?"📅 Вихідний за графіком (змінити нижче)":dcOnly?"🔓 Відкрити день":"🔒 Закрити весь день";
+  const wo=WO.includes(dow(sel)),dcOnly=BL.some(x=>x.date===sel&&x.time===null),dc=wo||dcOnly,o=occ(sel);
+  $("dayBtn").textContent=wo?"📅 Вихідний за графіком (вкладка «Графік»)":dcOnly?"🔓 Відкрити день":"🔒 Закрити весь день";
   $("slots").innerHTML=SLOTS.map(s=>{
-    const bk=B.find(b=>b.date===sel&&b.time===s&&b.status!=="cancelled");
-    const cl=dc||BL.some(x=>x.date===sel&&x.time===s);
-    return `<button class="slot ${bk?"booked":cl?"closed":""}" onclick="${bk?`openM('${bk.id}')`:`toggleSlot('${s}')`}">${s}</button>`;
+    const x=o[s];
+    if(x)return `<button class="slot booked" onclick="openM('${x.b.id}')">${s}<small>${x.cont?"↳ ":""}${esc(x.b.name)}</small></button>`;
+    const cl=dc||BL.some(z=>z.date===sel&&z.time===s);
+    return `<button class="slot ${cl?"closed":""}" onclick="toggleSlot('${s}')">${s}</button>`;
   }).join("");
   $("tl").innerHTML=list.length?list.map(b=>{const [n,c]=ST[b.status]||[b.status,"#fff"];return `
     <div class="item" onclick="openM('${b.id}')">
       ${b.photo_url?`<img src="${esc(b.photo_url)}">`:""}
-      <div class="m"><b>${esc(b.time)} · ${esc(b.name)}</b><small>${esc(b.idea||b.placement||"—")}</small></div>
-      <span class="tag" style="--c:${c}">${n}</span></div>`}).join(""):`<div class="empty">На цю дату записів немає</div>`;
+      <div class="m"><b>${esc(b.time)} · ${esc(b.name)}${(b.blocks||1)>1?" · "+b.blocks+" сл.":""}</b><small>${esc(b.idea||b.placement||"—")}</small></div>
+      <span class="tag" style="--c:${c}">${n}</span></div>`}).join(""):`<div class="empty">Записів немає</div>`;
 }
 
 async function toggleSlot(s){
@@ -289,16 +313,14 @@ async function toggleSlot(s){
   load();
 }
 async function toggleDay(){
-  if(WO.includes(dow(sel)))return toast("Цей день тижня вихідний: зміни в блоці «Графік роботи»");
+  if(WO.includes(dow(sel)))return toast("Цей день тижня вихідний: вкладка «Графік»");
   const ex=BL.find(x=>x.date===sel&&x.time===null);
   const r=ex?await sb.from("blocked_slots").delete().eq("id",ex.id):await sb.from("blocked_slots").insert({date:sel,time:null});
   if(r.error)return toast("Помилка: "+r.error.message);
   load();
 }
 
-function renderWk(){
-  $("wk").innerHTML=WD.map((n,i)=>`<button class="${WO.includes(i+1)?"off":""}" onclick="toggleWO(${i+1})">${n}</button>`).join("");
-}
+function renderWk(){$("wk").innerHTML=WD.map((n,i)=>`<button class="${WO.includes(i+1)?"off":""}" onclick="toggleWO(${i+1})">${n}</button>`).join("")}
 async function toggleWO(n){
   const r=WO.includes(n)?await sb.from("weekly_off").delete().eq("dow",n):await sb.from("weekly_off").insert({dow:n});
   if(r.error)return toast("Помилка: "+r.error.message);
@@ -315,11 +337,23 @@ async function range(close){
   if(r.error)return toast("Помилка: "+r.error.message);
   toast(close?"Період закрито":"Період відкрито");load();
 }
+async function saveSlots(){
+  const arr=[...new Set($("s_slots").value.split(/[,\s;]+/).map(x=>x.trim()).filter(x=>/^\d{1,2}:\d{2}$/.test(x)).map(x=>x.padStart(5,"0")))].sort();
+  if(!arr.length)return toast("Вкажи хоча б один час, напр. 11:00, 13:00, 16:00");
+  const r=await sb.from("settings").upsert({key:"slots",value:arr},{onConflict:"key"});
+  if(r.error)return toast("Помилка: "+r.error.message);
+  toast("Години збережено ✓");load();
+}
 
 function openM(id){
-  editId=id||null;const b=id?B.find(x=>x.id===id):{date:sel,time:"12:00",status:"waiting"};
-  K.forEach(k=>$("f_"+k).value=b[k]||"");
-  $("delBtn").style.display=id?"block":"none";
+  editId=id||null;
+  const free=SLOTS.find(s=>!occ(sel)[s])||SLOTS[0];
+  const b=id?B.find(x=>x.id===id):{date:sel,time:free,blocks:1,status:"waiting"};
+  const times=SLOTS.includes(b.time)?SLOTS:[...SLOTS,b.time];
+  $("f_time").innerHTML=times.map(t=>`<option>${t}</option>`).join("");
+  $("f_blocks").innerHTML=SLOTS.map((_,i)=>`<option value="${i+1}">${i+1===1?"1 слот":i+1===SLOTS.length&&i>0?(i+1)+" слоти (весь день)":(i+1)+" слоти"}</option>`).join("");
+  K.forEach(k=>$("f_"+k).value=b[k]??"");
+  $("delBtn").style.display=id?"inline-block":"none";
   $("qk").style.display=id?"grid":"none";
   $("mtitle").textContent=id?"Картка запису":"Новий запис";
   $("ph").innerHTML=b.photo_url?`<label>Референс клієнта</label><a href="${esc(b.photo_url)}" target="_blank"><img src="${esc(b.photo_url)}"></a>`:"";
@@ -335,9 +369,9 @@ async function save(){
   const d={};K.forEach(k=>d[k]=$("f_"+k).value.trim());
   if(!d.name)return toast("Вкажи імʼя");
   if(!d.date||!d.time)return toast("Вкажи дату і час");
-  d.phone=norm(d.phone);d.updated_at=new Date().toISOString();
+  d.blocks=Number(d.blocks)||1;d.phone=norm(d.phone);d.updated_at=new Date().toISOString();
   const r=editId?await sb.from("bookings").update(d).eq("id",editId):await sb.from("bookings").insert({...d,source:"admin"});
-  if(r.error)return toast(r.error.code==="23505"?"Цей час уже зайнятий":"НЕ ЗБЕРЕЖЕНО: "+r.error.message);
+  if(r.error)return toast(busyErr(r.error)?"Цей час (або наступний слот) уже зайнятий":"НЕ ЗБЕРЕЖЕНО: "+r.error.message);
   if(d.phone){
     const c={name:d.name,phone:d.phone},n=d.telegram||d.instagram;if(n)c.telegram=n;
     await sb.from("clients").upsert(c,{onConflict:"phone"});
@@ -358,15 +392,15 @@ function renderClients(){
     const mine=B.filter(b=>norm(b.phone)===c.phone),done=mine.filter(b=>b.status==="done").length;
     return `<div class="item" onclick="openC('${c.id}')"><div class="m"><b>${esc(c.name)}</b>
       <small>${esc(c.telegram||"без ніка")}</small><br>
-      <a href="tel:${esc(c.phone)}" onclick="event.stopPropagation()" style="color:#8ecbff;font-size:13px">${esc(c.phone)}</a></div>
+      <a href="tel:${esc(c.phone)}" onclick="event.stopPropagation()" style="color:#8ecbff;font-size:12px">${esc(c.phone)}</a></div>
       <span class="tag" style="--c:#b7ff7a">${done}/${mine.length}</span></div>`}).join(""):`<div class="empty">Клієнтів немає</div>`;
 }
 function openC(id){
   editC=id||null;const c=id?CL.find(x=>x.id===id):{};
   ["name","phone","telegram","notes"].forEach(k=>$("c_"+k).value=c[k]||"");
-  $("cdel").style.display=id?"block":"none";
+  $("cdel").style.display=id?"inline-block":"none";
   const h=id?B.filter(b=>norm(b.phone)===c.phone).sort((a,b)=>b.date.localeCompare(a.date)):[];
-  $("c_hist").innerHTML=h.length?"<label>Історія записів (проведено/всього)</label>"+h.map(b=>`${esc(b.date)} ${esc(b.time)} · ${(ST[b.status]||[b.status])[0]}`).join("<br>"):"";
+  $("c_hist").innerHTML=h.length?"<label>Історія записів</label>"+h.map(b=>`${esc(b.date)} ${esc(b.time)} · ${(ST[b.status]||[b.status])[0]}`).join("<br>"):"";
   $("cmodal").classList.add("open");
 }
 async function saveC(){
