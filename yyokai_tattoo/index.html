@@ -2,426 +2,296 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YYOKAI | Ink Architect — Lviv</title>
-<meta name="description" content="Японський графічний та fine-line тату-стиль. Студія YYOKAI, Львів.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;900&family=Inter:wght@400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>YYOKAI Tattoo | Японська графіка та fine-line, Львів</title>
+<meta name="description" content="Японський графічний та fine-line тату-стиль. Студія Timeline, Львів. Запис онлайн та YYOKAI Academy.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Unbounded:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --black:#060605;
-    --panel:#0e0e0d;
-    --white:#f4f1ea;
-    --white-dim:rgba(244,241,234,0.55);
-    --red:#ff6a55;
-    --red-deep:#a13324;
-    --line:rgba(244,241,234,0.09);
-    --ease:cubic-bezier(0.16,1,0.3,1);
-    /* єдиний відступ зліва/справа для УСЬОГО сайту — один параметр, скрізь однаково */
-    --gutter:clamp(20px,6vw,64px);
-  }
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;outline:none;-webkit-tap-highlight-color:transparent;}
-  html{background:var(--black);scroll-behavior:smooth;overscroll-behavior-x:none;}
-  body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;overflow-x:hidden;line-height:1.5;
-    overscroll-behavior-x:none;touch-action:pan-y;-webkit-overflow-scrolling:touch;width:100%;max-width:100vw;}
-  a{color:inherit;}
-  img,video,iframe{max-width:100%;display:block;}
-  ::selection{background:var(--red);color:var(--black);}
-  :focus-visible{outline:2px solid var(--red);outline-offset:3px;}
+:root{--bg:#000;--card:#18191b;--t:#f3f0ec;--dim:rgba(243,240,236,.62);--a1:#ff7a63;--a2:#a13324;--line:rgba(243,240,236,.14);--g:20px;--ease:cubic-bezier(.16,1,.3,1);--d:'Unbounded',sans-serif;--b:'Montserrat',system-ui,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg);scroll-behavior:smooth;overflow-x:hidden;overscroll-behavior-x:none}
+body{background:var(--bg);color:var(--t);font:300 16px/1.6 var(--b);overflow-x:hidden;overscroll-behavior-x:none;touch-action:pan-y pinch-zoom;position:relative;width:100%;max-width:100vw;-webkit-font-smoothing:antialiased}
+body.lock{overflow:hidden}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--a1);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.g{background:linear-gradient(90deg,var(--a1),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sec{padding:64px var(--g) 0;max-width:760px;margin:0 auto}
+.k{font:400 14px var(--d);color:var(--dim);margin-bottom:12px}
+h2{font:400 clamp(2rem,9vw,3rem)/1.1 var(--d)}
+h3{font:400 1.3rem/1.25 var(--d)}
+.card{background:var(--card);border-radius:22px;padding:26px;margin-top:16px}
+.card p{color:var(--dim);margin-top:12px}
+.pill{display:inline-flex;align-items:center;gap:12px;border-radius:99px;padding:16px 26px;background:#2b2c2f;color:var(--t);font:600 13px var(--d);letter-spacing:.1em;text-transform:uppercase;border:0;cursor:pointer;transition:background .3s,color .3s}
+.pill::after{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.pill.w{background:#fff;color:#000}.pill.r{background:linear-gradient(90deg,var(--a1),var(--a2));color:#fff}
+.pill:hover{background:var(--t);color:#000}
+.seal{display:inline-grid;place-items:center;width:58px;height:58px;background:var(--a2);color:#f6e9e5;font:400 30px/1 'Hiragino Mincho ProN','Yu Mincho',serif;border-radius:4px;transform:rotate(-4deg)}
+.has-logo .seal{background:var(--logo) center/contain no-repeat;color:transparent;font-size:0!important;box-shadow:none;border-radius:0;transform:none}
 
-  .mono{font-family:'JetBrains Mono',monospace;}
+#ld{position:fixed;inset:0;z-index:100;background:#000;display:flex;flex-direction:column;gap:16px;justify-content:center;align-items:center;transition:transform .8s var(--ease)}
+#ld.done{transform:translateY(-100%)}
+#ld small{font:400 13px var(--d);color:var(--a1);letter-spacing:.1em}
+#ld b{font:600 clamp(4rem,22vw,7rem)/1 var(--d)}
 
-  .noise{position:fixed;inset:0;z-index:998;opacity:.045;pointer-events:none;mix-blend-mode:overlay;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");}
+.bar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px var(--g);background:rgba(0,0,0,.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.logo{font:400 clamp(1.1rem,5.5vw,1.6rem) var(--d);letter-spacing:.04em}
+.bar nav{display:flex;align-items:center;gap:18px}
+.bar svg{width:30px;height:30px}
+.bar .pill{padding:14px 22px}.bar .pill::after{display:none}
+.menu{position:fixed;inset:0;z-index:40;background:#000;padding:104px var(--g) 40px;overflow:auto;clip-path:inset(0 0 100% 0);visibility:hidden;transition:clip-path .7s var(--ease),visibility 0s .7s}
+.menu.on{clip-path:inset(0);visibility:visible;transition:clip-path .7s var(--ease)}
+.menu a{display:block;font:400 clamp(1.4rem,6vw,2.2rem)/1.3 var(--d);padding:12px 0;border-bottom:1px solid var(--line);color:var(--dim);transition:color .3s,padding-left .4s var(--ease)}
+.menu a:hover{color:var(--t);padding-left:12px}
 
- 
-  #loader{position:fixed;inset:0;background:var(--black);z-index:9999;display:flex;flex-direction:column;gap:16px;justify-content:center;align-items:center;transition:transform .7s var(--ease);will-change:transform;}
-  #loader.done{transform:translateY(-100%);}
-  .loader-mark{font-size:14px;color:var(--red);opacity:.85;}
-  .loader-num{font-family:'Unbounded',sans-serif;font-weight:600;font-size:14vw;line-height:1;color:var(--white);}
-  @media(min-width:800px){.loader-num{font-size:6rem;}}
+.hero{position:relative;height:100svh;min-height:560px;overflow-x:clip}.hvw{position:absolute;inset:0;overflow:hidden}
+.hv,.pt{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hv{filter:grayscale(.5) contrast(1.05);opacity:0;transition:opacity 1s linear}.hv.a{opacity:.85}
+.pt{object-position:60% 25%;filter:grayscale(1);mix-blend-mode:lighten}
+.hero::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,.05) 38%,transparent 58%,#000)}
+.mk{position:absolute;left:50%;top:calc(50% + 38px);transform:translate(-50%,-50%);z-index:2}
+.mono{font:600 clamp(8rem,52vw,26rem)/.8 var(--d);letter-spacing:-.03em;white-space:nowrap;padding:0 .13em 0 .1em;background:linear-gradient(180deg,rgba(255,122,99,.85),rgba(161,51,36,.6));-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;transition:opacity 1.4s var(--ease) .5s}
+.tt{position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:7vw;font:300 clamp(.8rem,3.6vw,1.4rem) var(--d);letter-spacing:.8em;padding-left:.8em;color:var(--a1);white-space:nowrap;opacity:0;transition:opacity 1.4s .8s}
+.vl{position:absolute;z-index:3;top:calc(50% + 38px + min(21vw,10.4rem) + 7vw + 50px);bottom:-58px;width:2px;background:linear-gradient(var(--a1),transparent);transform-origin:top;transform:scaleY(0);transition:transform 1.6s var(--ease) .9s}
+.vl.a{left:44%}.vl.b{left:54%}
+.hero.on .mono,.hero.on .tt{opacity:1}.hero.on .vl{transform:none}
 
-  /* ---------- NAV ---------- */
-  .menu-btn{position:fixed;top:26px;right:24px;z-index:2000;width:26px;height:14px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;will-change:transform;}
-  .menu-btn span{display:block;width:100%;height:1px;background:var(--white);transition:transform .35s var(--ease),opacity .35s;}
-  .menu-btn.active span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
-  .menu-btn.active span:nth-child(2){opacity:0;}
-  .menu-btn.active span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
-
-  .brand-mark{position:fixed;top:24px;left:24px;z-index:2000;font-family:'Unbounded',sans-serif;font-size:13px;letter-spacing:.04em;text-decoration:none;color:var(--white);}
-
-  .nav-overlay{position:fixed;inset:0;background:var(--black);z-index:1999;display:flex;flex-direction:column;justify-content:center;padding:0 var(--gutter);transform:translateY(-102%);transition:transform .55s var(--ease);will-change:transform;}
-  .nav-overlay.active{transform:translateY(0);}
-  .nav-overlay a{display:block;font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.5rem,6vw,2.6rem);color:var(--white-dim);text-decoration:none;padding:9px 0;border-bottom:1px solid var(--line);transition:color .3s var(--ease),padding-left .3s var(--ease),text-shadow .3s var(--ease);}
-  .nav-overlay a:hover,.nav-overlay a:focus-visible{color:var(--white);padding-left:14px;text-shadow:0 0 22px rgba(244,241,234,0.45);}
-  .nav-foot{margin-top:30px;font-size:12px;color:var(--white-dim);}
-
-  /* ---------- HERO ---------- */
-  .hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;padding:120px var(--gutter) 60px;text-align:center;overflow:hidden;}
-
-
-  :root{ --hero-opacity:.7; --hero-blur:2px; }
-  .hero-bg-wrap{position:absolute;inset:-40px;z-index:0;overflow:hidden;opacity:0;transition:opacity 1.2s var(--ease) .1s;}
-  .hero.active .hero-bg-wrap{opacity:var(--hero-opacity);}
-  .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;filter:blur(var(--hero-blur));opacity:0;transition:opacity 1s linear;}
-  .hero-video.is-active{opacity:1;}
-  .hero-bg-tint{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(6,6,5,.05) 0%,rgba(6,6,5,.7) 90%);}
-  .hero-kanji,.hero-title,.hero-tagline,.scroll-cue{position:relative;z-index:1;}
-  .hero-kanji{font-size:15px;color:var(--red);margin-bottom:22px;opacity:0;transition:opacity 1s var(--ease) .2s;}
-  .hero.active .hero-kanji{opacity:1;}
-  .hero-title{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(3.2rem,17vw,9rem);line-height:.92;letter-spacing:-0.02em;white-space:nowrap;color:var(--white);
-    opacity:0;transform:translateY(30px);transition:opacity .8s var(--ease) .1s,transform .8s var(--ease) .1s;will-change:opacity,transform;}
-  .hero.active .hero-title{opacity:1;transform:translateY(0);}
-  .hero-tagline{margin-top:26px;font-size:clamp(13px,2.6vw,16px);color:var(--white-dim);max-width:32ch;opacity:0;transform:translateY(10px);transition:opacity .8s var(--ease) .4s,transform .8s var(--ease) .4s;}
-  .hero.active .hero-tagline{opacity:1;transform:translateY(0);}
-
-  .scroll-cue{margin-top:46px;opacity:0;transition:opacity 1s ease .7s;cursor:pointer;}
-  .hero.active .scroll-cue{opacity:.5;}
-  .scroll-cue svg{animation:drift 2.2s ease-in-out infinite;}
-  @keyframes drift{0%,100%{transform:translateY(0);}50%{transform:translateY(8px);}}
-
-  /* ---------- MANIFESTO ---------- */
-  .manifesto{padding:80px var(--gutter) 70px;max-width:640px;margin:0 auto;border-top:1px solid var(--line);}
-  .manifesto p{font-size:clamp(1.1rem,3vw,1.5rem);line-height:1.55;font-weight:400;}
-  .manifesto p + p{margin-top:18px;color:var(--white-dim);font-size:clamp(.95rem,2.4vw,1.05rem);}
-
-  /* ---------- RATES (завжди розгорнуто) ---------- */
-  .rates{padding:0 var(--gutter) 90px;max-width:1240px;margin:0 auto;}
-  .rates-card{background:var(--panel);border:1px solid var(--line);padding:26px clamp(20px,4vw,40px);}
-  .rates-top h3{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.3rem,3.4vw,1.9rem);}
-  .rates-note{color:var(--white-dim);font-size:.9rem;margin-top:8px;max-width:46ch;}
-  .rate-row{display:flex;justify-content:space-between;align-items:baseline;padding:13px 0;border-top:1px solid var(--line);}
-  .rate-row:first-of-type{margin-top:18px;}
-  .rate-name{font-size:clamp(.95rem,2.4vw,1.05rem);}
-  .rate-desc{display:block;font-size:.8rem;color:var(--white-dim);margin-top:2px;max-width:34ch;}
-  .rate-price{font-family:'Unbounded',sans-serif;font-weight:600;color:var(--red);font-size:clamp(1rem,2.6vw,1.15rem);white-space:nowrap;}
-
-  /* ---------- TILE (portfolio / flash) ---------- */
-  .tile{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:28px;text-decoration:none;color:var(--white);background:#131311;background-size:cover;background-position:center;background-repeat:no-repeat;transition:filter .35s;width:100%;box-sizing:border-box;}
-  .tile::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,transparent 35%,rgba(0,0,0,.88) 100%);}
-  .tile:hover{filter:brightness(1.08);}
-  .tile-body{position:relative;z-index:2;}
-  .tile-tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);display:block;margin-bottom:8px;}
-  .tile h4{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.15rem,2.6vw,1.6rem);}
-
-  .work-wrap{max-width:1240px;margin:0 auto;padding:0 var(--gutter) 4px;overflow:hidden;}
-  .work-wrap + .work-wrap{padding-top:0;margin-top:2px;}
-  .work-wrap .tile{height:300px;}
-  #portfolio{background-image:url('004.jpg');}
-  #sketches{background-image:url('006.jpg');}
-
-  /* ---------- FUNCTIONS — усі картки строго одна під одною ---------- */
-  .tools{background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:90px var(--gutter);margin-top:60px;}
-  .tools-wrap{max-width:760px;margin:0 auto;}
-  .tools-head{margin-bottom:34px;}
-  .tools-head span.mono{font-size:11px;color:var(--red);}
-  .tools-head h3{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.5rem,3.8vw,2.1rem);margin-top:8px;}
-  .tools-head p{color:var(--white-dim);font-size:.95rem;margin-top:10px;}
-  .tools-grid{display:grid;grid-template-columns:1fr;gap:2px;}
-  .tool-card{position:relative;display:flex;flex-direction:column;background:#131311;border:1px solid var(--red-deep);padding:30px 26px 28px;text-decoration:none;color:var(--white);transition:background .3s,border-color .3s;}
-  .tool-card:hover{background:#181412;border-color:var(--red);}
-  .tool-badge{display:inline-block;align-self:flex-start;font-size:10px;letter-spacing:.03em;color:var(--red);border:1px solid var(--red-deep);border-radius:100px;padding:5px 12px;margin-bottom:20px;}
-  .tool-icon{width:26px;height:26px;margin-bottom:16px;opacity:.9;}
-  .tool-card h4{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.05rem,2.4vw,1.25rem);margin-bottom:10px;}
-  .tool-card p{font-size:.87rem;color:var(--white-dim);max-width:42ch;line-height:1.5;}
-  .tool-cta{display:inline-block;margin-top:18px;font-size:.83rem;color:var(--white);border-bottom:1px solid var(--line);padding-bottom:2px;align-self:flex-start;transition:border-color .3s;}
-  .tool-card:hover .tool-cta{border-color:var(--white);}
-
-  /* ---------- MAP — більша, з можливістю зуму ---------- */
-  .map-section{padding:90px var(--gutter) 100px;max-width:1240px;margin:0 auto;}
-  .map-head{margin-bottom:26px;}
-  .map-head h3{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(1.3rem,3.4vw,1.9rem);}
-  .map-head p{color:var(--white-dim);font-size:.85rem;margin-top:6px;}
-  .map-frame{position:relative;overflow:hidden;border:1px solid var(--line);background:var(--panel);height:clamp(420px,80vw,720px);}
-  @media(min-width:900px){.map-frame{height:560px;}}
-  .map-frame iframe{width:100%;height:100%;border:0;display:block;
-    /* дуотон: світліша чорно-біло-червона мапа без API-ключа; зум колесом/пінчем працює нативно */
-    filter:grayscale(1) invert(90%) contrast(78%) brightness(120%);}
-  .map-tint{position:absolute;inset:0;background:var(--red);mix-blend-mode:color-burn;opacity:.08;pointer-events:none;}
-  .map-vignette{position:absolute;inset:0;box-shadow:inset 0 0 60px rgba(0,0,0,.3);pointer-events:none;}
-  .map-chip{position:absolute;left:16px;bottom:16px;z-index:3;background:var(--black);border:1px solid var(--red-deep);padding:14px 18px;max-width:82%;pointer-events:none;}
-  .map-chip .pin{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-  .map-chip .pin svg{width:14px;height:14px;flex-shrink:0;}
-  .map-chip .pin span{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);letter-spacing:.03em;}
-  .map-chip address{font-style:normal;font-size:.85rem;color:var(--white);line-height:1.45;}
-
-  /* ---------- FOOTER ---------- */
-  footer{padding:90px var(--gutter) 160px;text-align:center;}
-  footer .fline{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--white-dim);line-height:2;}
-  footer .fyear{font-family:'Unbounded',sans-serif;font-size:12px;color:var(--red);margin-top:22px;}
-
-  /* ---------- CTA ---------- */
-  .cta-fixed{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--red);color:var(--black);padding:16px 36px;border-radius:100px;text-decoration:none;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:600;z-index:1500;box-shadow:0 10px 30px rgba(230,57,44,.35);white-space:nowrap;transition:transform .25s var(--ease);will-change:transform;}
-  .cta-fixed:hover{transform:translateX(-50%) translateY(-2px);}
-
-  @media(prefers-reduced-motion:reduce){
-    *{animation:none!important;transition:none!important;}
-    #loader{display:none;}
-    .hero-title,.hero-kanji,.hero-tagline,.hero-bg-wrap{opacity:1!important;transform:none!important;}
-  }
+.hi{text-align:center;padding-top:72px}
+.hi h2{margin:0 0 14px}.hi p{color:var(--dim);max-width:34ch;margin:0 auto 26px}
+.lst{list-style:none;margin:6px 0 34px}
+.lst li{position:relative;padding:6px 0 6px 24px;color:var(--dim)}
+.lst li::before{content:"";position:absolute;left:0;top:16px;width:7px;height:7px;border-radius:50%;background:var(--a1)}
+.so{display:flex;gap:12px;margin-top:14px}
+.so a{width:56px;height:56px;border-radius:50%;background:#262729;display:grid;place-items:center;transition:background .3s}
+.so a:hover{background:var(--a2)}.so svg{width:24px;height:24px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:34px}
+.stats span{display:block;font:400 11px/1.4 var(--d);color:var(--dim);text-transform:uppercase;letter-spacing:.06em;min-height:3em}
+.stats b{display:block;margin-top:10px;font:400 clamp(2rem,9vw,3rem)/1 var(--d)}
+.ic{width:34px;height:34px;margin-bottom:14px;stroke:var(--t);fill:none;stroke-width:1.5}
+.row{display:flex;gap:14px;align-items:baseline;justify-content:space-between;padding:22px 0;border-top:1px solid var(--line)}
+.row h3{font-size:1.1rem}.row small{display:block;color:var(--dim);font:300 14px var(--b);margin-top:4px}
+.row b{font:400 clamp(1.5rem,6vw,2.1rem) var(--d);white-space:nowrap}.row i{font:500 12px var(--b);font-style:normal;margin-left:4px;color:var(--a1)}
+.note{display:flex;gap:16px;align-items:center;margin-top:20px;padding:18px;border-radius:18px;background:var(--card);font-size:14px;color:var(--dim)}
+.note strong{color:var(--t);font-weight:500}
+.words{display:flex;justify-content:space-between;gap:12px;padding:70px var(--g) 0;max-width:760px;margin:0 auto;font:300 clamp(1rem,5vw,1.6rem) var(--d);letter-spacing:.08em;color:rgba(243,240,236,.4);text-transform:uppercase}
+.car{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin-top:26px}
+.car::-webkit-scrollbar{display:none}.car{touch-action:pan-x pan-y;overscroll-behavior-x:contain}
+.sl{flex:0 0 100%;aspect-ratio:4/5;border-radius:18px;background:var(--img) center/cover #222;scroll-snap-align:start}
+.ctl{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px}
+.ar{display:flex;gap:10px}.ar button{width:52px;height:52px;border-radius:50%;border:0;background:#2b2c2f;color:#fff;font-size:20px;cursor:pointer}
+.ar button:hover{background:var(--a2)}
+details{background:#222325;border-radius:16px;margin-top:12px}
+summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:14px;padding:20px;font:400 14px/1.4 var(--d);letter-spacing:.03em;cursor:pointer}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";flex:none;width:40px;height:40px;border-radius:50%;background:#000;display:grid;place-items:center;font:400 20px var(--b)}
+details[open] summary::after{content:"–"}
+details p{padding:0 20px 22px;color:var(--dim)}
+details a{color:var(--a1);border-bottom:1px solid var(--line)}
+.tl a{display:flex;justify-content:space-between;gap:14px;padding:18px 0;border-top:1px solid var(--line)}
+.tl a:last-child{border-bottom:1px solid var(--line)}
+.tl b{font:400 1rem var(--d)}.tl small{display:block;color:var(--dim);font:300 13px var(--b);margin-top:2px}
+.tl em{font-style:normal;font-size:12px;color:var(--a1);white-space:nowrap;text-align:right}
+.steps{counter-reset:s;list-style:none;margin:20px 0 26px}
+.steps li{counter-increment:s;display:flex;gap:16px;padding:14px 0;border-top:1px solid var(--line);color:var(--dim)}
+.steps li::before{content:counter(s);flex:none;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));display:grid;place-items:center;font:400 13px var(--d);color:#fff}
+.map{position:relative;overflow:hidden;border-radius:22px;height:clamp(380px,100vw,560px);margin-top:20px;background:#111}
+.map iframe{width:100%;height:100%;border:0;display:block;filter:grayscale(1) invert(92%) contrast(80%)}
+footer{padding:70px var(--g) 130px;text-align:center;color:var(--dim);font-size:15px;line-height:1.9}
+footer b{display:block;font:400 1.5rem var(--d);color:var(--t);margin-bottom:10px}
+footer .so{justify-content:center;margin:22px 0}
+footer a.l{color:var(--a1)}
+.up{position:fixed;right:14px;bottom:88px;z-index:45;width:44px;height:44px;display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .4s}
+.up.show{opacity:1;pointer-events:auto}.up svg{width:34px;height:34px;stroke:#fff;fill:none;stroke-width:2.4}
+.cta{position:fixed;bottom:18px;left:50%;transform:translate(-50%,12px);z-index:45;opacity:0;pointer-events:none;background:#fff;color:#000;box-shadow:0 0 0 1px rgba(255,255,255,.25),0 14px 40px rgba(255,122,99,.35);transition:opacity 1s var(--ease),transform 1.1s var(--ease),background .3s,color .3s}
+.cta.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.cta:hover{background:var(--a1);color:#fff}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}#ld{display:none}.mono,.tt{opacity:1}.vl{transform:none}.hv.a{opacity:.85}}
 </style>
 </head>
 <body>
 
-<div id="loader">
-  <div class="loader-mark mono">墨 // loading</div>
-  <div class="loader-num" id="load-val">0</div>
-</div>
-<div class="noise"></div>
+<div id="ld"><small>墨 // loading</small><b id="lv">0%</b></div>
 
-<a href="#top" class="brand-mark">YYOKAI</a>
-<div class="menu-btn" id="menuBtn" onclick="toggleMenu()"><span></span><span></span><span></span></div>
-
-<nav class="nav-overlay" id="nav">
-  <a href="#top" onclick="toggleMenu()">Головна</a>
+<header class="bar">
+  <a href="#top" class="logo">YYOKAI</a>
+  <nav>
+    <a href="academy.html" aria-label="Кабінет Academy"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="12" cy="8" r="4.2"/><path d="M3.5 21c.8-4.4 4.4-6.6 8.5-6.6s7.7 2.2 8.5 6.6"/></svg></a>
+    <button class="pill w" id="mb" onclick="tm()">Меню</button>
+  </nav>
+</header>
+<nav class="menu" id="menu">
+  <a href="#top" onclick="tm()">Головна</a>
+  <a href="#about" onclick="tm()">Про майстра</a>
   <a href="portfolio.html">Портфоліо</a>
-  <a href="#price" onclick="toggleMenu();goToPrice(event);">Ціни</a>
+  <a href="#price" onclick="tm()">Ціни</a>
   <a href="esciz.html">Вільні ескізи</a>
-  <a href="#tools" onclick="toggleMenu()">Функції</a>
-  <a href="#map" onclick="toggleMenu()">Контакти</a>
-  <div class="nav-foot mono">yyokai.tattoo — Львів</div>
+  <a href="academy.html">Academy</a>
+  <a href="#tools" onclick="tm()">Функції</a>
+  <a href="book.html">Запис на сеанс</a>
+  <a href="#map" onclick="tm()">Контакти</a>
 </nav>
+<a href="book.html" class="pill cta" id="cta">Записатися</a>
+<a href="#top" class="up" id="up" aria-label="Нагору"><svg viewBox="0 0 24 24"><path d="M4 15l8-8 8 8"/></svg></a>
 
-<a href="book.html" class="cta-fixed">Записатися</a>
-
-<main id="top">
-
-  <section class="hero" id="mainHero">
-    <div class="hero-bg-wrap">
-      <!-- 👉 два відео-теги для плавної склейки циклу (див. коментар у CSS вище) -->
-      <video class="hero-video is-active" id="heroVideoA" muted playsinline preload="auto" autoplay>
-        <source src="videopodlogo2.mov" type="video/mp4">
-      </video>
-      <video class="hero-video" id="heroVideoB" muted playsinline preload="none">
-        <source src="videopodlogo2.mov" type="video/mp4">
-      </video>
-      <div class="hero-bg-tint"></div>
+<main>
+  <section class="hero" id="top">
+    <h1 class="sr">YYOKAI Tattoo, Львів</h1>
+    <div class="hvw">
+    <video class="hv a" id="vA" muted playsinline preload="auto" autoplay><source src="videopodlogo2.mov" type="video/mp4"></video>
+    <video class="hv" id="vB" muted playsinline preload="none"><source src="videopodlogo2.mov" type="video/mp4"></video>
+    <img class="pt" src="portrait.jpg" alt="" onerror="this.remove()">
     </div>
-    <div class="hero-kanji mono">墨 — ink</div>
-    <h1 class="hero-title">YYOKAI</h1>
-    <p class="hero-tagline">Японські тату • графіка • мінімалізм Львів.</p>
-    <div class="scroll-cue" onclick="document.querySelector('.manifesto').scrollIntoView({behavior:'smooth'})">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.4"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
-    </div>
+    <div class="mk" aria-hidden="true"><div class="mono">YY</div><div class="tt">TATTOO</div></div>
+    <i class="vl a"></i><i class="vl b"></i>
   </section>
 
-  <section class="manifesto">
-    <p>Шість років у тату — від окремих ескізів до великих сюжетних композицій.</p>
-    <p>Кожна робота будується навколо персонажа: оні, кіцуне, юрей — переосмислені у власній графічній мові.</p>
+  <section class="sec hi">
+    <h2>Вітаю</h2>
+    <p>Тут можна переглянути роботи, обрати вільний час і записатися на сеанс. Разом створимо тату, яке буде саме вашим.</p>
+    <span class="seal">妖</span>
   </section>
 
-  <section class="rates" id="price">
-    <div class="rates-card">
-      <div class="rates-top">
-        <h3>Ціна за послугу</h3>
-        <p class="rates-note">Вартість залежить від розміру, деталізації та часу сеансу.</p>
-      </div>
-      <div class="rate-row">
-        <div><span class="rate-name">Мінімальна</span><span class="rate-desc">невеликі роботи, ескізи, доповнення</span></div>
-        <div class="rate-price">2000 грн</div>
-      </div>
-      <div class="rate-row">
-        <div><span class="rate-name">Середня</span><span class="rate-desc">деталізовані роботи середнього розміру</span></div>
-        <div class="rate-price">5000 грн+</div>
-      </div>
-      <div class="rate-row">
-        <div><span class="rate-name">Цілий день</span><span class="rate-desc">великі композиції, повний сеанс</span></div>
-        <div class="rate-price">8500 грн+</div>
-      </div>
+  <section class="sec" id="about">
+    <p class="k">Стиль</p>
+    <ul class="lst"><li>Японська графіка</li><li>Fine-line</li><li>Мінімалізм</li><li>Персонажі: оні, кіцуне, юрей</li></ul>
+    <p class="k">Соцмережі</p>
+    <div class="so"></div>
+
+    <p class="k" style="margin-top:50px">Біографія</p>
+    <p style="color:var(--dim)">Шість років у тату: від окремих ескізів до великих сюжетних композицій. Кожна робота будується навколо персонажа, оні, кіцуне чи юрея, і переосмислена у власній графічній мові.</p>
+    <div class="stats">
+      <div><span>Років досвіду</span><b>6</b></div>
+      <div><span>Основних напрямів</span><b>2</b></div>
+      <div><span>Передоплата, грн</span><b>500</b></div>
     </div>
   </section>
 
-  <div class="work-wrap">
-    <a href="portfolio.html" class="tile" id="portfolio">
-      <div class="tile-body"><span class="tile-tag mono">lookbook</span><h4>Портфоліо робіт</h4></div>
-    </a>
-  </div>
+  <section class="sec">
+    <p class="k">послуги</p>
+    <h2>Що я <span class="g">роблю</span></h2>
+    <a class="card" href="book.html" style="display:block"><svg class="ic" viewBox="0 0 24 24"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M13.5 6.5l3 3"/></svg><h3>Татуювання</h3><p>Японська графіка та fine-line. Від ідеї й ескізу до готової роботи.</p></a>
+    <a class="card" href="esciz.html" style="display:block"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><h3>Вільні ескізи</h3><p>Готові роботи, які можна забронювати без довгого узгодження.</p></a>
+    <a class="card" href="academy.html" style="display:block"><svg class="ic" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11.5V16c3 2.4 9 2.4 12 0v-4.5"/></svg><h3>Навчання</h3><p>YYOKAI Academy: онлайн-платформа з уроками для майстрів, які тільки починають.</p></a>
+    <a class="card" href="#map" style="display:block"><svg class="ic" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg><h3>Львів, студія Timeline</h3><p>вул. Стрийська, 108, ЖК Національний.</p></a>
+  </section>
 
-  <div class="work-wrap">
-    <a href="esciz.html" class="tile" id="sketches">
-      <div class="tile-body"><span class="tile-tag mono">готові до запису</span><h4>Вільні ескізи</h4></div>
-    </a>
-  </div>
+  <section class="sec" id="price">
+    <p class="k">вартість</p>
+    <h2>Ціна <span class="g">за послугу</span></h2>
+    <p style="color:var(--dim);margin:12px 0 24px">Залежить від розміру, деталізації та часу сеансу.</p>
+    <div class="row"><div><h3>Мінімальна</h3><small>невеликі роботи, ескізи, доповнення</small></div><b>2000<i>грн</i></b></div>
+    <div class="row"><div><h3>Середня</h3><small>деталізовані роботи середнього розміру</small></div><b>5000+<i>грн</i></b></div>
+    <div class="row" style="border-bottom:1px solid var(--line)"><div><h3>Цілий день</h3><small>великі композиції, повний сеанс</small></div><b>8500+<i>грн</i></b></div>
+    <div class="note"><span class="seal" style="width:44px;height:44px;font-size:22px;flex:none">印</span><p><strong>Передоплата 500 грн</strong> повністю зараховується у вартість сеансу. Це не окрема плата.</p></div>
+  </section>
 
-  <section class="tools" id="tools">
-    <div class="tools-wrap">
-      <div class="tools-head">
-        <span class="mono">функції сайту</span>
-        <h3>Інструменти, які економлять час</h3>
-        <p>Три розробки: дві — щоб клієнту було легше обрати ідею, одна — щоб іншим майстрам було легше готувати роботу.</p>
-      </div>
-      <div class="tools-grid">
-        <a href="lettering.html" class="tool-card" id="lettering">
-          <span class="tool-badge mono">для клієнтів</span>
-          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.4"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M13.5 6.5l3 3"/></svg>
-          <h4>Обрати власний надпис</h4>
-          <p>Конструктор, де можна зібрати свій напис у японській графіці й одразу побачити результат.</p>
-          <span class="tool-cta">Спробувати конструктор →</span>
-        </a>
-        <a href="zagoenya.html" class="tool-card" id="aftercare">
-          <span class="tool-badge mono">для клієнтів</span>
-          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.4"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-          <h4>Картка загоєння</h4>
-          <p>Покрокова інструкція, як доглядати за свіжим тату у перші дні та тижні.</p>
-          <span class="tool-cta">Відкрити картку →</span>
-        </a>
-        <a href="stenccil.html" class="tool-card" id="stencil">
-          <span class="tool-badge mono">для майстрів</span>
-          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.4"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
-          <h4>Створити стенсіл</h4>
-          <p>Онлайн-інструмент, що перетворює фото на чистий контур для перенесення — без Photoshop.</p>
-          <span class="tool-cta">Перейти до інструменту →</span>
-        </a>
-                <a href="game.html" class="tool-card" id="aftercare">
-          <span class="tool-badge mono">для клієнтів</span>
-          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.4"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-          <h4>Game YYOKAI</h4>
-          <p>Покрокова інструкція, як доглядати за свіжим тату у перші дні та тижні.</p>
-          <span class="tool-cta">Відкрити гру →</span>
-        </a>
+  <div class="words" aria-hidden="true"><span>Japanese</span><span>Fine-line</span></div>
 
-        <a href="game1.html" class="tool-card" id="aftercare">
-          <span class="tool-badge mono">🎁 Приз: Тату до 7000 грн</span>
-          <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="#f4f1ea" stroke-width="1.4"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-          <h4>GAME : INKAI</h4>
-          <p>Знищуй йокаїв катаною, набирай бали та перетворюй ігрові перемоги на реальні знижки, сертифікати та татуювання!</p>
-          <span class="tool-cta">Розчавити демонів →⁠</span>
-        </a>
+  <section class="sec" id="works">
+    <div class="card" style="padding:26px 20px 20px">
+      <p class="k">портфоліо</p>
+      <h2>Мої <span class="g">роботи</span></h2>
+      <p>Переглянь свіжі роботи та ескізи. Новинки першими з’являються в Instagram.</p>
+      <div class="ctl"><div class="ar"><button onclick="go(-1)" aria-label="Назад">←</button><button onclick="go(1)" aria-label="Далі">→</button></div><a class="pill" href="portfolio.html">Більше робіт</a></div>
+      <div class="car" id="car">
+        <a class="sl" href="portfolio.html" style="--img:url('004.jpg')" aria-label="Портфоліо"></a>
+        <a class="sl" href="esciz.html" style="--img:url('006.jpg')" aria-label="Вільні ескізи"></a>
       </div>
     </div>
   </section>
 
-<section class="map-section" id="map">
-    <div class="map-head">
-      <h3>Де знайти</h3>
-      <p>Можна наближати та віддаляти — колесом миші або жестом.</p>
-    </div>
-    <div class="map-frame">
-      <iframe
-        title="Карта: Львів, вул. Стрийська, 108, ЖК Національний"
-        src="https://www.google.com/maps?q=Львів,+вулиця+Стрийська+108,+ЖК+Національний&output=embed"
-        loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"
-        allowfullscreen></iframe>
-      <div class="map-tint"></div>
-      <div class="map-vignette"></div>
-      <div class="map-chip">
-        <div class="pin">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#e6392c" stroke-width="2"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg>
-          <span>студія timeline</span>
-        </div>
-        <address>Львів, вул. Стрийська, 108, ЖК Національний</address>
-      </div>
+  <section class="sec" id="academy">
+    <div class="card" style="background:linear-gradient(160deg,#241210,var(--card));text-align:center">
+      <span class="seal">学</span>
+      <h2 style="margin-top:22px">YYOKAI <span class="g">Academy</span></h2>
+      <p style="max-width:40ch;margin:12px auto 0">Освітня платформа для тих, хто входить у професію. Створи профіль, відкрий уроки та стеж за власним прогресом. Доступ до матеріалів відкриває майстер після підтвердження.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:24px"><a class="pill r" href="academy.html#register">Створити профіль</a><a class="pill" href="academy.html#login">Увійти</a></div>
     </div>
   </section>
 
+  <section class="sec" id="tools">
+    <p class="k">функції</p>
+    <h2>Корисні <span class="g">інструменти</span></h2>
+    <div class="tl" style="margin-top:24px">
+      <a href="lettering.html"><div><b>Власний надпис</b><small>Конструктор у японській графіці</small></div><em>для клієнтів</em></a>
+      <a href="zagoenya.html"><div><b>Картка загоєння</b><small>Догляд за свіжим тату крок за кроком</small></div><em>для клієнтів</em></a>
+      <a href="stenccil.html"><div><b>Створити стенсіл</b><small>Фото в чистий контур без Photoshop</small></div><em>для майстрів</em></a>
+      <a href="game.html"><div><b>Game YYOKAI</b><small>Гра з бонусами для клієнтів</small></div><em>для клієнтів</em></a>
+      <a href="game1.html"><div><b>Game: INKAI</b><small>Знищуй йокаїв, набирай бали</small></div><em>приз: тату до 7000 грн</em></a>
+    </div>
+  </section>
 
-  <footer>
-    <div class="fline">yyokai system protocol<br>заснована у львові<br>data sync: active</div>
-    <div class="fyear">© 2026 — beyond the limits</div>
-  </footer>
+  <section class="sec" id="faq">
+    <p class="k">питання</p>
+    <h2>Що вам <span class="g">потрібно знати</span></h2>
+    <details style="margin-top:24px"><summary>Як записатися на сеанс?</summary><p>Відкрий <a href="book.html">сторінку запису</a>, обери дату й час у календарі, залиш імʼя, телефон та ідею. Фото-референси можна додати до трьох. Майстер підтвердить запис після передоплати.</p></details>
+    <details><summary>Навіщо передоплата?</summary><p>Вона закріплює за тобою дату й час. Передоплата 500 грн повністю зараховується у вартість сеансу. Реквізити зʼявляться одразу після заявки.</p></details>
+    <details><summary>Як доглядати за тату після сеансу?</summary><p>Покрокова інструкція є в <a href="zagoenya.html">картці загоєння</a>.</p></details>
+    <details><summary>Чи проводите навчання для майстрів?</summary><p>Так, на платформі <a href="academy.html">YYOKAI Academy</a>.</p></details>
+  </section>
 
+  <section class="sec" id="book">
+    <p class="k">контакти</p>
+    <h2>Запис <span class="g">на сеанс</span></h2>
+    <ol class="steps"><li>Обери дату та час у календарі</li><li>Опиши ідею й додай фото</li><li>Внеси передоплату 500 грн та отримай підтвердження</li></ol>
+    <a class="pill r" href="book.html">Записатися</a>
+  </section>
+
+  <section class="sec" id="map">
+    <p class="k">студія</p>
+    <h2>Де <span class="g">знайти</span></h2>
+    <div class="map"><iframe title="Карта: Львів, вул. Стрийська, 108, ЖК Національний" src="https://www.google.com/maps?q=Львів,+вулиця+Стрийська+108,+ЖК+Національний&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
+  </section>
 </main>
 
+<footer>
+  <b>YYOKAI</b>
+  Студія Timeline<br>Львів, вул. Стрийська, 108, ЖК Національний
+  <div class="so"></div>
+  © 2026 YYOKAI Tattoo<br><a class="l" href="book.html">Записатися</a> &nbsp; <a class="l" href="academy.html">Кабінет Academy</a>
+</footer>
+
 <script>
-  function toggleMenu(){
-    document.getElementById('nav').classList.toggle('active');
-    document.getElementById('menuBtn').classList.toggle('active');
+function tm(){var m=document.getElementById('menu'),b=document.getElementById('mb');m.classList.toggle('on');document.body.classList.toggle('lock');b.textContent=m.classList.contains('on')?'Закрити':'Меню'}
+addEventListener('keydown',function(e){if(e.key==='Escape'&&document.getElementById('menu').classList.contains('on'))tm()});
+var SOC=[
+ ['Instagram','https://instagram.com/yyokai.tattoo','<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".8" fill="#fff"/>'],
+ ['Threads','https://www.threads.net/@yyokai.tattoo','<text x="12" y="17.5" text-anchor="middle" font-size="19" font-family="Arial,sans-serif" font-weight="700" fill="#fff" stroke="none">@</text>'],
+ ['TikTok','https://www.tiktok.com/@yyokai.tattoo','<path d="M16.5 3c.3 2.3 1.7 3.9 4 4.1v3c-1.5 0-2.9-.5-4-1.3v6.4a5.7 5.7 0 1 1-5.7-5.7c.3 0 .6 0 .9.1v3.1a2.7 2.7 0 1 0 1.8 2.5V3z" fill="#fff" stroke="none"/>'],
+ ['YouTube','https://www.youtube.com/@yyokai.tattoo','<rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9l5 3-5 3z" fill="#fff"/>']];
+document.querySelectorAll('.so').forEach(function(b){b.innerHTML=SOC.map(function(x){return '<a href="'+x[1]+'" target="_blank" rel="noopener" aria-label="'+x[0]+'"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8">'+x[2]+'</svg></a>'}).join('')});
+(function(){var i=new Image();i.onload=function(){document.documentElement.style.setProperty('--logo',"url('logo.png')");document.documentElement.classList.add('has-logo')};i.src='logo.png'})();
+function go(d){var c=document.getElementById('car');c.scrollBy({left:d*c.clientWidth*.9,behavior:'smooth'})}
+(function(){
+  var a=document.getElementById('vA'),b=document.getElementById('vB'),act=a,sb=b,x=0,pre=0;
+  function swap(){
+    if(x)return;x=1;
+    try{sb.currentTime=0;sb.play().catch(function(){})}catch(e){}
+    sb.classList.add('a');act.classList.remove('a');
+    setTimeout(function(){try{act.pause()}catch(e){}var t=act;act=sb;sb=t;pre=0;x=0},1000);
   }
-
-  function goToPrice(e){
-    e.preventDefault();
-    var el = document.getElementById('price');
-    if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+  [a,b].forEach(function(v){v.addEventListener('timeupdate',function(){
+    if(v!==act||!v.duration)return;
+    if(!pre&&v.currentTime>=v.duration*.5){pre=1;sb.preload='auto';sb.load()}
+    if(v.duration-v.currentTime<=1)swap();
+  })});
+})();
+(function(){
+  var hero=document.getElementById('top'),ld=document.getElementById('ld'),cta=document.getElementById('cta'),up=document.getElementById('up');
+  function start(){
+    ld.classList.add('done');hero.classList.add('on');
+    var v=document.getElementById('vA'),p=v.play&&v.play();
+    if(p&&p.catch)p.catch(function(){var f=function(){v.play().catch(function(){})};addEventListener('touchstart',f,{once:true});addEventListener('click',f,{once:true})});
   }
-
-  
-  (function(){
-    var a = document.getElementById('heroVideoA');
-    var b = document.getElementById('heroVideoB');
-    if(!a || !b) return;
-    var active = a, standby = b, crossfading = false, preloaded = false;
-
-    function crossfade(){
-      if(crossfading) return;
-      crossfading = true;
-      try{ standby.currentTime = 0; standby.play().catch(function(){}); }catch(e){}
-      standby.classList.add('is-active');
-      active.classList.remove('is-active');
-      setTimeout(function(){
-        try{ active.pause(); }catch(e){}
-        var tmp = active; active = standby; standby = tmp;
-        preloaded = false;
-        crossfading = false;
-      }, 1000);
-    }
-    function bind(v){
-      v.addEventListener('timeupdate', function(){
-        if(v !== active || !v.duration) return;
-        /* починаємо підвантажувати другий файл трохи заздалегідь, а не одразу обидва при відкритті сторінки */
-        if(!preloaded && v.currentTime >= v.duration * 0.5){
-          preloaded = true;
-          standby.setAttribute('preload','auto');
-          standby.load();
-        }
-        if((v.duration - v.currentTime) <= 1){
-          crossfade();
-        }
-      });
-      v.addEventListener('error', function(){
-        console.warn('Не вдалося завантажити відео-фон hero:', v.currentSrc || v.querySelector('source').src);
-      });
-    }
-    bind(a); bind(b);
-  })();
-
-
-  (function(){
-    var count = 0;
-    var loadVal = document.getElementById('load-val');
-    var loader = document.getElementById('loader');
-    var hero = document.getElementById('mainHero');
-
-    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) {
-      loader.style.display = 'none';
-      hero.classList.add('active');
-      return;
-    }
-
-    var timer = setInterval(function(){
-      count += Math.floor(Math.random()*10)+6;
-      if (count >= 100){
-        count = 100;
-        clearInterval(timer);
-        setTimeout(function(){
-          loader.classList.add('done');
-          hero.classList.add('active');
-          
-          var v = document.getElementById('heroVideoA');
-          if(v){
-            var p = v.play();
-            if(p && p.catch){
-              p.catch(function(){
-                console.warn('Автозапуск відео заблоковано системою — запуститься після першого дотику.');
-                function forcePlay(){
-                  v.play().catch(function(){});
-                  document.removeEventListener('touchstart', forcePlay);
-                  document.removeEventListener('click', forcePlay);
-                }
-                document.addEventListener('touchstart', forcePlay, {once:true});
-                document.addEventListener('click', forcePlay, {once:true});
-              });
-            }
-          }
-        }, 180);
-      }
-      loadVal.textContent = count;
-    }, 28);
-  })();
+  var n=0,lv=document.getElementById('lv'),t=setInterval(function(){
+    n+=Math.floor(Math.random()*5)+2;
+    if(n>=100){n=100;clearInterval(t);setTimeout(start,250)}
+    lv.textContent=n+'%';
+  },40);
+  function s(){var y=scrollY>innerHeight*.8;cta.classList.toggle('show',y);up.classList.toggle('show',y)}
+  addEventListener('scroll',s,{passive:true});s();
+})();
 </script>
-
 </body>
 </html>
