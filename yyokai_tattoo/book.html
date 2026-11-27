@@ -5,31 +5,76 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>YYOKAI | Запис на тату</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Unbounded:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
+:root{--bg:#09090a;--card:#151517;--t:#e9e5dc;--dim:rgba(233,229,220,.62);--a1:#d63a26;--a2:#a82a1a;--line:rgba(233,229,220,.14);--g:20px;--ease:cubic-bezier(.16,1,.3,1);--d:'Unbounded',sans-serif;--b:'Montserrat',system-ui,sans-serif}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--accent:#e5092f;--line:rgba(255,255,255,.14)}
-html,body{background:#000}
-body{color:#f6f1ef;font:14px/1.45 Arial,sans-serif;min-height:100vh;overflow-x:hidden;
- background:radial-gradient(circle at 50% -10%,rgba(229,9,47,.38),transparent 38%),linear-gradient(180deg,#050505 0%,#100206 45%,#000 100%)}
-body::before{content:"妖 鬼 狐 墨 夜 予約";position:fixed;inset:0;z-index:0;pointer-events:none;color:rgba(255,255,255,.022);font-size:70px;letter-spacing:26px;line-height:1.5;transform:rotate(-12deg) scale(1.15)}
-.w{position:relative;z-index:1;width:100%;max-width:480px;margin:auto;padding:14px 14px 40px}
-.back{position:absolute;left:14px;top:14px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;text-decoration:none;color:#fff;font-size:24px;line-height:1;padding-bottom:3px;background:rgba(0,0,0,.6);border:1px solid var(--line);backdrop-filter:blur(10px);z-index:5}
-.logo{position:relative;width:max-content;margin:4px auto 0;font-size:28px;font-weight:900;letter-spacing:.12em;color:#fff;text-shadow:0 0 22px rgba(229,9,47,.55)}
-.logo::before,.logo::after{content:"YYOKAI";position:absolute;inset:0;opacity:.34;pointer-events:none}
-.logo::before{color:var(--accent);animation:gA 2.8s infinite}
-.logo::after{color:#fff;animation:gB 3.3s infinite reverse}
-@keyframes gA{0%,92%,100%{clip-path:inset(0);transform:none}93%{clip-path:inset(12% 0 64% 0);transform:translate(-2px,1px)}95%{clip-path:inset(60% 0 18% 0);transform:translate(2px,-1px)}97%{clip-path:inset(30% 0 38% 0);transform:translate(-1px,0)}}
-@keyframes gB{0%,94%,100%{clip-path:inset(0);transform:none}95%{clip-path:inset(44% 0 30% 0);transform:translate(1px,0)}97%{clip-path:inset(15% 0 58% 0);transform:translate(-1px,0)}}
-.sub{text-align:center;color:#bdb3b0;margin:8px auto 12px;font-size:12.5px}
-.card{position:relative;overflow:hidden;margin-top:10px;padding:14px;border-radius:22px;
- background:radial-gradient(circle at 85% 0%,rgba(229,9,47,.2),transparent 38%),linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.03));
- border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(18px)}
+html{background:var(--bg);scroll-behavior:smooth;overflow-x:hidden;overscroll-behavior-x:none}
+body{background:transparent;color:var(--t);font:300 16px/1.6 var(--b);overflow-x:hidden;overscroll-behavior-x:none;touch-action:pan-y pinch-zoom;position:relative;width:100%;max-width:100vw;-webkit-font-smoothing:antialiased}
+body.lock{overflow:hidden}
+/* японський мотив: хвилі сейгайха, сонце, ієрогліфи */
+html::before{content:"";position:fixed;left:0;right:0;bottom:0;height:46vh;z-index:-3;pointer-events:none;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2230%22%20viewBox%3D%220%200%2060%2030%22%3E%3Cg%20fill%3D%22%2309090a%22%20stroke%3D%22%23e9e5dc%22%20stroke-opacity%3D%22.11%22%20stroke-width%3D%221%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%22-15%22%20r%3D%2230%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%22-15%22%20r%3D%2223%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%22-15%22%20r%3D%2216%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%22-15%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%220%22%20r%3D%2230%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%220%22%20r%3D%2223%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%220%22%20r%3D%2216%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%220%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%220%22%20r%3D%2230%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%220%22%20r%3D%2223%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%220%22%20r%3D%2216%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%220%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2215%22%20r%3D%2230%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2215%22%20r%3D%2223%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2215%22%20r%3D%2216%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2215%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%2230%22%20r%3D%2230%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%2230%22%20r%3D%2223%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%2230%22%20r%3D%2216%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%2230%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2230%22%20r%3D%2230%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2230%22%20r%3D%2223%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2230%22%20r%3D%2216%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2230%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2245%22%20r%3D%2230%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2245%22%20r%3D%2223%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2245%22%20r%3D%2216%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2245%22%20r%3D%229%22/%3E%3C/g%3E%3C/svg%3E") 0 0/90px 45px;-webkit-mask-image:linear-gradient(transparent,#000 75%);mask-image:linear-gradient(transparent,#000 75%)}
+body::before{content:"妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 ";position:fixed;left:-10%;top:-10%;width:120%;height:120%;z-index:-2;pointer-events:none;overflow:hidden;color:rgba(233,229,220,.026);font:400 64px/1.7 'Hiragino Mincho ProN','Yu Mincho','Noto Serif JP',serif;letter-spacing:24px;transform:rotate(-12deg)}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 82% 96px,rgba(168,42,26,.38) 0 62px,transparent 63px),radial-gradient(circle at 82% 96px,rgba(214,58,38,.16),transparent 340px)}
+
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--a1);outline-offset:3px}
+h1,h2,h3{font-family:var(--d);font-weight:400}
+.card{background:var(--card);border-radius:22px;padding:26px;margin-top:16px}
+.pill{display:inline-flex;align-items:center;gap:12px;border-radius:99px;padding:16px 26px;background:#2b2c2f;color:var(--t);font:600 13px var(--d);letter-spacing:.1em;text-transform:uppercase;border:0;cursor:pointer;transition:background .3s,color .3s}
+.pill.w{background:var(--t);color:#000}.pill.r{background:var(--a1);color:#fff}
+.pill:hover{background:var(--t);color:#000}
+.seal{display:inline-grid;place-items:center;width:58px;height:58px;background:var(--a2);color:#f6e9e5;font:400 30px/1 'Hiragino Mincho ProN','Yu Mincho',serif;border-radius:4px;transform:rotate(-4deg)}
+.has-logo .seal{background:var(--logo) center/contain no-repeat;color:transparent;font-size:0!important;box-shadow:none;border-radius:0;transform:none}
+.hdr{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px var(--g);background:rgba(9,9,10,.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.hdr .logo{font:400 clamp(1.1rem,5.5vw,1.6rem) var(--d);letter-spacing:.04em}
+.hdr nav{display:flex;align-items:center;gap:18px}
+.hdr svg{width:30px;height:30px}
+.hdr .pill{padding:14px 22px}
+.menu{position:fixed;inset:0;z-index:40;background:var(--bg);padding:104px var(--g) 40px;overflow:auto;clip-path:inset(0 0 100% 0);visibility:hidden;transition:clip-path .7s var(--ease),visibility 0s .7s}
+.menu.on{clip-path:inset(0);visibility:visible;transition:clip-path .7s var(--ease)}
+.menu a{display:block;font:400 clamp(1.4rem,6vw,2.2rem)/1.3 var(--d);padding:12px 0;border-bottom:1px solid var(--line);color:var(--dim);transition:color .3s,padding-left .4s var(--ease)}
+.menu a:hover{color:var(--t);padding-left:12px}
+.so{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.so a{width:clamp(44px,12.5vw,56px);aspect-ratio:1;border-radius:50%;background:#1d1d20;display:grid;place-items:center;transition:background .3s}
+.so a:hover{background:var(--a2)}.so svg{width:22px;height:22px}
+.sf{padding:40px var(--g) 50px;text-align:center;color:var(--dim);font-size:13px}
+.sf b{display:block;font:400 1.3rem var(--d);color:var(--t);margin-bottom:6px}
+.sf .so{margin:18px 0}
+</style>
+<script>document.addEventListener("DOMContentLoaded",function(){
+/* Спільна шапка, меню, соцмережі та логотип для academy.html і book.html */
+(function(){
+  var SOC=[
+   ['Instagram','https://instagram.com/yyokai.tattoo','<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".8" fill="#fff"/>'],
+   ['Threads','https://www.threads.net/@yyokai.tattoo','<text x="12" y="17.5" text-anchor="middle" font-size="19" font-family="Arial,sans-serif" font-weight="700" fill="#fff" stroke="none">@</text>'],
+   ['TikTok','https://www.tiktok.com/@yyokai.tattoo','<path d="M16.5 3c.3 2.3 1.7 3.9 4 4.1v3c-1.5 0-2.9-.5-4-1.3v6.4a5.7 5.7 0 1 1-5.7-5.7c.3 0 .6 0 .9.1v3.1a2.7 2.7 0 1 0 1.8 2.5V3z" fill="#fff" stroke="none"/>'],
+   ['YouTube','https://www.youtube.com/@yyokai.tattoo','<rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9l5 3-5 3z" fill="#fff"/>'],
+   ['Pinterest','https://www.pinterest.com/yyokaitattoo','<circle cx="12" cy="12" r="9"/><text x="12" y="16.5" text-anchor="middle" font-size="12" font-weight="700" font-family="Georgia,serif" fill="#fff" stroke="none">P</text>'],
+   ['Telegram','https://t.me/yyokaitattoo','<path d="M21.5 3.5L2.5 10.8l6 2.2 2 6.4 3.2-3.9 5.2 3.8z"/><path d="M8.5 13l9-6.5"/>']];
+  var links=[['Головна','./'],['Про майстра','./#about'],['Портфоліо','portfolio.html'],['Ціни','./#price'],['Вільні ескізи','esciz.html'],['Academy','academy.html'],['Функції','./#tools'],['Запис на сеанс','book.html'],['Контакти','./#map']];
+  document.body.insertAdjacentHTML('afterbegin',
+   '<header class="hdr"><a href="./" class="logo">YYOKAI</a><nav><a href="academy.html" aria-label="Кабінет Academy"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="12" cy="8" r="4.2"/><path d="M3.5 21c.8-4.4 4.4-6.6 8.5-6.6s7.7 2.2 8.5 6.6"/></svg></a><button class="pill w" id="mb" type="button">Меню</button></nav></header>'+
+   '<nav class="menu" id="menu">'+links.map(function(l){return '<a href="'+l[1]+'">'+l[0]+'</a>'}).join('')+'</nav>');
+  document.body.insertAdjacentHTML('beforeend','<footer class="sf"><b>YYOKAI</b>Студія Timeline, Львів<div class="so"></div>© 2026 YYOKAI Tattoo</footer>');
+  document.querySelectorAll('.so').forEach(function(b){b.innerHTML=SOC.map(function(x){return '<a href="'+x[1]+'" target="_blank" rel="noopener" aria-label="'+x[0]+'"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8">'+x[2]+'</svg></a>'}).join('')});
+  var m=document.getElementById('menu'),b=document.getElementById('mb');
+  function tm(){m.classList.toggle('on');document.body.classList.toggle('lock');b.textContent=m.classList.contains('on')?'Закрити':'Меню'}
+  b.addEventListener('click',tm);
+  addEventListener('keydown',function(e){if(e.key==='Escape'&&m.classList.contains('on'))tm()});
+  var i=new Image();i.onload=function(){document.documentElement.style.setProperty('--logo',"url('logo.png')");document.documentElement.classList.add('has-logo')};i.src='logo.png';
+})();
+
+});</script>
+<style>
+ background:radial-gradient(circle at 50% -10%,rgba(214,58,38,.38),transparent 38%),linear-gradient(180deg,#050505 0%,#100206 45%,#000 100%)}
 .step{display:flex;align-items:center;gap:8px;margin:16px 0 8px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
 .step:first-child{margin-top:0}
-.step i{font-style:normal;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;background:var(--accent);box-shadow:0 0 12px rgba(229,9,47,.6)}
+.step i{font-style:normal;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;background:var(--a1);box-shadow:0 0 12px rgba(214,58,38,.6)}
 label{display:block;color:#999;font-size:11px;font-weight:800;margin:10px 0 5px}
 input,textarea{display:block;width:100%;min-width:0;max-width:100%;border-radius:13px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.45);color:#fff;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none;appearance:none}
-input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(229,9,47,.15)}
+input:focus,textarea:focus{border-color:var(--a1);box-shadow:0 0 0 3px rgba(214,58,38,.15)}
 textarea{min-height:76px;resize:vertical}
 input[type=file]{padding:8px;font-size:13px;color:#aaa}
 input[type=file]::file-selector-button{margin-right:10px;border:0;border-radius:999px;padding:7px 13px;background:#fff;color:#050505;font-weight:800;font-size:12px;font-family:inherit}
@@ -40,22 +85,22 @@ input[type=file]::file-selector-button{margin-right:10px;border:0;border-radius:
 .wk7,.cd{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .wk7 span{text-align:center;color:#777;font-size:10px;font-weight:800;margin-bottom:2px}
 .cd button{aspect-ratio:1;border-radius:11px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.05);color:#fff;font-weight:800;font-size:13px}
-.cd button.sel{background:var(--accent);border-color:var(--accent);box-shadow:0 0 16px rgba(229,9,47,.5)}
+.cd button.sel{background:var(--a1);border-color:var(--a1);box-shadow:0 0 16px rgba(214,58,38,.5)}
 .cd button.x{color:#666;text-decoration:line-through;background:repeating-linear-gradient(45deg,rgba(255,255,255,.02),rgba(255,255,255,.02) 4px,rgba(255,255,255,.07) 4px,rgba(255,255,255,.07) 8px)}
 .cd button:disabled{cursor:default}.cd button.past{opacity:.2;text-decoration:none}
 .cd i{visibility:hidden}
 .slots{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
 .hint{width:100%;text-align:center;color:#888;font-size:12px}
 .slot{min-width:92px;padding:10px 4px;border-radius:13px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#fff;font-weight:800;font-size:14px}
-.slot.sel{background:var(--accent);border-color:var(--accent);box-shadow:0 0 16px rgba(229,9,47,.5)}
+.slot.sel{background:var(--a1);border-color:var(--a1);box-shadow:0 0 16px rgba(214,58,38,.5)}
 .slot:disabled{opacity:.3;text-decoration:line-through}
 .phone{display:flex;align-items:stretch;border-radius:13px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.45);overflow:hidden}
-.phone:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(229,9,47,.15)}
-.phone span{display:grid;place-items:center;padding:0 10px 0 12px;font-weight:800;font-size:15px;background:rgba(229,9,47,.22);border-right:1px solid rgba(255,255,255,.12)}
+.phone:focus-within{border-color:var(--a1);box-shadow:0 0 0 3px rgba(214,58,38,.15)}
+.phone span{display:grid;place-items:center;padding:0 10px 0 12px;font-weight:800;font-size:15px;background:rgba(214,58,38,.22);border-right:1px solid rgba(255,255,255,.12)}
 .phone input{border:0;border-radius:0;background:transparent;box-shadow:none!important}
 .btn{width:100%;margin-top:16px;border:0;border-radius:999px;padding:13px;background:#fff;color:#050505;font-weight:900;font-size:14px;letter-spacing:.03em}
 .btn:disabled{opacity:.5}
-.msg{margin-top:10px;padding:10px 12px;border-radius:13px;background:rgba(255,255,255,.07);border:1px solid rgba(229,9,47,.4);display:none;font-size:13px}
+.msg{margin-top:10px;padding:10px 12px;border-radius:13px;background:rgba(255,255,255,.07);border:1px solid rgba(214,58,38,.4);display:none;font-size:13px}
 .req{display:flex;gap:11px;align-items:center;padding:11px 12px;margin-top:8px;border-radius:16px;border:1px solid color-mix(in srgb,var(--c) 55%,transparent);background:color-mix(in srgb,var(--c) 14%,rgba(0,0,0,.3))}
 .req .ic{font-size:26px;line-height:1}
 .req b{display:block;font-size:13px}
@@ -71,7 +116,7 @@ label.c{text-align:center;margin:12px 0 8px}
 .dt{width:100%;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.45);color:#fff;font-size:14px;text-align:left}
 .dt b{flex:1;font-weight:600;color:#aaa}.dt.has b{color:#fff;font-weight:800}
 .dt em{font-style:normal;color:#aaa;transition:.2s}.dt.open em{transform:rotate(180deg)}
-.dt.open{border-color:var(--accent)}
+.dt.open{border-color:var(--a1)}
 .dtp{display:none;margin-top:8px;padding:12px;border-radius:16px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08)}
 .dtp.open{display:block;animation:sd .25s ease}
 @keyframes sd{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
@@ -82,14 +127,20 @@ label.c{text-align:center;margin:12px 0 8px}
 .cr code{flex:1;font:700 15px/1.2 ui-monospace,Menlo,monospace;letter-spacing:.05em;color:#fff}
 .cr button{border:0;border-radius:999px;padding:7px 13px;background:#fff;color:#050505;font-weight:800;font-size:12px;white-space:nowrap}
 .pay .ok{display:block;margin-top:6px;color:#bdb3b0}
+
+.w{max-width:520px;margin:0 auto;padding:100px var(--g) 30px}
+.hd{text-align:center;margin-bottom:6px}.hd h1{font-size:clamp(2rem,9vw,3rem);line-height:1.1;margin:8px 0 8px}
+.sub{color:var(--dim);font-size:14px}
+.bk{display:inline-block;font-size:13px;color:var(--dim);margin-bottom:14px}.bk:hover{color:var(--t)}
+.card{padding:18px}
+body{font-size:14px;line-height:1.45}
 </style>
 
 </head>
 <body>
 <div class="w">
-  <a class="back" href="./" aria-label="На головну">‹</a>
-  <div class="logo">YYOKAI</div>
-  <div class="sub">Заявка на тату · майстер підтвердить запис</div>
+  <a class="bk" href="./">‹ На головну</a>
+  <div class="hd"><h1>Запис на сеанс</h1><p class="sub">Заявка на тату. Майстер підтвердить запис після передоплати.</p></div>
 
   <div class="card" id="mine" style="display:none"><div class="step"><i>✓</i>Мої заявки</div><div id="mineList"></div></div>
   <button class="again" id="again" onclick="again()">＋ Нова заявка</button>
