@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>YYOKAI Academy</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Unbounded:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#09090a;--card:#151517;--t:#e9e5dc;--dim:rgba(233,229,220,.62);--a1:#d63a26;--a2:#a82a1a;--line:rgba(233,229,220,.14);--g:20px;--ease:cubic-bezier(.16,1,.3,1);--d:'Unbounded',sans-serif;--b:'Montserrat',system-ui,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg);scroll-behavior:smooth;overflow-x:hidden;overscroll-behavior-x:none}
+body{background:transparent;color:var(--t);font:300 16px/1.6 var(--b);overflow-x:hidden;overscroll-behavior-x:none;touch-action:pan-y pinch-zoom;position:relative;width:100%;max-width:100vw;-webkit-font-smoothing:antialiased}
+body.lock{overflow:hidden}
+/* японський мотив: хвилі сейгайха, сонце, ієрогліфи */
+html::before{content:"";position:fixed;left:0;right:0;bottom:0;height:46vh;z-index:-3;pointer-events:none;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2230%22%20viewBox%3D%220%200%2060%2030%22%3E%3Cg%20fill%3D%22%2309090a%22%20stroke%3D%22%23e9e5dc%22%20stroke-opacity%3D%22.11%22%20stroke-width%3D%221%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%22-15%22%20r%3D%2230%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%22-15%22%20r%3D%2223%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%22-15%22%20r%3D%2216%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%22-15%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%220%22%20r%3D%2230%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%220%22%20r%3D%2223%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%220%22%20r%3D%2216%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%220%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%220%22%20r%3D%2230%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%220%22%20r%3D%2223%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%220%22%20r%3D%2216%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%220%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2215%22%20r%3D%2230%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2215%22%20r%3D%2223%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2215%22%20r%3D%2216%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2215%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%2230%22%20r%3D%2230%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%2230%22%20r%3D%2223%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%2230%22%20r%3D%2216%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%2230%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2230%22%20r%3D%2230%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2230%22%20r%3D%2223%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2230%22%20r%3D%2216%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2230%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2245%22%20r%3D%2230%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2245%22%20r%3D%2223%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2245%22%20r%3D%2216%22/%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2245%22%20r%3D%229%22/%3E%3C/g%3E%3C/svg%3E") 0 0/90px 45px;-webkit-mask-image:linear-gradient(transparent,#000 75%);mask-image:linear-gradient(transparent,#000 75%)}
+body::before{content:"妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 妖 鬼 狐 墨 夜 予約 ";position:fixed;left:-10%;top:-10%;width:120%;height:120%;z-index:-2;pointer-events:none;overflow:hidden;color:rgba(233,229,220,.026);font:400 64px/1.7 'Hiragino Mincho ProN','Yu Mincho','Noto Serif JP',serif;letter-spacing:24px;transform:rotate(-12deg)}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 82% 96px,rgba(168,42,26,.38) 0 62px,transparent 63px),radial-gradient(circle at 82% 96px,rgba(214,58,38,.16),transparent 340px)}
+
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--a1);outline-offset:3px}
+h1,h2,h3{font-family:var(--d);font-weight:400}
+.card{background:var(--card);border-radius:22px;padding:26px;margin-top:16px}
+.pill{display:inline-flex;align-items:center;gap:12px;border-radius:99px;padding:16px 26px;background:#2b2c2f;color:var(--t);font:600 13px var(--d);letter-spacing:.1em;text-transform:uppercase;border:0;cursor:pointer;transition:background .3s,color .3s}
+.pill.w{background:var(--t);color:#000}.pill.r{background:var(--a1);color:#fff}
+.pill:hover{background:var(--t);color:#000}
+.seal{display:inline-grid;place-items:center;width:58px;height:58px;background:var(--a2);color:#f6e9e5;font:400 30px/1 'Hiragino Mincho ProN','Yu Mincho',serif;border-radius:4px;transform:rotate(-4deg)}
+.has-logo .seal{background:var(--logo) center/contain no-repeat;color:transparent;font-size:0!important;box-shadow:none;border-radius:0;transform:none}
+.hdr{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px var(--g);background:rgba(9,9,10,.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.hdr .logo{font:400 clamp(1.1rem,5.5vw,1.6rem) var(--d);letter-spacing:.04em}
+.hdr nav{display:flex;align-items:center;gap:18px}
+.hdr svg{width:30px;height:30px}
+.hdr .pill{padding:14px 22px}
+.menu{position:fixed;inset:0;z-index:40;background:var(--bg);padding:104px var(--g) 40px;overflow:auto;clip-path:inset(0 0 100% 0);visibility:hidden;transition:clip-path .7s var(--ease),visibility 0s .7s}
+.menu.on{clip-path:inset(0);visibility:visible;transition:clip-path .7s var(--ease)}
+.menu a{display:block;font:400 clamp(1.4rem,6vw,2.2rem)/1.3 var(--d);padding:12px 0;border-bottom:1px solid var(--line);color:var(--dim);transition:color .3s,padding-left .4s var(--ease)}
+.menu a:hover{color:var(--t);padding-left:12px}
+.so{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.so a{width:clamp(44px,12.5vw,56px);aspect-ratio:1;border-radius:50%;background:#1d1d20;display:grid;place-items:center;transition:background .3s}
+.so a:hover{background:var(--a2)}.so svg{width:22px;height:22px}
+.sf{padding:40px var(--g) 50px;text-align:center;color:var(--dim);font-size:13px}
+.sf b{display:block;font:400 1.3rem var(--d);color:var(--t);margin-bottom:6px}
+.sf .so{margin:18px 0}
+</style>
+<script>document.addEventListener("DOMContentLoaded",function(){
+/* Спільна шапка, меню, соцмережі та логотип для academy.html і book.html */
+(function(){
+  var SOC=[
+   ['Instagram','https://instagram.com/yyokai.tattoo','<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".8" fill="#fff"/>'],
+   ['Threads','https://www.threads.net/@yyokai.tattoo','<text x="12" y="17.5" text-anchor="middle" font-size="19" font-family="Arial,sans-serif" font-weight="700" fill="#fff" stroke="none">@</text>'],
+   ['TikTok','https://www.tiktok.com/@yyokai.tattoo','<path d="M16.5 3c.3 2.3 1.7 3.9 4 4.1v3c-1.5 0-2.9-.5-4-1.3v6.4a5.7 5.7 0 1 1-5.7-5.7c.3 0 .6 0 .9.1v3.1a2.7 2.7 0 1 0 1.8 2.5V3z" fill="#fff" stroke="none"/>'],
+   ['YouTube','https://www.youtube.com/@yyokai.tattoo','<rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9l5 3-5 3z" fill="#fff"/>'],
+   ['Pinterest','https://www.pinterest.com/yyokaitattoo','<circle cx="12" cy="12" r="9"/><text x="12" y="16.5" text-anchor="middle" font-size="12" font-weight="700" font-family="Georgia,serif" fill="#fff" stroke="none">P</text>'],
+   ['Telegram','https://t.me/yyokaitattoo','<path d="M21.5 3.5L2.5 10.8l6 2.2 2 6.4 3.2-3.9 5.2 3.8z"/><path d="M8.5 13l9-6.5"/>']];
+  var links=[['Головна','./'],['Про майстра','./#about'],['Портфоліо','portfolio.html'],['Ціни','./#price'],['Вільні ескізи','esciz.html'],['Academy','academy.html'],['Функції','./#tools'],['Запис на сеанс','book.html'],['Контакти','./#map']];
+  document.body.insertAdjacentHTML('afterbegin',
+   '<header class="hdr"><a href="./" class="logo">YYOKAI</a><nav><a href="academy.html" aria-label="Кабінет Academy"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="12" cy="8" r="4.2"/><path d="M3.5 21c.8-4.4 4.4-6.6 8.5-6.6s7.7 2.2 8.5 6.6"/></svg></a><button class="pill w" id="mb" type="button">Меню</button></nav></header>'+
+   '<nav class="menu" id="menu">'+links.map(function(l){return '<a href="'+l[1]+'">'+l[0]+'</a>'}).join('')+'</nav>');
+  document.body.insertAdjacentHTML('beforeend','<footer class="sf"><b>YYOKAI</b>Студія Timeline, Львів<div class="so"></div>© 2026 YYOKAI Tattoo</footer>');
+  document.querySelectorAll('.so').forEach(function(b){b.innerHTML=SOC.map(function(x){return '<a href="'+x[1]+'" target="_blank" rel="noopener" aria-label="'+x[0]+'"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8">'+x[2]+'</svg></a>'}).join('')});
+  var m=document.getElementById('menu'),b=document.getElementById('mb');
+  function tm(){m.classList.toggle('on');document.body.classList.toggle('lock');b.textContent=m.classList.contains('on')?'Закрити':'Меню'}
+  b.addEventListener('click',tm);
+  addEventListener('keydown',function(e){if(e.key==='Escape'&&m.classList.contains('on'))tm()});
+  var i=new Image();i.onload=function(){document.documentElement.style.setProperty('--logo',"url('logo.png')");document.documentElement.classList.add('has-logo')};i.src='logo.png';
+})();
+
+});</script>
+<style>
+.w{max-width:560px;margin:0 auto;padding:108px var(--g) 40px}
+.hd{text-align:center}
+h1{font-size:clamp(2.2rem,11vw,3.4rem);line-height:1.05;margin:18px 0 10px}
+.sub{color:var(--dim)}.hd .sub{max-width:34ch;margin:0 auto}
+.tabs{display:flex;gap:26px;margin-bottom:22px}
+.tabs button{background:none;border:0;color:var(--dim);font:400 13px var(--d);padding:0 0 10px;border-bottom:1px solid transparent;cursor:pointer;letter-spacing:.03em}
+.tabs button.on{color:var(--t);border-color:var(--a1)}
+label{display:block;font-size:13px;color:var(--dim);margin:16px 0 6px}
+input{width:100%;padding:14px;background:var(--bg);border:1px solid var(--line);color:var(--t);font:400 16px var(--b);outline:none;border-radius:12px}
+input:focus{border-color:var(--a1)}
+.btn{display:inline-block;margin-top:22px;padding:15px 28px;border:0;border-radius:99px;background:#2b2c2f;color:var(--t);font:600 12px var(--d);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .3s,color .3s}
+.btn:hover{background:var(--t);color:#000}.btn:disabled{opacity:.5}
+.btn.s{background:var(--a1);color:#fff}.btn.s:hover{background:var(--t);color:#000}
+.msg{margin-top:16px;font-size:14px;color:#f08a7a}.msg.ok{color:#9fd3a8}
+.pf{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.pf h2{font:400 1.2rem var(--d)}.pf p{color:var(--dim);font-size:14px}
+.wait{display:flex;gap:18px;align-items:flex-start}
+.wait p{color:var(--dim)}.wait b{display:block;color:var(--t);font:400 1.1rem var(--d);margin-bottom:6px}
+.course{margin-top:34px}.course h2{font:400 clamp(1.4rem,6vw,2rem)/1.15 var(--d)}
+.bar{height:2px;background:var(--line);margin:14px 0 8px}.bar i{display:block;height:100%;background:var(--a1);transition:width .6s var(--ease)}
+.les{display:flex;gap:14px;align-items:center;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:16px 0;color:var(--t);font:400 16px var(--b);cursor:pointer}
+.les span{width:24px;height:24px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-size:13px;flex:none}
+.les.d span{background:var(--a1);border-color:var(--a1);color:#fff}
+.view h2{font:400 clamp(1.4rem,6vw,2rem)/1.15 var(--d);margin-bottom:18px}
+.view .vid{aspect-ratio:16/9;margin-bottom:20px;background:#000;border-radius:14px;overflow:hidden}
+.view iframe,.view video{width:100%;height:100%;border:0}
+.view .txt{white-space:pre-wrap;max-width:62ch}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+</style>
+
+</head>
+<body>
+<div class="w">
+  <div class="hd"><span class="seal">学</span>
+  <h1>Academy</h1>
+  <p class="sub">Освітня платформа YYOKAI для майстрів, які тільки починають.</p></div>
+
+  <section class="card" id="auth">
+    <div class="tabs"><button id="tl" class="on" onclick="mode('login')">Вхід</button><button id="tr" onclick="mode('register')">Реєстрація</button></div>
+    <div id="rn" style="display:none"><label for="name">Імʼя та прізвище</label><input id="name" autocomplete="name"></div>
+    <label for="em">Email</label><input id="em" type="email" autocomplete="email">
+    <label for="pw">Пароль</label><input id="pw" type="password" autocomplete="current-password" placeholder="Мінімум 6 символів">
+    <button class="btn s" id="go" onclick="submit()">Увійти</button>
+    <p class="msg" id="msg"></p>
+  </section>
+
+  <section id="app" style="display:none">
+    <div class="card pf"><div><h2 id="pn"></h2><p id="pe"></p></div><button class="btn" style="margin:0" onclick="out()">Вийти</button></div>
+    <div class="card wait" id="wait" style="display:none"><span class="seal">待</span><div><b>Профіль створено</b><p>Майстер перевірить заявку та відкриє доступ до уроків. Ми повідомимо, коли це станеться, а поки можна зайти пізніше.</p></div></div>
+    <div id="cour"></div>
+    <div class="card view" id="view" style="display:none"></div>
+  </section>
+</div>
+
+<script>
+const SB_URL="https://jtilygljejobpljcfqrd.supabase.co";
+const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0aWx5Z2xqZWpvYnBsamNmcXJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU2MjAwNTEsImV4cCI6MjExMTE5NjA1MX0.crPkRj0M5DV8kFbCU6i07P5uK71Oe54IuXfbI57bHeQ";
+const sb=supabase.createClient(SB_URL,SB_KEY);
+const $=id=>document.getElementById(id);
+let M="login",user=null,courses=[],lessons=[],done=new Set();
+
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function say(t,ok){const m=$("msg");m.textContent=t;m.className="msg"+(ok?" ok":"")}
+function mode(m){
+  M=m;$("tl").classList.toggle("on",m==="login");$("tr").classList.toggle("on",m==="register");
+  $("rn").style.display=m==="register"?"block":"none";
+  $("go").textContent=m==="register"?"Створити профіль":"Увійти";
+  $("pw").autocomplete=m==="register"?"new-password":"current-password";say("");
+}
+if(location.hash==="#register")mode("register");
+
+async function submit(){
+  const email=$("em").value.trim(),password=$("pw").value,name=$("name").value.trim();
+  if(!email||password.length<6)return say("Введи email і пароль (мінімум 6 символів).");
+  $("go").disabled=true;
+  if(M==="register"){
+    if(name.length<2){$("go").disabled=false;return say("Вкажи імʼя та прізвище.")}
+    const {data,error}=await sb.auth.signUp({email,password,options:{data:{full_name:name},emailRedirectTo:location.origin+location.pathname}});
+    $("go").disabled=false;
+    if(error)return say(error.message.includes("registered")?"Цей email уже зареєстровано. Увійди.":"Не вдалося створити профіль: "+error.message);
+    if(!data.session)return say("Перевір пошту: ми надіслали лист для підтвердження email.",true);
+  }else{
+    const {error}=await sb.auth.signInWithPassword({email,password});
+    $("go").disabled=false;
+    if(error)return say(error.message.includes("confirm")?"Підтверди email за листом, який ми надіслали.":"Невірний email або пароль.");
+  }
+  boot();
+}
+async function out(){await sb.auth.signOut();location.reload()}
+
+async function boot(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){$("auth").style.display="block";$("app").style.display="none";return}
+  user=session.user;$("auth").style.display="none";$("app").style.display="block";
+  const {data:p}=await sb.from("profiles").select("*").eq("id",user.id).maybeSingle();
+  $("pn").textContent=(p&&p.full_name)||user.email;$("pe").textContent=user.email;
+  if(!p||!p.approved){$("wait").style.display="flex";$("cour").innerHTML="";return}
+  $("wait").style.display="none";load();
+}
+async function load(){
+  const r=await Promise.all([sb.from("courses").select("*").order("position"),sb.from("lessons").select("*").order("position"),sb.from("progress").select("lesson_id")]);
+  const er=r.find(x=>x.error);if(er){$("cour").innerHTML=`<p class="msg">Не вдалося завантажити уроки: ${esc(er.error.message)}</p>`;return}
+  courses=r[0].data;lessons=r[1].data;done=new Set(r[2].data.map(x=>x.lesson_id));render();
+}
+function render(){
+  $("cour").innerHTML=courses.length?courses.map(c=>{
+    const ls=lessons.filter(l=>l.course_id===c.id),n=ls.filter(l=>done.has(l.id)).length;
+    return `<div class="course"><h2>${esc(c.title)}</h2><p class="sub">${esc(c.description||"")}</p>
+      <div class="bar"><i style="width:${ls.length?Math.round(n/ls.length*100):0}%"></i></div><p class="sub" style="font-size:13px;margin-bottom:6px">Пройдено ${n} з ${ls.length}</p>
+      ${ls.map(l=>`<button class="les ${done.has(l.id)?"d":""}" onclick="openL('${l.id}')"><span>${done.has(l.id)?"✓":""}</span>${esc(l.title)}</button>`).join("")}</div>`;
+  }).join(""):`<div class="card"><p class="sub">Уроки з’являться тут найближчим часом.</p></div>`;
+}
+function emb(u){
+  const m=String(u).match(/(?:youtu\.be\/|v=|embed\/)([\w-]{11})/);
+  return m?`<iframe src="https://www.youtube.com/embed/${m[1]}" allowfullscreen></iframe>`:`<video src="${esc(u)}" controls playsinline></video>`;
+}
+function openL(id){
+  const l=lessons.find(x=>x.id===id);if(!l)return;
+  const d=done.has(id),v=$("view");
+  v.innerHTML=`<h2>${esc(l.title)}</h2>${l.video_url?`<div class="vid">${emb(l.video_url)}</div>`:""}<div class="txt">${esc(l.body||"")}</div>
+    <div class="row"><button class="btn ${d?"":"s"}" onclick="mark('${id}')">${d?"Пройдено ✓ (зняти відмітку)":"Позначити пройденим"}</button><button class="btn" onclick="$('view').style.display='none'">Закрити</button></div>`;
+  v.style.display="block";v.scrollIntoView({behavior:"smooth"});
+}
+async function mark(id){
+  const r=done.has(id)?await sb.from("progress").delete().eq("lesson_id",id).eq("user_id",user.id):await sb.from("progress").insert({user_id:user.id,lesson_id:id});
+  if(r.error)return alert("Не вдалося зберегти: "+r.error.message);
+  done.has(id)?done.delete(id):done.add(id);render();openL(id);
+}
+boot();
+</script>
+</body>
+</html>
